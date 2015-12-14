@@ -29,7 +29,7 @@ exports.checkAdmin = function(req, res, next){
 	next();
 };
 
-export.compareRoles(userRoles, actionRoles){
+exports.compareRoles(userRoles, actionRoles){
     //user have many roles
     if (userRoles.constructor === Array){
         //action can be accessed by various roles
@@ -46,7 +46,7 @@ export.compareRoles(userRoles, actionRoles){
             return userRoles == actionRoles;
         }
     }
-}
+};
 
 exports.checkRoleBuilder = function(role){
     var userRole = req.session.userRole;
@@ -56,4 +56,4 @@ exports.checkRoleBuilder = function(role){
     	}
     	next();
     }
-}
+};
