@@ -19,5 +19,9 @@
   "bugs": {
     "url": "https://github.com/interrupter/not-node/issues"
   },
+  "dependencies":[
+    "mongoose-validator": "*",
+    "deep-diff":"*"
+  ],
   "homepage": "https://github.com/interrupter/not-node#readme"
 }
