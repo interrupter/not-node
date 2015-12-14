@@ -1,0 +1,23 @@
+{
+  "name": "not-node",
+  "version": "1.0.0",
+  "description": "node complimentary part for client side notFramework.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/interrupter/not-node.git"
+  },
+  "keywords": [
+    "notFramework",
+    "node"
+  ],
+  "author": "interrupter <alex.repin@mail.ru> (http://github.com/interrupter)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/interrupter/not-node/issues"
+  },
+  "homepage": "https://github.com/interrupter/not-node#readme"
+}
