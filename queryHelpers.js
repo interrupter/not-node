@@ -33,9 +33,9 @@ var sorterDefaultsLocal = {
 
 exports.getSorter = function(requestQuery, modelSchema, sorterDefaults /* optional */){
     if (typeof sorterDefaults === 'undefined' || sorterDefaults === null){
-        var result = [[sorterDefaults.sortByField, sorterDefaults.sortDirection]];
-    }else{
         var result = [[sorterDefaultsLocal.sortByField, sorterDefaultsLocal.sortDirection]];
+    }else{
+        var result = [[sorterDefaults.sortByField, sorterDefaults.sortDirection]];
     }
     if(requestQuery.hasOwnProperty('sortDirection') && requestQuery.sortDirection !== null &&
         requestQuery.hasOwnProperty('sortByField') && requestQuery.sortByField !== null) {

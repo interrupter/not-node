@@ -1,12 +1,53 @@
 var auth = require('./auth'),
-    validate = require('mongoose-validator');
+    validate = require('mongoose-validator'),
+    extend = require('extend');
+
+var checkCredintials = function (actionData, auth, role, admin){
+    if (actionData.hasOwnProperty('admin') ){
+        return actionData.admin === admin;
+    }
+    if (actionData.hasOwnProperty('role')){
+        if (actionData.role === role){
+            return actionData.hasOwnProperty('auth')?(actionData.auth === auth):true;
+        }else{
+            return false;
+        }
+    }else{
+        return actionData.hasOwnProperty('auth')?(actionData.auth === auth):true;
+    }
+    return false;
+}
+
+var filterManifest = function(manifest, auth, role, admin){
+    var result = extend({}, manifest);
+    result.actions = {};
+    if (manifest && manifest.actions){
+        for(var actionName in manifest.actions){
+            var actionSet = manifest.actions[actionName];
+            if (actionSet){
+                if(actionSet.length > 0){
+                    for(var i = 0; i < actionSet.length; i++){
+                        if (checkCredintials(actionSet[i], auth, role, admin)){
+                            result.actions[actionName] = actionSet[i];
+                        }
+                    }
+                }else{
+                    if (checkCredintials(actionSet[i], auth, role, admin)){
+                        result.actions[actionName] = actionSet[i];
+                    }
+                }
+            }
+        }
+    }
+    return result;
+}
 
 /**
  *  Collect all existing manifests from files in the routes directory
  *  return object(extensionless routes collection file name : manifest)
  */
 
-exports.getManifest = function(routesPath) {
+exports.getManifest = function(routesPath, auth, role, admin) {
     var manifest = {};
     var normalizedPath = routesPath;
     console.log('normalizedPath', normalizedPath);
@@ -131,7 +172,7 @@ exports.registerRoutes = function(app, interfaceManifests) {
             //console.log(manModuleName, manModuleActionName);
             actionData = interfaceManifests[manModuleName].actions[manModuleActionName];
             routeLine = getRouteLine(interfaceManifests[manModuleName].url, manModuleName, manModuleActionName, actionData);
-            console.log(routeLine);
+            console.log(actionData.method, routeLine, actionData.auth, actionData.admin);
             registerRouteForAction(app, routesPath, routeLine, manModuleName, manModuleActionName, actionData);
         }
     }
@@ -143,6 +184,6 @@ exports.registerRoutes = function(app, interfaceManifests) {
  *
  */
 
-exports.updateManifests = function(routesPath) {
-    return this.getManifest(routesPath);
+exports.updateManifests = function(routesPath, auth, role, admin) {
+    return this.getManifest(routesPath, auth, role, admin);
 }

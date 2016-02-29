@@ -29,7 +29,7 @@ exports.checkAdmin = function(req, res, next){
 	next();
 };
 
-exports.compareRoles(userRoles, actionRoles){
+exports.compareRoles = function(userRoles, actionRoles){
     //user have many roles
     if (userRoles.constructor === Array){
         //action can be accessed by various roles
