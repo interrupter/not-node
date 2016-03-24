@@ -22,8 +22,17 @@ exports.checkUser = function(req, res, next){
 	next();
 };
 
+exports.ifAdmin = function(req){
+    return (req.session.user) && (req.session.userRole =='root');
+}
+
+exports.getRole = function(req){
+    return req.session.user?req.session.userRole:undefined;
+}
+
 exports.checkAdmin = function(req, res, next){
-	if((!req.session.user) || (req.session.userRole!='root')){
+
+    if(! exports.ifAdmin(req)){
 		return next(new HttpError(401, "Вы не авторизованы " +req.session.user+':' +req.session.userRole));
 	}
 	next();
@@ -31,9 +40,9 @@ exports.checkAdmin = function(req, res, next){
 
 exports.compareRoles = function(userRoles, actionRoles){
     //user have many roles
-    if (userRoles.constructor === Array){
+    if (userRoles && userRoles.constructor === Array){
         //action can be accessed by various roles
-        if (actionRoles.constructor === Array){
+        if (actionRoles && actionRoles.constructor === Array){
             //if we have similar elements in those two arrays - grant access
             return intersect_safe(userRoles, actionRoles).length > 0;
         }else{
@@ -49,7 +58,7 @@ exports.compareRoles = function(userRoles, actionRoles){
 };
 
 exports.checkRoleBuilder = function(role){
-    var userRole = req.session.userRole;
+    var userRole = req.user.roles;
     return function(req, res, next){
         if((!req.session.user) || !this.compareRoles(userRole, role)){
             return next(new HttpError(401, "Вы не авторизованы " +req.session.user+':' +req.session.userRole));

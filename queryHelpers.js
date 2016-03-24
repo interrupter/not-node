@@ -6,7 +6,7 @@ exports.getFilter = function(requestQuery, modelSchema){
         var filterSearch = requestQuery.filterSearch.toString();
             searchRule = new RegExp(filterSearch, 'i');
         for(var k in modelSchema){
-            if (modelSchema[k].searchable){
+            if (modelSchema[k].searchable && !(requestQuery.hasOwnProperty(k) && requestQuery[k].length > 0)){
                 var emptyRule = {};
                 switch(modelSchema[k].type){
                     case Number:
@@ -23,6 +23,26 @@ exports.getFilter = function(requestQuery, modelSchema){
             }
         }
     }
+
+    for(var k in modelSchema){
+        if (modelSchema[k].searchable && requestQuery.hasOwnProperty(k) && requestQuery[k].length > 0){
+            var emptyRule = {};
+            var searchString = requestQuery[k];
+            switch(modelSchema[k].type){
+                case Number:
+                        if (!isNaN(searchString)){
+                            emptyRule[k] = parseInt(searchString);
+                        }else{
+                            continue;
+                        }
+                    break;
+                case String:
+                default: emptyRule[k] = searchString;
+            }
+            result.push(emptyRule);
+        }
+    }
+    console.log('filter rule', result);
     return result;
 };
 

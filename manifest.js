@@ -1,13 +1,22 @@
-var auth = require('./auth'),
+var Auth = require('./auth'),
     validate = require('mongoose-validator'),
     extend = require('extend');
 
-var checkCredintials = function (actionData, auth, role, admin){
-    if (actionData.hasOwnProperty('admin') ){
+exports.checkCredentials = function (actionData, auth, role, admin){
+/*
+    console.log('check credentials');
+    console.log(actionData);
+    console.log(auth, role, admin);
+*/
+    if (typeof actionData === 'undefined' || actionData === null){
+//        console.error(actionData);
+        return false;
+    }
+    if (actionData && actionData.hasOwnProperty('admin') ){
         return actionData.admin === admin;
     }
     if (actionData.hasOwnProperty('role')){
-        if (actionData.role === role){
+        if (Auth.compareRoles(actionData.role, role)){
             return actionData.hasOwnProperty('auth')?(actionData.auth === auth):true;
         }else{
             return false;
@@ -18,26 +27,42 @@ var checkCredintials = function (actionData, auth, role, admin){
     return false;
 }
 
-var filterManifest = function(manifest, auth, role, admin){
-    var result = extend({}, manifest);
+exports.filterManifestRoute = function(route, auth, role, admin){
+    var result = extend({}, route);
     result.actions = {};
-    if (manifest && manifest.actions){
-        for(var actionName in manifest.actions){
-            var actionSet = manifest.actions[actionName];
+    //console.log(route);
+    if (route && route.actions){
+        for(var actionName in route.actions){
+            //console.log(actionName, route.actions[actionName]);
+            var actionSet = route.actions[actionName];
             if (actionSet){
                 if(actionSet.length > 0){
+                    //console.log('actions set');
                     for(var i = 0; i < actionSet.length; i++){
-                        if (checkCredintials(actionSet[i], auth, role, admin)){
+                        if (this.checkCredentials(actionSet[i], auth, role, admin)){
                             result.actions[actionName] = actionSet[i];
+                        }else{
+
                         }
                     }
                 }else{
-                    if (checkCredintials(actionSet[i], auth, role, admin)){
-                        result.actions[actionName] = actionSet[i];
+                    //console.log('action alone');
+                    if (this.checkCredentials(actionSet, auth, role, admin)){
+                        result.actions[actionName] = actionSet;
+                    }else{
+                        //console.log('credentials not fit');
                     }
                 }
             }
         }
+    }
+    return result;
+}
+
+exports.filterManifest = function(manifest, auth, role, admin){
+    var result = {};
+    for(var routeName in manifest){
+        result[routeName] = this.filterManifestRoute(manifest[routeName], auth, role, admin);
     }
     return result;
 }
@@ -47,10 +72,10 @@ var filterManifest = function(manifest, auth, role, admin){
  *  return object(extensionless routes collection file name : manifest)
  */
 
-exports.getManifest = function(routesPath, auth, role, admin) {
+exports.getManifest = function(routesPath) {
     var manifest = {};
     var normalizedPath = routesPath;
-    console.log('normalizedPath', normalizedPath);
+    //console.log('normalizedPath', normalizedPath);
     require("fs").readdirSync(normalizedPath).forEach(function(file) {
         var route = require(routesPath + '/' + file),
             fileName = file.slice(0, file.length - 3);
@@ -128,27 +153,39 @@ var getRouteLine = function(url, modelName, actionName, actionData) {
  */
 
 var registerRouteForAction = function(app, routesPath, routeLine, modelName, actionName, actionData) {
-    //console.log(modelName, actionName,require('./' + modelName));
+    //console.log(modelName, actionName);
     if(!(actionData.admin && actionData.auth)) {
         //for 'guest' is no specific middleware required
+        //console.log(actionData);
         app[actionData.method.toLowerCase()](routeLine, require(routesPath + '/' + modelName)[actionName]);
     } else {
-        if(actionData.admin) {
+        if(actionData.admin){
             //all actions in route file that should be accessed only by 'admin', should be prefixed by underscore
             //for 'admin' user role should be specified specific middleware
-            app[actionData.method.toLowerCase()](routeLine, auth.checkAdmin, require(routesPath + '/' + modelName)['_' + actionName]);
+            app[actionData.method.toLowerCase()](routeLine, Auth.checkAdmin, require(routesPath + '/' + modelName)['_' + actionName]);
         } else {
             //for 'authentificated' user role should be specified specific middleware
-            app[actionData.method.toLowerCase()](routeLine, auth.checkUser, require(routesPath + '/' + modelName)[actionName]);
+            app[actionData.method.toLowerCase()](routeLine, Auth.checkUser, require(routesPath + '/' + modelName)[actionName]);
             /*
                 ! new feature
-
                 check access by role in manifest and in req.session.userRole
             */
             if(typeof actionData.role !== 'undefined' && actionData.role !== null && actionData.role.toString().length > 0) {
-                app[actionData.method.toLowerCase()](routeLine, auth.checkRoleBuilder(actionData(actoinData.role)), require(routesPath + '/' + modelName)[actionName]);
+                app[actionData.method.toLowerCase()](routeLine, Auth.checkRoleBuilder(actionData(actoinData.role)), require(routesPath + '/' + modelName)[actionName]);
             }
         }
+    }
+};
+
+
+var registerRouteForActionSet = function(app, routesPath, routeLine, modelName, actionSetName, actionSetData) {
+    //console.log(modelName, actionSetName);
+    if (actionSetData.length && actionSetData.length > 0){
+        for(var i = 0; i < actionSetData.length;i++){
+            registerRouteForAction(app, routesPath, routeLine, modelName, actionSetName, actionSetData[i]);
+        }
+    }else{
+        registerRouteForAction(app, routesPath, routeLine, modelName, actionSetName, actionSetData);
     }
 };
 
@@ -172,8 +209,8 @@ exports.registerRoutes = function(app, interfaceManifests) {
             //console.log(manModuleName, manModuleActionName);
             actionData = interfaceManifests[manModuleName].actions[manModuleActionName];
             routeLine = getRouteLine(interfaceManifests[manModuleName].url, manModuleName, manModuleActionName, actionData);
-            console.log(actionData.method, routeLine, actionData.auth, actionData.admin);
-            registerRouteForAction(app, routesPath, routeLine, manModuleName, manModuleActionName, actionData);
+            //console.log(actionData.method, routeLine, actionData.auth, actionData.admin);
+            registerRouteForActionSet(app, routesPath, routeLine, manModuleName, manModuleActionName, actionData);
         }
     }
 }
@@ -184,6 +221,6 @@ exports.registerRoutes = function(app, interfaceManifests) {
  *
  */
 
-exports.updateManifests = function(routesPath, auth, role, admin) {
-    return this.getManifest(routesPath, auth, role, admin);
+exports.updateManifests = function(routesPath) {
+    return this.getManifest(routesPath);
 }
