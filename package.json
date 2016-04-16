@@ -1,6 +1,6 @@
 {
   "name": "not-node",
-  "version": "1.0.7",
+  "version": "1.1.12",
   "description": "node complimentary part for client side notFramework.",
   "main": "index.js",
   "scripts": {
@@ -21,7 +21,8 @@
   },
   "dependencies":{
     "mongoose-validator":  "*",
-    "deep-diff": "*"
+    "deep-diff": "*",
+    "escape-string-regexp": "*"
   },
   "homepage": "https://github.com/interrupter/not-node#readme"
 }

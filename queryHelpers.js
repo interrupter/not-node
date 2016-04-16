@@ -1,10 +1,11 @@
+const escapeStringRegexp = require('escape-string-regexp');
 
 exports.getFilter = function(requestQuery, modelSchema){
     var result = [];
     //есть ли фильтрация по полям
     if(requestQuery.hasOwnProperty('filterSearch') && requestQuery.filterSearch !== null && requestQuery.filterSearch.length>0) {
         var filterSearch = requestQuery.filterSearch.toString();
-            searchRule = new RegExp(filterSearch, 'i');
+            searchRule = new RegExp('.*'+escapeStringRegexp(filterSearch)+'.*', 'i');
         for(var k in modelSchema){
             if (modelSchema[k].searchable && !(requestQuery.hasOwnProperty(k) && requestQuery[k].length > 0)){
                 var emptyRule = {};
@@ -16,6 +17,7 @@ exports.getFilter = function(requestQuery, modelSchema){
                                 continue;
                             }
                         break;
+                    case Boolean: emptyRule[k] = searchRule;
                     case String:
                     default: emptyRule[k] = searchRule;
                 }
@@ -42,7 +44,6 @@ exports.getFilter = function(requestQuery, modelSchema){
             result.push(emptyRule);
         }
     }
-    console.log('filter rule', result);
     return result;
 };
 
