@@ -201,9 +201,14 @@ RouterAction.prototype.exec = function(req, res, next){
         if(rule.actionName){
             actionName = rule.actionName;
         }
-        var mod = require(this.routesPath + '/' + this.modelName);
-        if (mod.hasOwnProperty(actionName) && typeof mod[actionName] === 'function'){
-            mod[actionName](req, res, next);
+        try{
+            var mod = require(this.routesPath + '/' + this.modelName);
+            if (mod.hasOwnProperty(actionName) && typeof mod[actionName] === 'function'){
+                mod[actionName](req, res, next);
+            }
+        }
+        catch(e){
+            console.log(e);
         }
     }else{
     	return next(new HttpError(403, "rule for router not found"));
