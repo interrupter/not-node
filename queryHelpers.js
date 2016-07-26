@@ -30,6 +30,7 @@ exports.getFilter = function(requestQuery, modelSchema){
         if (modelSchema[k].searchable && requestQuery.hasOwnProperty(k) && requestQuery[k].length > 0){
             var emptyRule = {};
             var searchString = requestQuery[k];
+            
             switch(modelSchema[k].type){
                 case Number:
                         if (!isNaN(searchString)){

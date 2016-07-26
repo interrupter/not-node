@@ -16,22 +16,22 @@ function intersect_safe(a, b){
 }
 
 exports.ifUser = function(req){
-	return req.session.user;
+	return req.session && req.session.user;
 };
 
 exports.checkUser = function(req, res, next){
-	if(!req.session.user){
+	if(!req.session || !req.session.user){
 		return next(new HttpError(401, "Вы не авторизованы"));
 	}
 	next();
 };
 
 exports.ifAdmin = function(req){
-    return (req.session.user) && (req.session.userRole =='root');
+    return (req.session && req.session.user) && (req.session && (req.session.userRole =='root'));
 }
 
 exports.getRole = function(req){
-    return req.session.user?req.session.userRole:undefined;
+    return (req.session&&req.session.user)?req.session.userRole:undefined;
 }
 
 exports.checkAdmin = function(req, res, next){
@@ -63,8 +63,8 @@ exports.compareRoles = function(userRoles, actionRoles){
 
 exports.checkRoleBuilder = function(role){
     return function(req, res, next){
-        var userRole = req.user.role;
-        if((!req.session.user) || !this.compareRoles(userRole, role)){
+        var userRole = req.user && req.user.role?req.user.role:undefined;
+        if((!req.session || !req.session.user) || !this.compareRoles(userRole, role)){
             return next(new HttpError(401, "Вы не авторизованы " +req.session.user+':' +req.session.userRole));
     	}
     	next();
