@@ -3,6 +3,7 @@ const escapeStringRegexp = require('escape-string-regexp');
 exports.getFilter = function(requestQuery, modelSchema){
     var result = [];
     //есть ли фильтрация по полям
+    console.log('requestQuery', requestQuery, "modelSchema", modelSchema);
     if(requestQuery.hasOwnProperty('filterSearch') && requestQuery.filterSearch !== null && requestQuery.filterSearch.length>0) {
         var filterSearch = requestQuery.filterSearch.toString();
             searchRule = new RegExp('.*'+escapeStringRegexp(filterSearch)+'.*', 'i');
@@ -30,7 +31,7 @@ exports.getFilter = function(requestQuery, modelSchema){
         if (modelSchema[k].searchable && requestQuery.hasOwnProperty(k) && requestQuery[k].length > 0){
             var emptyRule = {};
             var searchString = requestQuery[k];
-            
+
             switch(modelSchema[k].type){
                 case Number:
                         if (!isNaN(searchString)){
@@ -49,15 +50,14 @@ exports.getFilter = function(requestQuery, modelSchema){
 };
 
 var sorterDefaultsLocal = {
-    sortByField: '_id',
-    sortDirection: 'ascending'
+    '_id':1
 };
 
 exports.getSorter = function(requestQuery, modelSchema, sorterDefaults /* optional */){
     if (typeof sorterDefaults === 'undefined' || sorterDefaults === null){
-        var result = [[sorterDefaultsLocal.sortByField, sorterDefaultsLocal.sortDirection]];
+        var result = sorterDefaultsLocal;
     }else{
-        var result = [[sorterDefaults.sortByField, sorterDefaults.sortDirection]];
+        var result = sorterDefaults;
     }
     if(requestQuery.hasOwnProperty('sortDirection') && requestQuery.sortDirection !== null &&
         requestQuery.hasOwnProperty('sortByField') && requestQuery.sortByField !== null) {
@@ -66,20 +66,18 @@ exports.getSorter = function(requestQuery, modelSchema, sorterDefaults /* option
         //санация данных
         switch(sortDirection) {
             case -1:
-                sortDirection = 'descending';
+                sortDirection = -1;
                 break;
             case 1:
-                sortDirection = 'ascending';
+                sortDirection = 1;
                 break;
             default:
-                sortDirection = config.get("sortDirection");
+                sortDirection = 1;
         }
         if(modelSchema.hasOwnProperty(sortByField) && (Object.keys(modelSchema).indexOf(sortByField) > -1)) {
             if(modelSchema[sortByField].hasOwnProperty('sortable') && modelSchema[sortByField].sortable) {
                 //все чисто - можно отправлять в базу
-                result = [
-                    [sortByField, sortDirection]
-                ];
+                result[sortByField] =  sortDirection;
             }
         }
     }
