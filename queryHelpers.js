@@ -77,6 +77,9 @@ exports.getSorter = function(requestQuery, modelSchema, sorterDefaults /* option
         if(modelSchema.hasOwnProperty(sortByField) && (Object.keys(modelSchema).indexOf(sortByField) > -1)) {
             if(modelSchema[sortByField].hasOwnProperty('sortable') && modelSchema[sortByField].sortable) {
                 //все чисто - можно отправлять в базу
+                if (result === sorterDefaults || result === sorterDefaultsLocal){
+                    result = {};
+                }
                 result[sortByField] =  sortDirection;
             }
         }
