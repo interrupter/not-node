@@ -95,6 +95,11 @@ exports.fabricate = function(targetModule, options, mongoose) {
 			options.schemaOptions = {};
 		}
 	}
+
+	if (targetModule.exports.schemaOptions){
+		options.schemaOptions = targetModule.exports.schemaOptions;
+	}
+
 	var schema = null;
 	if (targetModule.exports.keepNotExtended){
 		schema = new Schema(targetModule.exports.thisSchema, options.schemaOptions);
