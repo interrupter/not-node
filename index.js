@@ -1,8 +1,9 @@
-exports.Error = require('./error.js');
-exports.Auth = require('./auth.js');
-exports.Manifest = require('./manifest.js');
-exports.QueryHelpers = require('./queryHelpers.js');
-exports.Versioning = require('./versioning.js');
-exports.Increment = require('./increment.js');
-exports.Enrich = require('./enrich.js');
-exports.DaData = require('./dadata.js');
+exports.Error = require('./src/error.js');
+exports.Auth = require('./src/auth/auth.js');
+exports.Manifest = require('./src/manifest/manifest.js');
+exports.QueryHelpers = require('./src/queryHelpers.js');
+exports.Versioning = require('./src/model/versioning.js');
+exports.Increment = require('./src/model/increment.js');
+exports.Proto = require('./src/model/proto.js');
+exports.Enrich = require('./src/model/enrich.js');
+exports.DaData = require('./src/dadata.js');
