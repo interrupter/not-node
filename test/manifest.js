@@ -2,7 +2,8 @@ const expect = require("chai").expect,
 	HttpError = require('../src/error').Http,
 	manifest = require("../src/manifest/manifest"),
 	RouterAction = require("../src/manifest/routerAction"),
-	routesPath = __dirname + '/routes';
+	routesPath = __dirname + '/routes',
+	modulesPath = __dirname + '/modules';
 
 describe("Manifest", function() {
 	describe("clearActionFromRules", function() {
@@ -404,23 +405,6 @@ describe("Manifest", function() {
 				result = manifest.registerRouteForAction(fakeApp, '/api/:modelName', 'admin', 'reboot', man.admin.actions.reboot);
 			expect(result).to.deep.equal(true);
 			expect(fakeApp.method).to.deep.equal('post');
-		});
-	});
-
-	describe("registerRoutes", function() {
-		it("Try to register to fake app", function() {
-			let man = manifest.getManifest(),
-				results = manifest.registerRoutes(fakeApp, man);
-			expect(results).to.deep.equal(true);
-		});
-	});
-
-	describe("Init", function() {
-		it("Init default app routes", function() {
-			manifest.init(routesPath);
-			expect(manifest.routesPaths).to.deep.equal({
-				'':routesPath
-			});
 		});
 	});
 

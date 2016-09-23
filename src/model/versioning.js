@@ -18,7 +18,7 @@ var isThisDocsDifferent = function(a, b) {
 
 var isDiff = function(thisModel, data, callback) {
 	thisModel.findById(data.__versions[0], function(err, previous) {
-		console.log('ifItNew', err, previous);
+		//console.log('ifItNew', err, previous);
 		if(!err && typeof previous !== 'undefined' && previous !== null) {
 			callback(isThisDocsDifferent(data, previous.toObject()));
 		} else {
@@ -46,7 +46,7 @@ module.exports = function(id, callback) {
 					} else {
 						//console.log('preservedVersionNumber', preservedVersionNumber);
 						delete data.__latest;
-						console.log(data);
+						//console.log(data);
 						var versionDoc = new thisModel(data);
 						versionDoc.__version = preservedVersionNumber;
 						versionDoc.__versions = preservedVersionsList;
@@ -55,17 +55,17 @@ module.exports = function(id, callback) {
 								callback(err);
 								return;
 							}
-							console.log('preservedVersionNumber', preservedVersionNumber);
+							//console.log('preservedVersionNumber', preservedVersionNumber);
 							thisModel.findById(id, function(err, originalDoc) {
 								if(!err) {
-									console.log('preservedVersionNumber', preservedVersionNumber);
+									//console.log('preservedVersionNumber', preservedVersionNumber);
 									originalDoc.__version = preservedVersionNumber + 1;
 									if(typeof originalDoc.__versions === 'undefined' || originalDoc.__versions === null || !(originalDoc.__versions)) {
 										originalDoc.__versions = [];
 									}
-									console.log(originalDoc.toObject());
+									//console.log(originalDoc.toObject());
 									originalDoc.__versions.unshift(versionDoc._id); //первая в массиве последняя [3,2,1,0]
-									console.log(originalDoc);
+									//console.log(originalDoc);
 									originalDoc.save(callback);
 								} else {
 									callback(err);
@@ -78,7 +78,7 @@ module.exports = function(id, callback) {
 				});
 			} else {
 				delete data.__latest;
-				console.log(data);
+				//console.log(data);
 				var versionDoc = new thisModel(data);
 				versionDoc.save(function(err) {
 					if(err) {
@@ -91,7 +91,7 @@ module.exports = function(id, callback) {
 							if(typeof originalDoc.__versions === 'undefined' || originalDoc.__versions === null || !(originalDoc.__versions)) {
 								originalDoc.__versions = [];
 							}
-							console.log(originalDoc.toObject());
+							//console.log(originalDoc.toObject());
 							originalDoc.__versions.unshift(versionDoc._id); //первая в массиве последняя [3,2,1,0]
 							originalDoc.save(callback);
 						} else {
