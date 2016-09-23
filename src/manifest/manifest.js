@@ -1,6 +1,6 @@
 var Auth = require('../auth/auth'),
 	Parser = require('../parser'),
-	RouterAction = require('./routerAction'),
+	Route = require('./route'),
 	extend = require('extend');
 
 class notManifest{
@@ -24,7 +24,7 @@ class notManifest{
 
 	registerRouteForAction(routeLine, routeName, actionName, actionData) {
 		if(actionData && actionData.method){
-			const routerAction =  new RouterAction(this.notApp, routeName, actionName, actionData);
+			const routerAction =  new Route(this.notApp, routeName, actionName, actionData);
 			this.app[actionData.method.toLowerCase()](routeLine, routerAction.exec.bind(routerAction));
 			return true;
 		}else{
