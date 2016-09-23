@@ -73,6 +73,8 @@ class notApp{
 	}
 }
 
+module.exports = notApp;
+
 /*
 	new notApp({
 		modulesCollectionPaths: [__dirname + '/modules'], //each path to folder with modules
