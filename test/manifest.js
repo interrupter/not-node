@@ -1,7 +1,7 @@
 const expect = require("chai").expect,
 	HttpError = require('../src/error').Http,
 	manifest = require("../src/manifest/manifest"),
-	RouterAction = require("../src/manifest/routerAction"),
+	notRoute = require("../src/manifest/route"),
 	routesPath = __dirname + '/routes',
 	modulesPath = __dirname + '/modules';
 

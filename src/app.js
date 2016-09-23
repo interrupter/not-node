@@ -13,7 +13,7 @@ class notApp{
 
 	importModulesFrom(modulesPath){
 		fs.readdirSync(modulesPath).forEach(function(file) {
-			this.importModuleFrom(path.join(modulesPath, file));
+			this.importModuleFrom(path.join(modulesPath, file), file);
 		}.bind(this));
 		return this;
 	}
@@ -21,7 +21,7 @@ class notApp{
 	importModuleFrom(modulePath, moduleName){
 		let mod = new notModule(modulePath);
 		if (mod){
-			this.registerModule(mod, moduleName || mod.description.name);
+			this.importModule(mod, moduleName || mod.description.name);
 		}
 		return this;
 	}
