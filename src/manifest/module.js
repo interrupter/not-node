@@ -63,8 +63,8 @@ class notModule {
 			if (fs.lstatSync(modelPath).isFile()) {
 				let model = require(modelPath),
 					modelName = file;
-				if (model.exports && model.exports.thisModelName) {
-					modelName = model.exports.thisModelName;
+				if (model && model.thisModelName) {
+					modelName = model.thisModelName;
 				}
 				this.registerModel(model, modelName);
 			}
@@ -89,8 +89,8 @@ class notModule {
 					let route = require(routePath),
 						routeManifest = require(routeManifestPath),
 						routeName = routeBasename;
-					if (route.exports && route.exports.thisRouteName) {
-						routeName = route.exports.thisRouteName;
+					if (route && route.thisRouteName) {
+						routeName = route.thisRouteName;
 					}
 					this.registerRoute(route, routeName);
 					this.registerManifest(routeManifest, routeName);
