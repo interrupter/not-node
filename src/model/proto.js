@@ -80,11 +80,11 @@ var defaultMethods = {
 };
 
 exports.fabricate = function(targetModule, options, mongoose) {
-	if (!targetModule.hasOwnProperty('exports')){
+	/*if (!targetModule.hasOwnProperty('exports')){
 		targetModule = {
 			exports: targetModule
 		};
-	}
+	}*/
 
 	if(!options) {
 		options = {
@@ -96,47 +96,47 @@ exports.fabricate = function(targetModule, options, mongoose) {
 		}
 	}
 
-	if (targetModule.exports.schemaOptions){
-		options.schemaOptions = targetModule.exports.schemaOptions;
+	if (targetModule.schemaOptions){
+		options.schemaOptions = targetModule.schemaOptions;
 	}
 
 	var schema = null;
-	if (targetModule.exports.keepNotExtended){
-		schema = new Schema(targetModule.exports.thisSchema, options.schemaOptions);
+	if (targetModule.keepNotExtended){
+		schema = new Schema(targetModule.thisSchema, options.schemaOptions);
 	}else{
-		if (targetModule.exports.enrich){
-			if (targetModule.exports.enrich.validators){
-				targetModule.exports.thisSchema = enrich.byFieldsValidators(targetModule.exports.thisSchema, targetModule.exports.thisModelName);
+		if (targetModule.enrich){
+			if (targetModule.enrich.validators){
+				targetModule.thisSchema = enrich.byFieldsValidators(targetModules.thisSchema, targetModule.thisModelName);
 			}
-			if (targetModule.exports.enrich.versioning){
-				targetModule.exports.thisSchema = enrich.byFieldsForVersioning(targetModule.exports.thisSchema, targetModule.exports.thisModelName);
+			if (targetModule.enrich.versioning){
+				targetModule.thisSchema = enrich.byFieldsForVersioning(targetModule.thisSchema, targetModule.thisModelName);
 			}
-			if (targetModule.exports.enrich.increment){
-				targetModule.exports.thisSchema = enrich.byFieldsForIncrement(targetModule.exports.thisSchema, targetModule.exports.thisModelName);
+			if (targetModule.enrich.increment){
+				targetModule.thisSchema = enrich.byFieldsForIncrement(targetModule.thisSchema, targetModule.thisModelName);
 			}
 		}
 
-		schema = new Schema(targetModule.exports.thisSchema, options.schemaOptions);
+		schema = new Schema(targetModule.thisSchema, options.schemaOptions);
 
-		if (targetModule.exports.enrich){
-			if (targetModule.exports.enrich.increment){
-				enrich.markForIncrement(schema, targetModule.exports.thisModelName);
+		if (targetModule.enrich){
+			if (targetModule.enrich.increment){
+				enrich.markForIncrement(schema, targetModule.thisModelName);
 			}
-			if (targetModule.exports.enrich.versioning){
+			if (targetModule.enrich.versioning){
 				enrich.markForVersioning(schema);
 				schema.statics.saveVersion = saveVersion;
 			}
 		}
 
-		if(targetModule.exports.thisMethods) {
-			for(let i in targetModule.exports.thisMethods) {
-				schema.methods[i] = targetModule.exports.thisMethods[i];
+		if(targetModule.thisMethods) {
+			for(let i in targetModule.thisMethods) {
+				schema.methods[i] = targetModule.thisMethods[i];
 			}
 		}
 
-		if(targetModule.exports.thisStatics) {
-			for(let j in targetModule.exports.thisStatics) {
-				schema.statics[j] = targetModule.exports.thisStatics[j];
+		if(targetModule.thisStatics) {
+			for(let j in targetModule.thisStatics) {
+				schema.statics[j] = targetModule.thisStatics[j];
 			}
 		}
 
@@ -153,6 +153,6 @@ exports.fabricate = function(targetModule, options, mongoose) {
 		}
 	}
 
-	targetModule.exports[targetModule.exports.thisModelName] = mongoose.model(targetModule.exports.thisModelName, schema);
-	targetModule.exports.mongooseSchema = schema;
+	targetModule[targetModule.thisModelName] = mongoose.model(targetModule.thisModelName, schema);
+	targetModule.mongooseSchema = schema;
 };

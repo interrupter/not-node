@@ -11,23 +11,23 @@ exports.thisMethods = {
 
 };
 exports.thisSchema = {
-    name: {
+	name: {
 		type: String,
 		required: true,
 		searchable: true,
 		sortable: true
 	},
-    default: {
-        type: Boolean,
-        default: false,
+	default: {
+		type: Boolean,
+		default: false,
 		required: true
-    },
-    price:{
-        type: Number,
-        required: true,
-        searchable: true,
-        sortable: true
-    },
+	},
+	price: {
+		type: Number,
+		required: true,
+		searchable: true,
+		sortable: true
+	},
 	image: {
 		type: String,
 		required: false
