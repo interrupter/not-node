@@ -46,7 +46,7 @@ class notRoute{
 			let mod = this.notApp.getModule(this.moduleName);
 			if (mod){
 				let modRoute = mod.getRoute(this.routeName);
-				if (modRoute && mod.hasOwnProperty(actionName) && typeof modRoute[actionName] === 'function'){
+				if (modRoute && modRoute.hasOwnProperty(actionName) && typeof modRoute[actionName] === 'function'){
 					return modRoute[actionName](req, res, next);
 				}else{
 					return null;
