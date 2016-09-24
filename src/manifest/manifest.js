@@ -43,9 +43,9 @@ class notManifest{
 	registerRoutes(moduleManifest) {
 		let actionData,
 			routeLine;
-		for(let route in Object.keys(moduleManifest)){
+		for(let route of Object.keys(moduleManifest)){
 			if (moduleManifest[route].hasOwnProperty('actions') && moduleManifest[route].hasOwnProperty('url')){
-				for(let action in Object.keys(moduleManifest[route].actions)){
+				for(let action of Object.keys(moduleManifest[route].actions)){
 					actionData = moduleManifest[route].actions[action];
 					routeLine = Parser.getRouteLine(moduleManifest[route].url, route, action, actionData);
 					this.registerRouteForAction(routeLine, route, action, actionData);
@@ -89,11 +89,11 @@ class notManifest{
 		var result = extend({}, route);
 		result.actions = {};
 		if (route && route.actions){
-			for(var actionName in route.actions){
+			for(let actionName in route.actions){
 				var actionSet = route.actions[actionName];
 				if (actionSet){
 					if(actionSet.rules && actionSet.rules.length > 0){
-						for(var i = 0; i < actionSet.rules.length; i++){
+						for(let i = 0; i < actionSet.rules.length; i++){
 							if (Auth.checkCredentials(actionSet.rules[i], auth, role, admin)){
 								result.actions[actionName] = this.clearActionFromRules(extend({}, actionSet));
 								break;
@@ -125,7 +125,7 @@ class notManifest{
 
 	filterManifest(manifest, auth, role, admin){
 		var result = {};
-		for(var routeName in manifest){
+		for(let routeName in manifest){
 			let routeMan = this.filterManifestRoute(manifest[routeName], auth, role, admin);
 			if(Object.keys(routeMan.actions).length > 0){
 				result[routeName] = routeMan;

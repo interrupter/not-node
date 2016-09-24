@@ -14,6 +14,8 @@ class notModule {
 		this.description = {};
 		this.routes = {};
 		this.models = {};
+		this.manifests = {};
+		this.faulty = false;
 		this.paths = {
 			routes: {},
 			models: {}
@@ -37,6 +39,7 @@ class notModule {
 				this.registerContent();
 			}
 		} catch (e) {
+			console.log(e);
 			this.faulty = true;
 		}
 	}
@@ -45,16 +48,20 @@ class notModule {
 		try {
 			this.registerContent();
 		} catch (e) {
+			console.log(Object.keys(this));
+			console.log(e);
 			this.faulty = true;
 		}
 	}
 
 	registerContent() {
-		if (this.module.modelsPath) {
-			this.findModelsIn(this.module.modelsPath);
-		}
-		if (this.module.routesPath) {
-			this.findRoutesIn(this.module.routesPath);
+		if (this.module.paths){
+			if (this.module.paths.models) {
+				this.findModelsIn(this.module.paths.models);
+			}
+			if (this.module.paths.routes) {
+				this.findRoutesIn(this.module.paths.routes);
+			}
 		}
 	}
 
@@ -72,12 +79,7 @@ class notModule {
 		}.bind(this));
 	}
 
-	registerModel(model, modelName) {
-		protoModel.fabricate(model, {}, this.mongoose);
-		this.models[modelName] = model;
-	}
-
-	registerRoutesPath(routesPath) {
+	findRoutesIn(routesPath) {
 		fs.readdirSync(routesPath).forEach(function(file) {
 			//если имя похоже на название манифеста
 			if (file.indexOf(DEFAULT_MANIFEST_FILE_ENDING) > -1) {
@@ -100,8 +102,13 @@ class notModule {
 		}.bind(this));
 	}
 
+	registerModel(model, modelName) {
+		protoModel.fabricate(model, {}, this.mongoose);
+		this.models[modelName] = model;
+	}
+
 	registerRoute(route, routeName) {
-		this.models[routeName] = route;
+		this.routes[routeName] = route;
 	}
 
 	registerManifest(manifest, routeName) {
@@ -109,7 +116,7 @@ class notModule {
 	}
 
 	getManifest() {
-		return this.manifest;
+		return this.manifests;
 	}
 
 	getModel(modelName) {
@@ -131,7 +138,7 @@ class notModule {
 	expose(app) {
 		if (this.modules && app) {
 			this.manifest = new notManifest(app);
-			for (let t in Object.keys(this.modules)) {
+			for (let t of Object.keys(this.modules)) {
 				this.manifest.registerRoutes(this.modules[t].getManifest());
 			}
 		}

@@ -57,7 +57,7 @@ class notApp{
 				return result;
 			}
 		}else{
-			for(let t in Object.keys(this.modules)){
+			for(let t of Object.keys(this.modules)){
 				let tmp = this.modules.getModel(modelName);
 				if (tmp){
 					if(!result) {result = [];}
@@ -70,7 +70,7 @@ class notApp{
 
 	expose(app){
 		if (this.modules){
-			for(let t in Object.keys(this.modules)){
+			for(let t of Object.keys(this.modules)){
 				this.modules[t] && this.modules[t].expose && this.modules[t].expose(app);
 			}
 		}

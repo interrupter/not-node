@@ -1,2 +1,7 @@
-exports.routesPath =  __dirname + '/routes';
-exports.modelsPath =  __dirname + '/models';
+module.exports = {
+	name: 'not-post',
+	paths: {
+		routes: __dirname + '/routes',
+		models:  __dirname + '/models'
+	}
+};

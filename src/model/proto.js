@@ -80,11 +80,6 @@ var defaultMethods = {
 };
 
 exports.fabricate = function(targetModule, options, mongoose) {
-	/*if (!targetModule.hasOwnProperty('exports')){
-		targetModule = {
-			exports: targetModule
-		};
-	}*/
 
 	if(!options) {
 		options = {
@@ -152,6 +147,10 @@ exports.fabricate = function(targetModule, options, mongoose) {
 			}
 		}
 	}
-	targetModule[targetModule.thisModelName] = mongoose.model(targetModule.thisModelName, schema);
 	targetModule.mongooseSchema = schema;
+	try {
+		targetModule[targetModule.thisModelName] = mongoose.model(targetModule.thisModelName);
+	} catch (error) {
+		targetModule[targetModule.thisModelName] = mongoose.model(targetModule.thisModelName, schema);
+	}
 };

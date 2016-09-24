@@ -2,9 +2,9 @@ const expect = require("chai").expect,
     mockgoose = require('mockgoose'),
     mongoose = require('mongoose'),
     fabricateModel = require('../src/model/proto').fabricate,
-    userProto = require('./module/model/user.js'),
+    userProto = require('./module/models/user.js'),
 	increment = require('../src/model/increment.js'),
-    plainProto = require('./module/model/plainModel.js'),
+    plainProto = require('./module/models/plainModel.js'),
     routine = require("../src/model/routine");
 
 describe("Model/Routine", function() {
