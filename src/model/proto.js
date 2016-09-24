@@ -106,7 +106,7 @@ exports.fabricate = function(targetModule, options, mongoose) {
 	}else{
 		if (targetModule.enrich){
 			if (targetModule.enrich.validators){
-				targetModule.thisSchema = enrich.byFieldsValidators(targetModules.thisSchema, targetModule.thisModelName);
+				targetModule.thisSchema = enrich.byFieldsValidators(targetModule.thisSchema, targetModule.thisModelName);
 			}
 			if (targetModule.enrich.versioning){
 				targetModule.thisSchema = enrich.byFieldsForVersioning(targetModule.thisSchema, targetModule.thisModelName);
