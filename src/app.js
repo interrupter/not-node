@@ -68,6 +68,14 @@ class notApp{
 		return (result && result.length === 1)?result[0]:result;
 	}
 
+	getModule(moduleName){
+		if (this.modules && this.modules.hasOwnProperty(moduleName)){
+			return this.modules[moduleName];
+		}else{
+			return null;
+		}
+	}
+
 	expose(app){
 		if (this.modules){
 			for(let t of Object.keys(this.modules)){
