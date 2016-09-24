@@ -19,7 +19,11 @@ class notApp{
 	}
 
 	importModuleFrom(modulePath, moduleName){
-		let mod = new notModule(modulePath);
+		let mod = new notModule({
+				modPath:modulePath,
+				modObject: null,
+				mongoose: this.options.mongoose
+			});
 		if (mod){
 			this.importModule(mod, moduleName || mod.description.name);
 		}
@@ -77,6 +81,7 @@ module.exports = notApp;
 
 /*
 	new notApp({
+		mongoose: mongooseLink
 		modulesCollectionPaths: [__dirname + '/modules'], //each path to folder with modules
 		modulesPaths: [],	//each path to module
 		modules: {

@@ -7,9 +7,10 @@ const protoModel = require('../model/proto.js'),
 const DEFAULT_MANIFEST_FILE_ENDING = '.manifest.js';
 
 class notModule {
-	constructor(modPath, modObject) {
-		this.path = modPath;
-		this.module = modObject;
+	constructor(options) {
+		this.path = options.modPath;
+		this.module = options.modObject;
+		this.mongoose = options.mongoose;
 		this.description = {};
 		this.routes = {};
 		this.models = {};
@@ -72,13 +73,12 @@ class notModule {
 	}
 
 	registerModel(model, modelName) {
-		protoModel.fabricate(model);
+		protoModel.fabricate(model, {}, this.mongoose);
 		this.models[modelName] = model;
 	}
 
 	registerRoutesPath(routesPath) {
 		fs.readdirSync(routesPath).forEach(function(file) {
-
 			//если имя похоже на название манифеста
 			if (file.indexOf(DEFAULT_MANIFEST_FILE_ENDING) > -1) {
 				let routeBasename = file.substr(0, file.indexOf(DEFAULT_MANIFEST_FILE_ENDING)),

@@ -152,7 +152,6 @@ exports.fabricate = function(targetModule, options, mongoose) {
 			}
 		}
 	}
-
 	targetModule[targetModule.thisModelName] = mongoose.model(targetModule.thisModelName, schema);
 	targetModule.mongooseSchema = schema;
 };
