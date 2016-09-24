@@ -135,9 +135,9 @@ class notModule {
 		}
 	}
 
-	expose(app) {
+	expose(app, notApp, moduleName) {
 		if (this.manifests && app) {
-			this.manifest = new notManifest(app);
+			this.manifest = new notManifest(app, notApp, moduleName);
 			this.manifest.registerRoutes(this.manifests);
 		}
 	}

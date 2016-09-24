@@ -4,9 +4,10 @@ var Auth = require('../auth/auth'),
 	extend = require('extend');
 
 class notManifest{
-	constructor(app, notApp){
+	constructor(app, notApp, moduleName){
 		this.app = app;
 		this.notApp = notApp;
+		this.moduleName = moduleName;
 		return this;
 	}
 	/**
@@ -24,7 +25,7 @@ class notManifest{
 
 	registerRouteForAction(routeLine, routeName, actionName, actionData) {
 		if(actionData && actionData.method){
-			const routerAction =  new Route(this.notApp, routeName, actionName, actionData);
+			const routerAction =  new Route(this.notApp, this.moduleName ,routeName, actionName, actionData);
 			this.app[actionData.method.toLowerCase()](routeLine, routerAction.exec.bind(routerAction));
 			return true;
 		}else{

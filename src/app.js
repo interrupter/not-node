@@ -71,7 +71,7 @@ class notApp{
 	expose(app){
 		if (this.modules){
 			for(let t of Object.keys(this.modules)){
-				this.modules[t] && this.modules[t].expose && this.modules[t].expose(app);
+				this.modules[t] && this.modules[t].expose && this.modules[t].expose(app, this, t);
 			}
 		}
 	}
