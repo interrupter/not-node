@@ -136,10 +136,10 @@ class notModule {
 	}
 
 	expose(app) {
-		if (this.modules && app) {
+		if (this.manifests && app) {
 			this.manifest = new notManifest(app);
-			for (let t of Object.keys(this.modules)) {
-				this.manifest.registerRoutes(this.modules[t].getManifest());
+			for (let t of Object.keys(this.manifests)) {
+				this.manifest.registerRoutes(this.manifests[t]);
 			}
 		}
 	}
