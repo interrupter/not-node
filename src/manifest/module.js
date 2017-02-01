@@ -11,6 +11,7 @@ class notModule {
 		this.path = options.modPath;
 		this.module = options.modObject;
 		this.mongoose = options.mongoose;
+		this.notApp = options.notApp;
 		this.description = {};
 		this.routes = {};
 		this.models = {};
@@ -104,11 +105,13 @@ class notModule {
 
 	registerModel(model, modelName) {
 		protoModel.fabricate(model, {}, this.mongoose);
+		model.getModel = this.notApp.getModel.bind(this.notApp);
 		this.models[modelName] = model;
 	}
 
 	registerRoute(route, routeName) {
 		this.routes[routeName] = route;
+		route.getModel = this.notApp.getModel.bind(this.notApp);
 	}
 
 	registerManifest(manifest, routeName) {
@@ -135,9 +138,9 @@ class notModule {
 		}
 	}
 
-	expose(app, notApp, moduleName) {
+	expose(app, moduleName) {
 		if (this.manifests && app) {
-			this.manifest = new notManifest(app, notApp, moduleName);
+			this.manifest = new notManifest(app, this.notApp, moduleName);
 			this.manifest.registerRoutes(this.manifests);
 		}
 	}

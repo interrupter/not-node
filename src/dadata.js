@@ -105,7 +105,7 @@ function DaData(API_KEY, SECRET_KEY) {
 				port: 443,
 				headers: {
 					'Content-Type': 'application/json',
-					'Authorization': 'Token 596a55480dcf390a6465839e6980b9e1cafe7a21'
+					'Authorization': 'Token '+API_KEY
 				}
 			},
 		};

@@ -22,7 +22,8 @@ class notApp{
 		let mod = new notModule({
 				modPath:modulePath,
 				modObject: null,
-				mongoose: this.options.mongoose
+				mongoose: this.options.mongoose,
+				notApp: this
 			});
 		if (mod){
 			this.importModule(mod, moduleName || mod.description.name);
@@ -79,7 +80,7 @@ class notApp{
 	expose(app){
 		if (this.modules){
 			for(let t of Object.keys(this.modules)){
-				this.modules[t] && this.modules[t].expose && this.modules[t].expose(app, this, t);
+				this.modules[t] && this.modules[t].expose && this.modules[t].expose(app, t);
 			}
 		}
 	}

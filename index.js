@@ -7,4 +7,5 @@ exports.Versioning = require('./src/model/versioning.js');
 exports.Increment = require('./src/model/increment.js');
 exports.Proto = require('./src/model/proto.js');
 exports.Enrich = require('./src/model/enrich.js');
+exports.Routine = require('./src/model/routine.js');
 exports.DaData = require('./src/dadata.js');
