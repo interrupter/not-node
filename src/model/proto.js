@@ -135,6 +135,12 @@ exports.fabricate = function(targetModule, options, mongoose) {
 			}
 		}
 
+		if(targetModule.thisVirtuals) {
+			for(let j in targetModule.thisVirtuals) {
+				schema.virtual(j).get(targetModule.thisVirtuals[j].get).set(targetModule.thisVirtuals[j].set);
+			}
+		}
+
 		for(let st in defaultStatics){
 			if (!schema.statics.hasOwnProperty(st)){
 				schema.statics[st] = defaultStatics[st];

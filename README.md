@@ -1,2 +1,2 @@
 # not-node
-notFramework server side complimentary part
+not-framework server side complimentary part
