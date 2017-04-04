@@ -50,12 +50,12 @@ var defaultStatics = {
 	},
 	list(skip, size, sorter, filter, callback) {
 		var thisModel = this,
-			by = thisModel.schema.statics.__versioning?{__latest: true}:{};
-		var query = thisModel.find(by).sort(sorter);
-		if(filter.length > 0) {
+			by = thisModel.schema.statics.__versioning?{__latest: true}:{},
+			query = thisModel.find(by);
+		if(Array.isArray(filter) && filter.length > 0) {
 			query.or(filter);
 		}
-		query.skip(skip).limit(size).exec(callback);
+		query.sort(sorter).skip(skip).limit(size).exec(callback);
 	},
 	addNew(data, callbackOK, callbackError) {
 		routine.add(this, data, callbackOK, callbackError);
