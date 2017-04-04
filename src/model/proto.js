@@ -54,8 +54,10 @@ var defaultStatics = {
 			query = thisModel.find(by);
 		console.log('list by', by);
 		if(Array.isArray(filter) && filter.length > 0) {
+			console.log('add filter', filter);
 			query.or(filter);
 		}
+		console.log('sorter', sorter, skip, size);
 		query.sort(sorter).skip(skip).limit(size).exec(callback);
 	},
 	addNew(data, callbackOK, callbackError) {
