@@ -35,11 +35,9 @@ var defaultStatics = {
 	getOneByID(ID, callback) {
 		var thisModel = this;
 		if(thisModel.schema.statics.__incField) {
-			var query = {
-				__latest: true
-			};
-			query[thisModel.schema.statics.__incField] = ID;
-			thisModel.findOne(query).exec(callback);
+			var by = thisModel.schema.statics.__versioning?{__latest: true}:{};
+			by[thisModel.schema.statics.__incField] = ID;
+			thisModel.findOne(by).exec(callback);
 		} else {
 			callback(null, null);
 		}
@@ -51,10 +49,9 @@ var defaultStatics = {
 		}).exec(callback);
 	},
 	list(skip, size, sorter, filter, callback) {
-		var thisModel = this;
-		var query = thisModel.find({
-			__latest: true
-		}).sort(sorter);
+		var thisModel = this,
+			by = thisModel.schema.statics.__versioning?{__latest: true}:{};
+		var query = thisModel.find(by).sort(sorter);
 		if(filter.length > 0) {
 			query.or(filter);
 		}
@@ -64,12 +61,13 @@ var defaultStatics = {
 		routine.add(this, data, callbackOK, callbackError);
 	},
 	listAll(callback) {
-		var thisModel = this;
-		thisModel.find({
-			__latest: true
-		}).sort([
-			['_id', 'descending']
-		]).exec(callback);
+		var thisModel = this,
+			by = thisModel.schema.statics.__versioning?{__latest: true}:{};
+		thisModel.find(by)
+			.sort([
+				['_id', 'descending']
+			])
+			.exec(callback);
 	}
 };
 

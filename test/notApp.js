@@ -1,6 +1,6 @@
 const expect = require("chai").expect,
 	HttpError = require('../src/error').Http,
-	testie = require("../src/app"),
+	testie = require("../src/app"),	
 	routesPath = __dirname + '/routes',
 	modulesPath = __dirname + '/modules';
 

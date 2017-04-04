@@ -40,7 +40,6 @@ class notModule {
 				this.registerContent();
 			}
 		} catch (e) {
-			console.log(e);
 			this.faulty = true;
 		}
 	}
@@ -48,9 +47,7 @@ class notModule {
 	initFromModule() {
 		try {
 			this.registerContent();
-		} catch (e) {
-			console.log(Object.keys(this));
-			console.log(e);
+		} catch (e) {			
 			this.faulty = true;
 		}
 	}
