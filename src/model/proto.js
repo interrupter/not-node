@@ -51,13 +51,10 @@ var defaultStatics = {
 	list(skip, size, sorter, filter, callback) {
 		var thisModel = this,
 			by = thisModel.schema.statics.__versioning?{__latest: true}:{},
-			query = thisModel.find(by);
-		console.info('list by', by);
+			query = thisModel.find(by);		
 		if(Array.isArray(filter) && filter.length > 0) {
-			console.info('add filter', filter);
 			query.or(filter);
 		}
-		console.info('sorter', sorter, skip, size);
 		query.sort(sorter).skip(skip).limit(size).exec(callback);
 	},
 	addNew(data, callbackOK, callbackError) {
