@@ -52,6 +52,7 @@ var defaultStatics = {
 		var thisModel = this,
 			by = thisModel.schema.statics.__versioning?{__latest: true}:{},
 			query = thisModel.find(by);
+		console.log('list by', by);
 		if(Array.isArray(filter) && filter.length > 0) {
 			query.or(filter);
 		}
