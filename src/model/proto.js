@@ -52,12 +52,12 @@ var defaultStatics = {
 		var thisModel = this,
 			by = thisModel.schema.statics.__versioning?{__latest: true}:{},
 			query = thisModel.find(by);
-		console.log('list by', by);
+		console.info('list by', by);
 		if(Array.isArray(filter) && filter.length > 0) {
-			console.log('add filter', filter);
+			console.info('add filter', filter);
 			query.or(filter);
 		}
-		console.log('sorter', sorter, skip, size);
+		console.info('sorter', sorter, skip, size);
 		query.sort(sorter).skip(skip).limit(size).exec(callback);
 	},
 	addNew(data, callbackOK, callbackError) {
