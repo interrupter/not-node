@@ -67,8 +67,11 @@ exports.getSorter = function(requestQuery, modelSchema, sorterDefaults /* option
 		var result = sorterDefaults;
 	}
 	if(requestQuery.hasOwnProperty('sortByField') && requestQuery.sortByField !== null) {
-		var sortByField = requestQuery.sortByField;
-		var sortDirection = parseInt(requestQuery.sortDirection);
+		let sortByField = requestQuery.sortByField,
+			sortDirection = parseInt(requestQuery.sortDirection);
+		if(sortByField.charAt(0) === ':'){
+			sortByField = sortByField.substring(1);
+		}
 		//санация данных
 		switch(sortDirection) {
 			case -1:

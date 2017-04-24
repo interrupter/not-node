@@ -132,11 +132,11 @@ describe("RouterAction", function() {
 					method: 'get',
 					auth: false
 				},
-				routerAction = new notRoute({},'not-user','user', 'list', actionData);
-			expect(routerAction.selectRule(req)).to.deep.equal({
-				method: 'get',
-				auth: false
-			});
+				routerAction = new notRoute({},'not-user','user', 'list', actionData),
+				rule = routerAction.selectRule(req);
+			expect(rule).to.have.keys(['method','auth']);
+			expect(rule.method).to.be.equal('get');
+			expect(rule.auth).to.be.equal(false);
 		});
 	});
 
@@ -154,8 +154,10 @@ describe("RouterAction", function() {
 					method: 'get',
 					auth: false
 				},
-				routerAction = new notRoute({},'not-user','post', 'list', actionData);
-			expect(routerAction.exec(req)).to.deep.equal('list');
+				routerAction = new notRoute({},'not-user','post', 'list', actionData),
+				result = routerAction.exec(req);
+			console.log('result', routerAction, actionData, result);
+			expect(result).to.deep.equal('list');
 		});
 
 		it("Admin request post.listAll", function() {

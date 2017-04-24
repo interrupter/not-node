@@ -458,20 +458,21 @@ describe("Manifest", function() {
 	describe("registerRouteForAction", function() {
 		it("Guest GET request", function() {
 			let man = manifest.getManifest(),
-				result = manifest.registerRouteForAction(fakeApp, '/api/:modelName', 'post', 'list', man.post.actions.list);
-			expect(result).to.deep.equal(true);
-			expect(fakeApp.method).to.deep.equal('get');
+				result = manifest.registerRouteForAction('/api/:modelName', 'list', 'list', man.post.actions.list);
+			expect(result).to.be.equal(true);
+			expect(fakeApp.method).to.be.equal('get');
 		});
 
 		it("Guest GET request to wrong end point", function() {
 			let man = manifest.getManifest(),
-				result = manifest.registerRouteForAction(fakeApp, '/api/:modelName', 'post', 'list', man.post.actions.listAlly);
+				//routeLine, routeName, actionName, actionData
+				result = manifest.registerRouteForAction('/api/:modelName', 'get', 'list', man.post.actions.listAlly);
 			expect(result).to.deep.equal(false);
 		});
 
 		it("Guest POST request", function() {
 			let man = manifest.getManifest(),
-				result = manifest.registerRouteForAction(fakeApp, '/api/:modelName', 'admin', 'reboot', man.admin.actions.reboot);
+				result = manifest.registerRouteForAction('/api/:modelName', 'admin', 'reboot', man.admin.actions.reboot);
 			expect(result).to.deep.equal(true);
 			expect(fakeApp.method).to.deep.equal('post');
 		});
