@@ -118,5 +118,12 @@ describe("sorter parser", function() {
         var sorter = query.getSorter({sortByField: "country"}, modelSchema, sorterDefaults);
         expect(sorter).to.deep.equal({"country": query.sorterDefaultsLocal_Direction});
     });
+
+    it("sort with field path starting from :", function() {
+        var sorter = query.getSorter({sortDirection: 1, sortByField: ":country"}, modelSchema);
+        expect(sorter).to.deep.equal({
+            'country':1
+        });
+    });
   });
 });
