@@ -60,7 +60,7 @@ class notApp{
 		}else{
 			let mNames = Object.keys(this.modules);
 			for(let t = 0; t < mNames.length; t++){
-				if (this.modules.hasOwnProperty(mNames[t])){
+				if (!this.modules.hasOwnProperty(mNames[t])){
 					continue;
 				}
 				let tmp = this.modules[mNames[t]].getModel(modelName);
