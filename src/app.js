@@ -58,8 +58,12 @@ class notApp{
 				return result;
 			}
 		}else{
-			for(let moduleOfInterest of this.modules){
-				let tmp = moduleOfInterest.getModel(modelName);
+			let mNames = Object.keys(this.modules);
+			for(let t = 0; t < mNames.length; t++){
+				if (this.modules.hasOwnProperty(mNames[t])){
+					continue;
+				}
+				let tmp = this.modules[mNames[t]].getModel(modelName);
 				if (tmp){
 					if(!result) {result = [];}
 					result.push(tmp);
