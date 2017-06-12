@@ -3,10 +3,10 @@ const enrich = require('./enrich'),
 	saveVersion = require('./versioning'),
 	Schema = require('mongoose').Schema;
 
-exports.extractVariants = function(items) {
+exports.extractVariants = function (items) {
 	var variants = [];
-	if(items && items.length) {
-		for(var i = 0; i < items.length; i++) {
+	if (items && items.length) {
+		for (var i = 0; i < items.length; i++) {
 			variants.push(items[i].getVariant());
 		}
 	}
@@ -15,18 +15,18 @@ exports.extractVariants = function(items) {
 
 var defaultStatics = {
 	sanitizeInput(input) {
-		if(!input.hasOwnProperty('default')) {
+		if (!input.hasOwnProperty('default')) {
 			input.default = false;
 		}
 		return input;
 	},
 	getOne(id, callback) {
 		var thisModel = this;
-		if (thisModel.schema.statics.__versioning){
+		if (thisModel.schema.statics.__versioning) {
 			thisModel.findOne({
 				_id: id
 			}).populate('__versions').exec(callback);
-		}else{
+		} else {
 			thisModel.findOne({
 				_id: id
 			}).exec(callback);
@@ -34,8 +34,10 @@ var defaultStatics = {
 	},
 	getOneByID(ID, callback) {
 		var thisModel = this;
-		if(thisModel.schema.statics.__incField) {
-			var by = thisModel.schema.statics.__versioning?{__latest: true}:{};
+		if (thisModel.schema.statics.__incField) {
+			var by = thisModel.schema.statics.__versioning ? {
+				__latest: true
+			} : {};
 			by[thisModel.schema.statics.__incField] = ID;
 			thisModel.findOne(by).exec(callback);
 		} else {
@@ -50,19 +52,36 @@ var defaultStatics = {
 	},
 	list(skip, size, sorter, filter, callback) {
 		var thisModel = this,
-			by = thisModel.schema.statics.__versioning?{__latest: true}:{},
+			by = thisModel.schema.statics.__versioning ? {
+				__latest: true
+			} : {},
 			query = thisModel.find(by);
-		if(Array.isArray(filter) && filter.length > 0) {
-			query.or(filter);
+		if (Array.isArray(filter) && filter.length > 0) {
+			if (by.hasOwnProperty('__latest')) {
+				query.or(filter);
+			} else {
+				let t = {};
+				while (Object.getOwnPropertyNames(t).length === 0 && filter.length > 0) {
+					t = filter.pop();
+				}
+				if (Object.getOwnPropertyNames(t).length > 0) {
+					query = thisModel.find(t);
+					if (filter.length > 0) {
+						query.or(filter);
+					}
+				}
+			}
 		}
 		query.sort(sorter).skip(skip).limit(size).exec(callback);
 	},
 	addNew(data, callbackOK, callbackError) {
 		routine.add(this, data, callbackOK, callbackError);
-	},	
+	},
 	listAll(callback) {
 		var thisModel = this,
-			by = thisModel.schema.statics.__versioning?{__latest: true}:{};
+			by = thisModel.schema.statics.__versioning ? {
+				__latest: true
+			} : {};
 		thisModel.find(by)
 			.sort([
 				['_id', 'descending']
@@ -72,81 +91,81 @@ var defaultStatics = {
 };
 
 var defaultMethods = {
-	getID: function(){
-		return this.schema.statics.__incField?this[this.schema.statics.__incField]:0;
+	getID: function () {
+		return this.schema.statics.__incField ? this[this.schema.statics.__incField] : 0;
 	}
 };
 
-exports.fabricate = function(targetModule, options, mongoose) {
+exports.fabricate = function (targetModule, options, mongoose) {
 
-	if(!options) {
+	if (!options) {
 		options = {
 			schemaOptions: {}
 		};
 	} else {
-		if(!options.schemaOptions) {
+		if (!options.schemaOptions) {
 			options.schemaOptions = {};
 		}
 	}
 
-	if (targetModule.schemaOptions){
+	if (targetModule.schemaOptions) {
 		options.schemaOptions = targetModule.schemaOptions;
 	}
 
 	var schema = null;
-	if (targetModule.keepNotExtended){
+	if (targetModule.keepNotExtended) {
 		schema = new Schema(targetModule.thisSchema, options.schemaOptions);
-	}else{
-		if (targetModule.enrich){
-			if (targetModule.enrich.validators){
+	} else {
+		if (targetModule.enrich) {
+			if (targetModule.enrich.validators) {
 				targetModule.thisSchema = enrich.byFieldsValidators(targetModule.thisSchema, targetModule.thisModelName);
 			}
-			if (targetModule.enrich.versioning){
+			if (targetModule.enrich.versioning) {
 				targetModule.thisSchema = enrich.byFieldsForVersioning(targetModule.thisSchema, targetModule.thisModelName);
 			}
-			if (targetModule.enrich.increment){
+			if (targetModule.enrich.increment) {
 				targetModule.thisSchema = enrich.byFieldsForIncrement(targetModule.thisSchema, targetModule.thisModelName);
 			}
 		}
 
 		schema = new Schema(targetModule.thisSchema, options.schemaOptions);
 
-		if (targetModule.enrich){
-			if (targetModule.enrich.increment){
+		if (targetModule.enrich) {
+			if (targetModule.enrich.increment) {
 				enrich.markForIncrement(schema, targetModule.thisModelName);
 			}
-			if (targetModule.enrich.versioning){
+			if (targetModule.enrich.versioning) {
 				enrich.markForVersioning(schema);
 				schema.statics.saveVersion = saveVersion;
 			}
 		}
 
-		if(targetModule.thisMethods) {
-			for(let i in targetModule.thisMethods) {
+		if (targetModule.thisMethods) {
+			for (let i in targetModule.thisMethods) {
 				schema.methods[i] = targetModule.thisMethods[i];
 			}
 		}
 
-		if(targetModule.thisStatics) {
-			for(let j in targetModule.thisStatics) {
+		if (targetModule.thisStatics) {
+			for (let j in targetModule.thisStatics) {
 				schema.statics[j] = targetModule.thisStatics[j];
 			}
 		}
 
-		if(targetModule.thisVirtuals) {
-			for(let j in targetModule.thisVirtuals) {
+		if (targetModule.thisVirtuals) {
+			for (let j in targetModule.thisVirtuals) {
 				schema.virtual(j).get(targetModule.thisVirtuals[j].get).set(targetModule.thisVirtuals[j].set);
 			}
 		}
 
-		for(let st in defaultStatics){
-			if (!schema.statics.hasOwnProperty(st)){
+		for (let st in defaultStatics) {
+			if (!schema.statics.hasOwnProperty(st)) {
 				schema.statics[st] = defaultStatics[st];
 			}
 		}
 
-		for(let st in defaultMethods){
-			if (!schema.methods.hasOwnProperty(st)){
+		for (let st in defaultMethods) {
+			if (!schema.methods.hasOwnProperty(st)) {
 				schema.methods[st] = defaultMethods[st];
 			}
 		}
