@@ -1,8 +1,9 @@
-const escapeStringRegexp = require('escape-string-regexp');
+const escapeStringRegexp = require('escape-string-regexp'),
+	lowerCase = require('lower-case');
 
 const getBoolean = (val) => {
 	let t = parseInt(val),
-		s = val.toLowerCase();
+		s = lowerCase(val);
 	if (t === 0 || t === 1) {
 		return !!t;
 	} else {
