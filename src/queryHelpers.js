@@ -26,8 +26,7 @@ exports.getFilter = function (requestQuery, modelSchema) {
 			searchRule = new RegExp('.*' + escapeStringRegexp(filterSearch) + '.*', 'i');
 		for (let k in modelSchema) {
 			if (modelSchema[k].searchable && !(requestQuery.hasOwnProperty(k) && requestQuery[k].length > 0)) {
-				let emptyRule = {},
-					skip = false;
+				let emptyRule = {};
 				switch (modelSchema[k].type) {
 				case Number:
 					if (isNaN(filterSearchNumber)) {
@@ -47,9 +46,9 @@ exports.getFilter = function (requestQuery, modelSchema) {
 					emptyRule[k] = searchRule;
 					break;
 				default:
-					skip = true;
+					continue;
 				}
-				if (!skip) {
+				if (Object.getOwnPropertyNames(emptyRule).length > 0) {
 					result.push(emptyRule);
 				}
 			}
@@ -59,7 +58,6 @@ exports.getFilter = function (requestQuery, modelSchema) {
 	for (let k in modelSchema) {
 		if (modelSchema[k].searchable && requestQuery.hasOwnProperty(k) && typeof requestQuery[k] !== 'undefined' && requestQuery[k] !== null) {
 			let emptyRule = {},
-				skip = false,
 				searchString = requestQuery[k],
 				searchNumber = parseFloat(searchString);
 			switch (modelSchema[k].type) {
@@ -71,7 +69,6 @@ exports.getFilter = function (requestQuery, modelSchema) {
 				}
 				break;
 			case Boolean:
-
 				let t = getBoolean(searchString);
 				if (typeof t !== 'undefined') {
 					emptyRule[k] = t;
@@ -81,9 +78,9 @@ exports.getFilter = function (requestQuery, modelSchema) {
 				emptyRule[k] = searchString;
 				break;
 			default:
-				skip = true;
+				continue;
 			}
-			if (!skip) {
+			if (Object.getOwnPropertyNames(emptyRule).length > 0) {
 				result.push(emptyRule);
 			}
 		}
