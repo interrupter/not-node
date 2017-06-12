@@ -1,6 +1,6 @@
 {
   "name": "not-node",
-  "version": "2.2.11",
+  "version": "2.2.12",
   "description": "node complimentary part for client side notFramework. + dadata.ru api",
   "main": "index.js",
   "scripts": {
@@ -24,10 +24,11 @@
     "url": "https://github.com/interrupter/not-node/issues"
   },
   "dependencies": {
-    "mongoose": "*",
-    "mongoose-validator": "*",
     "deep-diff": "*",
-    "escape-string-regexp": "*"
+    "escape-string-regexp": "*",
+    "lower-case": "*",
+    "mongoose": "*",
+    "mongoose-validator": "*"
   },
   "devDependencies": {
     "chai": "*",
