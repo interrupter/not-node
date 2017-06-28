@@ -104,7 +104,7 @@ exports.getSorter = function (requestQuery, modelSchema, sorterDefaults /* optio
 		var result = sorterDefaults;
 	}
 	if (requestQuery.hasOwnProperty('sortByField') && requestQuery.sortByField !== null) {
-		let sortByField = requestQuery.sortByField,
+		let sortByField = requestQuery.sortByField.split('.')[0],
 			sortDirection = parseInt(requestQuery.sortDirection);
 		if (sortByField.charAt(0) === ':') {
 			sortByField = sortByField.substring(1);

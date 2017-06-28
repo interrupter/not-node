@@ -1,6 +1,6 @@
 {
   "name": "not-node",
-  "version": "2.2.15",
+  "version": "2.2.16",
   "description": "node complimentary part for client side notFramework. + dadata.ru api",
   "main": "index.js",
   "scripts": {
