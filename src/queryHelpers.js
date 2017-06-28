@@ -1,3 +1,4 @@
+const Schema = require('mongoose').Schema;
 const escapeStringRegexp = require('escape-string-regexp'),
 	lowerCase = require('lower-case');
 
@@ -104,10 +105,16 @@ exports.getSorter = function (requestQuery, modelSchema, sorterDefaults /* optio
 		var result = sorterDefaults;
 	}
 	if (requestQuery.hasOwnProperty('sortByField') && requestQuery.sortByField !== null) {
-		let sortByField = requestQuery.sortByField.split('.')[0],
+		let sortByField = requestQuery.sortByField,
+			sortByProperty,
 			sortDirection = parseInt(requestQuery.sortDirection);
 		if (sortByField.charAt(0) === ':') {
 			sortByField = sortByField.substring(1);
+		}
+		if (sortByField.indexOf('.') > -1) {
+			sortByProperty = sortByField.split('.')[0];
+		} else {
+			sortByProperty = sortByField;
 		}
 		//санация данных
 		switch (sortDirection) {
@@ -120,8 +127,8 @@ exports.getSorter = function (requestQuery, modelSchema, sorterDefaults /* optio
 		default:
 			sortDirection = sorterDefaultsLocal_Direction;
 		}
-		if (modelSchema.hasOwnProperty(sortByField) && (Object.keys(modelSchema).indexOf(sortByField) > -1)) {
-			if (modelSchema[sortByField].hasOwnProperty('sortable') && modelSchema[sortByField].sortable) {
+		if (modelSchema.hasOwnProperty(sortByProperty) && (Object.keys(modelSchema).indexOf(sortByProperty) > -1)) {
+			if (modelSchema[sortByProperty].hasOwnProperty('sortable') && modelSchema[sortByProperty].sortable) {
 				//все чисто - можно отправлять в базу
 				if (result === sorterDefaults || result === sorterDefaultsLocal) {
 					result = {};
