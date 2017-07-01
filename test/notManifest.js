@@ -6,6 +6,7 @@ const expect = require("chai").expect,
 	routesPath = __dirname + '/routes',
 	modulesPath = __dirname + '/modules';
 
+return;
 const rawRoutesManifest = {
 	admin: {
 		model: 'admin',
@@ -76,9 +77,9 @@ const rawRoutesManifest = {
 	}
 };
 
-describe("Manifest", function() {
-	describe("clearActionFromRules", function() {
-		it("with rules", function() {
+describe("Manifest", function () {
+	describe("clearActionFromRules", function () {
+		it("with rules", function () {
 			const input = {
 				modelName: 'jelly',
 				rules: [{
@@ -93,7 +94,7 @@ describe("Manifest", function() {
 			});
 		});
 
-		it("without rules", function() {
+		it("without rules", function () {
 			const input = {
 				modelName: 'jelly',
 				auth: true,
@@ -107,7 +108,7 @@ describe("Manifest", function() {
 		});
 	});
 
-	describe("filterManifestRoute", function() {
+	describe("filterManifestRoute", function () {
 		const route = {
 			actions: {
 				list: {
@@ -133,7 +134,7 @@ describe("Manifest", function() {
 				}
 			}
 		};
-		it("route [{admin},{auth},{!auth}],  !auth, 'user', !admin", function() {
+		it("route [{admin},{auth},{!auth}],  !auth, 'user', !admin", function () {
 			const result = manifest.filterManifestRoute(route, false, 'user', false);
 			expect(result).to.deep.equal({
 				actions: {
@@ -144,7 +145,7 @@ describe("Manifest", function() {
 			});
 		});
 
-		it("route [{admin},{auth},{!auth}],  !auth, 'user', admin", function() {
+		it("route [{admin},{auth},{!auth}],  !auth, 'user', admin", function () {
 			const result = manifest.filterManifestRoute(route, false, 'user', true);
 			expect(result).to.deep.equal({
 				actions: {
@@ -158,7 +159,7 @@ describe("Manifest", function() {
 			});
 		});
 
-		it("route [{admin},{auth},{!auth}],  auth, 'user', !admin", function() {
+		it("route [{admin},{auth},{!auth}],  auth, 'user', !admin", function () {
 			const result = manifest.filterManifestRoute(route, true, 'user', false);
 			expect(result).to.deep.equal({
 				actions: {
@@ -169,7 +170,7 @@ describe("Manifest", function() {
 			});
 		});
 
-		it("route [{admin},{auth},{!auth}],  auth, 'user', !admin", function() {
+		it("route [{admin},{auth},{!auth}],  auth, 'user', !admin", function () {
 			const result = manifest.filterManifestRoute(route, true, 'manager', false);
 			expect(result).to.deep.equal({
 				actions: {
@@ -185,7 +186,7 @@ describe("Manifest", function() {
 	});
 
 
-	describe("filterManifest", function() {
+	describe("filterManifest", function () {
 		let filtered = {
 			admin: {
 				user: {
@@ -297,39 +298,39 @@ describe("Manifest", function() {
 				}
 			}
 		};
-		it("Guest manifest", function() {
+		it("Guest manifest", function () {
 			let man = rawRoutesManifest,
 				manAfterFilter = manifest.filterManifest(man, false, false, false);
 			expect(manAfterFilter).to.deep.equal(filtered.guest);
 		});
 
-		it("Auth manifest", function() {
+		it("Auth manifest", function () {
 			let man = rawRoutesManifest,
 				manAfterFilter = manifest.filterManifest(man, true, false, false);
 			expect(manAfterFilter).to.deep.equal(filtered.user);
 		});
 
-		it("Auth with manager role manifest", function() {
+		it("Auth with manager role manifest", function () {
 			let man = rawRoutesManifest,
 				manAfterFilter = manifest.filterManifest(man, true, 'manager', false);
 			expect(manAfterFilter).to.deep.equal(filtered.manager);
 		});
 
-		it("Guest with notActivated role manifest", function() {
+		it("Guest with notActivated role manifest", function () {
 			let man = rawRoutesManifest,
 				manAfterFilter = manifest.filterManifest(man, false, 'notActivated', false);
 			expect(manAfterFilter).to.deep.equal(filtered.notActivated);
 		});
 
-		it("Admin manifest", function() {
+		it("Admin manifest", function () {
 			let man = rawRoutesManifest,
 				manAfterFilter = manifest.filterManifest(man, false, false, true);
 			expect(manAfterFilter).to.deep.equal(filtered.admin);
 		});
 	});
 
-	describe("getManifest", function() {
-		it("Get manifest from test routes", function() {
+	describe("getManifest", function () {
+		it("Get manifest from test routes", function () {
 			let man = rawRoutesManifest,
 				fullMan = {
 					admin: {
@@ -400,12 +401,12 @@ describe("Manifest", function() {
 						}
 					}
 				};
-				expect(man).to.deep.equal(fullMan);
+			expect(man).to.deep.equal(fullMan);
 		});
 	});
 
-	describe("getModuleManifest", function() {
-		it("Get manifest from test routes", function() {
+	describe("getModuleManifest", function () {
+		it("Get manifest from test routes", function () {
 			/*const subModule = require('./module');
 			let man = manifest.getModuleManifest(subModule.routesPath),
 				fullMan = {
@@ -428,49 +429,49 @@ describe("Manifest", function() {
 
 
 	var fakeApp = {
-		get: function(routeLine, callback) {
+		get: function (routeLine, callback) {
 			this.method = 'get';
 			this.routeLine = routeLine;
 			this.callback = callback;
 		},
-		post: function(routeLine, callback) {
+		post: function (routeLine, callback) {
 			this.method = 'post';
 			this.routeLine = routeLine;
 			this.callback = callback;
 		},
-		put: function(routeLine, callback) {
+		put: function (routeLine, callback) {
 			this.method = 'put';
 			this.routeLine = routeLine;
 			this.callback = callback;
 		},
-		delete: function(routeLine, callback) {
+		delete: function (routeLine, callback) {
 			this.method = 'delete';
 			this.routeLine = routeLine;
 			this.callback = callback;
 		},
-		patch: function(routeLine, callback) {
+		patch: function (routeLine, callback) {
 			this.method = 'patch';
 			this.routeLine = routeLine;
 			this.callback = callback;
 		},
 	};
 
-	describe("registerRouteForAction", function() {
-		it("Guest GET request", function() {
+	describe("registerRouteForAction", function () {
+		it("Guest GET request", function () {
 			let man = manifest.getManifest(),
 				result = manifest.registerRouteForAction('/api/:modelName', 'list', 'list', man.post.actions.list);
 			expect(result).to.be.equal(true);
 			expect(fakeApp.method).to.be.equal('get');
 		});
 
-		it("Guest GET request to wrong end point", function() {
+		it("Guest GET request to wrong end point", function () {
 			let man = manifest.getManifest(),
 				//routeLine, routeName, actionName, actionData
 				result = manifest.registerRouteForAction('/api/:modelName', 'get', 'list', man.post.actions.listAlly);
 			expect(result).to.deep.equal(false);
 		});
 
-		it("Guest POST request", function() {
+		it("Guest POST request", function () {
 			let man = manifest.getManifest(),
 				result = manifest.registerRouteForAction('/api/:modelName', 'admin', 'reboot', man.admin.actions.reboot);
 			expect(result).to.deep.equal(true);

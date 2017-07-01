@@ -74,8 +74,8 @@ var defaultStatics = {
 		}
 		query.sort(sorter).skip(skip).limit(size).exec(callback);
 	},
-	create(data, callbackOK, callbackError) {
-		return routine.add(this, data, callbackOK, callbackError);
+	add(data) {
+		return routine.add(this, data);
 	},
 	listAll(callback) {
 		var thisModel = this,

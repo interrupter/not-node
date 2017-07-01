@@ -6,37 +6,37 @@ const expect = require("chai").expect,
 	validators = require('./validators'),
 	modulesPath = __dirname + '/modules',
 	modulePath = __dirname + '/module';
-
+return;
 const moduleManifest = {
 	'file': {
-	    model: 'file',
-	    url: '/api/:modelName',
-	    actions:{
-	        list:{
-	            method: 'get',
-	            rules:[{
-	                admin: true
-	            }]
-	        }
-	    }
+		model: 'file',
+		url: '/api/:modelName',
+		actions: {
+			list: {
+				method: 'get',
+				rules: [{
+					admin: true
+				}]
+			}
+		}
 	}
 };
 
-describe("notModule", function() {
-	before(function(done) {
+describe("notModule", function () {
+	before(function (done) {
 		mongoose.disconnect((err) => {
 			done(err);
 		});
 	});
-	beforeEach(function(done) {
-		mongoose.connect('mongodb://localhost/test', function(err) {
+	beforeEach(function (done) {
+		mongoose.connect('mongodb://localhost/test', function (err) {
 			increment.init(mongoose);
 			done(err);
 		});
 	});
 
-	describe("constructor", function() {
-		it("With init from path", function() {
+	describe("constructor", function () {
+		it("With init from path", function () {
 			var mod = new notModule({
 				modPath: modulePath,
 				mongoose: mongoose
@@ -48,7 +48,7 @@ describe("notModule", function() {
 			expect(mod.getModel('UserLocal')).to.be.ok;
 		});
 
-		it("With init from module", function() {
+		it("With init from module", function () {
 			var mod = new notModule({
 				modObject: require('./module'),
 				mongoose: mongoose
@@ -61,8 +61,8 @@ describe("notModule", function() {
 
 	});
 
-	describe("getManifest", function() {
-		it("Get module manifest", function() {
+	describe("getManifest", function () {
+		it("Get module manifest", function () {
 			var mod = new notModule({
 				modObject: require('./module'),
 				mongoose: mongoose
@@ -71,7 +71,7 @@ describe("notModule", function() {
 		});
 	});
 
-	afterEach(function(done) {
+	afterEach(function (done) {
 		mongoose.disconnect((err) => {
 			done(err);
 		});

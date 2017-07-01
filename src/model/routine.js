@@ -9,53 +9,48 @@ exports.returnErrors = function (err, callbackError) {
 };
 
 
-exports.addWithoutVersion = function (thisModel, data, callbackOK, callbackError) {
-	var proto = new thisModel(data);
-	proto.save(function (err, item) {
-		if (err) {
-			exports.returnErrors(err, callbackError);
-		} else {
-			callbackOK && callbackOK(item);
-		}
-	});
+exports.addWithoutVersion = function (thisModel, data) {
+	return (new thisModel(data)).save();
 };
 
-exports.addWithVersion = function (thisModel, data, callbackOK, callbackError) {
+exports.addWithVersion = function (thisModel, data) {
 	data.__latest = true;
-	var proto = new thisModel(data);
-	proto.save(function (err, item) {
-		if (err) {
-			exports.returnErrors(err, callbackError);
-		} else {
-			thisModel.saveVersion(item._id, function (err) {
-				if (err) {
-					callbackError && callbackError(err);
-				} else {
-					callbackOK && callbackOK(item);
-				}
-			});
-		}
-	});
+	return (new thisModel(data)).save()
+		.then((item) => {
+			return thisModel.saveVersion(item._id);
+		});
 };
 
-exports.add = function (model, data, callbackOK, callbackError) {
-	var thisModel = model,
+exports.add = function (model, data) {
+	let thisModel = model,
 		that = this;
-	if (model.__incField) {
-		incrementNext.next(model.__incModel, function (modelId) {
-			data[model.__incField] = modelId;
-			if (model.__versioning) {
-				that.addWithVersion(thisModel, data, callbackOK, callbackError);
-			} else {
-				that.addWithoutVersion(thisModel, data, callbackOK, callbackError);
-			}
-		}, callbackError);
-	} else {
-		if (model.__versioning) {
-			this.addWithVersion(thisModel, data, callbackOK, callbackError);
-		} else {
-			this.addWithoutVersion(thisModel, data, callbackOK, callbackError);
-		}
+	return new Promise((resolve, reject) => {
 
-	}
+		if (model.__incField) {
+			incrementNext.next(model.__incModel)
+				.then((modelId) => {
+					data[model.__incField] = modelId;
+					if (model.__versioning) {
+						that.addWithVersion(thisModel, data)
+							.then(resolve)
+							.catch(reject);
+					} else {
+						that.addWithoutVersion(thisModel, data)
+							.then(resolve)
+							.catch(reject);
+					}
+				})
+				.catch(reject);
+		} else {
+			if (model.__versioning) {
+				this.addWithVersion(thisModel, data)
+					.then(resolve)
+					.catch(reject);
+			} else {
+				this.addWithoutVersion(thisModel, data)
+					.then(resolve)
+					.catch(reject);
+			}
+		}
+	});
 };
