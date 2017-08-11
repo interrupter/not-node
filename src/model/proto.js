@@ -13,6 +13,14 @@ exports.extractVariants = function (items) {
 	return variants;
 };
 
+let populateQuery = (query, populate) => {
+	if (populate && populate.length) {
+		while (populate.length > 0) {
+			query.populate(populate.shift());
+		}
+	}
+};
+
 var defaultStatics = {
 	sanitizeInput(input) {
 		if (!input.hasOwnProperty('default')) {
@@ -51,7 +59,7 @@ var defaultStatics = {
 		}).exec(callback);
 	},
 	list(skip, size, sorter, filter, callback) {
-		var thisModel = this,
+		let thisModel = this,
 			by = thisModel.schema.statics.__versioning ? {
 				__latest: true
 			} : {},
@@ -74,11 +82,38 @@ var defaultStatics = {
 		}
 		query.sort(sorter).skip(skip).limit(size).exec(callback);
 	},
+	//this written in promise style
+	listAndPopulate(skip, size, sorter, filter, populate) {
+		let thisModel = this,
+			by = thisModel.schema.statics.__versioning ? {
+				__latest: true
+			} : {},
+			query = thisModel.find(by);
+		if (Array.isArray(filter) && filter.length > 0) {
+			if (by.hasOwnProperty('__latest')) {
+				query.or(filter);
+			} else {
+				let t = {};
+				while (Object.getOwnPropertyNames(t).length === 0 && filter.length > 0) {
+					t = filter.pop();
+				}
+				if (Object.getOwnPropertyNames(t).length > 0) {
+					query = thisModel.find(t);
+					if (filter.length > 0) {
+						query.or(filter);
+					}
+				}
+			}
+		}
+		query.sort(sorter).skip(skip).limit(size);
+		populateQuery(query, populate);
+		return query.exec();
+	},
 	add(data) {
 		return routine.add(this, data);
 	},
 	listAll(callback) {
-		var thisModel = this,
+		let thisModel = this,
 			by = thisModel.schema.statics.__versioning ? {
 				__latest: true
 			} : {};
@@ -87,6 +122,18 @@ var defaultStatics = {
 				['_id', 'descending']
 			])
 			.exec(callback);
+	},
+	listAllAndPopulate(populate) {
+		let thisModel = this,
+			by = thisModel.schema.statics.__versioning ? {
+				__latest: true
+			} : {},
+			query = thisModel.find(by);
+		query.sort([
+			['_id', 'descending']
+		]);
+		populateQuery(query, populate);
+		return query.exec();
 	}
 };
 
@@ -112,7 +159,7 @@ exports.fabricate = function (targetModule, options, mongoose) {
 		options.schemaOptions = targetModule.schemaOptions;
 	}
 
-	var schema = null;
+	let schema = null;
 	if (targetModule.keepNotExtended) {
 		schema = new Schema(targetModule.thisSchema, options.schemaOptions);
 	} else {
