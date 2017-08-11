@@ -201,7 +201,11 @@ exports.fabricate = function (targetModule, options, mongoose) {
 
 		if (targetModule.thisVirtuals) {
 			for (let j in targetModule.thisVirtuals) {
-				schema.virtual(j).get(targetModule.thisVirtuals[j].get).set(targetModule.thisVirtuals[j].set);
+				if (typeof targetModule.thisVirtuals[j].get === 'function' && typeof targetModule.thisVirtuals[j].set === 'function') {
+					schema.virtual(j).get(targetModule.thisVirtuals[j].get).set(targetModule.thisVirtuals[j].set);
+				} else {
+					schema.virtual(j, targetModule.thisVirtuals[j]);
+				}
 			}
 		}
 
