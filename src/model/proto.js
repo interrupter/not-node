@@ -44,7 +44,8 @@ var defaultStatics = {
 		var thisModel = this;
 		if (thisModel.schema.statics.__incField) {
 			var by = thisModel.schema.statics.__versioning ? {
-				__latest: true
+				__latest: true,
+				__closed: false
 			} : {};
 			by[thisModel.schema.statics.__incField] = ID;
 			thisModel.findOne(by).exec(callback);
@@ -61,7 +62,8 @@ var defaultStatics = {
 	list(skip, size, sorter, filter, callback) {
 		let thisModel = this,
 			by = thisModel.schema.statics.__versioning ? {
-				__latest: true
+				__latest: true,
+				__closed: false
 			} : {},
 			query = thisModel.find(by);
 		if (Array.isArray(filter) && filter.length > 0) {
@@ -86,7 +88,8 @@ var defaultStatics = {
 	listAndPopulate(skip, size, sorter, filter, populate) {
 		let thisModel = this,
 			by = thisModel.schema.statics.__versioning ? {
-				__latest: true
+				__latest: true,
+				__closed: false
 			} : {},
 			query = thisModel.find(by);
 		if (Array.isArray(filter) && filter.length > 0) {
@@ -115,7 +118,8 @@ var defaultStatics = {
 	listAll(callback) {
 		let thisModel = this,
 			by = thisModel.schema.statics.__versioning ? {
-				__latest: true
+				__latest: true,
+				__closed: false
 			} : {};
 		thisModel.find(by)
 			.sort([
@@ -126,7 +130,8 @@ var defaultStatics = {
 	listAllAndPopulate(populate) {
 		let thisModel = this,
 			by = thisModel.schema.statics.__versioning ? {
-				__latest: true
+				__latest: true,
+				__closed: false
 			} : {},
 			query = thisModel.find(by);
 		query.sort([
@@ -140,6 +145,10 @@ var defaultStatics = {
 var defaultMethods = {
 	getID: function () {
 		return this.schema.statics.__incField ? this[this.schema.statics.__incField] : 0;
+	},
+	close() {
+		this.__closed = true;
+		this.save();
 	}
 };
 

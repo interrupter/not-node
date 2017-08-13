@@ -5,11 +5,11 @@ exports.firstLetterToLower = function (string) {
 	return string.charAt(0).toLowerCase() + string.slice(1);
 };
 
-exports.getIncrementalFieldName = function(modelName){
-	return this.firstLetterToLower(modelName)+'ID';
+exports.getIncrementalFieldName = function (modelName) {
+	return this.firstLetterToLower(modelName) + 'ID';
 };
 
-exports.byFieldsForVersioning = function(objectSchema, modelName){
+exports.byFieldsForVersioning = function (objectSchema, modelName) {
 	objectSchema.__version = {
 		type: Number,
 		required: true,
@@ -20,16 +20,21 @@ exports.byFieldsForVersioning = function(objectSchema, modelName){
 		required: true,
 		default: 0
 	};
-	objectSchema.__versions= [{
+	objectSchema.__versions = [{
 		type: Schema.Types.ObjectId,
 		required: false,
 		ref: modelName,
 		default: []
 	}];
+	objectSchema.__closed = {
+		type: Boolean,
+		required: true,
+		default: false
+	};
 	return objectSchema;
 };
 
-exports.byFieldsForIncrement = function(objectSchema, modelName){
+exports.byFieldsForIncrement = function (objectSchema, modelName) {
 	objectSchema[this.getIncrementalFieldName(modelName)] = {
 		type: Number,
 		required: true,
@@ -40,22 +45,22 @@ exports.byFieldsForIncrement = function(objectSchema, modelName){
 };
 
 
-exports.markForIncrement = function(mongooseSchema, modelName){
+exports.markForIncrement = function (mongooseSchema, modelName) {
 	mongooseSchema.statics.__incField = this.getIncrementalFieldName(modelName);
 	mongooseSchema.statics.__incModel = modelName;
 	return mongooseSchema;
 };
 
 
-exports.markForVersioning = function(mongooseSchema){
+exports.markForVersioning = function (mongooseSchema) {
 	mongooseSchema.statics.__versioning = true;
 	return mongooseSchema;
 };
 
-exports.byFieldsValidators = function(mongooseSchema){
-	if (mongooseSchema){
-		for(var fieldName in mongooseSchema){
-			if (mongooseSchema[fieldName].hasOwnProperty('validate')){
+exports.byFieldsValidators = function (mongooseSchema) {
+	if (mongooseSchema) {
+		for (var fieldName in mongooseSchema) {
+			if (mongooseSchema[fieldName].hasOwnProperty('validate')) {
 				mongooseSchema[fieldName].validate = buildValidator(mongooseSchema[fieldName].validate);
 			}
 		}

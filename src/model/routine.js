@@ -8,7 +8,6 @@ exports.returnErrors = function (err, callbackError) {
 	callbackError && callbackError(err, validationReport);
 };
 
-
 exports.addWithoutVersion = function (thisModel, data) {
 	return (new thisModel(data)).save();
 };
