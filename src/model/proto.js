@@ -16,7 +16,12 @@ exports.extractVariants = function (items) {
 let populateQuery = (query, populate) => {
 	if (populate && populate.length) {
 		while (populate.length > 0) {
-			query.populate(populate.shift());
+			query.populate({
+				path: populate.shift(),
+				match: {
+					__latest: true
+				}
+			});
 		}
 	}
 };
