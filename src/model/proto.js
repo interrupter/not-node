@@ -29,35 +29,57 @@ var defaultStatics = {
 		return input;
 	},
 	getOne(id, callback) {
-		var thisModel = this;
+		let thisModel = this;
 		if (thisModel.schema.statics.__versioning) {
-			thisModel.findOne({
+			let query = thisModel.findOne({
 				_id: id
-			}).populate('__versions').exec(callback);
+			}).populate('__versions');
+			if (callback) {
+				query.exec(callback);
+			} else {
+				return query.exec();
+			}
 		} else {
-			thisModel.findOne({
+			let query = thisModel.findOne({
 				_id: id
-			}).exec(callback);
+			});
+			if (callback) {
+				query.exec(callback);
+			} else {
+				return query.exec();
+			}
 		}
 	},
 	getOneByID(ID, callback) {
-		var thisModel = this;
+		let thisModel = this;
 		if (thisModel.schema.statics.__incField) {
-			var by = thisModel.schema.statics.__versioning ? {
-				__latest: true,
-				__closed: false
-			} : {};
+			let by = (thisModel.schema.statics.__versioning ? {
+					__latest: true,
+					__closed: false
+				} : {}),
+				query;
 			by[thisModel.schema.statics.__incField] = ID;
-			thisModel.findOne(by).exec(callback);
+			query = thisModel.findOne(by);
+			if (callback) {
+				query.exec(callback);
+			} else {
+				return query.exec();
+			}
+
 		} else {
 			callback(null, null);
 		}
 	},
 	getOneRaw(id, callback) {
-		var thisModel = this;
-		thisModel.findOne({
-			_id: id
-		}).exec(callback);
+		let thisModel = this,
+			query = thisModel.findOne({
+				_id: id
+			});
+		if (callback) {
+			query.exec(callback);
+		} else {
+			return query.exec();
+		}
 	},
 	list(skip, size, sorter, filter, callback) {
 		let thisModel = this,
@@ -82,7 +104,11 @@ var defaultStatics = {
 				}
 			}
 		}
-		query.sort(sorter).skip(skip).limit(size).exec(callback);
+		if (callback) {
+			query.sort(sorter).skip(skip).limit(size).exec(callback);
+		} else {
+			return query.sort(sorter).skip(skip).limit(size).exec();
+		}
 	},
 	//this written in promise style
 	listAndPopulate(skip, size, sorter, filter, populate) {
@@ -117,15 +143,18 @@ var defaultStatics = {
 	},
 	listAll(callback) {
 		let thisModel = this,
-			by = thisModel.schema.statics.__versioning ? {
+			by = (thisModel.schema.statics.__versioning ? {
 				__latest: true,
 				__closed: false
-			} : {};
-		thisModel.find(by)
-			.sort([
+			} : {}),
+			query = thisModel.find(by).sort([
 				['_id', 'descending']
-			])
-			.exec(callback);
+			]);
+		if (callback) {
+			query.exec(callback);
+		} else {
+			return query.exec();
+		}
 	},
 	listAllAndPopulate(populate) {
 		let thisModel = this,
