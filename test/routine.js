@@ -125,7 +125,7 @@ describe("Model/Routine", function () {
 
 	it("add - versioning ON, ID=1", function (done) {
 		var User = userProto.UserLocal;
-		expect(userProto.mongooseSchema.methods).to.have.keys('getID');
+		expect(userProto.mongooseSchema.methods).to.have.keys(['close', 'getID']);
 		routine.add(User, {
 				name: 'User name 1',
 				price: 10

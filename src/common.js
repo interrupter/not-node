@@ -14,13 +14,17 @@
 
 */
 
-exports.validateArgs = function(args, validators){
-	if (args.length === validators.length){
-		for(let i in args){
+exports.validateArgs = function (args, validators) {
+	if (args.length === validators.length) {
+		for (let i in args) {
 			obj[i] = validators[i];
 		}
 		return false;
-	}else{
+	} else {
 		return true;
 	}
+};
+
+exports.firstLetterToLower = function (string) {
+	return string.charAt(0).toLowerCase() + string.slice(1);
 };

@@ -1,12 +1,9 @@
 var Schema = require('mongoose').Schema,
+	firstLetterToLower = require('../common').firstLetterToLower,
 	buildValidator = require('./buildValidator');
 
-exports.firstLetterToLower = function (string) {
-	return string.charAt(0).toLowerCase() + string.slice(1);
-};
-
 exports.getIncrementalFieldName = function (modelName) {
-	return this.firstLetterToLower(modelName) + 'ID';
+	return firstLetterToLower(modelName) + 'ID';
 };
 
 exports.byFieldsForVersioning = function (objectSchema, modelName) {
