@@ -37,7 +37,9 @@ var defaultStatics = {
 		let thisModel = this;
 		if (thisModel.schema.statics.__versioning) {
 			let query = thisModel.findOne({
-				_id: id
+				_id: id,
+				__latest: true,
+				__closed: false
 			}).populate('__versions');
 			if (callback) {
 				query.exec(callback);

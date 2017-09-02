@@ -40,7 +40,6 @@ exports.getFilter = function (requestQuery, modelSchema) {
 					let t = getBoolean(searchRule);
 					if (typeof t !== 'undefined') {
 						emptyRule[k] = t;
-
 					}
 					break;
 				case String:
