@@ -1,6 +1,6 @@
 {
   "name": "not-node",
-  "version": "2.7.3",
+  "version": "2.7.4",
   "description": "node complimentary part for client side notFramework. + dadata.ru api",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,6 @@
     "cover": "istanbul cover _mocha $(find ./test -name \"*.js\" -not -path \"./node_modules/*\")",
     "pretest": "npm run lint"
   },
-  "bin": "./src/cli.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/interrupter/not-node.git"
