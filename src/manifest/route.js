@@ -1,4 +1,4 @@
-const Auth = require('../auth/auth.js'),
+const Auth = require('../auth/auth.js'),	
 	HttpError = require('../error').Http;
 
 class notRoute{

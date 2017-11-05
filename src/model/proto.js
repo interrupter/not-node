@@ -88,7 +88,7 @@ var defaultStatics = {
 			return query.exec();
 		}
 	},
-	list(skip, size, sorter, filter, callback) {
+	list(skip, size, sorter, filter, callback){
 		let thisModel = this,
 			by = thisModel.schema.statics.__versioning ? {
 				__latest: true,
@@ -97,7 +97,7 @@ var defaultStatics = {
 			query = thisModel.find(by);
 		if (Array.isArray(filter) && filter.length > 0) {
 			if (by.hasOwnProperty('__latest')) {
-				query.or(filter);
+				query.and(filter);
 			} else {
 				let t = {};
 				while (Object.getOwnPropertyNames(t).length === 0 && filter.length > 0) {
@@ -106,7 +106,7 @@ var defaultStatics = {
 				if (Object.getOwnPropertyNames(t).length > 0) {
 					query = thisModel.find(t);
 					if (filter.length > 0) {
-						query.or(filter);
+						query.and(filter);
 					}
 				}
 			}
@@ -116,7 +116,11 @@ var defaultStatics = {
 		} else {
 			return query.sort(sorter).skip(skip).limit(size).exec();
 		}
-	},
+	},/*
+	list() {
+		let [skip, size, sorter, filter, callback] = arguments;
+		return this.listObsolete(skip, size, sorter, filter, callback);
+	},*/
 	//this written in promise style
 	listAndPopulate(skip, size, sorter, filter, populate) {
 		let thisModel = this,
@@ -127,7 +131,7 @@ var defaultStatics = {
 			query = thisModel.find(by);
 		if (Array.isArray(filter) && filter.length > 0) {
 			if (by.hasOwnProperty('__latest')) {
-				query.or(filter);
+				query.and(filter);
 			} else {
 				let t = {};
 				while (Object.getOwnPropertyNames(t).length === 0 && filter.length > 0) {
@@ -136,7 +140,7 @@ var defaultStatics = {
 				if (Object.getOwnPropertyNames(t).length > 0) {
 					query = thisModel.find(t);
 					if (filter.length > 0) {
-						query.or(filter);
+						query.and(filter);
 					}
 				}
 			}
