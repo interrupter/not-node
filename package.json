@@ -1,7 +1,7 @@
 {
   "name": "not-node",
-  "version": "2.7.4",
-  "description": "node complimentary part for client side notFramework. + dadata.ru api",
+  "version": "2.8.0",
+  "description": "node complimentary part for client side notFramework.",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
@@ -9,13 +9,15 @@
     "cover": "istanbul cover _mocha $(find ./test -name \"*.js\" -not -path \"./node_modules/*\")",
     "pretest": "npm run lint"
   },
+  "bin": {
+    "not-node": "./bin/not-node.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/interrupter/not-node.git"
   },
   "keywords": [
     "notFramework",
-    "dadata",
     "node"
   ],
   "author": "interrupter <levoe.milo@mail.ru> (http://github.com/interrupter)",
@@ -26,9 +28,13 @@
   "dependencies": {
     "deep-diff": "*",
     "escape-string-regexp": "*",
+    "fs-extra": "^4.0.2",
     "lower-case": "*",
     "mongoose": "*",
-    "mongoose-validator": "*"
+    "mongoose-validator": "*",
+    "rmdir": "^1.2.0",
+    "simple-git": "*",
+    "yargs": "*"
   },
   "devDependencies": {
     "chai": "*",
