@@ -27,7 +27,7 @@ let opts = {
 	dir exists and empty,
 	or dir not exists
 */
-let noRedFlags = function(path){
+let noRedFlags = function(dir){
 	return new Promise((resolve, reject)=>{
 		if (fs.stat(dir, (err_stat, info)=>{
 			if (err_stat){
@@ -54,7 +54,7 @@ let noRedFlags = function(path){
 };
 
 if (repo){
-	noRedFlags()
+	noRedFlags(opts.to)
 		.then(()=>lib.rootCloneRoutine(repo, opts.to))
 		.then(()=>{
 			console.log('Finally');
