@@ -35,7 +35,7 @@ let noRedFlags = function(dir){
 			}else{
 				if (info){
 					fs.readdir(dir, (err_readdir, files)=>{
-						if(err){
+						if(err_readdir){
 							reject('Error while reading directory file list.');
 						}else{
 							if (!files || files.length===0){
