@@ -13,6 +13,7 @@ var argv = require('yargs').argv,
 	fse = require('fs-extra'),
 	rmdir = require('rmdir'),
 	path = require('path'),
+	readline = require('readline'),
 	lib = require('../src/lib.js');
 
 let opts = {
@@ -21,8 +22,40 @@ let opts = {
 	},
 	repo = lib.getRepo(opts.project);
 
+
+/*
+	dir exists and empty,
+	or dir not exists
+*/
+let noRedFlags = function(path){
+	return new Promise((resolve, reject)=>{
+		if (fs.stat(dir, (err_stat, info)=>{
+			if (err_stat){
+				resolve();
+			}else{
+				if (info){
+					fs.readdir(dir, (err_readdir, files)=>{
+						if(err){
+							reject('Error while reading directory file list.');
+						}else{
+							if (!files || files.length===0){
+								resolve();
+							}else{
+								reject('Directory are not empty.');
+							}
+						}
+					});
+				}else{
+					resolve();
+				}
+			}
+		}));
+	});
+};
+
 if (repo){
-	lib.rootCloneRoutine(repo, opts.to)
+	noRedFlags()
+		.then(()=>lib.rootCloneRoutine(repo, opts.to))
 		.then(()=>{
 			console.log('Finally');
 		})

@@ -143,7 +143,6 @@ exports.cloneParents = function(repo, to){
 	});
 };
 
-
 exports.rootCloneRoutine = function(repo, to){
 	console.log('Clone root project', repo.url, 'to', to);
 	return new Promise((resolve, reject) => {
