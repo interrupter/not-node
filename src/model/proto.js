@@ -97,7 +97,7 @@ var defaultStatics = {
 			query = thisModel.find(by);
 		if (Array.isArray(filter) && filter.length > 0) {
 			if (by.hasOwnProperty('__latest')) {
-				query.and(filter);
+				query.or(filter);
 			} else {
 				let t = {};
 				while (Object.getOwnPropertyNames(t).length === 0 && filter.length > 0) {
@@ -106,7 +106,7 @@ var defaultStatics = {
 				if (Object.getOwnPropertyNames(t).length > 0) {
 					query = thisModel.find(t);
 					if (filter.length > 0) {
-						query.and(filter);
+						query.or(filter);
 					}
 				}
 			}
@@ -131,7 +131,7 @@ var defaultStatics = {
 			query = thisModel.find(by);
 		if (Array.isArray(filter) && filter.length > 0) {
 			if (by.hasOwnProperty('__latest')) {
-				query.and(filter);
+				query.or(filter);
 			} else {
 				let t = {};
 				while (Object.getOwnPropertyNames(t).length === 0 && filter.length > 0) {
@@ -140,7 +140,7 @@ var defaultStatics = {
 				if (Object.getOwnPropertyNames(t).length > 0) {
 					query = thisModel.find(t);
 					if (filter.length > 0) {
-						query.and(filter);
+						query.or(filter);
 					}
 				}
 			}
