@@ -2,7 +2,10 @@
 
 /*
 
-	not-node project manager
+	not-node project builder
+
+	build project to current folder by specified environment rules,
+	if `to` path not empty then will be generated project artifact
 
 */
 
@@ -17,10 +20,10 @@ var argv = require('yargs').argv,
 	lib = require('../src/lib.js');
 
 let opts = {
-		'project': argv.project || 'default',
-		'to': argv.to || './'
-	},
-	repo = lib.getRepo(opts.project);
+	'environment': argv.environment || 'production',
+	'to': argv.to || false,
+	'config': argv.config || './project.manifest.json',
+};
 
 /*
 	dir exists and empty,

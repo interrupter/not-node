@@ -4,7 +4,10 @@ module.exports = {
 		dir:	'./',
 		clear:{
 			dirs: ['.git'],
-			files: ['.gitignore','package-lock.json'],
+			files: ['package-lock.json'],
+		},
+		exec: {
+			after: ['init.sh']			
 		}
 	},
 	gallery: {

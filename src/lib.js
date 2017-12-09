@@ -4,7 +4,8 @@ const fs = require('fs'),
 	rmdir = require('rmdir'),
 	git = require('simple-git'),
 	path = require('path'),
-	repos = require('./repos.js');
+	repos = require('./repos.js'),
+	shell = require('./shell.helpers.js');
 
 exports.getRepo = function(name){
 	return repos.hasOwnProperty(name)?repos[name]:false;
@@ -82,7 +83,7 @@ exports.clearRepo = function(repo, parentDir){
 	});
 };
 
-exports.moveClearClone = function(repo, from, to){
+exports.moveCleanClone = function(repo, from, to){
 	return new Promise((resolve, reject)=>{
 		fs.readdir(from, (err, items) => {
 			if (err){
@@ -108,6 +109,34 @@ exports.moveClearClone = function(repo, from, to){
 	});
 };
 
+exports.execShell = function(repo, dir){
+	console.log('exec shell');
+	return new Promise((resolve, reject)=>{
+		// execute multiple commands in series
+		if (repo.exec){
+			if (repo.exec.after && repo.exec.after.length){
+				console.log('exec commands');
+				let cmds = repo.exec.after.map((item)=>{
+					return path.join(dir, item)+' \''+path.join(__dirname, dir)+'\'';
+				});
+				console.log(cmds.join('\n'));
+				shell.series(cmds, function(err){
+					if (err){
+						console.log(err);
+						reject(err);
+					}else{
+						resolve();
+					}
+				});
+			}else{
+				resolve();
+			}
+		}else{
+			resolve();
+		}
+	});
+};
+
 
 exports.cloneRoutine = function(repo, to){
 	return new Promise((resolve, reject) => {
@@ -115,7 +144,8 @@ exports.cloneRoutine = function(repo, to){
 		exports.cloneRepo(repo, tmpDir)
 			.then(() => exports.clearRepo(repo, tmpDir))
 			.then(() => fse.ensureDir(path.join(to, repo.dir)))
-			.then(() => exports.moveClearClone(repo, tmpDir, path.join(to, repo.dir)))
+			.then(() => exports.moveCleanClone(repo, tmpDir, path.join(to, repo.dir)))
+			.then(() => exports.execShell(repo, path.join(to, repo.dir)))
 			.then(resolve)
 			.catch(reject);
 	});
@@ -152,8 +182,8 @@ exports.rootCloneRoutine = function(repo, to){
 			.then(() => fse.emptyDir(path.join(to, repo.dir)))
 			.then(() => exports.cloneParents(repo, path.join(to, repo.dir)))
 			.then(() => exports.cloneRepo(repo, tmpDir))
-			.then(() => exports.clearRepo(repo, tmpDir))
-			.then(() => exports.moveClearClone(repo, tmpDir, path.join(to, repo.dir)))
+			.then(() => exports.moveCleanClone(repo, tmpDir, path.join(to, repo.dir)))
+			.then(() => exports.execShell(repo, path.join(to, repo.dir)))
 			.then(resolve)
 			.catch(reject);
 	});

@@ -1,6 +1,6 @@
 {
   "name": "not-node",
-  "version": "2.8.4",
+  "version": "2.8.5",
   "description": "node complimentary part for client side notFramework.",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,8 @@
     "pretest": "npm run lint"
   },
   "bin": {
-    "not-node": "./bin/not-node.js"
+    "not-node": "./bin/not-node.js",
+	"not-builder": "./bin/not-builder.js"
   },
   "repository": {
     "type": "git",
