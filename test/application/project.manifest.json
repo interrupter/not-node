@@ -1,0 +1,60 @@
+{
+	"name": "test project",
+	"targets": {
+		"server": {
+			"name": "TestServerApplication",
+			"roles": ["root", "admin", "client", "user", "guest"],
+			"builder": "server",
+			"root": "app/front/",
+			"src": "app/front/src/",
+			"build": "app/front/build/",
+			"index": "app/front/src/index.template.js",
+			"rollup": "app/front/rollup.template.js",
+			"modules": {
+				"server": {
+					"user": {
+						"some": "options",
+						"another": "option"
+					},
+					"post": {
+						"some": "options",
+						"another": "option"
+					}
+				},
+				"serverModulesDir": "app/server/modules",
+				"front": {
+					"joy": {
+						"some": "options",
+						"another": "option"
+					}
+				},
+				"frontModulesDir": "app/front/src/",
+				"npm": {
+					"not-test-module": {}
+				}
+			}
+		},
+		"editor": {
+			"type": "static",
+			"path": "./editor",
+			"parts": ["editor", "badge", "renderer"],
+			"replace": {
+				"development": {
+					"ROLLUP_ENV_PORT": 9000,
+					"ROLLUP_ENV_HOST": "test",
+					"ROLLUP_ENV_PROTOCOL": "http"
+				},
+				"production": {
+					"ROLLUP_ENV_PORT": 3000,
+					"ROLLUP_ENV_HOST": "test.production",
+					"ROLLUP_ENV_PROTOCOL": "https"
+				},
+				"stage": {
+					"ROLLUP_ENV_PORT": 9000,
+					"ROLLUP_ENV_HOST": "test.stage",
+					"ROLLUP_ENV_PROTOCOL": "https"
+				}
+			}
+		}
+	}
+}

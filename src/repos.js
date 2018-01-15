@@ -7,7 +7,7 @@ module.exports = {
 			files: ['package-lock.json'],
 		},
 		exec: {
-			after: ['init.sh']			
+			after: ['init.sh']
 		}
 	},
 	gallery: {

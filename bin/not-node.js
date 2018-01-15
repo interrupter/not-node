@@ -4,6 +4,9 @@
 
 	not-node project manager
 
+	Usage:
+	not-node --project='gallery' --to='./project'
+
 */
 
 var argv = require('yargs').argv,
@@ -29,7 +32,7 @@ let opts = {
 
 let noRedFlags = function(dir){
 	return new Promise((resolve, reject)=>{
-		if (fs.stat(dir, (err_stat, info)=>{
+		fs.stat(dir, (err_stat, info)=>{
 			if (err_stat){
 				resolve();
 			}else{
@@ -49,7 +52,7 @@ let noRedFlags = function(dir){
 					resolve();
 				}
 			}
-		}));
+		});
 	});
 };
 

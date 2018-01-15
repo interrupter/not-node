@@ -1,4 +1,7 @@
-const Auth = require('../auth/auth.js'),	
+const CONST_BEFORE_ACTION = 'before',
+	CONST_AFTER_ACTION = 'after';
+
+const Auth = require('../auth/auth.js'),
 	HttpError = require('../error').Http;
 
 class notRoute{
@@ -47,7 +50,15 @@ class notRoute{
 			if (mod){
 				let modRoute = mod.getRoute(this.routeName);
 				if (modRoute && modRoute.hasOwnProperty(actionName) && typeof modRoute[actionName] === 'function'){
-					return modRoute[actionName](req, res, next);
+					if (modRoute.hasOwnProperty(CONST_BEFORE_ACTION)){
+						modRoute[CONST_BEFORE_ACTION](req, res, next);
+					}
+					let result = modRoute[actionName](req, res, next);
+					if (modRoute.hasOwnProperty(CONST_AFTER_ACTION)){
+						return modRoute[CONST_AFTER_ACTION](req, res, next);
+					}else{
+						return result;
+					}
 				}else{
 					return null;
 				}

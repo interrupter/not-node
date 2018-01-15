@@ -3,7 +3,9 @@ const fs = require('fs'),
 	fse = require('fs-extra'),
 	rmdir = require('rmdir'),
 	git = require('simple-git'),
+	ejs = require('ejs'),
 	path = require('path'),
+	nconf = require('nconf'),
 	repos = require('./repos.js'),
 	shell = require('./shell.helpers.js');
 
@@ -93,7 +95,7 @@ exports.moveCleanClone = function(repo, from, to){
 					to = to.substring(0, to.length - 1);
 				}
 				let counter = items.length;
-		 		for (let i = 0; i < items.length; i++) {
+				 for (let i = 0; i < items.length; i++) {
 					console.log('moving', path.join(from, items[i]), ' >> ', path.join(to, items[i]));
 					fse.move(path.join(from, items[i]), path.join(to, items[i]), { overwrite: true })
 						.then(()=>{
@@ -115,9 +117,9 @@ exports.execShell = function(repo, dir){
 		// execute multiple commands in series
 		if (repo.exec){
 			if (repo.exec.after && repo.exec.after.length){
-				console.log('exec commands');
+				console.log('exec commands', process.cwd());
 				let cmds = repo.exec.after.map((item)=>{
-					return path.join(dir, item)+' \''+path.join(__dirname, dir)+'\'';
+					return path.join(dir, item)+' '+ path.join(process.cwd(),dir);
 				});
 				console.log(cmds.join('\n'));
 				shell.series(cmds, function(err){
@@ -187,4 +189,28 @@ exports.rootCloneRoutine = function(repo, to){
 			.then(resolve)
 			.catch(reject);
 	});
+};
+
+
+exports.renderScript = function(input, options, dest){
+	return new Promise((resolve ,reject)=>{
+		let js = ejs.renderFile(input, options, (err, res)=>{
+			if(err){
+				reject(err);
+			}else{
+				fs.writeFile(dest, res, (err) => {
+					if (err) {reject(err);}
+					else {resolve();}
+				});
+			}
+		});
+	});
+};
+
+
+exports.getConfReader = function(pathToConfig){
+	nconf.argv().env('__').file({
+		file: pathToConfig
+	});
+	return nconf;
 };

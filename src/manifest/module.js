@@ -2,7 +2,9 @@
 const protoModel = require('../model/proto.js'),
 	fs = require('fs'),
 	path = require('path'),
+	notLocale = require('not-locale'),
 	notManifest = require('./manifest.js');
+
 //defining CONSTS
 const DEFAULT_MANIFEST_FILE_ENDING = '.manifest.js';
 
@@ -47,7 +49,7 @@ class notModule {
 	initFromModule() {
 		try {
 			this.registerContent();
-		} catch (e) {			
+		} catch (e) {
 			this.faulty = true;
 		}
 	}
@@ -59,6 +61,15 @@ class notModule {
 			}
 			if (this.module.paths.routes) {
 				this.findRoutesIn(this.module.paths.routes);
+			}
+			if (this.module.paths.locales) {
+				notLocale.fromDir(this.module.paths.locales);
+			}
+			if (this.module.paths.controllers) {
+
+			}
+			if (this.module.paths.views) {
+
 			}
 		}
 	}

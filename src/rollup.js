@@ -15,24 +15,6 @@ import cssnext from 'postcss-cssnext';
 import envReplace from 'postcss-env-replace';
 import cssnano from 'cssnano';
 
-var replaceSets = {
-	development: {
-		ROLLUP_ENV_PORT: 9000,
-		ROLLUP_ENV_HOST: 'muse',
-		ROLLUP_ENV_PROTOCOL: 'http'
-	},
-	production: {
-		ROLLUP_ENV_PORT: 3000,
-		ROLLUP_ENV_HOST: 'framemuse.ru',
-		ROLLUP_ENV_PROTOCOL: 'https'
-	},
-	stage: {
-		ROLLUP_ENV_PORT: 9000,
-		ROLLUP_ENV_HOST: 'framemuse.ru',
-		ROLLUP_ENV_PROTOCOL: 'https'
-	},
-};
-
 let replacerOpts = {
 	ENV: JSON.stringify(process.env.NODE_ENV || 'development')
 },
