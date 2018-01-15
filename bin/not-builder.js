@@ -129,7 +129,7 @@ async function loadFrontModules(){
 		for(let i = 0; i < roles.length; i++){
 			result[roles[i]] = [];
 		}
-		let modulesDirList = await listDir(pathToModules);		
+		let modulesDirList = await listDir(pathToModules);
 		if (modulesDirList.indexOf('common') > -1){
 			result = initList(roles, path.join(pathToModules, 'common'));
 		}
@@ -229,7 +229,7 @@ async function build_Server(pathToRoot, roles, targetName, targetManifest){
 				inputPath: indexFile,
 				outputPath: bundleFile
 			}, rollupFile);
-			let proc = child_process.spawn(opts.rollup, ['-c', rollupFile], {
+			child_process.execFileSync(opts.rollup, ['-c', rollupFile], {
 				env : {
 					NODE_ENV: opts.environment
 				}
