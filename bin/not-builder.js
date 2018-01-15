@@ -40,6 +40,9 @@ function listDir(dir){
 						if(err_readdir){
 							reject('Error while reading directory file list.');
 						}else{
+							files.filter((item)=>{
+								return fs.lstatSync(path.join(dir, item)).isDirectory();
+							});
 							resolve(files);
 						}
 					});
