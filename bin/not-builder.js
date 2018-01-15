@@ -228,7 +228,7 @@ async function build_Server(pathToRoot, roles, targetName, targetManifest){
 				inputPath: indexFile,
 				outputPath: bundleFile
 			}, rollupFile);
-			let proc = child_process.spawn(path.join(__dirname, '../node_modules/.bin/rollup'), ['-c', rollupFile], {
+			let proc = child_process.spawn('rollup', ['-c', rollupFile], {
 				env : {
 					NODE_ENV: opts.environment
 				}
