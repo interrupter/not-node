@@ -152,7 +152,7 @@ async function loadServerModulesFromDir(){
 		for(let i = 0; i < modulesDirList.length; i++){
 			let moduleName = modulesDirList[i];
 			console.info('Import from', moduleName);
-			let modOptions = modsOptions.hasOwnProperty[moduleName]?modsOptions[moduleName]:{};
+			let modOptions = (modsOptions&&modsOptions.hasOwnProperty[moduleName])?modsOptions[moduleName]:{};
 			let pathToModule = path.join(pathToModules, moduleName);
 			let partList = await loadServerModule({pathToModule, roles, modName: moduleName, modOptions});
 			list = deepMerge(list, partList);
