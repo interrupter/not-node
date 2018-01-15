@@ -25,6 +25,7 @@ let opts = {
 		'environment': argv.environment || 'production',
 		'to': argv.to || false,
 		'config': argv.config || './project.manifest.json',
+		'rollup': argv.rollup || path.join(process.cwd(),'./node_modules/.bin/rollup'),
 	},
 	configName = path.join(process.cwd(), opts.config),
 	config={};
@@ -128,7 +129,7 @@ async function loadFrontModules(){
 		for(let i = 0; i < roles.length; i++){
 			result[roles[i]] = [];
 		}
-		let modulesDirList = await listDir(pathToModules);
+		let modulesDirList = await listDir(pathToModules);		
 		if (modulesDirList.indexOf('common') > -1){
 			result = initList(roles, path.join(pathToModules, 'common'));
 		}
@@ -197,7 +198,7 @@ async function build_Server(pathToRoot, roles, targetName, targetManifest){
 			console.info('no custom server modules in manifest');
 		}
 		/////searching for front modules
-		if (targetManifest.modules.front){
+		if (targetManifest.modules.frontModulesDir){
 			console.info('Import custom front modules from', targetManifest.modules.frontModulesDir,':');
 			try{
 				let mass = targetManifest.modules.front;
@@ -228,7 +229,7 @@ async function build_Server(pathToRoot, roles, targetName, targetManifest){
 				inputPath: indexFile,
 				outputPath: bundleFile
 			}, rollupFile);
-			let proc = child_process.spawn('rollup', ['-c', rollupFile], {
+			let proc = child_process.spawn(opts.rollup, ['-c', rollupFile], {
 				env : {
 					NODE_ENV: opts.environment
 				}
