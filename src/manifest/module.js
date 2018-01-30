@@ -160,7 +160,7 @@ class notModule {
 	}
 
 	getModel(modelName) {
-		let modelFile = this.getModel(modelName);
+		let modelFile = this.getModelFile(modelName);
 		if (modelFile && modelFile.hasOwnProperty(modelName)) {
 			return modelFile[modelName];
 		}
