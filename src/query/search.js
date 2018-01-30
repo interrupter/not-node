@@ -17,7 +17,7 @@ const getBoolean = (val) => {
 	}
 };
 
-module.exports = (requestQuery, modelSchema) => {
+exports.getSearch = (requestQuery, modelSchema) => {
 	var result = [],t;
 	//есть ли фильтрация по полям
 	if (requestQuery.hasOwnProperty('search') && requestQuery.search !== null && requestQuery.search.length > 0) {

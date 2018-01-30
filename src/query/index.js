@@ -5,12 +5,16 @@ const filter = require('./filter'),
 
 exports.parse = (queryString, modelSchema) => {
 	return {
-		filter: filter.parse(queryString.filter, modelSchema),
-		search: search.parse(queryString.search, modelSchema),
-		sorter: sorter.parse(queryString.sorter, modelSchema)
+		filter: filter.getFilter(queryString.filter, modelSchema),
+		search: search.getSearch(queryString.search, modelSchema),
+		sorter: sorter.getSorter(queryString.sorter, modelSchema)
 	};
 };
 
 exports.filter = filter;
 exports.search = search;
 exports.sorter = sorter;
+
+exports.getFilter = filter.getFilter;
+exports.getSearch = search.getSearch;
+exports.getSorter = sorter.getSorter;

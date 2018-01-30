@@ -17,6 +17,7 @@ class notModule {
 		this.description = {};
 		this.routes = {};
 		this.models = {};
+		this.mixins = {};
 		this.manifests = {};
 		this.faulty = false;
 		this.paths = {
@@ -59,18 +60,22 @@ class notModule {
 			if (this.module.paths.models) {
 				this.findModelsIn(this.module.paths.models);
 			}
+			if (this.module.paths.mixins) {
+				this.findMixinsIn(this.module.paths.mixins);
+			}
 			if (this.module.paths.routes) {
 				this.findRoutesIn(this.module.paths.routes);
 			}
 			if (this.module.paths.locales) {
 				notLocale.fromDir(this.module.paths.locales);
 			}
+			/*
 			if (this.module.paths.controllers) {
 
 			}
 			if (this.module.paths.views) {
 
-			}
+			}*/
 		}
 	}
 
@@ -84,6 +89,20 @@ class notModule {
 					modelName = model.thisModelName;
 				}
 				this.registerModel(model, modelName);
+			}
+		}.bind(this));
+	}
+
+	findMixinsIn(mixinsPath) {
+		fs.readdirSync(mixinsPath).forEach(function(file) {
+			let mixinPath = path.join(mixinsPath, file);
+			if (fs.lstatSync(mixinPath).isFile()) {
+				let mixin = require(mixinPath),
+					modelName = file;
+				if (mixin && mixin.modelName) {
+					modelName = mixin.modelName;
+				}
+				this.registerMixin(mixin, modelName);
 			}
 		}.bind(this));
 	}
@@ -112,9 +131,12 @@ class notModule {
 	}
 
 	registerModel(model, modelName) {
-		protoModel.fabricate(model, {}, this.mongoose);
 		model.getModel = this.notApp.getModel.bind(this.notApp);
 		this.models[modelName] = model;
+	}
+
+	registerMixin(mixin, modelName) {
+		this.mixins[modelName] = mixin;
 	}
 
 	registerRoute(route, routeName) {
@@ -138,6 +160,14 @@ class notModule {
 		}
 	}
 
+	getMixin(modelName) {
+		if (this.mixins && this.mixins.hasOwnProperty(modelName)) {
+			return this.mixins[modelName];
+		} else {
+			return null;
+		}
+	}
+
 	getRoute(routeName) {
 		if (this.routes && this.routes.hasOwnProperty(routeName)) {
 			return this.routes[routeName];
@@ -146,13 +176,40 @@ class notModule {
 		}
 	}
 
+	fabricateModel(model, mixins){
+		if (mixins && Array.isArray(mixins) && mixins.length){
+			for(let mixin of mixins){
+				if (model.thisSchema && mixin.schema){
+					model.thisSchema = Object.assign(model.thisSchema, mixin.schema);
+				}
+				if (model.thisMethods && mixin.methods){
+					model.thisMethods = Object.assign(model.thisMethods, mixin.methods);
+				}
+				if (model.thisStatics && mixin.statics){
+					model.thisStatics = Object.assign(model.thisStatics, mixin.statics);
+				}
+				if (model.thisVirtuals && mixin.virtuals){
+					model.thisVirtuals = Object.assign(model.thisVirtuals, mixin.virtuals);
+				}
+			}
+		}
+		protoModel.fabricate(model, {}, this.mongoose);
+	}
+
+	fabricateModels(){
+		for(let modelName in this.models){
+			let modelMixins = this.notApp.getModelMixins(modelName);
+			this.fabricateModel(this.models[modelName], modelMixins);
+		}
+	}
+
 	expose(app, moduleName) {
 		if (this.manifests && app) {
+			this.fabricateModels();
 			this.manifest = new notManifest(app, this.notApp, moduleName);
 			this.manifest.registerRoutes(this.manifests);
 		}
 	}
-
 }
 
 module.exports = notModule;

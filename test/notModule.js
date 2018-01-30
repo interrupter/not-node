@@ -1,8 +1,8 @@
-const expect = require("chai").expect,
+const expect = require('chai').expect,
 	HttpError = require('../src/error').Http,
-	notModule = require("../src/manifest/module"),
+	notModule = require('../src/manifest/module'),
 	mongoose = require('mongoose'),
-	increment = require("../src/model/increment"),
+	increment = require('../src/model/increment'),
 	validators = require('./validators'),
 	modulesPath = __dirname + '/modules',
 	modulePath = __dirname + '/module';
@@ -22,7 +22,7 @@ const moduleManifest = {
 	}
 };
 
-describe("notModule", function () {
+describe('notModule', function () {
 	before(function (done) {
 		mongoose.disconnect((err) => {
 			done(err);
@@ -35,8 +35,8 @@ describe("notModule", function () {
 		});
 	});
 
-	describe("constructor", function () {
-		it("With init from path", function () {
+	describe('constructor', function () {
+		it('With init from path', function () {
 			var mod = new notModule({
 				modPath: modulePath,
 				mongoose: mongoose
@@ -48,7 +48,7 @@ describe("notModule", function () {
 			expect(mod.getModel('UserLocal')).to.be.ok;
 		});
 
-		it("With init from module", function () {
+		it('With init from module', function () {
 			var mod = new notModule({
 				modObject: require('./module'),
 				mongoose: mongoose
@@ -61,8 +61,8 @@ describe("notModule", function () {
 
 	});
 
-	describe("getManifest", function () {
-		it("Get module manifest", function () {
+	describe('getManifest', function () {
+		it('Get module manifest', function () {
 			var mod = new notModule({
 				modObject: require('./module'),
 				mongoose: mongoose

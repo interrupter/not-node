@@ -24,7 +24,6 @@ exports.add = function (model, data) {
 	let thisModel = model,
 		that = this;
 	return new Promise((resolve, reject) => {
-
 		if (model.__incField) {
 			incrementNext.next(model.__incModel)
 				.then((modelId) => {

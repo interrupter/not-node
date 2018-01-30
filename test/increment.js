@@ -1,12 +1,12 @@
-const expect = require("chai").expect,
-	should = require("chai").should(),
+const expect = require('chai').expect,
+	should = require('chai').should(),
 	mongoose = require('mongoose'),
 	mockgoose = require('mockgoose'),
-	increment = require("../src/model/increment"),
+	increment = require('../src/model/increment'),
 	HttpError = require('../src/error').Http;
 
 
-describe("Increment", function () {
+describe('Increment', function () {
 
 	before(function (done) {
 		mockgoose(mongoose).then(() => {
@@ -18,18 +18,18 @@ describe("Increment", function () {
 		});
 	});
 	/*
-			it("before init", function() {
+			it('before init', function() {
 				expect(increment.next).to.not.exist;
 				expect(increment.model).to.not.exist;
 			});
 	*/
-	it("after init", function () {
+	it('after init', function () {
 		var res = increment.init(mongoose);
 		expect(increment.next).to.exist;
 		expect(increment.model).to.exist;
 	});
 
-	it("getNext, first time", function (done) {
+	it('getNext, first time', function (done) {
 		var ifOk = function (nextID) {
 				expect(nextID).to.deep.equal(1);
 				done();
@@ -38,11 +38,11 @@ describe("Increment", function () {
 				done(err);
 			},
 			res = increment.next('modelName')
-			.then(ifOk)
-			.catch(ifFailure);
+				.then(ifOk)
+				.catch(ifFailure);
 	});
 
-	it("getNext, second time", function (done) {
+	it('getNext, second time', function (done) {
 		var ifOk = function (nextID) {
 				expect(nextID).to.deep.equal(2);
 				done();
@@ -51,17 +51,17 @@ describe("Increment", function () {
 				done(err);
 			},
 			res = increment.next('modelName')
-			.then(ifOk)
-			.catch(ifFailure);
+				.then(ifOk)
+				.catch(ifFailure);
 	});
 
-	it("init, second time", function () {
+	it('init, second time', function () {
 		increment.init(mongoose);
 		expect(increment.next).to.exist;
 		expect(increment.model).to.exist;
 	});
 
-	it("getNext, with error", function (done) {
+	it('getNext, with error', function (done) {
 		var ifOk = function (nextID) {
 				done();
 			},
@@ -73,8 +73,8 @@ describe("Increment", function () {
 				some: 1,
 				object: 2
 			})
-			.then(ifOk)
-			.catch(ifFailure);
+				.then(ifOk)
+				.catch(ifFailure);
 	});
 
 	after(function (done) {

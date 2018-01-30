@@ -20,11 +20,11 @@ class notApp{
 
 	importModuleFrom(modulePath, moduleName){
 		let mod = new notModule({
-				modPath:modulePath,
-				modObject: null,
-				mongoose: this.options.mongoose,
-				notApp: this
-			});
+			modPath:modulePath,
+			modObject: null,
+			mongoose: this.options.mongoose,
+			notApp: this
+		});
 		if (mod){
 			this.importModule(mod, moduleName || mod.description.name);
 		}
@@ -45,7 +45,7 @@ class notApp{
 		return manifest;
 	}
 
-/*
+	/*
 	modelName - 'User', 'moduleName//User'
 */
 	getModel(modelName){
@@ -71,6 +71,21 @@ class notApp{
 			}
 		}
 		return (result && result.length === 1)?result[0]:result;
+	}
+
+	getModelMixins(modelName){
+		let result = [],
+			mNames = Object.keys(this.modules);
+		for(let mod of this.modules){
+			if (!mod){
+				continue;
+			}
+			let tmp = mod.getMixin(modelName);
+			if (tmp){
+				result.push(tmp);
+			}
+		}
+		return result;
 	}
 
 	getModule(moduleName){

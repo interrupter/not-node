@@ -1,13 +1,13 @@
-const expect = require("chai").expect,
+const expect = require('chai').expect,
 	mockgoose = require('mockgoose'),
 	mongoose = require('mongoose'),
 	fabricateModel = require('../src/model/proto').fabricate,
 	userProto = require('./module/models/user.js'),
 	increment = require('../src/model/increment.js'),
 	plainProto = require('./module/models/plainModel.js'),
-	routine = require("../src/model/routine");
+	routine = require('../src/model/routine');
 
-describe("Model/Routine", function () {
+describe('Model/Routine', function () {
 	before(function (done) {
 		mockgoose(mongoose).then(function () {
 			mongoose.Promise = global.Promise;
@@ -20,7 +20,7 @@ describe("Model/Routine", function () {
 		});
 	});
 
-	it("returnErrors", function (done) {
+	it('returnErrors', function (done) {
 		var err = routine.returnErrors({
 			errors: {
 				fieldName: {
@@ -34,12 +34,12 @@ describe("Model/Routine", function () {
 		});
 	});
 
-	it("addWithoutVersion", function (done) {
+	it('addWithoutVersion', function (done) {
 		var PlainModel = plainProto.PlainModel;
 		routine.addWithoutVersion(PlainModel, {
-				name: 'User name 1',
-				price: 10
-			})
+			name: 'User name 1',
+			price: 10
+		})
 			.then((item) => {
 				expect(item).to.exist;
 				expect(item.plainModelID).to.not.exist;
@@ -52,11 +52,11 @@ describe("Model/Routine", function () {
 			});
 	});
 
-	it("addWithoutVersion with validation error", function (done) {
+	it('addWithoutVersion with validation error', function (done) {
 		var PlainModel = plainProto.PlainModel;
 		routine.addWithoutVersion(PlainModel, {
-				name: 'User name 1'
-			})
+			name: 'User name 1'
+		})
 			.then((item) => {
 				expect(item).to.not.exist;
 				done();
@@ -68,13 +68,13 @@ describe("Model/Routine", function () {
 			});
 	});
 
-	it("addWithVersion", function (done) {
+	it('addWithVersion', function (done) {
 		var User = userProto.UserLocal;
 		routine.addWithVersion(User, {
-				name: 'User name 1',
-				userLocalID: 1,
-				price: 10
-			})
+			name: 'User name 1',
+			userLocalID: 1,
+			price: 10
+		})
 			.then((item) => {
 				expect(item).to.exist;
 				expect(item.userLocalID).to.exist;
@@ -88,12 +88,12 @@ describe("Model/Routine", function () {
 			});
 	});
 
-	it("addWithVersion with validation error", function (done) {
+	it('addWithVersion with validation error', function (done) {
 		var User = userProto.UserLocal;
 		routine.addWithVersion(User, {
-				name: 'User name 1',
-				price: 10
-			})
+			name: 'User name 1',
+			price: 10
+		})
 			.then((item) => {
 				expect(item).to.not.exist;
 				done();
@@ -105,12 +105,12 @@ describe("Model/Routine", function () {
 			});
 	});
 
-	it("add - versioning OFF", function (done) {
+	it('add - versioning OFF', function (done) {
 		var PlainModel = plainProto.PlainModel;
 		routine.add(PlainModel, {
-				name: 'User name 1',
-				price: 10
-			})
+			name: 'User name 1',
+			price: 10
+		})
 			.then((item) => {
 				expect(item).to.exist;
 				expect(item.plainModelID).to.not.exist;
@@ -123,13 +123,13 @@ describe("Model/Routine", function () {
 			});
 	});
 
-	it("add - versioning ON, ID=1", function (done) {
+	it('add - versioning ON, ID=1', function (done) {
 		var User = userProto.UserLocal;
 		expect(userProto.mongooseSchema.methods).to.have.keys(['close', 'getID']);
 		routine.add(User, {
-				name: 'User name 1',
-				price: 10
-			})
+			name: 'User name 1',
+			price: 10
+		})
 			.then((item) => {
 				expect(item).to.exist;
 				expect(item.userLocalID).to.exist;
@@ -144,12 +144,12 @@ describe("Model/Routine", function () {
 			});
 	});
 
-	it("add - versioning ON, ID=2", function (done) {
+	it('add - versioning ON, ID=2', function (done) {
 		var User = userProto.UserLocal;
 		routine.add(User, {
-				name: 'User name 12',
-				price: 11
-			})
+			name: 'User name 12',
+			price: 11
+		})
 			.then((item) => {
 				expect(item).to.exist;
 				expect(item.userLocalID).to.exist;

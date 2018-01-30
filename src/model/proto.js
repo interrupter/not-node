@@ -1,196 +1,7 @@
 const enrich = require('./enrich'),
-	routine = require('./routine'),
 	saveVersion = require('./versioning'),
-	Schema = require('mongoose').Schema;
-
-exports.extractVariants = function (items) {
-	var variants = [];
-	if (items && items.length) {
-		for (var i = 0; i < items.length; i++) {
-			variants.push(items[i].getVariant());
-		}
-	}
-	return variants;
-};
-
-let populateQuery = (query, populate) => {
-	if (populate && populate.length) {
-		while (populate.length > 0) {
-			query.populate({
-				path: populate.shift(),
-				match: {
-					__latest: true
-				}
-			});
-		}
-	}
-};
-
-var defaultStatics = {
-	sanitizeInput(input) {
-		if (!input.hasOwnProperty('default')) {
-			input.default = false;
-		}
-		return input;
-	},
-	getOne(id, callback) {
-		let thisModel = this;
-		if (thisModel.schema.statics.__versioning) {
-			let query = thisModel.findOne({
-				_id: id,
-				__latest: true,
-				__closed: false
-			}).populate('__versions');
-			if (callback) {
-				query.exec(callback);
-			} else {
-				return query.exec();
-			}
-		} else {
-			let query = thisModel.findOne({
-				_id: id
-			});
-			if (callback) {
-				query.exec(callback);
-			} else {
-				return query.exec();
-			}
-		}
-	},
-	getOneByID(ID, callback) {
-		let thisModel = this;
-		if (thisModel.schema.statics.__incField) {
-			let by = (thisModel.schema.statics.__versioning ? {
-					__latest: true,
-					__closed: false
-				} : {}),
-				query;
-			by[thisModel.schema.statics.__incField] = ID;
-			query = thisModel.findOne(by);
-			if (callback) {
-				query.exec(callback);
-			} else {
-				return query.exec();
-			}
-
-		} else {
-			callback(null, null);
-		}
-	},
-	getOneRaw(id, callback) {
-		let thisModel = this,
-			query = thisModel.findOne({
-				_id: id
-			});
-		if (callback) {
-			query.exec(callback);
-		} else {
-			return query.exec();
-		}
-	},
-	list(skip, size, sorter, filter, callback){
-		let thisModel = this,
-			by = thisModel.schema.statics.__versioning ? {
-				__latest: true,
-				__closed: false
-			} : {},
-			query = thisModel.find(by);
-		if (Array.isArray(filter) && filter.length > 0) {
-			if (by.hasOwnProperty('__latest')) {
-				query.or(filter);
-			} else {
-				let t = {};
-				while (Object.getOwnPropertyNames(t).length === 0 && filter.length > 0) {
-					t = filter.pop();
-				}
-				if (Object.getOwnPropertyNames(t).length > 0) {
-					query = thisModel.find(t);
-					if (filter.length > 0) {
-						query.or(filter);
-					}
-				}
-			}
-		}
-		if (callback) {
-			query.sort(sorter).skip(skip).limit(size).exec(callback);
-		} else {
-			return query.sort(sorter).skip(skip).limit(size).exec();
-		}
-	},/*
-	list() {
-		let [skip, size, sorter, filter, callback] = arguments;
-		return this.listObsolete(skip, size, sorter, filter, callback);
-	},*/
-	//this written in promise style
-	listAndPopulate(skip, size, sorter, filter, populate) {
-		let thisModel = this,
-			by = thisModel.schema.statics.__versioning ? {
-				__latest: true,
-				__closed: false
-			} : {},
-			query = thisModel.find(by);
-		if (Array.isArray(filter) && filter.length > 0) {
-			if (by.hasOwnProperty('__latest')) {
-				query.or(filter);
-			} else {
-				let t = {};
-				while (Object.getOwnPropertyNames(t).length === 0 && filter.length > 0) {
-					t = filter.pop();
-				}
-				if (Object.getOwnPropertyNames(t).length > 0) {
-					query = thisModel.find(t);
-					if (filter.length > 0) {
-						query.or(filter);
-					}
-				}
-			}
-		}
-		query.sort(sorter).skip(skip).limit(size);
-		populateQuery(query, populate);
-		return query.exec();
-	},
-	add(data) {
-		return routine.add(this, data);
-	},
-	listAll(callback) {
-		let thisModel = this,
-			by = (thisModel.schema.statics.__versioning ? {
-				__latest: true,
-				__closed: false
-			} : {}),
-			query = thisModel.find(by).sort([
-				['_id', 'descending']
-			]);
-		if (callback) {
-			query.exec(callback);
-		} else {
-			return query.exec();
-		}
-	},
-	listAllAndPopulate(populate) {
-		let thisModel = this,
-			by = thisModel.schema.statics.__versioning ? {
-				__latest: true,
-				__closed: false
-			} : {},
-			query = thisModel.find(by);
-		query.sort([
-			['_id', 'descending']
-		]);
-		populateQuery(query, populate);
-		return query.exec();
-	}
-};
-
-var defaultMethods = {
-	getID: function () {
-		return this.schema.statics.__incField ? this[this.schema.statics.__incField] : 0;
-	},
-	close() {
-		this.__closed = true;
-		this.save();
-	}
-};
+	Schema = require('mongoose').Schema,
+	defaultModel= require('./default');
 
 exports.fabricate = function (targetModule, options, mongoose) {
 
@@ -258,15 +69,21 @@ exports.fabricate = function (targetModule, options, mongoose) {
 			}
 		}
 
-		for (let st in defaultStatics) {
+		for (let st in defaultModel.statics) {
 			if (!schema.statics.hasOwnProperty(st)) {
-				schema.statics[st] = defaultStatics[st];
+				schema.statics[st] = defaultModel.statics[st];
 			}
 		}
 
-		for (let st in defaultMethods) {
+		for (let st in defaultModel.methods) {
 			if (!schema.methods.hasOwnProperty(st)) {
-				schema.methods[st] = defaultMethods[st];
+				schema.methods[st] = defaultModel.methods[st];
+			}
+		}
+
+		for (let st in defaultModel.virtuals) {
+			if (!schema.virtuals.hasOwnProperty(st)) {
+				schema.virtuals[st] = defaultModel.virtuals[st];
 			}
 		}
 	}
