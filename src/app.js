@@ -76,7 +76,8 @@ class notApp{
 	getModelMixins(modelName){
 		let result = [],
 			mNames = Object.keys(this.modules);
-		for(let mod of this.modules){
+		for(let modName of mNames){
+			let mod = this.modules[modName];
 			if (!mod){
 				continue;
 			}
