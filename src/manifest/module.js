@@ -152,12 +152,19 @@ class notModule {
 		return this.manifests;
 	}
 
-	getModel(modelName) {
+	getModelFile(modelName) {
 		if (this.models && this.models.hasOwnProperty(modelName)) {
 			return this.models[modelName];
-		} else {
-			return null;
 		}
+		return null;
+	}
+
+	getModel(modelName) {
+		let modelFile = this.getModel(modelName);
+		if (modelFile && modelFile.hasOwnProperty(modelName)) {
+			return modelFile[modelName];
+		}
+		return null;
 	}
 
 	getMixin(modelName) {
