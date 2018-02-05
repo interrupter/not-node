@@ -1,6 +1,6 @@
 {
 	"name": "not-node",
-	"version": "3.0.5",
+	"version": "3.1.0",
 	"description": "node complimentary part for client side notFramework.",
 	"main": "index.js",
 	"scripts": {
@@ -8,7 +8,7 @@
 		"lint": "./node_modules/.bin/eslint ./src/**/**",
 		"pretest": "./node_modules/.bin/eslint ./src/**/**",
 		"docs": "./node_modules/.bin/jsdoc -c jsdoc.json",
-		"cover": "istanbul cover _mocha $(find ./test -name \"*.js\" -not -path \"./node_modules/*\")"
+		"cover": "istanbul cover _mocha $(find ./test -name \"*.js\" -not -path \"./node_modules/*\" -not -path \"./test/module/*\" -not -path \"./test/application/*\"  -not -path \"./test/modules/*\" -not -path \"./test/package/*\" -not -path \"./test/routes/*\")"
 	},
 	"bin": {
 		"not-node": "./bin/not-node.js",

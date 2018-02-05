@@ -88,6 +88,30 @@ exports.statics = {
 		}
 		return query.sort(sorter).skip(skip).limit(size).exec();
 	},
+	count(filter){
+		let by = this.schema.statics.__versioning ? {
+				__latest: true,
+				__closed: false
+			} : {},
+			query = this.count(by);
+		if (Array.isArray(filter) && filter.length > 0) {
+			if (by.hasOwnProperty('__latest')) {
+				query.or(filter);
+			} else {
+				let t = {};
+				while (Object.getOwnPropertyNames(t).length === 0 && filter.length > 0) {
+					t = filter.pop();
+				}
+				if (Object.getOwnPropertyNames(t).length > 0) {
+					query = this.find(t);
+					if (filter.length > 0) {
+						query.or(filter);
+					}
+				}
+			}
+		}
+		return query.exec();
+	},
 	listAndPopulate(skip, size, sorter, filter, populate) {
 		let by = this.schema.statics.__versioning ? {
 				__latest: true,
