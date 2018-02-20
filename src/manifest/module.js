@@ -116,14 +116,18 @@ class notModule {
 					routeManifestPath = path.join(routesPath, file);
 				//проверяем есть ли файл роутов и манифеста
 				if (fs.lstatSync(routePath).isFile() && fs.lstatSync(routeManifestPath).isFile()) {
-					let route = require(routePath),
-						routeManifest = require(routeManifestPath),
-						routeName = routeBasename;
-					if (route && route.thisRouteName) {
-						routeName = route.thisRouteName;
+					try{
+						let route = require(routePath),
+							routeManifest = require(routeManifestPath),
+							routeName = routeBasename;
+						if (route && route.thisRouteName) {
+							routeName = route.thisRouteName;
+						}
+						this.registerRoute(route, routeName);
+						this.registerManifest(routeManifest, routeName);
+					}catch(e){
+						console.error(e);
 					}
-					this.registerRoute(route, routeName);
-					this.registerManifest(routeManifest, routeName);
 				}
 			}
 
