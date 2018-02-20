@@ -88,7 +88,7 @@ exports.statics = {
 		}
 		return query.sort(sorter).skip(skip).limit(size).exec();
 	},
-	count(filter){
+	countWithFilter(filter){
 		let by = this.schema.statics.__versioning ? {
 				__latest: true,
 				__closed: false
