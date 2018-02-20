@@ -73,7 +73,7 @@ class notApp{
 		return (result && result.length === 1)?result[0]:result;
 	}
 
-	getModelFile(){
+	getModelFile(modelName){
 		let result = null;
 		if (modelName.indexOf('//') > 0){
 			let [moduleName, modelName] = modelName.split('//');
@@ -98,7 +98,7 @@ class notApp{
 		return (result && result.length === 1)?result[0]:result;
 	}
 
-	getModelSchema(){
+	getModelSchema(modelName){
 		let result = null;
 		if (modelName.indexOf('//') > 0){
 			let [moduleName, modelName] = modelName.split('//');
