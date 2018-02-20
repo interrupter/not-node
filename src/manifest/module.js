@@ -132,6 +132,8 @@ class notModule {
 
 	registerModel(model, modelName) {
 		model.getModel = this.notApp.getModel.bind(this.notApp);
+		model.getModelFile = this.notApp.getModelFile.bind(this.notApp);
+		model.getModelSchema = this.notApp.getModelSchema.bind(this.notApp);
 		model.getModule = this.notApp.getModule.bind(this.notApp);
 		this.models[modelName] = model;
 	}
@@ -143,6 +145,8 @@ class notModule {
 	registerRoute(route, routeName) {
 		this.routes[routeName] = route;
 		route.getModel = this.notApp.getModel.bind(this.notApp);
+		route.getModelFile = this.notApp.getModelFile.bind(this.notApp);
+		route.getModelSchema = this.notApp.getModelSchema.bind(this.notApp);
 		route.getModule = this.notApp.getModule.bind(this.notApp);
 	}
 
@@ -165,6 +169,14 @@ class notModule {
 		let modelFile = this.getModelFile(modelName);
 		if (modelFile && modelFile.hasOwnProperty(modelName)) {
 			return modelFile[modelName];
+		}
+		return null;
+	}
+
+	getModelSchema(modelName) {
+		let modelFile = this.getModelFile(modelName);
+		if (modelFile && modelFile.hasOwnProperty(modelName) && modelFile.thisSchema) {
+			return modelFile.thisSchema;
 		}
 		return null;
 	}

@@ -73,6 +73,56 @@ class notApp{
 		return (result && result.length === 1)?result[0]:result;
 	}
 
+	getModelFile(){
+		let result = null;
+		if (modelName.indexOf('//') > 0){
+			let [moduleName, modelName] = modelName.split('//');
+			if (this.modules && this.modules.hasOwnProperty(moduleName)){
+				return this.modules.getModelFile(modelName);
+			}else{
+				return result;
+			}
+		}else{
+			let mNames = Object.keys(this.modules);
+			for(let t = 0; t < mNames.length; t++){
+				if (!this.modules.hasOwnProperty(mNames[t])){
+					continue;
+				}
+				let tmp = this.modules[mNames[t]].getModelFile(modelName);
+				if (tmp){
+					if(!result) {result = [];}
+					result.push(tmp);
+				}
+			}
+		}
+		return (result && result.length === 1)?result[0]:result;
+	}
+
+	getModelSchema(){
+		let result = null;
+		if (modelName.indexOf('//') > 0){
+			let [moduleName, modelName] = modelName.split('//');
+			if (this.modules && this.modules.hasOwnProperty(moduleName)){
+				return this.modules.getModelSchema(modelName);
+			}else{
+				return result;
+			}
+		}else{
+			let mNames = Object.keys(this.modules);
+			for(let t = 0; t < mNames.length; t++){
+				if (!this.modules.hasOwnProperty(mNames[t])){
+					continue;
+				}
+				let tmp = this.modules[mNames[t]].getModelSchema(modelName);
+				if (tmp){
+					if(!result) {result = [];}
+					result.push(tmp);
+				}
+			}
+		}
+		return (result && result.length === 1)?result[0]:result;
+	}
+
 	getModelMixins(modelName){
 		let result = [],
 			mNames = Object.keys(this.modules);
