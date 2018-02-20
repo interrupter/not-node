@@ -132,6 +132,7 @@ class notModule {
 
 	registerModel(model, modelName) {
 		model.getModel = this.notApp.getModel.bind(this.notApp);
+		model.getModule = this.notApp.getModule.bind(this.notApp);
 		this.models[modelName] = model;
 	}
 
@@ -142,6 +143,7 @@ class notModule {
 	registerRoute(route, routeName) {
 		this.routes[routeName] = route;
 		route.getModel = this.notApp.getModel.bind(this.notApp);
+		route.getModule = this.notApp.getModule.bind(this.notApp);
 	}
 
 	registerManifest(manifest, routeName) {
