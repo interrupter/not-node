@@ -89,8 +89,8 @@ exports.fabricate = function (targetModule, options, mongoose) {
 	}
 	targetModule.mongooseSchema = schema;
 	try {
-		targetModule[targetModule.thisModelName] = mongoose.model(targetModule.thisModelName);
-	} catch (error) {
 		targetModule[targetModule.thisModelName] = mongoose.model(targetModule.thisModelName, schema);
+	} catch (error) {
+		console.error(error);
 	}
 };
