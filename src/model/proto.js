@@ -1,7 +1,8 @@
 const enrich = require('./enrich'),
 	saveVersion = require('./versioning'),
 	Schema = require('mongoose').Schema,
-	defaultModel= require('./default');
+	defaultModel= require('./default'),
+	log = require('not-log')(module);
 
 exports.fabricate = function (targetModule, options, mongoose) {
 
@@ -91,6 +92,6 @@ exports.fabricate = function (targetModule, options, mongoose) {
 	try {
 		targetModule[targetModule.thisModelName] = mongoose.model(targetModule.thisModelName, schema);
 	} catch (error) {
-		console.error(error);
+		log.error(error);
 	}
 };

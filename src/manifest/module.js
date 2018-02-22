@@ -3,6 +3,7 @@ const protoModel = require('../model/proto.js'),
 	fs = require('fs'),
 	path = require('path'),
 	notLocale = require('not-locale'),
+	log = require('not-log')(module),
 	notManifest = require('./manifest.js');
 
 //defining CONSTS
@@ -126,7 +127,7 @@ class notModule {
 						this.registerRoute(route, routeName);
 						this.registerManifest(routeManifest, routeName);
 					}catch(e){
-						console.error(e);
+						log.error(e);
 					}
 				}
 			}

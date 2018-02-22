@@ -1,4 +1,7 @@
 const routine = require('./routine');
+
+const notQuery = require('not-filter');
+
 exports.extractVariants = function (items) {
 	var variants = [];
 	if (items && items.length) {
@@ -64,76 +67,50 @@ exports.statics = {
 		});
 		return query.exec();
 	},
-	list(skip, size, sorter, filter){
-		let by = this.schema.statics.__versioning ? {
+	makeQuery(method,filter){
+		let versioningMod = {
 				__latest: true,
 				__closed: false
-			} : {},
-			query = this.find(by);
-		if (Array.isArray(filter) && filter.length > 0) {
-			if (by.hasOwnProperty('__latest')) {
-				query.or(filter);
-			} else {
-				let t = {};
-				while (Object.getOwnPropertyNames(t).length === 0 && filter.length > 0) {
-					t = filter.pop();
-				}
-				if (Object.getOwnPropertyNames(t).length > 0) {
-					query = this.find(t);
-					if (filter.length > 0) {
-						query.or(filter);
-					}
-				}
+			},
+			query;
+		switch(notQuery.filter.getFilterType(filter)){
+		case notQuery.filter.OPT_OR:
+			if (this.schema.statics.__versioning){
+				query = this[method]({
+					$and: [versioningMod, {$or: filter}]
+				});
+			}else{
+				query = this[method]({
+					$or: filter
+				});
 			}
+			break;
+		case notQuery.filter.OPT_AND:
+			if (this.schema.statics.__versioning){
+				query = this[method]({
+					$and: [versioningMod, filter]
+				});
+			}else{
+				query = this[method]({
+					$and:[filter]
+				});
+			}
+			break;
+		default:
+			query = this[method](this.schema.statics.__versioning?versioningMod:{});
 		}
+		return query;
+	},
+	list(skip, size, sorter, filter){
+		let query = this.makeQuery('find',filter);
 		return query.sort(sorter).skip(skip).limit(size).exec();
 	},
 	countWithFilter(filter){
-		let by = this.schema.statics.__versioning ? {
-				__latest: true,
-				__closed: false
-			} : {},
-			query = this.count(by);
-		if (Array.isArray(filter) && filter.length > 0) {
-			if (by.hasOwnProperty('__latest')) {
-				query.or(filter);
-			} else {
-				let t = {};
-				while (Object.getOwnPropertyNames(t).length === 0 && filter.length > 0) {
-					t = filter.pop();
-				}
-				if (Object.getOwnPropertyNames(t).length > 0) {
-					query = this.find(t);
-					if (filter.length > 0) {
-						query.or(filter);
-					}
-				}
-			}
-		}
+		let query =  this.makeQuery('count',filter);
 		return query.exec();
 	},
 	listAndPopulate(skip, size, sorter, filter, populate) {
-		let by = this.schema.statics.__versioning ? {
-				__latest: true,
-				__closed: false
-			} : {},
-			query = this.find(by);
-		if (Array.isArray(filter) && filter.length > 0) {
-			if (by.hasOwnProperty('__latest')) {
-				query.or(filter);
-			} else {
-				let t = {};
-				while (Object.getOwnPropertyNames(t).length === 0 && filter.length > 0) {
-					t = filter.pop();
-				}
-				if (Object.getOwnPropertyNames(t).length > 0) {
-					query = this.find(t);
-					if (filter.length > 0) {
-						query.or(filter);
-					}
-				}
-			}
-		}
+		let query = this.makeQuery('find', filter);
 		query.sort(sorter).skip(skip).limit(size);
 		populateQuery(query, populate);
 		return query.exec();
