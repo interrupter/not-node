@@ -28,6 +28,327 @@ function __$$styleInject(css, ref) {
   }
 }
 
+class ncTest extends notFramework.CRUDController {
+	constructor(app, params) {
+		notFramework.notCommon.log('running ncTest controller');
+		super(app, params);
+		this.setModuleName('post');
+		this.setOptions('containerSelector', '#content');
+		this.setOptions('params', params);
+		this.setOptions('role', 'admin');
+
+		this.setOptions('names', {
+			plural: 'Tests',
+			single: 'Test'
+		});
+
+		let formHelpers = {};
+
+		this.setOptions('views', {
+			create: {
+				preload: {
+					products: 'product'
+				},
+				action: 'create',
+				prefix: 'item_form_',
+				targetQuery: '#formPlace',
+				helpers: formHelpers
+			},
+			update: {
+				preload: {
+					products: 'product'
+				},
+				action: 'update',
+				loadAction: 'get',
+				prefix: 'item_form_',
+				targetQuery: '#formPlace',
+				helpers: formHelpers
+			},
+			details: {
+				preload: {
+					products: 'product'
+				},
+				name: 'view',
+				prefix: 'item_details_',
+				targetQuery: '#formPlace'
+			},
+			list: {
+				targetQuery: '#tablePlace',
+				endless: false,
+				preload: {
+					products: 'product'
+				},
+				fields: [{
+					path: ':bagetID',
+					title: 'ID',
+					sortable: true
+				}, {
+					path: ':title',
+					title: 'Название',
+					sortable: true,
+					searchable: true
+				}, {
+					path: ':codeName',
+					title: 'Кодовое название',
+					sortable: true,
+					searchable: true
+				}, {
+					path: ':price',
+					title: 'Стоимость',
+					sortable: true,
+					searchable: true
+				}, {
+					path: ':default',
+					title: 'По умолчанию',
+					sortable: true,
+					searchable: true
+				}, {
+					path: ':active',
+					title: 'В наличии',
+					sortable: true,
+					searchable: true
+				}, {
+					path: ':products',
+					title: 'Продукты',
+					preprocessor: (value, item) => {
+						return this.app.getOptions().getNamesByIds(this.getOptions('libs.products'), item.products).join(', ');
+					}
+				}, {
+					path: ':_id',
+					title: 'Действия',
+					preprocessor: value => {
+						return {
+							url: [this.getModuleName(), value].join('/'),
+							title: 'Смотреть'
+						};
+					},
+					component: {
+						template: {
+							name: 'link'
+						}
+					}
+				}]
+			}
+		});
+		let lib = {
+			'products': 'product'
+		};
+		this.preloadLib(lib).then(this.route.bind(this, params)).catch(notFramework.notCommon.report);
+	}
+
+	initItem() {
+		var newRecord = this.make[this.getModuleName()]({
+			'_id': null,
+			title: this.getOptions('names.single'),
+			codeName: '',
+			description: '',
+			properties: []
+		});
+		return newRecord;
+	}
+
+	updateList() {}
+}
+
+let manifest = {
+	//will be added to global router object
+	router: [{
+		paths: ['post\/([^\/]+)\/([^\/]+)', 'post\/([^\/]+)', 'post'],
+		controller: ncPost
+	}],
+	//will be added to global menu
+	menu: [{
+		url: '/test',
+		title: 'Статьи',
+		items: [{
+			url: '/post/best',
+			title: 'Лучшие'
+		}, {
+			url: '/post/popular',
+			title: 'Популярные'
+		}]
+	}],
+	/*
+ 	root from module/views/
+ */
+	templates: {
+		//corresponds to post/views/common/lib.html
+		lib: 'common/lib.html',
+		//corresponds to post/views/item_form.html
+		item_form: 'item_form.html',
+		//corresponds to post/views/admin/item_details.html
+		item_details: 'admin/item_details.html'
+	}
+};
+
+
+
+var mod_0 = Object.freeze({
+	ncTest: ncTest,
+	manifest: manifest
+});
+
+class ncPost$1 extends notFramework.CRUDController {
+	constructor(app, params) {
+		notFramework.notCommon.log('running ncPost controller');
+		super(app, params);
+		this.setModuleName('post');
+		this.setOptions('containerSelector', '#content');
+		this.setOptions('params', params);
+		this.setOptions('role', 'admin');
+
+		this.setOptions('names', {
+			plural: 'Posts',
+			single: 'Post'
+		});
+
+		let formHelpers = {};
+
+		this.setOptions('views', {
+			create: {
+				preload: {
+					products: 'product'
+				},
+				action: 'create',
+				prefix: 'item_form_',
+				targetQuery: '#formPlace',
+				helpers: formHelpers
+			},
+			update: {
+				preload: {
+					products: 'product'
+				},
+				action: 'update',
+				loadAction: 'get',
+				prefix: 'item_form_',
+				targetQuery: '#formPlace',
+				helpers: formHelpers
+			},
+			details: {
+				preload: {
+					products: 'product'
+				},
+				name: 'view',
+				prefix: 'item_details_',
+				targetQuery: '#formPlace'
+			},
+			list: {
+				targetQuery: '#tablePlace',
+				endless: false,
+				preload: {
+					products: 'product'
+				},
+				fields: [{
+					path: ':bagetID',
+					title: 'ID',
+					sortable: true
+				}, {
+					path: ':title',
+					title: 'Название',
+					sortable: true,
+					searchable: true
+				}, {
+					path: ':codeName',
+					title: 'Кодовое название',
+					sortable: true,
+					searchable: true
+				}, {
+					path: ':price',
+					title: 'Стоимость',
+					sortable: true,
+					searchable: true
+				}, {
+					path: ':default',
+					title: 'По умолчанию',
+					sortable: true,
+					searchable: true
+				}, {
+					path: ':active',
+					title: 'В наличии',
+					sortable: true,
+					searchable: true
+				}, {
+					path: ':products',
+					title: 'Продукты',
+					preprocessor: (value, item) => {
+						return this.app.getOptions().getNamesByIds(this.getOptions('libs.products'), item.products).join(', ');
+					}
+				}, {
+					path: ':_id',
+					title: 'Действия',
+					preprocessor: value => {
+						return {
+							url: [this.getModuleName(), value].join('/'),
+							title: 'Смотреть'
+						};
+					},
+					component: {
+						template: {
+							name: 'link'
+						}
+					}
+				}]
+			}
+		});
+		let lib = {
+			'products': 'product'
+		};
+		this.preloadLib(lib).then(this.route.bind(this, params)).catch(notFramework.notCommon.report);
+	}
+
+	initItem() {
+		var newRecord = this.make[this.getModuleName()]({
+			'_id': null,
+			title: this.getOptions('names.single'),
+			codeName: '',
+			description: '',
+			properties: []
+		});
+		return newRecord;
+	}
+
+	updateList() {}
+}
+
+let manifest$1 = {
+	//will be added to global router object
+	router: {
+		manifest: [{
+			paths: ['post\/([^\/]+)\/([^\/]+)', 'post\/([^\/]+)', 'post'],
+			controller: ncPost$1
+		}]
+	}, //will be added to global menu
+	menu: [{
+		url: '/post',
+		title: 'Статьи',
+		items: [{
+			url: '/post/best',
+			title: 'Лучшие'
+		}, {
+			url: '/post/popular',
+			title: 'Популярные'
+		}]
+	}],
+	/*
+ 	root from module/views/
+ */
+	templates: {
+		//corresponds to post/views/common/lib.html
+		lib: 'common/lib.html',
+		//corresponds to post/views/item_form.html
+		item_form: 'item_form.html',
+		//corresponds to post/views/admin/item_details.html
+		item_details: 'admin/item_details.html'
+	}
+};
+
+
+
+var mod_1 = Object.freeze({
+	ncPost: ncPost$1,
+	manifest: manifest$1
+});
+
 class FileUploader extends notFramework.notBase {
 	constructor(input) {
 		super(input);
@@ -51,11 +372,9 @@ class FileUploader extends notFramework.notBase {
 					file: file,
 					url: this.getOptions('uploadUrl')
 				};
-				notFramework.notCommon.putFile(fileData)
-					.then((data) => {
-						resolve(data);
-					})
-					.catch(reject);
+				notFramework.notCommon.putFile(fileData).then(data => {
+					resolve(data);
+				}).catch(reject);
 			} else {
 				reject(new Event('WrongFileType'), file);
 			}
@@ -63,7 +382,7 @@ class FileUploader extends notFramework.notBase {
 	}
 }
 
-class ncInit extends notFramework.notController {
+class ncInit$1 extends notFramework.notController {
 	constructor(app) {
 		super(app);
 		this.setModuleName('main');
@@ -95,14 +414,14 @@ class ncInit extends notFramework.notController {
 			options: {
 				uploadUrl: '/api/file',
 				fileTypes: ['image/jpeg', 'image/png', 'image/bmp', ''],
-				fileSize: 1024 * 1024 * 1024,
+				fileSize: 1024 * 1024 * 1024
 			}
 		});
 		this.app.setWorking('uploader', uploader);
 	}
 
 	initLogout() {
-		document.getElementById('logout').addEventListener('click', (e) => {
+		document.getElementById('logout').addEventListener('click', e => {
 			e.preventDefault();
 			let $this = $(this);
 			$.SmartMessageBox({
@@ -110,7 +429,7 @@ class ncInit extends notFramework.notController {
 				content: $this.data('logout-msg') || notFramework.notCommon.getApp().getOptions('dict.ru.LogoutMessage'),
 				buttons: '[Нет][Да]'
 
-			}, (ButtonPressed) => {
+			}, ButtonPressed => {
 				if (ButtonPressed == "Да") {
 					$.root_.addClass('animated fadeOutUp');
 					setTimeout(this.logout.bind(this), 1000);
@@ -164,7 +483,6 @@ class ncLogin extends notFramework.notController {
 
 	showError(e) {
 		notFramework.notCommon.report(e);
-
 	}
 
 	buildForm() {
@@ -172,19 +490,14 @@ class ncLogin extends notFramework.notController {
 			data: this.initItem(),
 			options: {
 				helpers: {
-					submit: (params) => {
-						params.item.$login()
-							.then(this.goProfile.bind(this))
-							.catch(this.showError.bind(this));
+					submit: params => {
+						params.item.$login().then(this.goProfile.bind(this)).catch(this.showError.bind(this));
 					}
 				},
 				action: 'login',
 				targetEl: document.getElementById('siteForm')
 			},
-			events: [
-				['afterSubmit', this.goProfile.bind(this)],
-				['afterRestore', this.goProfile.bind(this)]
-			]
+			events: [['afterSubmit', this.goProfile.bind(this)], ['afterRestore', this.goProfile.bind(this)]]
 		});
 	}
 
@@ -203,377 +516,38 @@ class ncMain extends notFramework.notController {
 	}
 }
 
-let manifest = {
+let manifest$2 = {
 	router: {
-		manifest: [
-			{
-				paths: ['', 'login'],
-				controller: ncLogin
-			}
-		],
+		manifest: [{
+			paths: ['', 'login'],
+			controller: ncLogin
+		}],
 		index: '/login'
 	},
-	initController: ncInit,
+	initController: ncInit$1,
 	templates: {
-		lib: '/client/common/lib.html?' + Math.random(),
+		lib: '/client/common/lib.html?' + Math.random()
 	},
 	paths: {
 		common: '/client/common',
 		modules: '/client/modules'
-	},
+	}
 };
-
 
 
 
 var mod_2 = Object.freeze({
-	ncInit: ncInit,
+	ncInit: ncInit$1,
 	ncMain: ncMain,
 	ncLogin: ncLogin,
-	manifest: manifest
-});
-
-class ncTest extends notFramework.CRUDController {
-	constructor(app, params) {
-		notFramework.notCommon.log('running ncTest controller');
-		super(app, params);
-		this.setModuleName('post');
-		this.setOptions('containerSelector', '#content');
-		this.setOptions('params', params);
-		this.setOptions('role', 'admin');
-
-		this.setOptions('names', {
-			plural: 'Tests',
-			single: 'Test'
-		});
-
-		let formHelpers = {};
-
-		this.setOptions('views', {
-			create: {
-				preload: {
-					products: 'product'
-				},
-				action: 'create',
-				prefix: 'item_form_',
-				targetQuery: '#formPlace',
-				helpers: formHelpers
-			},
-			update: {
-				preload: {
-					products: 'product'
-				},
-				action: 'update',
-				loadAction: 'get',
-				prefix: 'item_form_',
-				targetQuery: '#formPlace',
-				helpers: formHelpers
-			},
-			details: {
-				preload: {
-					products: 'product'
-				},
-				name: 'view',
-				prefix: 'item_details_',
-				targetQuery: '#formPlace',
-			},
-			list: {
-				targetQuery: '#tablePlace',
-				endless: false,
-				preload: {
-					products: 'product'
-				},
-				fields: [{
-					path: ':bagetID',
-					title: 'ID',
-					sortable: true
-				}, {
-					path: ':title',
-					title: 'Название',
-					sortable: true,
-					searchable: true
-				}, {
-					path: ':codeName',
-					title: 'Кодовое название',
-					sortable: true,
-					searchable: true
-				}, {
-					path: ':price',
-					title: 'Стоимость',
-					sortable: true,
-					searchable: true
-				}, {
-					path: ':default',
-					title: 'По умолчанию',
-					sortable: true,
-					searchable: true
-				}, {
-					path: ':active',
-					title: 'В наличии',
-					sortable: true,
-					searchable: true
-				}, {
-					path: ':products',
-					title: 'Продукты',
-					preprocessor: (value, item) => {
-						return this.app.getOptions().getNamesByIds(this.getOptions('libs.products'), item.products).join(', ');
-					}
-				}, {
-					path: ':_id',
-					title: 'Действия',
-					preprocessor: (value) => {
-						return {
-							url: [this.getModuleName(), value].join('/'),
-							title: 'Смотреть'
-						};
-					},
-					component: {
-						template: {
-							name: 'link'
-						}
-					}
-				}],
-			}
-		});
-		let lib = {
-			'products': 'product'
-		};
-		this.preloadLib(lib)
-			.then(this.route.bind(this, params))
-			.catch(notFramework.notCommon.report);
-	}
-
-	initItem() {
-		var newRecord = this.make[this.getModuleName()]({
-			'_id': null,
-			title: this.getOptions('names.single'),
-			codeName: '',
-			description: '',
-			properties: []
-		});
-		return newRecord;
-	}
-
-	updateList() {
-
-	}
-}
-
-let manifest$1 = {
-	//will be added to global router object
-	router:	[
-		{
-			paths: ['post\/([^\/]+)\/([^\/]+)', 'post\/([^\/]+)', 'post'],
-			controller: ncPost
-		}
-	],
-	//will be added to global menu
-	menu: [{
-		url: '/test',
-		title: 'Статьи',
-		items: [{
-			url: '/post/best',
-			title: 'Лучшие'
-		},{
-			url: '/post/popular',
-			title: 'Популярные'
-		}]
-	}],
-	/*
-		root from module/views/
-	*/
-	templates: {
-		//corresponds to post/views/common/lib.html
-		lib: 			'common/lib.html',
-		//corresponds to post/views/item_form.html
-		item_form: 		'item_form.html',
-		//corresponds to post/views/admin/item_details.html
-		item_details: 	'admin/item_details.html'
-	}
-};
-
-
-
-
-var mod_0 = Object.freeze({
-	ncTest: ncTest,
-	manifest: manifest$1
-});
-
-class ncPost$1 extends notFramework.CRUDController {
-	constructor(app, params) {
-		notFramework.notCommon.log('running ncPost controller');
-		super(app, params);
-		this.setModuleName('post');
-		this.setOptions('containerSelector', '#content');
-		this.setOptions('params', params);
-		this.setOptions('role', 'admin');
-
-		this.setOptions('names', {
-			plural: 'Posts',
-			single: 'Post'
-		});
-
-		let formHelpers = {};
-
-		this.setOptions('views', {
-			create: {
-				preload: {
-					products: 'product'
-				},
-				action: 'create',
-				prefix: 'item_form_',
-				targetQuery: '#formPlace',
-				helpers: formHelpers
-			},
-			update: {
-				preload: {
-					products: 'product'
-				},
-				action: 'update',
-				loadAction: 'get',
-				prefix: 'item_form_',
-				targetQuery: '#formPlace',
-				helpers: formHelpers
-			},
-			details: {
-				preload: {
-					products: 'product'
-				},
-				name: 'view',
-				prefix: 'item_details_',
-				targetQuery: '#formPlace',
-			},
-			list: {
-				targetQuery: '#tablePlace',
-				endless: false,
-				preload: {
-					products: 'product'
-				},
-				fields: [{
-					path: ':bagetID',
-					title: 'ID',
-					sortable: true
-				}, {
-					path: ':title',
-					title: 'Название',
-					sortable: true,
-					searchable: true
-				}, {
-					path: ':codeName',
-					title: 'Кодовое название',
-					sortable: true,
-					searchable: true
-				}, {
-					path: ':price',
-					title: 'Стоимость',
-					sortable: true,
-					searchable: true
-				}, {
-					path: ':default',
-					title: 'По умолчанию',
-					sortable: true,
-					searchable: true
-				}, {
-					path: ':active',
-					title: 'В наличии',
-					sortable: true,
-					searchable: true
-				}, {
-					path: ':products',
-					title: 'Продукты',
-					preprocessor: (value, item) => {
-						return this.app.getOptions().getNamesByIds(this.getOptions('libs.products'), item.products).join(', ');
-					}
-				}, {
-					path: ':_id',
-					title: 'Действия',
-					preprocessor: (value) => {
-						return {
-							url: [this.getModuleName(), value].join('/'),
-							title: 'Смотреть'
-						};
-					},
-					component: {
-						template: {
-							name: 'link'
-						}
-					}
-				}],
-			}
-		});
-		let lib = {
-			'products': 'product'
-		};
-		this.preloadLib(lib)
-			.then(this.route.bind(this, params))
-			.catch(notFramework.notCommon.report);
-	}
-
-	initItem() {
-		var newRecord = this.make[this.getModuleName()]({
-			'_id': null,
-			title: this.getOptions('names.single'),
-			codeName: '',
-			description: '',
-			properties: []
-		});
-		return newRecord;
-	}
-
-	updateList() {
-
-	}
-}
-
-let manifest$2 = {
-	//will be added to global router object
-	router:	{
-		manifest:[
-			{
-				paths: ['post\/([^\/]+)\/([^\/]+)', 'post\/([^\/]+)', 'post'],
-				controller: ncPost$1
-			}
-		]
-	},//will be added to global menu
-	menu: [{
-		url: '/post',
-		title: 'Статьи',
-		items: [{
-			url: '/post/best',
-			title: 'Лучшие'
-		},{
-			url: '/post/popular',
-			title: 'Популярные'
-		}]
-	}],
-	/*
-		root from module/views/
-	*/
-	templates: {
-		//corresponds to post/views/common/lib.html
-		lib: 			'common/lib.html',
-		//corresponds to post/views/item_form.html
-		item_form: 		'item_form.html',
-		//corresponds to post/views/admin/item_details.html
-		item_details: 	'admin/item_details.html'
-	}
-};
-
-
-
-
-var mod_1 = Object.freeze({
-	ncPost: ncPost$1,
 	manifest: manifest$2
 });
 
 let manifest$3 = {
 	router: {
-		root: '/admin/joy',
+		root: '/admin/joy'
 	}
 };
-
 
 
 
@@ -593,15 +567,12 @@ class ncJoy extends notFramework.notController {
 let manifest$4 = {
 	router: {
 		root: '/control/',
-		manifest: [
-			{
-				paths: ['', 'joy'],
-				controller: ncJoy
-			}
-		]
-	}	
+		manifest: [{
+			paths: ['', 'joy'],
+			controller: ncJoy
+		}]
+	}
 };
-
 
 
 
@@ -615,15 +586,9 @@ let appDefaultOptions = {
 	manifestURL: '/api/manifest',
 	//routes for client-side
 	router: {
-		root: '/control/',
-		manifest: [
-			//routie route desription: controller name, real controller is function preffixed with 'nc', ncMain, ncPublication
-			{
-				paths: ['', 'login'],
-				controller: ncLogin
-			}
-		],
-		index: '/login'
+		root: '/',
+		manifest: [],
+		index: '/'
 	},
 	//base controller, executed on every site page before any other controller
 	initController: ncInit,
@@ -632,14 +597,13 @@ let appDefaultOptions = {
 		//common is for profile
 		//associated object is options for generator object
 		//default generator notForm
-		lib: '/client/common/lib.html?' + Math.random(),
+		lib: '/client/common/lib.html?' + Math.random()
 	},
 	paths: {
 		common: '/client/common',
 		modules: '/client/modules'
-	},
+	}
 };
-
 
 appDefaultOptions = notFramework.notCommon.absorbModule(appDefaultOptions, mod_0);
 
@@ -650,7 +614,6 @@ appDefaultOptions = notFramework.notCommon.absorbModule(appDefaultOptions, mod_2
 appDefaultOptions = notFramework.notCommon.absorbModule(appDefaultOptions, mod_3);
 
 appDefaultOptions = notFramework.notCommon.absorbModule(appDefaultOptions, mod_4);
-
 
 console.log('application final options', appDefaultOptions);
 notFramework.notCommon.startApp(() => new notFramework.notApp(appDefaultOptions));

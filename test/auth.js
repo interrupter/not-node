@@ -78,7 +78,7 @@ describe('Auth', function() {
 		  var t = {
 			  session:{
 				  user: true,
-				  userRole: 'root'
+				  role: 'root'
 			  }
 		  };
 		  var res = auth.ifAdmin(t);
@@ -100,7 +100,7 @@ describe('Auth', function() {
 			const req = {
 					session: {
 						user: true,
-						userRole: auth.DEFAULT_USER_ROLE_FOR_ADMIN
+						role: auth.DEFAULT_USER_ROLE_FOR_ADMIN
 					}
 				},
 				next = function(val){return val;};
@@ -112,12 +112,12 @@ describe('Auth', function() {
 			const req = {
 					session: {
 						user: true,
-						userRole: 'manager'
+						role: 'manager'
 					}
 				},
 				next = function(val){return val;};
 			let result = auth.checkAdmin(req, false, next);
-			expect(result).to.deep.equal(new HttpError(401, 'Вы не авторизованы ' + req.session.user + ':' + req.session.userRole));
+			expect(result).to.deep.equal(new HttpError(401, 'Вы не авторизованы ' + req.session.user + ':' + req.session.role));
 		});
 	});
 
@@ -126,7 +126,7 @@ describe('Auth', function() {
 		  var t = {
 			  session:{
 				  user: true,
-				  userRole: 'root'
+				  role: 'root'
 			  }
 		  };
 		  var res = auth.getRole(t);
@@ -182,7 +182,7 @@ describe('Auth', function() {
 				req = {
 					session: {
 						user: true,
-						userRole: 'user'
+						role: 'user'
 					}
 				},
 				next = function(val){return val;};
@@ -196,13 +196,13 @@ describe('Auth', function() {
 				req = {
 					session: {
 						user: true,
-						userRole: 'user'
+						role: 'user'
 					}
 				},
 				next = function(val){return val;};
 			let resultFunction = auth.checkRoleBuilder(role),
 				result = resultFunction(req, false, next);
-			expect(result).to.deep.equal(new HttpError(401, 'Вы не авторизованы ' + req.session.user + ':' + req.session.userRole));
+			expect(result).to.deep.equal(new HttpError(401, 'Вы не авторизованы ' + req.session.user + ':' + req.session.role));
 		});
 	});
 

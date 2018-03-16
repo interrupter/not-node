@@ -21,7 +21,8 @@ var argv = require('yargs').argv,
 
 let opts = {
 		'project': argv.project || 'default',
-		'to': argv.to || './'
+		'to': argv.to || './',
+		'help': argv.help || false
 	},
 	repo = lib.getRepo(opts.project);
 
@@ -56,13 +57,18 @@ let noRedFlags = function(dir){
 	});
 };
 
-if (repo){
-	noRedFlags(opts.to)
-		.then(()=>lib.rootCloneRoutine(repo, opts.to))
-		.then(()=>{
-			console.log('Finally');
-		})
-		.catch(console.error);
+if(opts.help){
+	console.log('Valid options project, to, help.');
+	console.log('not-node --to=./here --project=default');
 }else{
-	console.error('Wrong repo name');
+	if (repo){
+		noRedFlags(opts.to)
+			.then(()=>lib.rootCloneRoutine(repo, opts.to))
+			.then(()=>{
+				console.log('Finally');
+			})
+			.catch(console.error);
+	}else{
+		console.error('Wrong repo name');
+	}
 }

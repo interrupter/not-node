@@ -19,7 +19,7 @@ exports.intersect_safe = function(a, b) {
 };
 
 exports.ifUser = function(req) {
-	return req.session && req.session.user?true:false;
+	return (req.session && req.session.user)?true:false;
 };
 
 exports.checkUser = function(req, res, next) {
@@ -38,12 +38,47 @@ exports.checkAdmin = function(req, res, next) {
 	if (exports.ifAdmin(req)) {
 		next();
 	}else{
-		return next(new HttpError(401, 'Вы не авторизованы ' + req.session.user + ':' + req.session.userRole));
+		return next(new HttpError(401, 'Вы не авторизованы ' + req.session.user + ':' + req.session.role));
 	}
 };
 
 exports.getRole = function(req) {
-	return (req.session && req.session.userRole) ? req.session.userRole : undefined;
+	return (req.session && req.session.role) ? req.session.role : undefined;
+};
+
+exports.setRole = (req, role)=>{
+	if(req && req.session){
+		req.session.role = role;
+	}
+};
+
+exports.setId = (req, _id)=>{
+	if(req && req.session){
+		req.session.user = _id;
+	}
+};
+
+exports.setAuth = (req, id, role)=>{
+	this.setId(req, id);
+	this.setRole(req, role);
+};
+
+exports.setGuest = (req)=>{
+	if (req.session){
+		req.user = null;
+		req.session.user = null;
+		req.session.role = 'guest';
+	}
+};
+
+exports.cleanse = (req)=>{
+	if(req && req.session){
+		req.session.user = null;
+		req.session.role = 'guest';
+		if(req.session.destroy){
+			req.session.destroy();
+		}
+	}
 };
 
 exports.compareRoles = function(userRoles, actionRoles) {
@@ -73,7 +108,7 @@ exports.checkRoleBuilder = function(role) {
 		if(that.ifUser(req) && that.compareRoles(userRole, role)) {
 			next();
 		}else{
-			return next(new HttpError(401, 'Вы не авторизованы ' + req.session.user + ':' + req.session.userRole));
+			return next(new HttpError(401, 'Вы не авторизованы ' + req.session.user + ':' + req.session.role));
 		}
 	};
 };

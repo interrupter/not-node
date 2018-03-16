@@ -1,22 +1,11 @@
-import {
-	ncInit,
-	ncLogin
-} from './common';
-
 let appDefaultOptions = {
 	//url from which will take interfaceManifest json file
 	manifestURL: '/api/manifest',
 	//routes for client-side
 	router: {
-		root: '/control/',
-		manifest: [
-			//routie route desription: controller name, real controller is function preffixed with 'nc', ncMain, ncPublication
-			{
-				paths: ['', 'login'],
-				controller: ncLogin
-			}
-		],
-		index: '/login'
+		root: '/',
+		manifest: [],
+		index: '/'
 	},
 	//base controller, executed on every site page before any other controller
 	initController: ncInit,

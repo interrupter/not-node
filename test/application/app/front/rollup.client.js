@@ -30,9 +30,10 @@ export default {
 	output: {
 		file: '/var/server/nn/test/application/app/front/build/client.js',
 		name: 'TestServerApplication',
-		format: 'iife'
+		format: 'iife',
+		globals: ['notFramework']
 	},	
-	sourceMap: false && (process.env.NODE_ENV === 'production' ? false : 'inline'),
+	sourcemap: false && (process.env.NODE_ENV === 'production' ? false : 'inline'),
 	plugins: [
 		postcss({
 			plugins: [

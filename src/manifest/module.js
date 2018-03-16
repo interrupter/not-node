@@ -11,6 +11,7 @@ const DEFAULT_MANIFEST_FILE_ENDING = '.manifest.js';
 
 class notModule {
 	constructor(options) {
+		log.info('Creating module: '+ options.modPath);
 		this.path = options.modPath;
 		this.module = options.modObject;
 		this.mongoose = options.mongoose;
@@ -29,12 +30,27 @@ class notModule {
 		return this;
 	}
 
+	map(to, list){
+		for(let item of list){
+			if(typeof this[item] === 'function'){
+				log.info('map ', item);
+				to[item] = this[item].bind(this.notApp);
+			}
+		}
+	}
+
 	init() {
 		if (this.path) {
 			this.initFromPath(this.path);
 		} else if (this.module) {
 			this.initFromModule(this.module);
 		}
+		this.map(this.module, [
+			'getModel',
+			'getModelSchema',
+			'getModelFile'
+		]);
+		log.info(Object.keys(this.module));
 	}
 
 	initFromPath(modulePath) {
@@ -59,6 +75,7 @@ class notModule {
 	registerContent() {
 		if (this.module.paths){
 			if (this.module.paths.models) {
+				///log.info('Searching for models in ',this.module.paths.models);
 				this.findModelsIn(this.module.paths.models);
 			}
 			if (this.module.paths.mixins) {
@@ -83,6 +100,7 @@ class notModule {
 	findModelsIn(modelsPath) {
 		fs.readdirSync(modelsPath).forEach(function(file) {
 			let modelPath = path.join(modelsPath, file);
+			log.info('Checking model in', modelPath);
 			if (fs.lstatSync(modelPath).isFile()) {
 				let model = require(modelPath),
 					modelName = file;
@@ -136,6 +154,7 @@ class notModule {
 	}
 
 	registerModel(model, modelName) {
+		log.info('Register model', modelName);
 		model.getModel = this.notApp.getModel.bind(this.notApp);
 		model.getModelFile = this.notApp.getModelFile.bind(this.notApp);
 		model.getModelSchema = this.notApp.getModelSchema.bind(this.notApp);
@@ -224,6 +243,7 @@ class notModule {
 
 	fabricateModels(){
 		for(let modelName in this.models){
+			log.info('Fabricating model: '+ modelName);
 			let modelMixins = this.notApp.getModelMixins(modelName);
 			this.fabricateModel(this.models[modelName], modelMixins);
 		}
@@ -234,6 +254,18 @@ class notModule {
 			this.fabricateModels();
 			this.manifest = new notManifest(app, this.notApp, moduleName);
 			this.manifest.registerRoutes(this.manifests);
+		}
+	}
+
+	exec(methodName){
+		if(this.module.hasOwnProperty(methodName)){
+			if (typeof this.module[methodName] === 'function') {
+				try{
+					this.module[methodName](this.notApp);
+				}catch(e){
+					log.error(e);
+				}
+			}
 		}
 	}
 }

@@ -1,6 +1,7 @@
 var notModule = require('./manifest/module'),
 	extend = require('extend'),
 	path = require('path'),
+	log = require('not-log')(module),
 	fs = require('fs');
 
 class notApp{
@@ -151,6 +152,15 @@ class notApp{
 		if (this.modules){
 			for(let t of Object.keys(this.modules)){
 				this.modules[t] && this.modules[t].expose && this.modules[t].expose(app, t);
+			}
+		}
+	}
+
+	execInModules(methodName){
+		for(let t in this.modules){
+			let mod = this.modules[t];
+			if (mod && typeof mod.exec === 'function'){
+				mod.exec(methodName);
 			}
 		}
 	}

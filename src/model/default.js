@@ -106,7 +106,7 @@ exports.statics = {
 		return query.sort(sorter).skip(skip).limit(size).exec();
 	},
 	countWithFilter(filter){
-		let query =  this.makeQuery('count',filter);
+		let query =  this.makeQuery('count', filter);
 		return query.exec();
 	},
 	listAndPopulate(skip, size, sorter, filter, populate) {

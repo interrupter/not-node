@@ -30,9 +30,10 @@ export default {
 	output: {
 		file: '<%=outputPath%>',
 		name: '<%=appName%>',
-		format: 'iife'
+		format: 'iife',
+		globals: ['notFramework']
 	},	
-	sourceMap: false && (process.env.NODE_ENV === 'production' ? false : 'inline'),
+	sourcemap: false && (process.env.NODE_ENV === 'production' ? false : 'inline'),
 	plugins: [
 		postcss({
 			plugins: [

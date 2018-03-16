@@ -5,7 +5,6 @@ const Parser = require('../src/parser'),
 	notApp = require('../src/app'),
 	expect = require('chai').expect;
 
-return;
 describe('RouterAction', function () {
 	describe('RouterAction init call', function () {
 		it('Init object', function () {
@@ -19,7 +18,7 @@ describe('RouterAction', function () {
 			let req = {
 					session: {
 						user: true,
-						userRole: 'root'
+						role: 'root'
 					}
 				},
 				actionData = {
@@ -82,7 +81,7 @@ describe('RouterAction', function () {
 			let req = {
 					session: {
 						user: true,
-						userRole: ['manager']
+						role: ['manager']
 					}
 				},
 				actionData = {
@@ -105,7 +104,7 @@ describe('RouterAction', function () {
 			let req = {
 					session: {
 						user: true,
-						userRole: 'root'
+						role: 'root'
 					}
 				},
 				actionData = {
@@ -144,7 +143,17 @@ describe('RouterAction', function () {
 	describe('RouterAction.exec', function () {
 		//manifest.registerRoutesPath('', __dirname + '/routes');
 		//manifest.getManifest();
-		var fakeNotApp = new notApp({});
+		let fakeRoute = {
+				list:()=>{return 'list';}
+			},
+		 fakeMod = {
+				getRoute:()=>{
+					return fakeRoute;
+				}
+			},
+			fakeNotApp = {
+				getModule:()=>{return fakeMod;}
+			};
 		it('Guest request post.list', function () {
 			let req = {
 					session: {
@@ -155,17 +164,28 @@ describe('RouterAction', function () {
 					method: 'get',
 					auth: false
 				},
-				routerAction = new notRoute({}, 'not-user', 'post', 'list', actionData),
+				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData),
 				result = routerAction.exec(req);
-			console.log('result', routerAction, actionData, result);
+			//console.log('result', routerAction, actionData, result);
 			expect(result).to.deep.equal('list');
 		});
 
 		it('Admin request post.listAll', function () {
+			let fakeRoute = {
+					_listAll:()=>{return '_listAll';}
+				},
+			 fakeMod = {
+					getRoute:()=>{
+						return fakeRoute;
+					}
+				},
+				fakeNotApp = {
+					getModule:()=>{return fakeMod;}
+				};
 			let req = {
 					session: {
 						user: true,
-						userRole: 'root'
+						role: 'root'
 					}
 				},
 				actionData = {
@@ -177,15 +197,27 @@ describe('RouterAction', function () {
 						admin: true
 					}]
 				},
-				routerAction = new notRoute({}, 'not-user', 'post', 'listAll', actionData);
-			expect(routerAction.exec(req)).to.deep.equal('_listAll');
+				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'listAll', actionData);
+			let result = routerAction.exec(req);
+			expect(result).to.deep.equal('_listAll');
 		});
 
 		it('Auth with manager role request post.listAll', function () {
+			let fakeRoute = {
+					listAll:()=>{return 'listAll';}
+				},
+			 fakeMod = {
+					getRoute:()=>{
+						return fakeRoute;
+					}
+				},
+				fakeNotApp = {
+					getModule:()=>{return fakeMod;}
+				};
 			let req = {
 					session: {
 						user: true,
-						userRole: 'manager'
+						role: 'manager'
 					}
 				},
 				actionData = {
@@ -197,11 +229,22 @@ describe('RouterAction', function () {
 						role: ['manager']
 					}]
 				},
-				routerAction = new notRoute({}, 'not-user', 'post', 'listAll', actionData);
+				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'listAll', actionData);
 			expect(routerAction.exec(req)).to.deep.equal('listAll');
 		});
 
 		it('Auth request post.list', function () {
+			let fakeRoute = {
+					list:()=>{return 'list';}
+				},
+				fakeMod = {
+					getRoute:()=>{
+						return fakeRoute;
+					}
+				},
+				fakeNotApp = {
+					getModule:()=>{return fakeMod;}
+				};
 			let req = {
 					session: {
 						user: true
@@ -217,15 +260,26 @@ describe('RouterAction', function () {
 						admin: true
 					}]
 				},
-				routerAction = new notRoute({}, 'not-user', 'post', 'list', actionData);
+				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData);
 			expect(routerAction.exec(req)).to.deep.equal('list');
 		});
 
 		it('Admin request post.list', function () {
+			let fakeRoute = {
+					_list:()=>{return '_list';}
+				},
+				fakeMod = {
+					getRoute:()=>{
+						return fakeRoute;
+					}
+				},
+				fakeNotApp = {
+					getModule:()=>{return fakeMod;}
+				};
 			let req = {
 					session: {
 						user: true,
-						userRole: 'root'
+						role: 'root'
 					}
 				},
 				actionData = {
@@ -238,15 +292,26 @@ describe('RouterAction', function () {
 						auth: true
 					}]
 				},
-				routerAction = new notRoute({}, 'not-user', 'post', 'list', actionData);
+				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData);
 			expect(routerAction.exec(req)).to.deep.equal('_list');
 		});
 
 		it('Admin request post.list with actionName override', function () {
+			let fakeRoute = {
+					manager_listAll:()=>{return 'manager_listAll';}
+				},
+				fakeMod = {
+					getRoute:()=>{
+						return fakeRoute;
+					}
+				},
+				fakeNotApp = {
+					getModule:()=>{return fakeMod;}
+				};
 			let req = {
 					session: {
 						user: true,
-						userRole: 'root'
+						role: 'root'
 					}
 				},
 				actionData = {
@@ -260,15 +325,26 @@ describe('RouterAction', function () {
 						auth: true
 					}]
 				},
-				routerAction = new notRoute({}, 'not-user', 'post', 'list', actionData);
+				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData);
 			expect(routerAction.exec(req)).to.deep.equal('manager_listAll');
 		});
 
 		it('Admin request post.list with actionPrefix override', function () {
+			let fakeRoute = {
+					__listAll:()=>{return '__listAll';}
+				},
+				fakeMod = {
+					getRoute:()=>{
+						return fakeRoute;
+					}
+				},
+				fakeNotApp = {
+					getModule:()=>{return fakeMod;}
+				};
 			let req = {
 					session: {
 						user: true,
-						userRole: 'root'
+						role: 'root'
 					}
 				},
 				actionData = {
@@ -282,11 +358,22 @@ describe('RouterAction', function () {
 						auth: true
 					}]
 				},
-				routerAction = new notRoute({}, 'not-user', 'post', 'listAll', actionData);
+				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'listAll', actionData);
 			expect(routerAction.exec(req)).to.deep.equal('__listAll');
 		});
 
 		it('Auth request post.list with actionPrefix override', function () {
+			let fakeRoute = {
+					__list:()=>{return '__list';}
+				},
+				fakeMod = {
+					getRoute:()=>{
+						return fakeRoute;
+					}
+				},
+				fakeNotApp = {
+					getModule:()=>{return fakeMod;}
+				};
 			let req = {
 					session: {
 						user: true
@@ -303,11 +390,22 @@ describe('RouterAction', function () {
 						actionPrefix: '__'
 					}]
 				},
-				routerAction = new notRoute({}, 'not-user', 'post', 'list', actionData);
+				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData);
 			expect(routerAction.exec(req)).to.deep.equal('__list');
 		});
 
 		it('Auth request post.list with actionName override', function () {
+			let fakeRoute = {
+					manager_listAll:()=>{return 'manager_listAll';}
+				},
+				fakeMod = {
+					getRoute:()=>{
+						return fakeRoute;
+					}
+				},
+				fakeNotApp = {
+					getModule:()=>{return fakeMod;}
+				};
 			let req = {
 					session: {
 						user: true
@@ -324,15 +422,26 @@ describe('RouterAction', function () {
 						actionName: 'manager_listAll'
 					}]
 				},
-				routerAction = new notRoute({}, 'not-user', 'post', 'list', actionData);
+				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData);
 			expect(routerAction.exec(req)).to.deep.equal('manager_listAll');
 		});
 
 		it('Auth with manager role request post.list with actionPrefix override', function () {
+			let fakeRoute = {
+					__list:()=>{return '__list';}
+				},
+				fakeMod = {
+					getRoute:()=>{
+						return fakeRoute;
+					}
+				},
+				fakeNotApp = {
+					getModule:()=>{return fakeMod;}
+				};
 			let req = {
 					session: {
 						user: true,
-						userRole: 'manager'
+						role: 'manager'
 					}
 				},
 				actionData = {
@@ -347,15 +456,26 @@ describe('RouterAction', function () {
 						actionPrefix: '__'
 					}]
 				},
-				routerAction = new notRoute({}, 'not-user', 'post', 'list', actionData);
+				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData);
 			expect(routerAction.exec(req)).to.deep.equal('__list');
 		});
 
 		it('Auth with manager role request post.list with actionName override', function () {
+			let fakeRoute = {
+					manager_listAll:()=>{return 'manager_listAll';}
+				},
+				fakeMod = {
+					getRoute:()=>{
+						return fakeRoute;
+					}
+				},
+				fakeNotApp = {
+					getModule:()=>{return fakeMod;}
+				};
 			let req = {
 					session: {
 						user: true,
-						userRole: 'manager'
+						role: 'manager'
 					}
 				},
 				actionData = {
@@ -370,15 +490,26 @@ describe('RouterAction', function () {
 						actionName: 'manager_listAll'
 					}]
 				},
-				routerAction = new notRoute({}, 'not-user', 'post', 'list', actionData);
+				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData);
 			expect(routerAction.exec(req)).to.deep.equal('manager_listAll');
 		});
 
 		it('Wrong modelName', function () {
+			let fakeRoute = {
+					manager_listAll:()=>{return 'manager_listAll';}
+				},
+				fakeMod = {
+					getRoute:()=>{
+						return fakeRoute;
+					}
+				},
+				fakeNotApp = {
+					getModule:()=>{return null;}
+				};
 			let req = {
 					session: {
 						user: true,
-						userRole: 'manager'
+						role: 'manager'
 					}
 				},
 				actionData = {
@@ -393,8 +524,8 @@ describe('RouterAction', function () {
 						actionName: 'manager_listAll'
 					}]
 				},
-				routerAction = new notRoute({}, 'not-user', 'post1', 'listasdf', actionData);
-			expect(routerAction.exec(req)).to.deep.equal(null);
+				routerAction = new notRoute(fakeNotApp, 'not-user', 'post1', 'listasdf', actionData);
+			expect(routerAction.exec(req)).to.be.an.instanceof(Error);
 		});
 
 		it('Wrong rule', function () {
@@ -404,7 +535,7 @@ describe('RouterAction', function () {
 				req = {
 					session: {
 						user: false,
-						userRole: 'manager'
+						role: 'manager'
 					}
 				},
 				actionData = {

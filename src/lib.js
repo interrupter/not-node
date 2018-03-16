@@ -214,3 +214,33 @@ exports.getConfReader = function(pathToConfig){
 	});
 	return nconf;
 };
+
+
+/**
+*	Joins many files in one
+*	@param 	{string}	target		result file path
+*	@param 	{array}		sources 	list of source files
+*	@param	{splitter}	splitter	file splitter
+*/
+exports.joinToFile = function(target, sources, splitter = "\n"){
+	return new Promise((resolve, reject)=>{
+		try{
+			fse.ensureFileSync(target);
+			let data = [];
+			for(let t in sources){
+				let file = fs.readFileSync(sources[t]);
+				if (process.NODE_ENV !== 'production'){
+					data.push('<!-- start:	'+sources[t]+ ' -->');
+				}
+				data.push(file);
+				if (process.NODE_ENV !== 'production'){
+					data.push('<!-- end:	'+sources[t]+ ' -->');
+				}
+			}
+			fse.outputFileSync(target, data.join(splitter));
+			resolve();
+		}catch(e){
+			resject(e);
+		}
+	});
+};
