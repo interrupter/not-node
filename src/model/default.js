@@ -102,7 +102,7 @@ exports.statics = {
 		return query;
 	},
 	list(skip, size, sorter, filter){
-		let query = this.makeQuery('find',filter);
+		let query = this.makeQuery('find', filter);
 		return query.sort(sorter).skip(skip).limit(size).exec();
 	},
 	countWithFilter(filter){

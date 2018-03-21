@@ -1,39 +1,13 @@
-var notModule = require('./manifest/module'),
+const
+	notDomain = require('./domain'),
 	extend = require('extend'),
 	path = require('path'),
 	log = require('not-log')(module),
 	fs = require('fs');
 
-class notApp{
+class notApp extends notDomain{
 	constructor(options){
-		this.options = options;
-		//named array of notModules wrappers for notModule format modules
-		this.modules = {};
-		return this;
-	}
-
-	importModulesFrom(modulesPath){
-		fs.readdirSync(modulesPath).forEach(function(file) {
-			this.importModuleFrom(path.join(modulesPath, file), file);
-		}.bind(this));
-		return this;
-	}
-
-	importModuleFrom(modulePath, moduleName){
-		let mod = new notModule({
-			modPath:modulePath,
-			modObject: null,
-			mongoose: this.options.mongoose,
-			notApp: this
-		});
-		if (mod){
-			this.importModule(mod, moduleName || mod.description.name);
-		}
-		return this;
-	}
-
-	importModule(mod, moduleName){
-		this.modules[moduleName] = mod;
+		super(options);
 		return this;
 	}
 
@@ -44,108 +18,6 @@ class notApp{
 		}
 		this.requiredManifests = manifest;
 		return manifest;
-	}
-
-	/*
-	modelName - 'User', 'moduleName//User'
-*/
-	getModel(modelName){
-		let result = null;
-		if (modelName.indexOf('//') > 0){
-			let [moduleName, modelName] = modelName.split('//');
-			if (this.modules && this.modules.hasOwnProperty(moduleName)){
-				return this.modules.getModel(modelName);
-			}else{
-				return result;
-			}
-		}else{
-			let mNames = Object.keys(this.modules);
-			for(let t = 0; t < mNames.length; t++){
-				if (!this.modules.hasOwnProperty(mNames[t])){
-					continue;
-				}
-				let tmp = this.modules[mNames[t]].getModel(modelName);
-				if (tmp){
-					if(!result) {result = [];}
-					result.push(tmp);
-				}
-			}
-		}
-		return (result && result.length === 1)?result[0]:result;
-	}
-
-	getModelFile(modelName){
-		let result = null;
-		if (modelName.indexOf('//') > 0){
-			let [moduleName, modelName] = modelName.split('//');
-			if (this.modules && this.modules.hasOwnProperty(moduleName)){
-				return this.modules.getModelFile(modelName);
-			}else{
-				return result;
-			}
-		}else{
-			let mNames = Object.keys(this.modules);
-			for(let t = 0; t < mNames.length; t++){
-				if (!this.modules.hasOwnProperty(mNames[t])){
-					continue;
-				}
-				let tmp = this.modules[mNames[t]].getModelFile(modelName);
-				if (tmp){
-					if(!result) {result = [];}
-					result.push(tmp);
-				}
-			}
-		}
-		return (result && result.length === 1)?result[0]:result;
-	}
-
-	getModelSchema(modelName){
-		let result = null;
-		if (modelName.indexOf('//') > 0){
-			let [moduleName, modelName] = modelName.split('//');
-			if (this.modules && this.modules.hasOwnProperty(moduleName)){
-				return this.modules.getModelSchema(modelName);
-			}else{
-				return result;
-			}
-		}else{
-			let mNames = Object.keys(this.modules);
-			for(let t = 0; t < mNames.length; t++){
-				if (!this.modules.hasOwnProperty(mNames[t])){
-					continue;
-				}
-				let tmp = this.modules[mNames[t]].getModelSchema(modelName);
-				if (tmp){
-					if(!result) {result = [];}
-					result.push(tmp);
-				}
-			}
-		}
-		return (result && result.length === 1)?result[0]:result;
-	}
-
-	getModelMixins(modelName){
-		let result = [],
-			mNames = Object.keys(this.modules);
-		for(let modName of mNames){
-			let mod = this.modules[modName];
-			if (!mod){
-				continue;
-			}
-			let tmp = mod.getMixin(modelName);
-			if (tmp){
-				result.push(tmp);
-			}
-		}
-		return result;
-	}
-
-	getModule(moduleName){
-		if (this.modules && this.modules.hasOwnProperty(moduleName)){
-			return this.modules[moduleName];
-		}else{
-			return null;
-		}
 	}
 
 	expose(app){
