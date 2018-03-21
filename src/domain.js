@@ -153,6 +153,14 @@ class notDomain{
 			}
 		}
 	}
+
+	fabricate(){
+		if (this.modules){
+			for(let t of Object.keys(this.modules)){
+				this.modules[t] && this.modules[t].expose && this.modules[t].fabricateModels();
+			}
+		}
+	}
 }
 
 module.exports = notDomain;
