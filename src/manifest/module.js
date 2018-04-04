@@ -159,6 +159,7 @@ class notModule {
 		model.getModelFile = this.notApp.getModelFile.bind(this.notApp);
 		model.getModelSchema = this.notApp.getModelSchema.bind(this.notApp);
 		model.getModule = this.notApp.getModule.bind(this.notApp);
+		model.getThisModule = () => this;
 		this.models[modelName] = model;
 	}
 
@@ -172,6 +173,7 @@ class notModule {
 		route.getModelFile = this.notApp.getModelFile.bind(this.notApp);
 		route.getModelSchema = this.notApp.getModelSchema.bind(this.notApp);
 		route.getModule = this.notApp.getModule.bind(this.notApp);
+		route.getThisModule = () => this;
 	}
 
 	registerManifest(manifest, routeName) {
