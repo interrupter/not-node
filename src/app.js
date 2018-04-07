@@ -3,11 +3,13 @@ const
 	extend = require('extend'),
 	path = require('path'),
 	log = require('not-log')(module),
-	fs = require('fs');
+	fs = require('fs'),
+	parent = require('../index.js');
 
 class notApp extends notDomain{
 	constructor(options){
 		super(options);
+		parent.Application = this;
 		return this;
 	}
 
