@@ -1,5 +1,5 @@
 var thisSchema = {
-	_id: {
+	id: {
 		type: String,
 		unique: true,
 		required: true
@@ -21,7 +21,7 @@ exports.init = function (mongoose) {
 		let thisModel = this;
 		return new Promise((resolve, reject) => {
 			let which = {
-					_id: modelName
+					id: modelName
 				},
 				cmd = {
 					$inc: {
@@ -38,7 +38,7 @@ exports.init = function (mongoose) {
 						resolve(doc.seq);
 					} else {
 						let t = {
-							_id: modelName,
+							id: modelName,
 							seq: 1
 						};
 						thisModel.collection.insert(t)
