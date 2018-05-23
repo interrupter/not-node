@@ -60,10 +60,10 @@ class notRoute{
 						return result;
 					}
 				}else{
-					return new HttpError(404, 'route not found');
+					return next(new HttpError(404, 'route not found'));
 				}
 			}else{
-				return new HttpError(404, 'module not found');
+				return next(new HttpError(404, 'module not found'));
 			}
 		}else{
 			return next(new HttpError(403, 'rule for router not found'));

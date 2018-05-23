@@ -525,7 +525,8 @@ describe('RouterAction', function () {
 					}]
 				},
 				routerAction = new notRoute(fakeNotApp, 'not-user', 'post1', 'listasdf', actionData);
-			expect(routerAction.exec(req)).to.be.an.instanceof(Error);
+
+			expect(routerAction.exec(req, {}, err => err )).to.be.an.instanceof(Error);
 		});
 
 		it('Wrong rule', function () {

@@ -17,3 +17,14 @@ exports.firstLetterToLower = function (string) {
 exports.firstLetterToUpper = function (string) {
 	return string.charAt(0).toUpperCase() + string.slice(1);
 };
+
+/**
+ * Validates if string is a ObjectId
+ */
+exports.validateObjectId = (id)=>{
+	try{
+		return id.match(/^[0-9a-fA-F]{24}$/)?true:false;
+	}catch(e){
+		return false;
+	}
+};
