@@ -444,11 +444,15 @@ async function build_Server(pathToRoot, roles, targetName, targetManifest){
 			let rollupFile = path.join(pathToRoot, targetManifest.root, 'rollup.' + role + '.js');
 			let bundleFile = path.join(pathToRoot, targetManifest.build, role + '.js');
 			let templateFile = path.join(pathToRoot, targetManifest.build, role + '.html');
-			await lib.renderScript(path.join(pathToRoot,targetManifest.index), {mods:list[role].controllers}, indexFile);
+			await lib.renderScript(path.join(pathToRoot,targetManifest.index), {
+				mods:list[role].controllers,
+				role
+			}, indexFile);
 			await lib.renderScript(path.join(pathToRoot,targetManifest.rollup), {
 				appName: targetManifest.name,
 				inputPath: indexFile,
-				outputPath: bundleFile
+				outputPath: bundleFile,
+				role
 			}, rollupFile);
 			child_process.execFileSync(opts.rollup, ['-c', rollupFile], {
 				env : {
