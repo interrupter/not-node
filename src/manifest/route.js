@@ -60,13 +60,13 @@ class notRoute{
 						return result;
 					}
 				}else{
-					return next(new HttpError(404, 'route not found'));
+					return next(new HttpError(404, ['route not found', this.moduleName, this.routeName,actionName].join('; ')));
 				}
 			}else{
-				return next(new HttpError(404, 'module not found'));
+				return next(new HttpError(404, ['module not found', this.moduleName, this.routeName,actionName].join('; ')));
 			}
 		}else{
-			return next(new HttpError(403, 'rule for router not found'));
+			return next(new HttpError(403, ['rule for router not found', this.moduleName, this.routeName].join('; ')));
 		}
 	}
 }
