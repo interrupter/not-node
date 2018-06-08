@@ -200,6 +200,7 @@ describe('Model/Proto', function () {
 				.then(()=>{done();})
 				.catch(done);
 		});
+		
 	});
 
 	after(function (done) {

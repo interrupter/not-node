@@ -1,6 +1,6 @@
 {
 	"name": "not-node",
-	"version": "3.3.8",
+	"version": "3.3.9",
 	"description": "node complimentary part for client side notFramework.",
 	"main": "index.js",
 	"scripts": {
@@ -44,7 +44,7 @@
 		"nconf": "^0.10.0",
 		"not-filter": "0.0.8",
 		"not-locale": "0.0.2",
-		"not-log": "0.0.5",
+		"not-log": "0.0.6",
 		"postcss-cssnext": "*",
 		"postcss-env-replace": "*",
 		"postcss-nested": "*",
