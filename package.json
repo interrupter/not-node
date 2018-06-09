@@ -1,6 +1,6 @@
 {
 	"name": "not-node",
-	"version": "3.3.9",
+	"version": "3.3.10",
 	"description": "node complimentary part for client side notFramework.",
 	"main": "index.js",
 	"scripts": {
@@ -52,7 +52,7 @@
 		"rmdir": "^1.2.0",
 		"rollup": "^0.54.0",
 		"rollup-plugin-babel": "*",
-		"rollup-plugin-commonjs": "*",
+		"rollup-plugin-commonjs": "8.3.0",
 		"rollup-plugin-eslint": "*",
 		"rollup-plugin-filesize": "*",
 		"rollup-plugin-javascript-obfuscator": "*",
