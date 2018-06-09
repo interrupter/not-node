@@ -151,7 +151,7 @@ async function loadTemplates(dir, role = 'common'){
 			result.push(path.join(dir, role + TEMPLATES_EXT));
 		}
 	}
-	//console.log('templates in ',dir,role,result);
+	console.log('templates in ',dir,role,result);
 	return result;
 }
 
@@ -246,11 +246,12 @@ async function loadNPMModule(){
 					console.error(e);
 					commons = [];
 				}
-				roles.forEach(async(role)=>{
+				for(let role of roles){
 					let list = await loadTemplates(mod.paths.templates, role);
 					list.push(...commons);
 					result[role].templates.push(...list);
-				});
+				}
+				console.log('result', result);
 			}else{
 				console.info('...no templates');
 			}
@@ -258,6 +259,7 @@ async function loadNPMModule(){
 	}catch(e){
 		console.error(e);
 	}
+	console.log('npm module content ',result);
 	return result;
 }
 
