@@ -550,7 +550,7 @@ describe('RouterAction', function () {
 					}]
 				},
 				routerAction = new notRoute({}, 'not-user', 'post', 'list', actionData);
-			expect(routerAction.exec(req, false, next)).to.deep.equal(new HttpError(403, 'rule for router not found'));
+			expect(routerAction.exec(req, false, next)).to.deep.equal(new HttpError(403, 'rule for router not found; not-user; post'));
 		});
 	});
 });

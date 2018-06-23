@@ -1,3 +1,5 @@
+/** @module Lib */
+
 const fs = require('fs'),
 	os = require('os'),
 	fse = require('fs-extra'),

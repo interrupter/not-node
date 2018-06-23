@@ -1,3 +1,4 @@
+/** @module ShellHelpers */
 // spawn a child process and execute shell command
 // borrowed from https://github.com/mout/mout/ build script
 // author Miller Medeiros

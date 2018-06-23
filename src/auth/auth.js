@@ -1,3 +1,4 @@
+/** @module Auth */
 const HttpError = require('../error').Http;
 
 exports.DEFAULT_USER_ROLE_FOR_ADMIN = 'root';
@@ -43,9 +44,9 @@ exports.ifUser = function(req) {
 **/
 exports.checkUser = function(req, res, next) {
 	if(this.ifUser(req)) {
-		next();
+		return next();
 	}else{
-		next(new HttpError(401, 'Вы не авторизованы'));
+		return next(new HttpError(401, 'Вы не авторизованы'));
 	}
 };
 
@@ -67,7 +68,7 @@ exports.ifAdmin = function(req) {
 **/
 exports.checkAdmin = function(req, res, next) {
 	if (exports.ifAdmin(req)) {
-		next();
+		return next();
 	}else{
 		return next(new HttpError(401, 'Вы не авторизованы ' + req.session.user + ':' + req.session.role));
 	}
@@ -178,7 +179,7 @@ exports.checkRoleBuilder = function(role) {
 	return function(req, res, next) {
 		let userRole = that.getRole(req);
 		if(that.ifUser(req) && that.compareRoles(userRole, role)) {
-			next();
+			return next();
 		}else{
 			return next(new HttpError(401, 'Вы не авторизованы ' + req.session.user + ':' + req.session.role));
 		}

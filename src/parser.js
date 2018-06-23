@@ -1,13 +1,14 @@
+/** @module Parser */
+
 /**
  *  routeLine parser
  *
- *  line	-   raw route line like '/api/:modelName' or '/:record[_id]'
- *			  modelName		   -   is for name of the model routes collection
- *			  actionName		  -   is for name of the action in the routes collection
+ *  @param {string} 	line		raw route line like '/api/:modelName' or '/:record[_id]'
+ *	@param {string} 	modelName	is for name of the model routes collection
+ *	@param {string} 	actionName	is for name of the action in the routes collection
  *			  record[fieldName]   -   is for client side mostly, shows what model field walue should be placed there. Samples ':record[_id]', ':record[authorId]'
- *
+ *	@return {string}				resolved line
  */
-
 exports.parseLine = function(line, modelName, actionName) {
 	var recStart = ':record[',
 		recEnd = ']';
@@ -25,13 +26,19 @@ exports.parseLine = function(line, modelName, actionName) {
 /**
  *  Create routeLine for end-point
  *
- *  (string)url		 -   url in manifest format
- *  (string)modelName   -   name of the model
- *  (string)modelName   -   name of the action in the route file
- *  (object)actionData  -   data from manifest for this action
- *
+ *  @param	{string}	url			url in manifest format
+ *  @param	{string}	modelName	name of the model
+ *  @param	{string}	actionName	name of the action in the route file
+ *  @param	{object}	actionData	data from manifest for this action
+ *	@return	{string}				resolved router line
  */
-
 exports.getRouteLine = function(url, modelName, actionName, actionData) {
-	return this.parseLine(url, modelName, actionName) + ((actionData.hasOwnProperty('postFix')) ? this.parseLine(actionData.postFix, modelName, actionName) : '');
+	let part1 = this.parseLine(url, modelName, actionName),
+		part2 = '';
+	if(actionData.hasOwnProperty('postFix')){
+		part2 =  this.parseLine(actionData.postFix, modelName, actionName);
+	}else{
+		part2 = '';
+	}
+	return part1 + part2;
 };

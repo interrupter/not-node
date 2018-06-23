@@ -1,3 +1,4 @@
+/** @module Common */
 /**
  * Change first letter case to lower
  * @param  {string} string input string
@@ -19,7 +20,9 @@ exports.firstLetterToUpper = function (string) {
 };
 
 /**
- * Validates if string is a ObjectId
+ *	Validates if string is a ObjectId
+ *	@param	{string}	id 	ObjectId string to validate
+ *	@return {booelean}	true if check is not failed
  */
 exports.validateObjectId = (id)=>{
 	try{

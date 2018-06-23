@@ -1,3 +1,5 @@
+/** @module Error */
+
 const path = require('path'),
 	util = require('util'),
 	http = require('http');
@@ -27,6 +29,10 @@ exports.Ajax = AjaxError;
 
 /**
  *	Пополняем объект ошибок
+ *	@param	{object}	errors		errors
+ *	@param	{string}	field		name of the field
+ *	@param	{object}	error		error to add
+ *	@return {object}	modified errors
  */
 
 exports.addError = function(errors, field, error) {

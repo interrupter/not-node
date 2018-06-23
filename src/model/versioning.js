@@ -1,3 +1,5 @@
+/** @module Model/Versioning */
+
 var diff = require('deep-diff').diff;
 
 var stripTechData = function (a) {

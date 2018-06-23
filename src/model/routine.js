@@ -1,4 +1,6 @@
-var incrementNext = require('./increment');
+/** @module Model/Routine */
+
+const incrementNext = require('./increment');
 
 exports.returnErrors = function (err, callbackError) {
 	var i, validationReport = {};

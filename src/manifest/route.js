@@ -1,9 +1,20 @@
-const CONST_BEFORE_ACTION = 'before',
-	CONST_AFTER_ACTION = 'after';
+
+const	CONST_BEFORE_ACTION = 'before';
+
+const	CONST_AFTER_ACTION = 'after';
 
 const Auth = require('../auth/auth.js'),
 	HttpError = require('../error').Http;
 
+/**
+*	Route representation
+*	@class
+*	@param	{object}	notApp		notApplication instance
+*	@param	{string}	moduleName	name of owner module
+*	@param	{string}	routeName	route name
+*	@param	{string}	actionName	action name
+*	@param	{object}	actionData	action data
+**/
 class notRoute{
 	constructor(notApp, moduleName, routeName, actionName, actionData){
 		this.notApp = notApp;
@@ -14,6 +25,11 @@ class notRoute{
 		return this;
 	}
 
+	/**
+	*	Select rule from available or return null
+	*	@param	{object}	req 	Express Request Object
+	*	@return	{object}	rule or null
+	*/
 	selectRule(req){
 		if (this.actionData){
 			if(this.actionData.rules && this.actionData.rules.length > 0){
@@ -31,6 +47,13 @@ class notRoute{
 		return null;
 	}
 
+	/**
+	*	Executes route action if such exist
+	*	@param	{object}	req 	Express Request Object
+	*	@param	{object}	res		Express Response Object
+	*	@param	{function}	callback
+	*	@return {object}	result of execution or HttpError
+	**/
 	exec(req, res, next){
 		let rule = this.selectRule(req);
 		if (rule){

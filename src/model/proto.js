@@ -1,3 +1,5 @@
+/** @module Model/Proto */
+
 const enrich = require('./enrich'),
 	saveVersion = require('./versioning'),
 	Schema = require('mongoose').Schema,

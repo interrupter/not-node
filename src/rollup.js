@@ -1,3 +1,5 @@
+/** @module Rollup */
+
 // Rollup plugins
 import babel from 'rollup-plugin-babel';
 import eslint from 'rollup-plugin-eslint';
@@ -16,8 +18,8 @@ import envReplace from 'postcss-env-replace';
 import cssnano from 'cssnano';
 
 let replacerOpts = {
-	ENV: JSON.stringify(process.env.NODE_ENV || 'development')
-},
+		ENV: JSON.stringify(process.env.NODE_ENV || 'development')
+	},
 	baseHost = replacerOpts.ROLLUP_ENV_PORT+'://'+replacerOpts.ROLLUP_ENV_HOST+':'+replacerOpts.ROLLUP_ENV_PORT+'/editor';
 
 if (['production', 'stage', 'develpment'].indexOf(process.env.NODE_ENV)>-1){

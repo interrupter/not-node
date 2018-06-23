@@ -8,6 +8,31 @@ const notModule = require('./manifest/module'),
 	path = require('path'),
 	fs = require('fs');
 
+	/**
+	*	Domain
+	*	@class
+	*	@param {object}	options	application options
+	*	{
+	*		mongoose: mongooseConnectionToDB
+	*		modulesCollectionPaths: [__dirname + '/modules'], 	//each path to folder with modules
+	*		modulesPaths: [],									//each path to module
+	*		modules: {
+	*			filestore: require('not-filestore') 			//each npm not-* module with custom overriden name as key
+	*		}
+	*	}
+	*	@example <caption>Domain creation routine</caption>
+	*	let App = new new notDomain({
+	*		mongoose: mongooseLink
+	*		modulesCollectionPaths: [__dirname + '/modules'], //each path to folder with modules
+	*		modulesPaths: [],	//each path to module
+	*		modules: {
+	*			filestore: require('not-filestore') //each npm not-* module with custom overriden name as key
+	*		}
+	*	})
+	*		.importModuleFrom(__dirname+'/anotherModule', 'anotherCustomModuleName')	//import module from path
+	*		.importModulesFrom(__dirname+'/directoryOfUsefullessModules')
+	*		.importModule(require('notModule'), 'notModule');
+	**/
 class notDomain{
 	constructor(options){
 		this.options = options;
@@ -228,5 +253,4 @@ module.exports = notDomain;
 	.importModule(require('notModule'), 'notModule');
 
 	use as container for modules and models
-
 */

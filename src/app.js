@@ -1,13 +1,36 @@
-const
-	notDomain = require('./domain'),
-	extend = require('extend'),
-	path = require('path'),
-	log = require('not-log')(module),
-	fs = require('fs'),
-	parent = require('../index.js');
+const	notDomain = require('./domain');
+const	extend = require('extend');
+const 	path = require('path');
+const	log = require('not-log')(module);
+const	fs = require('fs');
+const	parent = require('../index.js');
+
 
 /**
-* Application
+*	Application
+*	@class
+*	@param {object}	options	application options
+*	{
+*		mongoose: mongooseConnectionToDB
+*		modulesCollectionPaths: [__dirname + '/modules'], 	//each path to folder with modules
+*		modulesPaths: [],									//each path to module
+*		modules: {
+*			filestore: require('not-filestore') 			//each npm not-* module with custom overriden name as key
+*		}
+*	}
+*	@example <caption>Application creation routine</caption>
+*	let App = new notApp({
+*		mongoose: mongooseLink
+*		modulesCollectionPaths: [__dirname + '/modules'], //each path to folder with modules
+*		modulesPaths: [],	//each path to module
+*		modules: {
+*			filestore: require('not-filestore') //each npm not-* module with custom overriden name as key
+*		}
+*	})
+*		.importModuleFrom(__dirname+'/anotherModule', 'anotherCustomModuleName')	//import module from path
+*		.importModulesFrom(__dirname+'/directoryOfUsefullessModules')
+*		.importModule(require('notModule'), 'notModule')
+*		.expose(ExpressApp);
 **/
 class notApp extends notDomain{
 	constructor(options){
@@ -43,18 +66,3 @@ class notApp extends notDomain{
 }
 
 module.exports = notApp;
-
-/*
-	new notApp({
-		mongoose: mongooseLink
-		modulesCollectionPaths: [__dirname + '/modules'], //each path to folder with modules
-		modulesPaths: [],	//each path to module
-		modules: {
-			filestore: require('not-filestore') //each npm not-* module with custom overriden name as key
-		}
-	}).importModuleFrom(__dirname+'/anotherModule', 'anotherCustomModuleName')	//import module from path
-	.importModulesFrom(__dirname+'/directoryOfUsefullessModules')
-	.importModule(require('notModule'), 'notModule')
-	.expose(ExpressApp);
-
-*/

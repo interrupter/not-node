@@ -1,4 +1,6 @@
-var Schema = require('mongoose').Schema,
+/** @module Model/Enrich */
+
+const Schema = require('mongoose').Schema,
 	firstLetterToLower = require('../common').firstLetterToLower,
 	buildValidator = require('./buildValidator');
 

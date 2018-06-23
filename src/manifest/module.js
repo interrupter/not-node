@@ -8,7 +8,11 @@ const protoModel = require('../model/proto.js'),
 
 //defining CONSTS
 const DEFAULT_MANIFEST_FILE_ENDING = '.manifest.js';
-
+/**
+*	Module representation
+*	@class
+*	@param	{object} 	options			options
+**/
 class notModule {
 	constructor(options) {
 		log.info('Creating module: '+ options.modPath);

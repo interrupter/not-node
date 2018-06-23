@@ -1,3 +1,5 @@
+/** @module Repos */
+
 module.exports = {
 	default: {
 		url: 'https://github.com/interrupter/not-project.git',

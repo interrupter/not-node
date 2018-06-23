@@ -1,3 +1,5 @@
+/** @module Model/Increment */
+
 var thisSchema = {
 	id: {
 		type: String,

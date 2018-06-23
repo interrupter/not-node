@@ -1,3 +1,4 @@
+/** @module Model/Validator */
 const validate = require('mongoose-validator');
 
 /**

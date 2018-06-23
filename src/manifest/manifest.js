@@ -1,8 +1,15 @@
-var Auth = require('../auth/auth'),
-	Parser = require('../parser'),
-	Route = require('./route'),
-	extend = require('extend');
+const Auth = require('../auth/auth');
+const Parser = require('../parser');
+const Route = require('./route');
+const extend = require('extend');
 
+/**
+*	API manifest
+*	@class
+*	@param	{object} 	app			express application instance
+*	@param	{object}	notApp		notApplication instance
+*	@param	{string}	moduleName	name of owner module
+**/
 class notManifest{
 	constructor(app, notApp, moduleName){
 		this.app = app;
@@ -10,17 +17,19 @@ class notManifest{
 		this.moduleName = moduleName;
 		return this;
 	}
+
 	/**
 	 *  Создаем путь для одной конечной точки
 	 *
-	 *  app		 -   express app object
-	 *  routesPath  -   directory where routes files is placed
-	 *  routeLine   -   aka '/login', '/user/:id', etc
-	 *  modelName   -   name of the mongoose model, should be exact as file name with routes for this model. If /models/theme.js contains 'Theme' mongoose model, then /routes/theme.js should  `
-	 *				  contain routes for that model.
-	 *  actionSetName  -   name of action in routes file. Look for existing route file for understanding
-	 *  actionData  -
+	 *  @param	{object}	app				express app object
+	 *  @param	{string}	routesPath		directory where routes files is placed
+	 *  @param	{string}	routeLine		aka '/login', '/user/:id', etc
+	 *  @param	{string}	modelName		name of the mongoose model, should be exact as file name with routes for this model. If /models/theme.js contains 'Theme' mongoose model, then /routes/theme.js should  `
+	 *	contain routes for that model.
+	 *  @param	{string}	actionSetName	name of action in routes file. Look for existing route file for understanding
+	 *  @param	{object}	actionData		representation of action data
 	 *
+	 *	@return	{boolean}	if route were registered
 	 */
 
 	registerRouteForAction(routeLine, routeName, actionName, actionData) {
@@ -36,9 +45,7 @@ class notManifest{
 	/**
 	 *  Создаем пути согласно манифесту
 	 *
-	 *  app - express app object
-	 *  routesPath - directory where routes files is placed
-	 *
+	 *  @param	{object}	moduleManifest	notManifest of module		
 	 */
 
 	registerRoutes(moduleManifest) {
@@ -55,11 +62,12 @@ class notManifest{
 		}
 	}
 
-	/*
-
-		Clear action definition from rules of access
-
-	*/
+	/**
+	*	Clear action definition from rules of access
+	*	@param	{object}	action 	action data
+	*
+	*	@return	{object}	clean action data
+	**/
 
 	clearActionFromRules(action){
 		delete action.rules;
@@ -71,20 +79,17 @@ class notManifest{
 		return action;
 	}
 
-	/*
-
-		Clear route from action variants that not permited for user according to
-		his auth, role, admin status
-
-		(object)route - route object
-		(boolean)auth - user auth status
-		(boolean)role - user role status
-		(boolean)admin - user admin status
-
-		Return router with only actions user can access with current states of auth, role, admin.
-		With removed definitions of what rules of access are.
-
-	*/
+	/**
+	*	Clear route from action variants that not permited for user according to
+	*	his auth, role, admin status
+	*
+	*	@param {object}		route	route object
+	*	@param {boolean}	auth	user auth status
+	*	@param {boolean}	role	user role status
+	*	@param {boolean}	admin	user admin status
+	*
+	*	@return {object}	Return router with only actions user can access with current states of auth, role, admin. With removed definitions of what rules of access are.
+	**/
 
 	filterManifestRoute(route, auth, role, admin){
 		var result = extend({}, route);
@@ -111,18 +116,17 @@ class notManifest{
 		return result;
 	}
 
-	/*
-
-		Filters manifest for current user auth, role, admin.
-		Removes all actions that can not be performed
-
-		(object)manifest - full raw manifest
-		(boolean)auth - user auth status
-		(boolean)role - user role status
-		(boolean)admin - user admin status
-
-
-	*/
+	/**
+	*	Filters manifest for current user auth, role, admin.
+	*	Removes all actions that can not be performed
+	*
+	*	@param {object} 	manifest	full raw manifest
+	*	@param {boolean}	auth		user auth status
+	*	@param {boolean}	role		user role status
+	*	@param {boolean}	admin		user admin status
+	*
+	*	@return {object}	filtered manifest
+	**/
 
 	filterManifest(manifest, auth, role, admin){
 		var result = {};
