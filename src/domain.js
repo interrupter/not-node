@@ -1,6 +1,6 @@
 /**
-*
-*      But can be used for hosting modules and models
+*	Not an App,
+*	But can be used for hosting modules and models.
 *
 */
 
@@ -16,7 +16,11 @@ class notDomain{
 		return this;
 	}
 
-
+	/**
+	*	Importing modules from directory. Chainable.
+	*	@param 	{string}	modulesPath	path to container directory
+	*	@return {object}				notDomain
+	**/
 	importModulesFrom(modulesPath){
 		fs.readdirSync(modulesPath).forEach(function(file) {
 			this.importModuleFrom(path.join(modulesPath, file), file);
@@ -24,7 +28,12 @@ class notDomain{
 		return this;
 	}
 
-
+	/**
+	*	Import single module from module dir. Chainable.
+	*	@param	{string}	modulePath 	path to module directory
+	*	@param	{string}	moduleName	name under witch module will be registered
+	*	@return {object}				notDomain
+	*/
 	importModuleFrom(modulePath, moduleName){
 		let mod = new notModule({
 			modPath:modulePath,
@@ -38,14 +47,23 @@ class notDomain{
 		return this;
 	}
 
+	/**
+	*	Import module object. Chainable.
+	*	@param 	{object}	mod			notModule instance
+	*	@param	{string}	moduleName	name under witch module will be registered
+	*	@return {object}				notDomain
+	**/
 	importModule(mod, moduleName){
 		this.modules[moduleName] = mod;
 		return this;
 	}
 
-	/*
-	modelName - 'User', 'moduleName//User'
-*/
+	/**
+	*	Returns model
+	*	@param 	{string}	modelName 	'modelName' or 'moduleName//modelName'
+	*									('User', 'moduleName//User')
+	*	@return {object}				model
+	**/
 	getModel(modelName){
 		let result = null;
 		if (modelName.indexOf('//') > 0){
@@ -71,6 +89,12 @@ class notDomain{
 		return (result && result.length === 1)?result[0]:result;
 	}
 
+
+	/**
+	*	Returns file with model declarations
+	*	@param {string} 	modelName	'modelName' or 'moduleName//modelName'
+	*	@return	{object}				CommonJS module object
+	**/
 	getModelFile(modelName){
 		let result = null;
 		if (modelName.indexOf('//') > 0){
@@ -95,6 +119,13 @@ class notDomain{
 		}
 		return (result && result.length === 1)?result[0]:result;
 	}
+
+
+	/**
+	*	Returns specified by name or 'moduleName//modelName' model Schema
+	*	@param {string} modelName	'modelName' or 'moduleName//modelName'
+	*	@return {object} 			model schema
+	**/
 
 	getModelSchema(modelName){
 		let result = null;
@@ -121,6 +152,12 @@ class notDomain{
 		return (result && result.length === 1)?result[0]:result;
 	}
 
+
+	/**
+	*	Return mixins for model
+	*	@param {string}	modelNamespecified by 'moduleName//modelName' or 'modelName'
+	*	@return	{array}	of mixins
+	*/
 	getModelMixins(modelName){
 		let result = [],
 			mNames = Object.keys(this.modules);
@@ -137,6 +174,11 @@ class notDomain{
 		return result;
 	}
 
+	/**
+	*	Return module by specified module name
+	*	@param {string}	moduleName 'moduleName'
+	*	@return {object}	module
+	**/
 	getModule(moduleName){
 		if (this.modules && this.modules.hasOwnProperty(moduleName)){
 			return this.modules[moduleName];
@@ -145,6 +187,10 @@ class notDomain{
 		}
 	}
 
+	/**
+	*	Execute method in modules
+	*	@param {string}	methodName	name of the method to execute
+	**/
 	execInModules(methodName){
 		for(let t in this.modules){
 			let mod = this.modules[t];
@@ -154,6 +200,10 @@ class notDomain{
 		}
 	}
 
+	/**
+	*	Execute fabricateModels methods on all registered modules
+	*	Create mongoose models.
+	**/
 	fabricate(){
 		if (this.modules){
 			for(let t of Object.keys(this.modules)){

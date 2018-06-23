@@ -1,8 +1,15 @@
 const HttpError = require('../error').Http;
 
 exports.DEFAULT_USER_ROLE_FOR_ADMIN = 'root';
+exports.DEFAULT_USER_ROLE_FOR_GUEST = 'guest';
 
-/* to arrays in - one intersection of two out */
+/**
+*	Two arrays in - one intersection of two out
+*	@param	{array}		a	first array
+*	@param	{array}		b	scecond array
+*	@return {array}		array consisted of elements presented in both input arrays
+**/
+
 exports.intersect_safe = function(a, b) {
 	var result = [];
 	if (Array.isArray(a) && Array.isArray(b)){
@@ -18,22 +25,46 @@ exports.intersect_safe = function(a, b) {
 	return result;
 };
 
+/**
+*	Checks if user is authenticated, by searching req.session.user
+*	@param	{object}	req 	Express Request object
+*	@return {boolean}	true - authenticated, false - guest
+**/
 exports.ifUser = function(req) {
 	return (req.session && req.session.user)?true:false;
 };
 
+/**
+*	Checks if user is authenticated, by searching req.session.user
+*	If auth pass next, else throw error
+*	@param	{object}	req 	Express Request object
+*	@param	{object}	res 	Express Repost object
+*	@param	{function}	next 	callback
+**/
 exports.checkUser = function(req, res, next) {
 	if(this.ifUser(req)) {
 		next();
 	}else{
-		return next(new HttpError(401, 'Вы не авторизованы'));
+		next(new HttpError(401, 'Вы не авторизованы'));
 	}
 };
 
+/**
+*	Returns true if user is admin
+*	@param	{object}	req 	Express Request object
+*	@return {boolean}	true - admin, false - not admin
+**/
 exports.ifAdmin = function(req) {
 	return this.ifUser(req) && this.compareRoles(this.getRole(req), this.DEFAULT_USER_ROLE_FOR_ADMIN);
 };
 
+/**
+*	Checks if user is authenticated, by searching req.session.user
+*	If auth pass next, else throw error
+*	@param	{object}	req 	Express Request object
+*	@param	{object}	res 	Express Repost object
+*	@param	{function}	next 	callback
+**/
 exports.checkAdmin = function(req, res, next) {
 	if (exports.ifAdmin(req)) {
 		next();
@@ -42,45 +73,81 @@ exports.checkAdmin = function(req, res, next) {
 	}
 };
 
+/**
+*	Returns user role from request object
+*	@param	{object}	req 	Express Request
+*	@return user role
+**/
 exports.getRole = function(req) {
 	return (req.session && req.session.role) ? req.session.role : undefined;
 };
 
+/**
+*	Set user role for active session
+*	@param	{object}	req 	Express Request
+*	@param	{string}	role 	role name
+**/
 exports.setRole = (req, role)=>{
 	if(req && req.session){
 		req.session.role = role;
 	}
 };
 
+/**
+*	Set user id for active session
+*	@param	{object}	req 	Express Request
+*	@param	{string}	_id 	user id
+**/
 exports.setId = (req, _id)=>{
 	if(req && req.session){
 		req.session.user = _id;
 	}
 };
 
+/**
+*	Set auth data in session, user id and role
+*	@param	{object}	req 	Express Request
+*	@param	{string}	id 		user id
+*	@param	{string}	role 	user role
+**/
 exports.setAuth = (req, id, role)=>{
 	this.setId(req, id);
 	this.setRole(req, role);
 };
 
+
+/**
+*	Set auth data in session to Guest
+*	@param	{object}	req 	Express Request
+**/
 exports.setGuest = (req)=>{
 	if (req.session){
 		req.user = null;
 		req.session.user = null;
-		req.session.role = 'guest';
+		req.session.role = exports.DEFAULT_USER_ROLE_FOR_GUEST;
 	}
 };
 
+/**
+*	Reset session
+*	@param	{object}	req 	Express Request
+**/
 exports.cleanse = (req)=>{
 	if(req && req.session){
 		req.session.user = null;
-		req.session.role = 'guest';
+		req.session.role = exports.DEFAULT_USER_ROLE_FOR_GUEST;
 		if(req.session.destroy){
 			req.session.destroy();
 		}
 	}
 };
 
+/**
+*	Compares two list of roles
+*	@param	{array|string}	userRoles 		roles of user
+*	@param	{array|string}	actionRoles 	roles of action
+*	@return {boolean}	if user roles comply to action roles
+**/
 exports.compareRoles = function(userRoles, actionRoles) {
 	//console.log('compare roles', userRoles, actionRoles);
 	//user have many roles
@@ -101,10 +168,15 @@ exports.compareRoles = function(userRoles, actionRoles) {
 	}
 };
 
+/**
+*	Returns Express middleware witch check role against one presented in request
+*	@param	{string|array}	role	action roles
+*	@return	{function}				express middleware
+**/
 exports.checkRoleBuilder = function(role) {
-	var that = this;
+	let that = this;
 	return function(req, res, next) {
-		var userRole = that.getRole(req);
+		let userRole = that.getRole(req);
 		if(that.ifUser(req) && that.compareRoles(userRole, role)) {
 			next();
 		}else{
@@ -113,20 +185,19 @@ exports.checkRoleBuilder = function(role) {
 	};
 };
 
-/*
-	(object)rule - action rule
-		{
-			auth - if user should be authenticated
-			role - if user shoud have some role
-			admin - if user should be super user
-		}
-	(Boolean)auth - user state of auth
-	(String|[String])role - user state of role
-	(Boolean)admin - user state of admin
-
-	return Boolean
+/**
+*	Check rule against presented credentials
+*	@param	{object}		rule	action rule
+*		{
+*			auth - if user should be authenticated
+*			role - if user shoud have some role
+*			admin - if user should be super user
+*		}
+*	@param {Boolean}		auth	user state of auth
+*	@param {String|Array}	role	user state of role
+*	@param {Boolean}		admin	user state of admin
+*	@return {boolean}		pass or not
 */
-
 exports.checkCredentials = function (rule, auth, role, admin){
 	if (typeof rule === 'undefined' || rule === null){
 		return false;

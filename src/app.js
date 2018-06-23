@@ -6,6 +6,9 @@ const
 	fs = require('fs'),
 	parent = require('../index.js');
 
+/**
+* Application
+**/
 class notApp extends notDomain{
 	constructor(options){
 		super(options);
@@ -13,6 +16,10 @@ class notApp extends notDomain{
 		return this;
 	}
 
+	/**
+	*	Returns application manifest
+	*	@return 	{object}	manifest
+	**/
 	getManifest(){
 		let manifest = {};
 		for(let modName of Object.keys(this.modules)){
@@ -22,19 +29,14 @@ class notApp extends notDomain{
 		return manifest;
 	}
 
+	/**
+	*	Exposes routes to ExpressJS application
+	*	@param {object} 	app	ExpressJS application instance
+	**/
 	expose(app){
 		if (this.modules){
 			for(let t of Object.keys(this.modules)){
 				this.modules[t] && this.modules[t].expose && this.modules[t].expose(app, t);
-			}
-		}
-	}
-
-	execInModules(methodName){
-		for(let t in this.modules){
-			let mod = this.modules[t];
-			if (mod && typeof mod.exec === 'function'){
-				mod.exec(methodName);
 			}
 		}
 	}
