@@ -7,7 +7,6 @@ const enrich = require('./enrich'),
 	log = require('not-log')(module);
 
 exports.fabricate = function (targetModule, options, mongoose) {
-
 	if (!options) {
 		options = {
 			schemaOptions: {}
