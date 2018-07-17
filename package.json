@@ -1,6 +1,6 @@
 {
 	"name": "not-node",
-	"version": "3.3.13",
+	"version": "3.3.14",
 	"description": "node complimentary part for client side notFramework.",
 	"main": "index.js",
 	"scripts": {
@@ -44,9 +44,9 @@
 		"mongoose": "*",
 		"mongoose-validator": "*",
 		"nconf": "^0.10.0",
-		"not-filter": "0.0.8",
+		"not-filter": "0.0.16",
 		"not-locale": "0.0.2",
-		"not-log": "*",
+		"not-log": "0.0.7",
 		"postcss-cssnext": "*",
 		"postcss-env-replace": "*",
 		"postcss-nested": "*",
