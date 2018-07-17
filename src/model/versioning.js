@@ -46,7 +46,7 @@ var saveVersion = (id, data, thisModel) => {
 					versionDoc.__versions = preservedVersionsList;
 					versionDoc.save()
 						.then(() => {
-							return thisModel.findById(id);
+							return thisModel.findById(id).exec();
 						})
 						.then((originalDoc) => {
 							originalDoc.__version = preservedVersionNumber + 1;
@@ -71,7 +71,7 @@ var saveFirstVersion = (id, data, thisModel) => {
 	return new Promise((resolve, reject) => {
 		versionDoc.save()
 			.then(() => {
-				return thisModel.findById(id);
+				return thisModel.findById(id).exec();
 			})
 			.then((originalDoc) => {
 				originalDoc.__version = originalDoc.__version + 1;
@@ -99,5 +99,5 @@ var saveDiff = function (doc) {
 };
 
 module.exports = function (id) {
-	return this.findById(id).then(saveDiff.bind(this));
+	return this.findById(id).exec().then(saveDiff.bind(this));
 };
