@@ -38,6 +38,8 @@ class notDomain{
 		this.options = options;
 		//named array of notModules wrappers for notModule format modules
 		this.modules = {};
+		//store
+		this.envs = {};
 		return this;
 	}
 
@@ -235,6 +237,30 @@ class notDomain{
 				this.modules[t] && this.modules[t].expose && this.modules[t].fabricateModels();
 			}
 		}
+	}
+
+	/**
+	*	Returns application environment variable
+	*	@param 	{string}			key	name of var
+	*	@return {object|undefined}		value or undefined
+	*/
+	getEnv(key){
+		if(this.envs.hasOwnProperty(key)){
+			return this.envs[key];
+		}else{
+			return	undefined;
+		}
+	}
+
+	/**
+	*	Setting application environment variable
+	*	@param 	{string}			key	name of var
+	*	@param 	{object}			val	value
+	*	@return {notDomain}			chainable
+	*/
+	setEnv(key, val){
+		this.envs[key] = val;
+		return this;
 	}
 }
 
