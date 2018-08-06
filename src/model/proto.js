@@ -91,7 +91,11 @@ exports.fabricate = function (targetModule, options, mongoose) {
 	}
 	targetModule.mongooseSchema = schema;
 	try {
-		targetModule[targetModule.thisModelName] = mongoose.model(targetModule.thisModelName, schema);
+		if (mongoose.modelNames().indexOf(targetModule.thisModelName)===-1){
+			targetModule[targetModule.thisModelName] = mongoose.model(targetModule.thisModelName, schema);
+		}else{
+			targetModule[targetModule.thisModelName] = mongoose.connection.model(targetModule.thisModelName);
+		}		
 	} catch (error) {
 		log.error(error);
 	}
