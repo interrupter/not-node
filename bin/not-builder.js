@@ -230,10 +230,13 @@ async function loadNPMModule(){
 				let pathToControllers = mod.paths.controllers;
 				let dirList = await listDir(pathToControllers);
 				if (dirList && Array.isArray(dirList) && dirList.length > 0){
+					let common = dirList.indexOf(COMMON_TEMPLATES) > -1;
 					roles.forEach((role)=>{
-						if (dirList.indexOf(role)>-1){
-							let pathToModRole = path.join(pathToControllers, role);
-							result[role].controllers.push(pathToModRole);
+						if (dirList.indexOf(role) > -1){
+							if(common){
+								result[role].controllers.push(path.join(pathToControllers, 'common'));
+							}							
+							result[role].controllers.push(path.join(pathToControllers, role));
 						}
 					});
 				}
