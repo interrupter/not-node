@@ -1,6 +1,6 @@
 {
 	"name": "not-node",
-	"version": "3.3.18",
+	"version": "3.3.19",
 	"description": "node complimentary part for client side notFramework.",
 	"main": "index.js",
 	"scripts": {
@@ -28,7 +28,8 @@
 		"url": "https://github.com/interrupter/not-node/issues"
 	},
 	"dependencies": {
-		"babel-core": "^6.26.0",
+		"@babel/core": "^7.1.2",
+		"babel-core": "*",
 		"babel-polyfill": "*",
 		"babel-preset-es2015-rollup": "*",
 		"babel-runtime": "*",
@@ -44,15 +45,15 @@
 		"mongoose": "*",
 		"mongoose-validator": "*",
 		"nconf": "^0.10.0",
-		"not-filter": "0.0.16",
-		"not-locale": "0.0.2",
-		"not-log": "0.0.9",
+		"not-filter": "*",
+		"not-locale": "*",
+		"not-log": "*",
 		"postcss-cssnext": "*",
 		"postcss-env-replace": "*",
 		"postcss-nested": "*",
 		"postcss-simple-vars": "*",
 		"rmdir": "^1.2.0",
-		"rollup": "^0.54.0",
+		"rollup": "*",
 		"rollup-plugin-babel": "*",
 		"rollup-plugin-commonjs": "8.3.0",
 		"rollup-plugin-eslint": "*",
@@ -68,17 +69,13 @@
 	},
 	"devDependencies": {
 		"chai": "*",
-		"chai-as-promised": "^5.3.0",
+		"chai-as-promised": "*",
 		"eslint": "*",
 		"istanbul": "*",
 		"mocha": "*",
 		"mockgoose": "^6.0.6",
 		"request": "*",
-		"retire": "^1.2.10",
-		"postcss-cssnext": "*",
-		"postcss-env-replace": "*",
-		"postcss-nested": "*",
-		"postcss-simple-vars": "*"
+		"retire": "^1.2.10"
 	},
 	"homepage": "https://github.com/interrupter/not-node#readme"
 }

@@ -151,7 +151,7 @@ async function loadTemplates(dir, role = 'common'){
 			result.push(path.join(dir, role + TEMPLATES_EXT));
 		}
 	}
-	console.log('templates in ',dir,role,result);
+	//console.log('templates in ',dir,role,result);
 	return result;
 }
 
@@ -225,6 +225,7 @@ async function loadNPMModule(){
 				templates: []
 			};
 		}
+
 		if (mod.paths){
 			if(mod.paths.controllers){
 				let pathToControllers = mod.paths.controllers;
@@ -233,10 +234,10 @@ async function loadNPMModule(){
 					let common = dirList.indexOf(COMMON_TEMPLATES) > -1;
 					roles.forEach((role)=>{
 						if (dirList.indexOf(role) > -1){
-							if(common){
-								result[role].controllers.push(path.join(pathToControllers, 'common'));
-							}							
 							result[role].controllers.push(path.join(pathToControllers, role));
+						}
+						if(common){
+							result[role].controllers.push(path.join(pathToControllers, 'common'));
 						}
 					});
 				}
