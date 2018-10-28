@@ -6,6 +6,12 @@ stages:
   - test
   - build
 
+test_job:
+  stage: test
+  script:
+    - npm run lint
+  allow_failure: true
+
 unit_test:
   stage: test
   variables:
