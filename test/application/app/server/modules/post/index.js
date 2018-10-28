@@ -5,6 +5,7 @@ module.exports = {
 		controllers: __dirname + '/controllers',
 		templates: __dirname + '/templates',
 		views: __dirname + '/views',
+		styles: __dirname + '/styles',
 		models:  __dirname + '/models'
 	},
 	prefix: 'post'

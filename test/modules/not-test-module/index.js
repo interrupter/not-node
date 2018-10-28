@@ -4,6 +4,7 @@ module.exports = {
 		routes: __dirname + '/routes',
 		controllers: __dirname + '/controllers',
 		views: __dirname + '/views',
+		styles: __dirname + '/styles',
 		models:  __dirname + '/models'
 	},
 	prefix: 'test'

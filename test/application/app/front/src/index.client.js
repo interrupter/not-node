@@ -1,3 +1,5 @@
+/* global notFramework */
+
 let appDefaultOptions = {
 	//url from which will take interfaceManifest json file
 	manifestURL: '/api/manifest',
@@ -25,18 +27,20 @@ let appDefaultOptions = {
 
 import * as mod_0 from '/var/server/nn/node_modules/not-test-module/controllers/client';
 appDefaultOptions = notFramework.notCommon.absorbModule(appDefaultOptions, mod_0);
-
-import * as mod_1 from '/var/server/nn/test/application/app/server/modules/post/controllers/client';
+import * as mod_1 from '/var/server/nn/node_modules/not-test-module/controllers/common';
 appDefaultOptions = notFramework.notCommon.absorbModule(appDefaultOptions, mod_1);
-
-import * as mod_2 from '/var/server/nn/test/application/app/front/src/common';
+import * as mod_2 from '/var/server/nn/test/application/app/server/modules/post/controllers/client';
 appDefaultOptions = notFramework.notCommon.absorbModule(appDefaultOptions, mod_2);
-
-import * as mod_3 from '/var/server/nn/test/application/app/front/src/client/config';
+import * as mod_3 from '/var/server/nn/test/application/app/front/src/common';
 appDefaultOptions = notFramework.notCommon.absorbModule(appDefaultOptions, mod_3);
-
-import * as mod_4 from '/var/server/nn/test/application/app/front/src/client/joy';
+import * as mod_4 from '/var/server/nn/test/application/app/front/src/client/config';
 appDefaultOptions = notFramework.notCommon.absorbModule(appDefaultOptions, mod_4);
+import * as mod_5 from '/var/server/nn/test/application/app/front/src/client/joy';
+appDefaultOptions = notFramework.notCommon.absorbModule(appDefaultOptions, mod_5);
+
+
+import '/var/server/nn/test/application/app/server/modules/post/styles/common.scss';
+import '/var/server/nn/test/application/app/front/src/common/style.scss';
 
 
 console.log('application final options', appDefaultOptions);

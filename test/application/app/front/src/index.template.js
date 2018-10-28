@@ -1,3 +1,5 @@
+/* global notFramework */
+
 let appDefaultOptions = {
 	//url from which will take interfaceManifest json file
 	manifestURL: '/api/manifest',
@@ -24,8 +26,11 @@ let appDefaultOptions = {
 
 <% for(var i = 0; i < mods.length; i++) {%>
 import * as mod_<%=i%> from '<%=mods[i]%>';
-appDefaultOptions = notFramework.notCommon.absorbModule(appDefaultOptions, mod_<%=i%>);
-<% } %>
+appDefaultOptions = notFramework.notCommon.absorbModule(appDefaultOptions, mod_<%=i%>);<% } %>
+
+<% for(var i = 0; i < scss.length; i++) {%>
+import '<%=scss[i]%>';<% } %>
+
 
 console.log('application final options', appDefaultOptions);
 notFramework.notCommon.startApp(() => new notFramework.notApp(appDefaultOptions));

@@ -1,3 +1,5 @@
+/* global notFramework */
+
 let appDefaultOptions = {
 	//url from which will take interfaceManifest json file
 	manifestURL: '/api/manifest',
@@ -23,14 +25,20 @@ let appDefaultOptions = {
 };
 
 
-import * as mod_0 from '/var/server/nn/test/application/app/front/src/common';
+import * as mod_0 from '/var/server/nn/node_modules/not-test-module/controllers/common';
 appDefaultOptions = notFramework.notCommon.absorbModule(appDefaultOptions, mod_0);
-
-import * as mod_1 from '/var/server/nn/test/application/app/front/src/root/config';
+import * as mod_1 from '/var/server/nn/test/application/app/front/src/common';
 appDefaultOptions = notFramework.notCommon.absorbModule(appDefaultOptions, mod_1);
-
-import * as mod_2 from '/var/server/nn/test/application/app/front/src/root/joy';
+import * as mod_2 from '/var/server/nn/test/application/app/front/src/root/config';
 appDefaultOptions = notFramework.notCommon.absorbModule(appDefaultOptions, mod_2);
+import * as mod_3 from '/var/server/nn/test/application/app/front/src/root/joy';
+appDefaultOptions = notFramework.notCommon.absorbModule(appDefaultOptions, mod_3);
+
+
+import '/var/server/nn/node_modules/not-test-module/styles/root/arma.scss';
+import '/var/server/nn/node_modules/not-test-module/styles/root/root.scss';
+import '/var/server/nn/test/application/app/server/modules/post/styles/common.scss';
+import '/var/server/nn/test/application/app/front/src/common/style.scss';
 
 
 console.log('application final options', appDefaultOptions);

@@ -23,7 +23,10 @@ var argv = require('yargs').argv,
 
 const TEMPLATES_EXT = '.html';
 const SCRIPTS_EXT = '.js';
+const STYLES_EXT = '.scss';
 const COMMON_TEMPLATES = 'common';
+
+console.log('NODE VERSION',process.version);
 
 let opts = {
 		'environment': argv.environment || 'production',
@@ -133,22 +136,22 @@ async function listFilesPaths(dir, ext){
 *	@param 	{string}	role	user role
 *	@return {array}		list of template files
 */
-async function loadTemplates(dir, role = 'common'){
+async function loadTemplates(dir, role = COMMON_TEMPLATES, templatesExt = TEMPLATES_EXT){
 	let dirsList = await listDir(dir),
-		filesList = await listFiles(dir, TEMPLATES_EXT),
+		filesList = await listFiles(dir, templatesExt),
 		result = [];
 	if (dirsList && Array.isArray(dirsList) && dirsList.length > 0){
 		if (dirsList.indexOf(role) > -1){
 			let pathToModRole = path.join(dir, role),
-				files = await listFilesPaths(pathToModRole, TEMPLATES_EXT);
+				files = await listFilesPaths(pathToModRole, templatesExt);
 			if(Array.isArray(files)){
 				result.push(...files);
 			}
 		}
 	}
 	if(filesList && Array.isArray(filesList) && filesList.length > 0){
-		if (filesList.indexOf(role + TEMPLATES_EXT) > -1){
-			result.push(path.join(dir, role + TEMPLATES_EXT));
+		if (filesList.indexOf(role + templatesExt) > -1){
+			result.push(path.join(dir, role + templatesExt));
 		}
 	}
 	//console.log('templates in ',dir,role,result);
@@ -161,11 +164,11 @@ async function loadTemplates(dir, role = 'common'){
 *	@param 	{string}	role	user role
 *	@return {array}		list of template files
 */
-async function loadTemplatesForFront(dir, role){
+async function loadTemplatesForFront(dir, role, commonDir = COMMON_TEMPLATES, templatesExt = TEMPLATES_EXT){
 	let listDirs,
-		commonDir = path.join(dir, COMMON_TEMPLATES),
 		roleDir = path.join(dir, role),
 		result = [];
+	commonDir = path.join(dir, commonDir);
 	try{
 		listDirs = await listDir(dir);
 	}catch(e){
@@ -175,7 +178,7 @@ async function loadTemplatesForFront(dir, role){
 	try{
 		if(fs.lstatSync(commonDir).isDirectory()){
 			//console.log('Directory ', commonDir, ' exists!');
-			let files = await listFilesPaths(commonDir, TEMPLATES_EXT);
+			let files = await listFilesPaths(commonDir, templatesExt);
 			//console.log('common files:', files);
 			result.push(...files);
 		}else{
@@ -195,7 +198,7 @@ async function loadTemplatesForFront(dir, role){
 		if(Array.isArray(modsDir)){
 			for(let t = 0; t < modsDir.length; t++){
 				let modDir = modsDir[t];
-				let files = await listFilesPaths(path.join(roleDir, modDir), TEMPLATES_EXT);
+				let files = await listFilesPaths(path.join(roleDir, modDir), templatesExt);
 				//console.log('list of files', files);
 				result.push(...files);
 			}
@@ -222,7 +225,8 @@ async function loadNPMModule(){
 		for(let i = 0; i < roles.length; i++){
 			result[roles[i]] = {
 				controllers:[],
-				templates: []
+				templates: 	[],
+				styles:		[]
 			};
 		}
 
@@ -259,6 +263,23 @@ async function loadNPMModule(){
 			}else{
 				console.info('...no templates');
 			}
+			if(mod.paths.styles){
+				let commons;
+				try{
+					commons = await loadTemplates(mod.paths.styles, COMMON_TEMPLATES, STYLES_EXT);
+				}catch(e){
+					console.error(e);
+					commons = [];
+				}
+				for(let role of roles){
+					let list = await loadTemplates(mod.paths.styles, role, STYLES_EXT);
+					list.push(...commons);
+					result[role].styles.push(...list);
+				}
+				console.log('result', result);
+			}else{
+				console.info('...no styles');
+			}
 		}
 	}catch(e){
 		console.error(e);
@@ -275,7 +296,8 @@ async function loadServerModule(){
 		for(let i = 0; i < roles.length; i++){
 			result[roles[i]] = {
 				controllers:[],
-				templates: []
+				templates: 	[],
+				styles:		[]
 			};
 		}
 		if (mod.paths){
@@ -319,6 +341,31 @@ async function loadServerModule(){
 			}else{
 				console.info('...no templates');
 			}
+			if(mod.paths.styles){
+				let commons;
+				try{
+					commons = await loadTemplates(mod.paths.styles, COMMON_TEMPLATES, STYLES_EXT);
+				}catch(e){
+					console.error(e);
+					commons = [];
+				}
+				//console.log('commons', commons);
+				for(let i = 0; i < roles.length; i++){
+					try{
+						//console.log('loadTemplates', typeof loadTemplates);
+						let role = roles[i],
+							list = await loadTemplates(mod.paths.styles, role, STYLES_EXT);
+						//console.log('list', typeof list, typeof result[role]);
+						list.push(...(commons.slice()));
+						result[role].styles.push(...list);
+					}catch(e){
+						console.error(e);
+					}
+
+				}
+			}else{
+				console.info('...no styles');
+			}
 		}
 	}catch(e){
 		console.error(e);
@@ -330,8 +377,9 @@ function initList(roles, pathTo){
 	let list = {};
 	for(let i = 0; i < roles.length; i++){
 		list[roles[i]] = {
-			templates:[],
-			controllers: []
+			templates:		[],
+			controllers: 	[],
+			styles:			[]
 		};
 		if (pathTo){
 			list[roles[i]].controllers.push(pathTo);
@@ -346,8 +394,9 @@ async function loadFrontModules(){
 		let {modsOptions, roles, pathToModules} = arguments[0];
 		for(let i = 0; i < roles.length; i++){
 			result[roles[i]] = {
-				templates:[],
-				controllers: []
+				templates:		[],
+				controllers: 	[],
+				styles:			[]
 			};
 		}
 		let modulesDirList = await listDir(pathToModules);
@@ -361,6 +410,7 @@ async function loadFrontModules(){
 			}
 			//console.log('role:', roles[i]);
 			result[roles[i]].templates = await loadTemplatesForFront(pathToModules, roles[i]);
+			result[roles[i]].styles = await loadTemplatesForFront(pathToModules, roles[i], COMMON_TEMPLATES,STYLES_EXT);
 			//console.log('templates in there', result[roles[i]].templates);
 		}
 	}catch(e){
@@ -394,7 +444,8 @@ async function build_Server(pathToRoot, roles, targetName, targetManifest){
 	for(let i = 0; i < roles.length; i++){
 		list[roles[i]] = {
 			controllers:[],
-			templates:[]
+			templates:	[],
+			styles:		[]
 		};
 	}
 	////searching for app.js template
@@ -452,6 +503,7 @@ async function build_Server(pathToRoot, roles, targetName, targetManifest){
 			let templateFile = path.join(pathToRoot, targetManifest.build, role + '.html');
 			await lib.renderScript(path.join(pathToRoot,targetManifest.index), {
 				mods:list[role].controllers,
+				scss: list[role].styles,
 				role
 			}, indexFile);
 			await lib.renderScript(path.join(pathToRoot,targetManifest.rollup), {

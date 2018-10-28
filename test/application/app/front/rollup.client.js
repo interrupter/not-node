@@ -1,11 +1,12 @@
 // Rollup plugins
 import babel from 'rollup-plugin-babel';
-import eslint from 'rollup-plugin-eslint';
+import {eslint} from 'rollup-plugin-eslint';
 import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
 import filesize from 'rollup-plugin-filesize';
+import sass from 'rollup-plugin-sass';
 import postcss from 'rollup-plugin-postcss';
 
 import obfuscatorPlugin from 'rollup-plugin-javascript-obfuscator';
@@ -31,9 +32,8 @@ export default {
 		file: '/var/server/nn/test/application/app/front/build/client.js',
 		name: 'TestServerApplication',
 		format: 'iife',
-		globals: ['notFramework']
-	},	
-	sourcemap: false && (process.env.NODE_ENV === 'production' ? false : 'inline'),
+		globals: ['notFramework','$']
+	},
 	plugins: [
 		postcss({
 			plugins: [
@@ -54,7 +54,10 @@ export default {
 				}),
 				cssnano(),
 			],
-			extensions: ['.css'],
+			extensions: ['.scss'],
+		}),
+		sass({
+			  output: true,
 		}),
 		resolve({
 			jsnext: true,
@@ -69,10 +72,12 @@ export default {
 		(babelOn() && babel({
 			exclude: ['build/**']
 		})),
+		/**
 		(uglifyOn() && uglify()),
 		(uglifyOn() && obfuscatorPlugin({
 			compact: true
 		})),
+		**/
 		filesize()
 	]
 };
