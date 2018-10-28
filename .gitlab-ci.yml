@@ -6,15 +6,7 @@ stages:
   - test
   - build
 
-test_job:
-  stage: test
-  before_script:
-    - npm install
-  script:
-    - npm run lint
-  allow_failure: true
-
-unit_test:
+test:
   stage: test
   variables:
     NODE_ENV: development
@@ -23,6 +15,7 @@ unit_test:
   script:
     - npm run lint
     - npm run test
+    
 build:
   stage: build
   variables:
