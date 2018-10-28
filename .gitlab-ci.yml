@@ -1,0 +1,23 @@
+cache:
+  paths:
+  - node_modules/
+
+stages:
+  - test
+  - build
+
+unit_test:
+  image: node
+  stage: test
+  variables:
+    NODE_ENV: development
+  script:
+    - npm run test
+build:
+  stage: build
+  variables:
+    NODE_ENV: development
+  script:
+    npm run build
+  only:
+    - master
