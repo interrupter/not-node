@@ -211,6 +211,28 @@ function listAllAndPopulate(populate) {
 	return query.exec();
 }
 
+/**
+*	List record in collection and populates, with count of total founded records
+*	By default sorts by _id in DESC
+*	@static
+*	@param	{number} 		skip		number of skiped records
+*	@param	{number} 		size		length of return list
+*	@param	{object} 		sorter		sorter rules
+*	@param	{object|array} 	filter		filter rules
+*	@param	{object} 		populate	populate rules
+*	@return {Promise}		{list, count}
+*/
+function listAndCount(skip, size, sorter, filter, populate = ['']){
+	let list = this.listAndPopulate(req.pager.skip, req.pager.size, req.sorter, req.search || req.filter, populate),
+		count = this.countWithFilter(req.search || req.filter);
+	return Promise.all([list, count])
+		.then(([list, count])=>{
+			return {
+				list,
+				count,
+			};
+		});
+}
 
 /**
 *	Counts record method
