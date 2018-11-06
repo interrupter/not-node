@@ -221,7 +221,7 @@ function listAllAndPopulate(populate) {
 *	@param	{object|array} 	filter		filter rules
 *	@param	{object|array} 	search		search rules
 *	@param	{object} 		populate	populate rules
-*	@return {Promise}		{list, count}
+*	@return {Promise}		{list, count, pages}
 */
 function listAndCount(skip, size, sorter, filter, search, populate = ['']){
 	let list = this.listAndPopulate(skip, size, sorter, search || filter, populate),
@@ -231,6 +231,7 @@ function listAndCount(skip, size, sorter, filter, search, populate = ['']){
 			return {
 				list,
 				count,
+				pages = Math.ceil(count / size),
 			};
 		});
 }
