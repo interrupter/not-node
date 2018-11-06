@@ -268,6 +268,7 @@ exports.statics = {
 	listAllAndPopulate,
 	countWithFilter,
 	listAndPopulate,
+	listAndCount,
 	add
 };
 
