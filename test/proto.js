@@ -65,7 +65,7 @@ describe('Model/Proto', function () {
 			name: 'val'
 		});
 		expect(item.getName()).to.be.equal('val 1');
-		expect(moduleProto1.mongooseSchema.statics).to.have.keys(['saveVersion', '__versioning', '__incModel', '__incField', 'returnFalse', 'sanitizeInput', 'getOne', 'getOneByID', 'getOneRaw', 'makeQuery', 'list', 'countWithFilter', 'listAndPopulate', 'add', 'listAll', 'listAllAndPopulate']);
+		expect(moduleProto1.mongooseSchema.statics).to.have.keys(['saveVersion', '__versioning', '__incModel', '__incField', 'returnFalse', 'sanitizeInput', 'getOne', 'getOneByID', 'getOneRaw', 'makeQuery', 'list', 'countWithFilter', 'listAndPopulate', 'add', 'listAll', 'listAllAndPopulate', 'listAndCount']);
 		expect(moduleProto1.mongooseSchema.methods).to.have.keys(['getName', 'getID', 'close']);
 	});
 
@@ -200,7 +200,7 @@ describe('Model/Proto', function () {
 				.then(()=>{done();})
 				.catch(done);
 		});
-		
+
 	});
 
 	after(function (done) {

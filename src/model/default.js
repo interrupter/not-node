@@ -219,12 +219,13 @@ function listAllAndPopulate(populate) {
 *	@param	{number} 		size		length of return list
 *	@param	{object} 		sorter		sorter rules
 *	@param	{object|array} 	filter		filter rules
+*	@param	{object|array} 	search		search rules
 *	@param	{object} 		populate	populate rules
 *	@return {Promise}		{list, count}
 */
-function listAndCount(skip, size, sorter, filter, populate = ['']){
-	let list = this.listAndPopulate(req.pager.skip, req.pager.size, req.sorter, req.search || req.filter, populate),
-		count = this.countWithFilter(req.search || req.filter);
+function listAndCount(skip, size, sorter, filter, search, populate = ['']){
+	let list = this.listAndPopulate(skip, size, sorter, search || filter, populate),
+		count = this.countWithFilter(search || filter);
 	return Promise.all([list, count])
 		.then(([list, count])=>{
 			return {
