@@ -231,7 +231,7 @@ function listAndCount(skip, size, sorter, filter, search, populate = ['']){
 			return {
 				list,
 				count,
-				pages = Math.ceil(count / size),
+				pages: Math.ceil(count / size),
 			};
 		});
 }
