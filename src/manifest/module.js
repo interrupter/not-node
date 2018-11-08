@@ -268,14 +268,18 @@ class notModule {
 	}
 
 	exec(methodName){
-		if(this.module.hasOwnProperty(methodName)){
-			if (typeof this.module[methodName] === 'function') {
-				try{
-					this.module[methodName](this.notApp);
-				}catch(e){
-					log.error(e);
+		if(this.module){
+			if(this.module.hasOwnProperty(methodName)){
+				if (typeof this.module[methodName] === 'function') {
+					try{
+						this.module[methodName](this.notApp);
+					}catch(e){
+						log.error(e);
+					}
 				}
 			}
+		}else{
+			log.error(`Cant exec ${methodName} in module ${this.path}, module not loaded`);
 		}
 	}
 }
