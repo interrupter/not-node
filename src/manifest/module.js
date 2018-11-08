@@ -37,7 +37,7 @@ class notModule {
 	map(to, list){
 		for(let item of list){
 			if(typeof this[item] === 'function'){
-				log.info('map ', item);
+				log.info(`map ${item}`);
 				to[item] = this[item].bind(this.notApp);
 			}
 		}
@@ -49,12 +49,16 @@ class notModule {
 		} else if (this.module) {
 			this.initFromModule(this.module);
 		}
-		this.map(this.module, [
-			'getModel',
-			'getModelSchema',
-			'getModelFile'
-		]);
-		log.info(Object.keys(this.module));
+		if(this.module === null || typeof this.module === 'undefined'){
+			log.error(`Module ${this.path} not loaded`);
+		}else{
+			this.map(this.module, [
+				'getModel',
+				'getModelSchema',
+				'getModelFile'
+			]);
+			log.info(Object.keys(this.module));
+		}
 	}
 
 	initFromPath(modulePath) {
