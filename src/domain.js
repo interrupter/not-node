@@ -8,7 +8,7 @@ const notModule = require('./manifest/module'),
 	path = require('path'),
 	fs = require('fs');
 
-	/**
+/**
 	*	Domain
 	*	@class
 	*	@param {object}	options	application options
@@ -38,6 +38,8 @@ class notDomain{
 		this.options = options;
 		//named array of notModules wrappers for notModule format modules
 		this.modules = {};
+		this._logger = null;
+		this._reporter = null;
 		//store
 		this.envs = {};
 		return this;
@@ -262,6 +264,29 @@ class notDomain{
 		this.envs[key] = val;
 		return this;
 	}
+
+	/**
+	*	logger
+	*/
+	set logger(logger){
+		this._logger = logger;
+	}
+
+	get logger(){
+		return this._logger || console;
+	}
+
+	/**
+	*	reporter
+	*/
+	set reporter(reporter){
+		this._reporter = reporter;
+	}
+
+	get reporter(){
+		return this._reporter || console.error;
+	}
+
 }
 
 module.exports = notDomain;
