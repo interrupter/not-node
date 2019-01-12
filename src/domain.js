@@ -89,16 +89,16 @@ class notDomain{
 
 	/**
 	*	Returns model
-	*	@param 	{string}	modelName 	'modelName' or 'moduleName//modelName'
+	*	@param 	{string}	name 	'modelName' or 'moduleName//modelName'
 	*									('User', 'moduleName//User')
 	*	@return {object}				model
 	**/
-	getModel(modelName){
+	getModel(name){
 		let result = null;
-		if (modelName.indexOf('//') > 0){
-			let [moduleName, modelName] = modelName.split('//');
+		if (name.indexOf('//') > 0){
+			let [moduleName, modelName] = name.split('//');
 			if (this.modules && this.modules.hasOwnProperty(moduleName)){
-				return this.modules.getModel(modelName);
+				return this.modules[moduleName].getModel(modelName);
 			}else{
 				return result;
 			}
@@ -108,7 +108,7 @@ class notDomain{
 				if (!this.modules.hasOwnProperty(mNames[t])){
 					continue;
 				}
-				let tmp = this.modules[mNames[t]].getModel(modelName);
+				let tmp = this.modules[mNames[t]].getModel(name);
 				if (tmp){
 					if(!result) {result = [];}
 					result.push(tmp);
