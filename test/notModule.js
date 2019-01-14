@@ -6,7 +6,7 @@ const expect = require('chai').expect,
 	validators = require('./validators'),
 	modulesPath = __dirname + '/modules',
 	modulePath = __dirname + '/module';
-return;
+
 const moduleManifest = {
 	'file': {
 		model: 'file',
@@ -41,11 +41,13 @@ describe('notModule', function () {
 				modPath: modulePath,
 				mongoose: mongoose
 			});
+			mod.fabricateModels();
 			expect(mod.faulty).to.deep.equal(false);
 			expect(mod.path).to.deep.equal(modulePath);
 			expect(mod.models).to.have.any.keys(['UserLocal']);
 			expect(mod.routes).to.have.key('file');
-			expect(mod.getModel('UserLocal')).to.be.ok;
+			let model = mod.getModel('UserLocal');
+			expect(model).to.be.ok;
 		});
 
 		it('With init from module', function () {
@@ -68,6 +70,16 @@ describe('notModule', function () {
 				mongoose: mongoose
 			});
 			expect(mod.getManifest()).to.deep.equal(moduleManifest);
+		});
+	});
+
+	describe('getModuleName', function(){
+		it('Get module name from module.exports.name', function(){
+			var mod = new notModule({
+				modObject: require('./module'),
+				mongoose: mongoose
+			});
+			expect(mod.getModuleName()).to.be.equal('not-post');
 		});
 	});
 

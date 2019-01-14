@@ -15,7 +15,7 @@ const DEFAULT_MANIFEST_FILE_ENDING = '.manifest.js';
 **/
 class notModule {
 	constructor(options) {
-		log.info('Creating module: '+ options.modPath);
+		log.info(`Creating module: ${options.modPath}`);
 		this.path = options.modPath;
 		this.module = options.modObject;
 		this.mongoose = options.mongoose;
@@ -32,6 +32,10 @@ class notModule {
 		};
 		this.init();
 		return this;
+	}
+
+	getModuleName(){
+		return this.description.name || this.module.name || this.path;
 	}
 
 	map(to, list){
@@ -56,7 +60,6 @@ class notModule {
 				'getModelSchema',
 				'getModelFile'
 			]);
-			log.info(Object.keys(this.module));
 		}
 	}
 
@@ -68,6 +71,8 @@ class notModule {
 			}
 		} catch (e) {
 			this.faulty = true;
+			// eslint-disable-next-line no-console
+			console.error(e);
 		}
 	}
 
@@ -76,13 +81,14 @@ class notModule {
 			this.registerContent();
 		} catch (e) {
 			this.faulty = true;
+			// eslint-disable-next-line no-console
+			console.error(e);
 		}
 	}
 
 	registerContent() {
 		if (this.module.paths){
 			if (this.module.paths.models) {
-				///log.info('Searching for models in ',this.module.paths.models);
 				this.findModelsIn(this.module.paths.models);
 			}
 			if (this.module.paths.mixins) {
@@ -107,7 +113,7 @@ class notModule {
 	findModelsIn(modelsPath) {
 		fs.readdirSync(modelsPath).forEach(function(file) {
 			let modelPath = path.join(modelsPath, file);
-			log.info('Checking model in', modelPath);
+			log.info(`Checking model in ${modelPath}`);
 			if (fs.lstatSync(modelPath).isFile()) {
 				let model = require(modelPath),
 					modelName = file;
@@ -161,11 +167,15 @@ class notModule {
 	}
 
 	registerModel(model, modelName) {
-		log.info('Register model', modelName);
-		model.getModel = this.notApp.getModel.bind(this.notApp);
-		model.getModelFile = this.notApp.getModelFile.bind(this.notApp);
-		model.getModelSchema = this.notApp.getModelSchema.bind(this.notApp);
-		model.getModule = this.notApp.getModule.bind(this.notApp);
+		if(this.notApp){
+			log.debug(`Register model ${modelName}`);
+			model.getModel = this.notApp.getModel.bind(this.notApp);
+			model.getModelFile = this.notApp.getModelFile.bind(this.notApp);
+			model.getModelSchema = this.notApp.getModelSchema.bind(this.notApp);
+			model.getModule = this.notApp.getModule.bind(this.notApp);
+		}else{
+			log.debug(`Register model ${modelName} skiped, no Application`);
+		}
 		model.getThisModule = () => this;
 		this.models[modelName] = model;
 	}
@@ -176,10 +186,15 @@ class notModule {
 
 	registerRoute(route, routeName) {
 		this.routes[routeName] = route;
-		route.getModel = this.notApp.getModel.bind(this.notApp);
-		route.getModelFile = this.notApp.getModelFile.bind(this.notApp);
-		route.getModelSchema = this.notApp.getModelSchema.bind(this.notApp);
-		route.getModule = this.notApp.getModule.bind(this.notApp);
+		if(this.notApp){
+			log.debug(`Register route ${routeName}`);
+			route.getModel = this.notApp.getModel.bind(this.notApp);
+			route.getModelFile = this.notApp.getModelFile.bind(this.notApp);
+			route.getModelSchema = this.notApp.getModelSchema.bind(this.notApp);
+			route.getModule = this.notApp.getModule.bind(this.notApp);
+		}else{
+			log.debug(`Register route ${routeName} skiped, no Application`);
+		}
 		route.getThisModule = () => this;
 	}
 
@@ -194,16 +209,22 @@ class notModule {
 	getModelFile(modelName) {
 		if (this.models && this.models.hasOwnProperty(modelName)) {
 			return this.models[modelName];
+		}else{
+			return null;
 		}
-		return null;
 	}
 
 	getModel(modelName) {
-		let modelFile = this.getModelFile(modelName);
-		if (modelFile && modelFile.hasOwnProperty(modelName)) {
-			return modelFile[modelName];
+		try{
+			let modelFile = this.getModelFile(modelName);
+			if (modelFile && (modelName in modelFile)) {
+				return modelFile[modelName];
+			}else{
+				return null;
+			}
+		}catch(e){
+			log.error(e);
 		}
-		return null;
 	}
 
 	getModelSchema(modelName) {
@@ -252,8 +273,11 @@ class notModule {
 
 	fabricateModels(){
 		for(let modelName in this.models){
-			log.info('Fabricating model: '+ modelName);
-			let modelMixins = this.notApp.getModelMixins(modelName);
+			log.info(`Fabricating model: ${modelName}`);
+			let modelMixins = [];
+			if(this.notApp){
+				modelMixins = this.notApp.getModelMixins(modelName);
+			}
 			this.fabricateModel(this.models[modelName], modelMixins);
 		}
 	}

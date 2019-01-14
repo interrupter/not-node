@@ -203,8 +203,12 @@ exports.checkCredentials = function (rule, auth, role, admin){
 	if (typeof rule === 'undefined' || rule === null){
 		return false;
 	}else{
-		if (rule.hasOwnProperty('admin') && rule.admin){
-			return rule.admin && admin;
+		if ((rule.hasOwnProperty('admin') && rule.admin) || (rule.hasOwnProperty('root') && rule.root)){
+			if(rule.hasOwnProperty('admin')){
+				return rule.admin && admin;
+			}else{
+				return rule.root && admin;	
+			}
 		}else{
 			if (rule.hasOwnProperty('role')){
 				if (exports.compareRoles(rule.role, role)){

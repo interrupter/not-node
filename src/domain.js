@@ -71,7 +71,7 @@ class notDomain{
 			notApp: this
 		});
 		if (mod){
-			this.importModule(mod, moduleName || mod.description.name);
+			this.importModule(mod, moduleName || mod.getModuleName());
 		}
 		return this;
 	}
@@ -212,6 +212,11 @@ class notDomain{
 		if (this.modules && this.modules.hasOwnProperty(moduleName)){
 			return this.modules[moduleName];
 		}else{
+			for(let t in this.modules){
+				if(this.modules[t].getModuleName() === moduleName){
+					return this.modules[t];
+				}
+			}
 			return null;
 		}
 	}

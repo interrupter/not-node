@@ -45,7 +45,7 @@ class notManifest{
 	/**
 	 *  Создаем пути согласно манифесту
 	 *
-	 *  @param	{object}	moduleManifest	notManifest of module		
+	 *  @param	{object}	moduleManifest	notManifest of module
 	 */
 
 	registerRoutes(moduleManifest) {
@@ -72,6 +72,7 @@ class notManifest{
 	clearActionFromRules(action){
 		delete action.rules;
 		delete action.admin;
+		delete action.root;
 		delete action.auth;
 		delete action.role;
 		delete action.actionName;

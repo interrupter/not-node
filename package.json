@@ -1,6 +1,6 @@
 {
 	"name": "not-node",
-	"version": "3.3.28",
+	"version": "3.3.29",
 	"description": "node complimentary part for client side notFramework.",
 	"main": "index.js",
 	"scripts": {
@@ -8,7 +8,7 @@
 		"lint": "./node_modules/.bin/eslint ./src/**/**.js",
 		"pretest": "./node_modules/.bin/eslint ./src/**/**",
 		"docs": "./node_modules/.bin/jsdoc -c jsdoc.json",
-		"cover": "istanbul cover _mocha $(find ./test -name \"*.js\" -not -path \"./node_modules/*\" -not -path \"./test/module/*\" -not -path \"./test/application/*\"  -not -path \"./test/modules/*\" -not -path \"./test/package/*\" -not -path \"./test/routes/*\")"
+		"cover": "nyc npm test"
 	},
 	"bin": {
 		"not-node": "./bin/not-node.js",
@@ -53,6 +53,7 @@
 		"not-locale": "*",
 		"not-log": "0.0.14",
 		"npm": "^6.4.1",
+		"nyc": "^13.1.0",
 		"postcss-cssnext": "*",
 		"postcss-env-replace": "*",
 		"postcss-nested": "*",
@@ -84,5 +85,41 @@
 		"request": "*",
 		"retire": "^1.2.10"
 	},
-	"homepage": "https://github.com/interrupter/not-node#readme"
+	"homepage": "https://github.com/interrupter/not-node#readme",
+	"nyc": {
+				"include": [
+						"index.js",
+						"src/**/**/**.js"
+				],
+				"exclude": [
+						"tests/**/**/**/**.js"
+				],
+				"reporter": [
+						"html"
+				],
+				"check-coverage": false,
+				"per-file": true,
+				"lines": 95,
+				"statements": 95,
+				"functions": 95,
+				"branches": 95,
+				"watermarks": {
+						"lines": [
+								80,
+								95
+						],
+						"functions": [
+								80,
+								95
+						],
+						"branches": [
+								80,
+								95
+						],
+						"statements": [
+								80,
+								95
+						]
+				}
+		}
 }
