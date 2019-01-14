@@ -37,7 +37,6 @@ class notModule {
 	map(to, list){
 		for(let item of list){
 			if(typeof this[item] === 'function'){
-				log.info(`map ${item}`);
 				to[item] = this[item].bind(this.notApp);
 			}
 		}
