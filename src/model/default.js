@@ -13,15 +13,21 @@ exports.extractVariants = function (items) {
 	return variants;
 };
 
-let populateQuery = (query, populate) => {
+let populateQuery = (query, populate, versioning = false) => {
 	if (populate && populate.length) {
 		for(let key of populate){
-			query.populate({
-				path: key,
-				match: {
-					__latest: true
-				}
-			});
+			if(versioning){
+				query.populate({
+					path: key,
+					match: {
+						__latest: true
+					}
+				});
+			}else{
+				query.populate({
+					path: key
+				});
+			}
 		}
 	}
 };
@@ -168,7 +174,7 @@ function list(skip, size, sorter, filter){
 function listAndPopulate(skip, size, sorter, filter, populate) {
 	let query = this.makeQuery('find', filter);
 	query.sort(sorter).skip(skip).limit(size);
-	populateQuery(query, populate);
+	populateQuery(query, populate, this.schema.statics.__versioning);
 	return query.exec();
 }
 
@@ -207,7 +213,7 @@ function listAllAndPopulate(populate) {
 	query.sort([
 		['_id', 'descending']
 	]);
-	populateQuery(query, populate);
+	populateQuery(query, populate,this.schema.statics.__versioning);
 	return query.exec();
 }
 
