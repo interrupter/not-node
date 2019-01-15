@@ -15,9 +15,9 @@ exports.extractVariants = function (items) {
 
 let populateQuery = (query, populate) => {
 	if (populate && populate.length) {
-		while (populate.length > 0) {
+		for(let key of populate){
 			query.populate({
-				path: populate.shift(),
+				path: key,
 				match: {
 					__latest: true
 				}
