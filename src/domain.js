@@ -292,6 +292,10 @@ class notDomain{
 		return this._reporter || console.error;
 	}
 
+	report(err){
+		this.reporter.report(err);
+	}
+
 }
 
 module.exports = notDomain;

@@ -243,7 +243,7 @@ function listAndCount(skip, size, sorter, filter, search, populate = ['']){
 *	@return {Promise}					Promise
 */
 function countWithFilter(filter){
-	let query =  this.makeQuery('count', filter);
+	let query =  this.makeQuery('countDocuments', filter);
 	return query.exec();
 }
 
