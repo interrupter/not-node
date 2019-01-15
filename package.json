@@ -1,6 +1,6 @@
 {
 		"name": "not-node",
-		"version": "3.3.33",
+		"version": "3.3.34",
 		"description": "node complimentary part for client side notFramework.",
 		"main": "index.js",
 		"scripts": {
@@ -48,7 +48,7 @@
 				"mongoose": "*",
 				"mongoose-validator": "*",
 				"nconf": "^0.10.0",
-				"node-sass": "^4.9.4",
+				"node-sass": "^4.11.0",
 				"not-filter": "*",
 				"not-locale": "*",
 				"not-log": "0.0.14",
@@ -60,7 +60,7 @@
 				"postcss-simple-vars": "*",
 				"rebuild-node-sass": "^1.1.0",
 				"rmdir": "^1.2.0",
-				"rollup": "*",
+				"rollup": "^1.1.0",
 				"rollup-plugin-babel": "*",
 				"rollup-plugin-commonjs": "*",
 				"rollup-plugin-eslint": "*",
