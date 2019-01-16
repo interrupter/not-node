@@ -31,3 +31,12 @@ exports.validateObjectId = (id)=>{
 		return false;
 	}
 };
+
+/**
+ *	Returns today Date object without hours, minutes, seconds
+ *	@return {Date}	current date with 00:00:00
+ */
+exports.getTodayDate = ()=>{
+	let t = new Date();
+	return (new Date(t.getFullYear(), t.getMonth(),t.getDate())).getTime();
+};
