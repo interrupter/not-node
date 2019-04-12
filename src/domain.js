@@ -40,6 +40,7 @@ class notDomain{
 		this.modules = {};
 		this._logger = null;
 		this._reporter = null;
+		this._informer = null;
 		//store
 		this.envs = {};
 		return this;
@@ -282,7 +283,7 @@ class notDomain{
 	}
 
 	/**
-	*	reporter
+	*	reporter - errors
 	*/
 	set reporter(reporter){
 		this._reporter = reporter;
@@ -294,6 +295,21 @@ class notDomain{
 
 	report(err){
 		this.reporter.report(err);
+	}
+
+	/**
+	*	informer - messages
+	*/
+	set informer(informer /* not-informer.Informer */){
+		this._informer = informer;
+	}
+
+	get informer(){
+		return this._informer || {'now': console.log};
+	}
+
+	inform(data /* look for not-informer.Informer.now */){
+		this.informer.now(data);
 	}
 
 }
