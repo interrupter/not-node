@@ -50,15 +50,22 @@ function sanitizeInput(input) {
 *	If versioning ON, it retrieves __latest and not __closed
 *	@static
 *	@param 	{string}	id 	primary key
+*	@param 	{Array}		population 	optional if needed population of some fields
 *	@return {Promise}	Promise
 **/
-function getOne(id) {
+function getOne(id, population = []) {
 	if (this.schema.statics.__versioning) {
 		let query = this.findOne({
 			_id: id,
 			__latest: true,
 			__closed: false
-		}).populate('__versions');
+		});
+		if(Array.isArray(population)&&population.length){
+			population.push('__versions');
+		}else{
+			population = ['__versions'];
+		}
+		populateQuery(query, population, this.schema.statics.__versioning);
 		return query.exec();
 	} else {
 		let query = this.findOne({
