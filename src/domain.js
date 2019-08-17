@@ -279,7 +279,16 @@ class notDomain{
 	}
 
 	get logger(){
-		return this._logger || console;
+		if (typeof this._logger !== 'undefined' && this._logger !== null){
+			return this._logger;
+		}else{
+			return console;
+		}
+	}
+
+	log(){
+		this.logger.log(...arguments);
+		return this;
 	}
 
 	/**
