@@ -299,7 +299,7 @@ class notDomain{
 	}
 
 	get reporter(){
-		return this._reporter || console.error;
+		return this._reporter || { report: console.error };
 	}
 
 	report(err){
