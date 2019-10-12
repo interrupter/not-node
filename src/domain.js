@@ -294,12 +294,29 @@ class notDomain{
 	/**
 	*	reporter - errors
 	*/
+
+	get DEFAULT_REPORTER(){
+		return {
+			report: function([...params]){
+				return new Promise((res, rej)=>{
+					try{
+						console.error(params);
+						res();
+					}catch(e){
+						console.error(e);
+						rej(e);
+					}
+				});
+			}
+		};
+	}
+
 	set reporter(reporter){
 		this._reporter = reporter;
 	}
 
 	get reporter(){
-		return this._reporter || { report: console.error };
+		return this._reporter || this.DEFAULT_REPORTER;
 	}
 
 	report(err){
@@ -309,12 +326,16 @@ class notDomain{
 	/**
 	*	informer - messages
 	*/
+	get DEFAULT_INFORMER(){
+		return {now:	console.info};
+	}
+
 	set informer(informer /* not-informer.Informer */){
 		this._informer = informer;
 	}
 
 	get informer(){
-		return this._informer || {'now': console.log};
+		return this._informer || this.DEFAULT_INFORMER;
 	}
 
 	inform(data /* look for not-informer.Informer.now */){

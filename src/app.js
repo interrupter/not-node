@@ -1,8 +1,5 @@
 const	notDomain = require('./domain');
 const	extend = require('extend');
-const 	path = require('path');
-const	log = require('not-log')(module);
-const	fs = require('fs');
 const	parent = require('../index.js');
 
 
