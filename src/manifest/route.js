@@ -72,6 +72,11 @@ class notRoute{
 			let mod = this.notApp.getModule(this.moduleName);
 			if (mod){
 				let modRoute = mod.getRoute(this.routeName);
+				req.notRouteData = {
+					actionName,
+					rule,
+					'actionData': Object.assign({}, this.actionData)
+				};
 				if (modRoute && modRoute.hasOwnProperty(actionName) && typeof modRoute[actionName] === 'function'){
 					if (modRoute.hasOwnProperty(CONST_BEFORE_ACTION)){
 						modRoute[CONST_BEFORE_ACTION](req, res, next);
