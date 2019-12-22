@@ -207,7 +207,7 @@ class notModule {
 	}
 
 	getModelFile(modelName) {
-		if (this.models && this.models.hasOwnProperty(modelName)) {
+		if (this.models && Object.prototype.hasOwnProperty.call(this.models,modelName)) {
 			return this.models[modelName];
 		}else{
 			return null;
@@ -229,14 +229,14 @@ class notModule {
 
 	getModelSchema(modelName) {
 		let modelFile = this.getModelFile(modelName);
-		if (modelFile && modelFile.hasOwnProperty(modelName) && modelFile.thisSchema) {
+		if (modelFile && Object.prototype.hasOwnProperty.call(modelFile,modelName) && modelFile.thisSchema) {
 			return modelFile.thisSchema;
 		}
 		return null;
 	}
 
 	getMixin(modelName) {
-		if (this.mixins && this.mixins.hasOwnProperty(modelName)) {
+		if (this.mixins && Object.prototype.hasOwnProperty.call(this.mixins, modelName)) {
 			return this.mixins[modelName];
 		} else {
 			return null;
@@ -244,7 +244,7 @@ class notModule {
 	}
 
 	getRoute(routeName) {
-		if (this.routes && this.routes.hasOwnProperty(routeName)) {
+		if (this.routes && Object.prototype.hasOwnProperty.call(this.routes, routeName)) {
 			return this.routes[routeName];
 		} else {
 			return null;
@@ -292,7 +292,7 @@ class notModule {
 
 	exec(methodName){
 		if(this.module){
-			if(this.module.hasOwnProperty(methodName)){
+			if(Object.prototype.hasOwnProperty.call(this.module, methodName)){
 				if (typeof this.module[methodName] === 'function') {
 					try{
 						this.module[methodName](this.notApp);

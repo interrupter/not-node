@@ -34,7 +34,7 @@ exports.init = function (mongoose) {
 					new: true
 				};
 
-			thisModel.findOneAndUpdate(which, cmd, opts)
+			thisModel.updateOne(which, cmd, opts)
 				.then((doc) => {
 					if (doc) {
 						resolve(doc.seq);

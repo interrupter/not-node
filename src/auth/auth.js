@@ -203,16 +203,16 @@ exports.checkCredentials = function (rule, auth, role, admin){
 	if (typeof rule === 'undefined' || rule === null){
 		return false;
 	}else{
-		if ((rule.hasOwnProperty('admin') && rule.admin) || (rule.hasOwnProperty('root') && rule.root)){
-			if(rule.hasOwnProperty('admin')){
+		if ((Object.prototype.hasOwnProperty.call(rule,'admin') && rule.admin) || (Object.prototype.hasOwnProperty.call(rule,'root') && rule.root)){
+			if(Object.prototype.hasOwnProperty.call(rule,'admin')){
 				return rule.admin && admin;
 			}else{
-				return rule.root && admin;	
+				return rule.root && admin;
 			}
 		}else{
-			if (rule.hasOwnProperty('role')){
+			if (Object.prototype.hasOwnProperty.call(rule,'role')){
 				if (exports.compareRoles(rule.role, role)){
-					if(rule.hasOwnProperty('auth')){
+					if(Object.prototype.hasOwnProperty.call(rule,'auth')){
 						if(rule.auth && auth){
 							return true;
 						}else{
@@ -227,7 +227,7 @@ exports.checkCredentials = function (rule, auth, role, admin){
 					return false;
 				}
 			}else{
-				if(rule.hasOwnProperty('auth')){
+				if(Object.prototype.hasOwnProperty.call(rule,'auth')){
 					if(rule.auth && auth){
 						return true;
 					}else{

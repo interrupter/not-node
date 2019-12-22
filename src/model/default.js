@@ -39,7 +39,7 @@ let populateQuery = (query, populate, versioning = false) => {
 *	@return	{object}	data;
 **/
 function sanitizeInput(input) {
-	if (!input.hasOwnProperty('default')) {
+	if (!Object.prototype.hasOwnProperty.call(input, 'default')) {
 		input.default = false;
 	}
 	return input;
@@ -169,6 +169,26 @@ function list(skip, size, sorter, filter){
 
 
 /**
+*	Returns list of items with specific values in specific field, optionaly filtered
+*	@static
+*	@param	{string} 				field			name of the field to search in
+*	@param	{array} 				list			list of 'id' field values
+*	@param	{object|array} 	filter		filter rules
+*	@param	{object} 				populate	populate rules
+*	@return {Promise}					Promise
+*/
+
+function listByField(field, list = [], filter = {}, populate = []){
+	let query = this.makeQuery('find', {
+		[field]: Object.assign({
+			$in: list
+		}, filter)
+	});
+	populateQuery(query, populate, this.schema.statics.__versioning);
+	return query.exec();
+}
+
+/**
 *	List record and populate method
 *	@static
 *	@param	{number} 		skip		number of skiped records
@@ -279,6 +299,7 @@ exports.statics = {
 	getOneRaw,
 	makeQuery,
 	list,
+	listByField,
 	listAll,
 	listAllAndPopulate,
 	countWithFilter,

@@ -52,7 +52,7 @@ class notManifest{
 		let actionData,
 			routeLine;
 		for(let route of Object.keys(moduleManifest)){
-			if (moduleManifest[route].hasOwnProperty('actions') && moduleManifest[route].hasOwnProperty('url')){
+			if (Object.prototype.hasOwnProperty.call(moduleManifest[route], 'actions') && Object.prototype.hasOwnProperty.call(moduleManifest[route], 'url')){
 				for(let action of Object.keys(moduleManifest[route].actions)){
 					actionData = moduleManifest[route].actions[action];
 					routeLine = Parser.getRouteLine(moduleManifest[route].url, route, action, actionData);

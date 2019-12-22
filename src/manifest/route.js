@@ -77,12 +77,12 @@ class notRoute{
 					rule,
 					'actionData': Object.assign({}, this.actionData)
 				};
-				if (modRoute && modRoute.hasOwnProperty(actionName) && typeof modRoute[actionName] === 'function'){
-					if (modRoute.hasOwnProperty(CONST_BEFORE_ACTION)){
+				if (modRoute && Object.prototype.hasOwnProperty.call(modRoute, actionName) && typeof modRoute[actionName] === 'function'){
+					if (Object.prototype.hasOwnProperty.call(modRoute, CONST_BEFORE_ACTION)){
 						modRoute[CONST_BEFORE_ACTION](req, res, next);
 					}
 					let result = modRoute[actionName](req, res, next);
-					if (modRoute.hasOwnProperty(CONST_AFTER_ACTION)){
+					if (Object.prototype.hasOwnProperty.call(modRoute,CONST_AFTER_ACTION)){
 						return modRoute[CONST_AFTER_ACTION](req, res, next);
 					}else{
 						return result;

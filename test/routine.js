@@ -1,5 +1,4 @@
 const expect = require('chai').expect,
-	mockgoose = require('mockgoose'),
 	mongoose = require('mongoose'),
 	fabricateModel = require('../src/model/proto').fabricate,
 	userProto = require('./module/models/user.js'),
@@ -7,9 +6,14 @@ const expect = require('chai').expect,
 	plainProto = require('./module/models/plainModel.js'),
 	routine = require('../src/model/routine');
 
+	const Mockgoose = require('mockgoose').Mockgoose;
+	const mockgoose = new Mockgoose(mongoose);
+
 describe('Model/Routine', function () {
 	before(function (done) {
-		mockgoose(mongoose).then(function () {
+		console.log('storage not-ready');
+		mockgoose.prepareStorage().then(function () {
+			console.log('storage ready');
 			mongoose.Promise = global.Promise;
 			mongoose.connect('mongodb://localhost/test', function (err) {
 				increment.init(mongoose);
@@ -17,7 +21,7 @@ describe('Model/Routine', function () {
 				fabricateModel(plainProto, null, mongoose);
 				done(err);
 			});
-		});
+		}).catch(done);
 	});
 
 	it('returnErrors', function (done) {

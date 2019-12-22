@@ -59,7 +59,7 @@ exports.markForVersioning = function (mongooseSchema) {
 exports.byFieldsValidators = function (mongooseSchema) {
 	if (mongooseSchema) {
 		for (var fieldName in mongooseSchema) {
-			if (mongooseSchema[fieldName].hasOwnProperty('validate')) {
+			if (Object.prototype.hasOwnProperty.call(mongooseSchema[fieldName],'validate')) {
 				mongooseSchema[fieldName].validate = buildValidator(mongooseSchema[fieldName].validate);
 			}
 		}

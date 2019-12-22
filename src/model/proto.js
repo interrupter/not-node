@@ -72,19 +72,19 @@ exports.fabricate = function (targetModule, options, mongoose) {
 		}
 
 		for (let st in defaultModel.statics) {
-			if (!schema.statics.hasOwnProperty(st)) {
+			if (!Object.prototype.hasOwnProperty.call(schema.statics, st)) {
 				schema.statics[st] = defaultModel.statics[st];
 			}
 		}
 
 		for (let st in defaultModel.methods) {
-			if (!schema.methods.hasOwnProperty(st)) {
+			if (!Object.prototype.hasOwnProperty.call(schema.methods, st)) {
 				schema.methods[st] = defaultModel.methods[st];
 			}
 		}
 
 		for (let st in defaultModel.virtuals) {
-			if (!schema.virtuals.hasOwnProperty(st)) {
+			if (!Object.prototype.hasOwnProperty.call(schema.virtuals, st)) {
 				schema.virtuals[st] = defaultModel.virtuals[st];
 			}
 		}
@@ -95,7 +95,7 @@ exports.fabricate = function (targetModule, options, mongoose) {
 			targetModule[targetModule.thisModelName] = mongoose.model(targetModule.thisModelName, schema);
 		}else{
 			targetModule[targetModule.thisModelName] = mongoose.connection.model(targetModule.thisModelName);
-		}		
+		}
 	} catch (error) {
 		log.error(error);
 	}

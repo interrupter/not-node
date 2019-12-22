@@ -1,21 +1,19 @@
 const expect = require('chai').expect,
 	should = require('chai').should(),
 	mongoose = require('mongoose'),
-	mockgoose = require('mockgoose'),
 	increment = require('../src/model/increment'),
 	HttpError = require('../src/error').Http;
 
+const Mockgoose = require('mockgoose').Mockgoose;
+const mockgoose = new Mockgoose(mongoose);
 
 describe('Increment', function () {
-
 	before(function (done) {
-		mockgoose(mongoose).then(() => {
-			mongoose.disconnect(() => {
+		mockgoose.prepareStorage().then(() => {
 				mongoose.connect('mongodb://localhost/test', (err) => {
 					done(err);
 				});
-			});
-		});
+		}).catch(done);
 	});
 	/*
 			it('before init', function() {

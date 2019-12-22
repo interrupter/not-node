@@ -6,12 +6,17 @@ const expect = require('chai').expect,
 	proto = require('../src/model/proto'),
 	defaultModel = require('../src/model/default');
 
+	const Mockgoose = require('mockgoose').Mockgoose;
+	const mockgoose = new Mockgoose(mongoose);
+
 describe('Model/Proto', function () {
 	before(function (done) {
-		mongoose.connect('mongodb://localhost/test', function (err) {
-			increment.init(mongoose);
-			done(err);
-		});
+		mockgoose.prepareStorage().then(()=>{
+			mongoose.connect('mongodb://localhost/test', function (err) {
+				increment.init(mongoose);
+				done(err);
+			});
+		}).catch(done)
 	});
 
 	it('extractVariants', () => {
@@ -65,7 +70,7 @@ describe('Model/Proto', function () {
 			name: 'val'
 		});
 		expect(item.getName()).to.be.equal('val 1');
-		expect(moduleProto1.mongooseSchema.statics).to.have.keys(['saveVersion', '__versioning', '__incModel', '__incField', 'returnFalse', 'sanitizeInput', 'getOne', 'getOneByID', 'getOneRaw', 'makeQuery', 'list', 'countWithFilter', 'listAndPopulate', 'add', 'listAll', 'listAllAndPopulate', 'listAndCount']);
+		expect(moduleProto1.mongooseSchema.statics).to.have.keys(['saveVersion', '__versioning', '__incModel', '__incField', 'returnFalse', 'sanitizeInput', 'getOne', 'getOneByID', 'getOneRaw', 'makeQuery', 'list', 'countWithFilter', 'listAndPopulate', 'add', 'listAll', 'listAllAndPopulate', 'listAndCount', 'listByField']);
 		expect(moduleProto1.mongooseSchema.methods).to.have.keys(['getName', 'getID', 'close']);
 	});
 
