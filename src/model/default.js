@@ -263,7 +263,9 @@ function listAndCount(skip, size, sorter, filter, search, populate = ['']){
 		.then(([list, count])=>{
 			return {
 				list,
+				skip,
 				count,
+				page: Math.floor(skip / size) + (skip % size === 0? 1:0),
 				pages: Math.ceil(count / size),
 			};
 		});
