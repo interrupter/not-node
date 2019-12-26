@@ -1,64 +1,58 @@
 /** @module Model/Increment */
 
 var thisSchema = {
-	id: {
-		type: String,
-		unique: true,
-		required: true
-	},
-	seq: {
-		type: Number,
-		default: 0,
-		required: true
-	}
+  id: {
+    type: String,
+    unique: true,
+    required: true
+  },
+  seq: {
+    type: Number,
+    default: 0,
+    required: true
+  }
 };
 
 var mongooseLocal = null;
 var schema = null;
 
-exports.init = function (mongoose) {
-	mongooseLocal = mongoose;
-	schema = new(mongooseLocal.Schema)(thisSchema);
-	schema.statics.getNext = function (modelName) {
-		let thisModel = this;
-		return new Promise((resolve, reject) => {
-			let which = {
-					id: modelName
-				},
-				cmd = {
-					$inc: {
-						seq: 1
-					}
-				},
-				opts = {
-					new: true
-				};
+exports.init = function(mongoose) {
+    mongooseLocal = mongoose;
+    schema = new(mongooseLocal.Schema)(thisSchema);
+    schema.statics.getNext = async (modelName) => {
+      let thisModel = this;
+      let which = {
+          id: modelName
+        },
+        cmd = {
+          $inc: {
+            seq: 1
+          }
+        },
+        opts = {
+          new: true
+        };
 
-			thisModel.updateOne(which, cmd, opts)
-				.then((doc) => {
-					if (doc) {
-						resolve(doc.seq);
-					} else {
-						let t = {
-							id: modelName,
-							seq: 1
-						};
-						thisModel.collection.insert(t)
-							.then(() => {
-								resolve(1);
-							});
-					}
-				})
-				.catch(reject);
-		});
-	};
+      let doc = await thisModel.updateOne(which, cmd, opts);
+      if (doc) {
+        return doc.seq;
+      } else {
+        let t = {
+          id: modelName,
+          seq: 1
+        };
+        await thisModel.collection.insert(t).exec();
+        return 1;
+      }
 
-	var model = null;
-	try {
-		model = mongooseLocal.model('Increment', schema);
-	} catch (e) {
-		model = mongooseLocal.model('Increment');
+    }
+
+    var model = null;
+    try {
+      model = mongooseLocal.model('Increment', schema);
+    } catch (e) {
+      model = mongooseLocal.model('Increment');
+    }
+    exports.model = model;
+    exports.next = model.getNext.bind(model);
 	}
-	exports.model = model;
-	exports.next = model.getNext.bind(model);
-};
