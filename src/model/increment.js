@@ -33,7 +33,13 @@ exports.init = function(mongoose) {
           new: true
         };
 
-      let doc = await thisModel.updateOne(which, cmd, opts);
+      let doc;
+      if(typeof thisModel.updateOne === 'function'){
+        doc = await thisModel.updateOne(which, cmd, opts).exec();
+      }else{
+        doc = await thisModel.update(which, cmd, opts).exec();          
+      }
+
       if (doc) {
         return doc.seq;
       } else {
