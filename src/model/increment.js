@@ -12,14 +12,14 @@ var thisSchema = {
     required: true
   }
 };
-
 var mongooseLocal = null;
 var schema = null;
 
-exports.init = function(mongoose) {
+exports.init = function (mongoose) {
     mongooseLocal = mongoose;
     schema = new(mongooseLocal.Schema)(thisSchema);
-    schema.statics.getNext = async (modelName) => {
+    schema.statics.getNext = async function (modelName){
+	console.log('next', modelName);
       let thisModel = this;
       let which = {
           id: modelName
@@ -32,16 +32,17 @@ exports.init = function(mongoose) {
         opts = {
           new: true
         };
-
       let doc;
       if(typeof thisModel.updateOne === 'function'){
         doc = await thisModel.updateOne(which, cmd, opts).exec();
       }else{
-        doc = await thisModel.update(which, cmd, opts).exec();          
+        doc = await thisModel.update(which, cmd, opts).exec();
       }
-
-      if (doc) {
-        return doc.seq;
+      console.log(doc);
+      doc = await thisModel.find(which).exec();
+      console.log(doc);
+      if (doc.length>0) {
+        return doc[0].seq;
       } else {
         let t = {
           id: modelName,
