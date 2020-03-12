@@ -52,7 +52,7 @@
 				"not-locale": "*",
 				"not-log": "0.0.14",
 				"npm": "^6.13.4",
-				"nyc": "^14.1.1",
+				"nyc": "^15.0.0",
 				"postcss-cssnext": "*",
 				"postcss-env-replace": "*",
 				"postcss-nested": "*",
