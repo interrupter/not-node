@@ -4,19 +4,26 @@ const expect = require('chai').expect,
 	validators = require('./validators'),
 	remember = require('./remember'),
 	proto = require('../src/model/proto'),
-	defaultModel = require('../src/model/default');
+	defaultModel = require('../src/model/default'),
+	{ MongoMemoryServer } = require('mongodb-memory-server');
 
-	const Mockgoose = require('mockgoose').Mockgoose;
-	const mockgoose = new Mockgoose(mongoose);
+var mongod = null;
 
 describe('Model/Proto', function () {
-	before(function (done) {
-		mockgoose.prepareStorage().then(()=>{
-			mongoose.connect('mongodb://localhost/test', function (err) {
-				increment.init(mongoose);
-				done(err);
-			});
-		}).catch(done)
+	before( (done) => {
+		mongod = new MongoMemoryServer();
+		mongod.getUri()
+			.then((uri)=>{
+				mongoose.connect(uri, (err) => {
+					if(err){
+						console.error(err);
+						done(err);
+					}else{
+						done();
+					}
+				});
+			})
+			.catch(done);
 	});
 
 	it('extractVariants', () => {
@@ -201,7 +208,7 @@ describe('Model/Proto', function () {
 		});
 
 		afterEach(function (done) {
-			moduleProto.User.remove({})
+			moduleProto.User.deleteMany({})
 				.then(()=>{done();})
 				.catch(done);
 		});
@@ -209,9 +216,15 @@ describe('Model/Proto', function () {
 	});
 
 	after(function (done) {
-		mongoose.disconnect((err) => {
-			done(err);
+		mongoose.disconnect(async () => {
+			try{
+				await mongod.stop();
+				done();
+			}catch(e){
+				done(e)
+			}
 		});
+
 	});
 
 });

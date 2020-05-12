@@ -4,24 +4,30 @@ const expect = require('chai').expect,
 	userProto = require('./module/models/user.js'),
 	increment = require('../src/model/increment.js'),
 	plainProto = require('./module/models/plainModel.js'),
-	routine = require('../src/model/routine');
+	routine = require('../src/model/routine'),
+	{ MongoMemoryServer } = require('mongodb-memory-server');
 
-	const Mockgoose = require('mockgoose').Mockgoose;
-	const mockgoose = new Mockgoose(mongoose);
+
+	var mongod = null;
 
 describe('Model/Routine', function () {
-	before(function (done) {
-		console.log('storage not-ready');
-		mockgoose.prepareStorage().then(function () {
-			console.log('storage ready');
-			mongoose.Promise = global.Promise;
-			mongoose.connect('mongodb://localhost/test', function (err) {
-				increment.init(mongoose);
-				fabricateModel(userProto, null, mongoose);
-				fabricateModel(plainProto, null, mongoose);
-				done(err);
-			});
-		}).catch(done);
+	before( (done) => {
+		mongod = new MongoMemoryServer();
+		mongod.getUri()
+			.then((uri)=>{
+				mongoose.connect(uri, (err) => {
+					if(err){
+						console.error(err);
+						done(err);
+					}else{
+						increment.init(mongoose);
+						fabricateModel(userProto, null, mongoose);
+						fabricateModel(plainProto, null, mongoose);
+						done();
+					}
+				});
+			})
+			.catch(done);
 	});
 
 	it('returnErrors', function (done) {
@@ -169,9 +175,14 @@ describe('Model/Routine', function () {
 	});
 
 	after(function (done) {
-		mongoose.disconnect((err) => {
-			done(err);
+		mongoose.disconnect(async () => {
+			try{
+				await mongod.stop();
+				done();
+			}catch(e){
+				done(e)
+			}
 		});
-		mockgoose.reset();
+
 	});
 });

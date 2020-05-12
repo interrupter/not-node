@@ -2,25 +2,33 @@ const expect = require('chai').expect,
 	should = require('chai').should(),
 	mongoose = require('mongoose'),
 	increment = require('../src/model/increment'),
-	HttpError = require('../src/error').Http;
+	HttpError = require('../src/error').Http,
+	{ MongoMemoryServer } = require('mongodb-memory-server');
 
-const Mockgoose = require('mockgoose').Mockgoose;
-const mockgoose = new Mockgoose(mongoose);
+var mongod = null;
 
 describe('Increment', function () {
-	before(function (done) {
-		mockgoose.prepareStorage().then(() => {
-				mongoose.connect('mongodb://localhost/test', (err) => {
-					done(err);
+	before( (done) => {
+		mongod = new MongoMemoryServer();
+		mongod.getUri()
+			.then((uri)=>{
+				mongoose.connect(uri, (err) => {
+					if(err){
+						console.error(err);
+						done(err);
+					}else{
+						done();
+					}
 				});
-		}).catch(done);
+			})
+			.catch(done);
 	});
-	/*
+
 			it('before init', function() {
 				expect(increment.next).to.not.exist;
 				expect(increment.model).to.not.exist;
 			});
-	*/
+
 	it('after init', function () {
 		var res = increment.init(mongoose);
 		expect(increment.next).to.exist;
@@ -76,9 +84,14 @@ describe('Increment', function () {
 	});
 
 	after(function (done) {
-		mongoose.disconnect(() => {
-			done();
+		mongoose.disconnect(async () => {
+			try{
+				await mongod.stop();
+				done();
+			}catch(e){
+				done(e)
+			}
 		});
-		mockgoose.reset();
+
 	});
 });
