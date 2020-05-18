@@ -297,7 +297,7 @@ class notDomain{
 
 	get DEFAULT_REPORTER(){
 		return {
-			report: function([...params]){
+			report(...params){
 				return new Promise((res, rej)=>{
 					try{
 						console.error(params);
