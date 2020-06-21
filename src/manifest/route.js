@@ -40,7 +40,7 @@ class notRoute{
 				}
 			}else{
 				if (Auth.checkCredentials(this.actionData, Auth.ifUser(req), Auth.getRole(req), Auth.ifAdmin(req))){
-					return this.actionData;
+					return Object.assign({}, this.actionData, this.actionData.rules);
 				}
 			}
 		}

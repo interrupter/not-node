@@ -322,7 +322,7 @@ class notDomain{
 	report(err){
 		this.reporter.report(err).catch(this.logger.error);
 	}
-
+	
 	/**
 	*	informer - messages
 	*/
