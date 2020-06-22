@@ -297,6 +297,61 @@ describe('Auth', function() {
 			const res = auth.checkCredentials({admin: true}, false, false, true);
 			expect(res).to.deep.equal(true);
 		});
+	});
+
+	describe('checkSupremacy', function() {
+
+		it('Both undefined, order undefined', function() {
+			let resultFunction = ()=>{ auth.checkSupremacy(undefined, 'undefined', undefined);}
+			expect(resultFunction).to.throw();
+			resultFunction = ()=>{ auth.checkSupremacy('undefined', undefined, undefined);}
+			expect(resultFunction).to.throw();
+			resultFunction = ()=>{ auth.checkSupremacy('undefined', 'undefined', undefined);}
+			expect(resultFunction).to.throw();
+		});
+
+		it('Both undefined, order defined but not Array', function() {
+			let resultFunction = ()=>{ auth.checkSupremacy('undefined', 'undefined', 12);}
+			expect(resultFunction).to.throw();
+		});
+
+		it('Both undefined, order defined Array with wrong types of element', function() {
+			let resultFunction = ()=>{ auth.checkSupremacy('undefined', 'undefined', [12]);}
+			expect(resultFunction).to.throw();
+		});
+
+		it('Both undefined, order defined Array with wrong types of element', function() {
+			let resultFunction = ()=>{ auth.checkSupremacy('undefined', 'undefined', [null]);}
+			expect(resultFunction).to.throw();
+		});
+
+		it('Both undefined, order defined Array with wrong types of element', function() {
+			let resultFunction = ()=>{ auth.checkSupremacy('undefined', 'undefined', [null]);}
+			expect(resultFunction).to.throw();
+		});
+
+		it('Both defined, order list dont contains roles of sets', function() {
+			expect(auth.checkSupremacy('undefined', 'undefined', ['root'])).to.be.equal(false);
+		});
+
+		it('Various situations with valid input', function() {
+			expect(auth.checkSupremacy('undefined', 'undefined', ['root', 'admin', 'client', 'user', 'guest'])).to.be.equal(false);
+			expect(auth.checkSupremacy('root', ['root'], ['root', 'admin', 'client', 'user', 'guest'])).to.be.equal(false);
+			expect(auth.checkSupremacy('undefined', 'root', ['root', 'admin', 'client', 'user', 'guest'])).to.be.equal(false);
+			expect(auth.checkSupremacy('undefined', 'guest', ['root', 'admin', 'client', 'user', 'guest'])).to.be.equal(false);
+			expect(auth.checkSupremacy('root', ['undefined', 'manager'], ['root', 'admin', 'client', 'user', 'guest'])).to.be.equal(true);
+			expect(auth.checkSupremacy('client', 'root', ['root', 'admin', 'client', 'user', 'guest'])).to.be.equal(false);
+			expect(auth.checkSupremacy('client', 'client', ['root', 'admin', 'client', 'user', 'guest'])).to.be.equal(false);
+			expect(auth.checkSupremacy('guest', 'guest', ['root', 'admin', 'client', 'user', 'guest'])).to.be.equal(false);
+			expect(auth.checkSupremacy('guest', 'root', ['root', 'admin', 'client', 'user', 'guest'])).to.be.equal(false);
+			expect(auth.checkSupremacy('client', ['root', 'guest'], ['root', 'admin', 'client', 'user', 'guest'])).to.be.equal(false);
+			expect(auth.checkSupremacy('client', 'guest', ['root', 'admin', 'client', 'user', 'guest'])).to.be.equal(true);
+			expect(auth.checkSupremacy(['admin', 'manager'], 'guest', ['root', 'admin', 'client', 'user', 'guest'])).to.be.equal(true);
+			expect(auth.checkSupremacy(['client', 'manager'], 'client', ['root', 'admin', 'client', 'user', 'guest'])).to.be.equal(false);
+			expect(auth.checkSupremacy(['admin'], 'root', ['root', 'admin', 'client', 'user', 'guest'])).to.be.equal(false);
+			expect(auth.checkSupremacy('manager', 'client', ['root', 'admin', 'client', 'user', 'guest'])).to.be.equal(false);
+			expect(auth.checkSupremacy('admin', 'client', ['root', 'admin', 'client', 'user', 'guest'])).to.be.equal(true);
+		});
 
 	});
 });

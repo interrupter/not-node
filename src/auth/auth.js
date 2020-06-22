@@ -243,3 +243,56 @@ exports.checkCredentials = function (rule, auth, role, admin){
 	}
 	return false;
 };
+
+/**
+*	Check to sets of roles against each other
+* to define if base is strictly higher than second
+*	@param	{String|Array}		base				first set of roles
+*	@param	{String|Array}		against			second set of roles
+*	@param 	{Array}						roles				roles in order of supremacy from highest to lowest
+*	@return {boolean}					true if base > against
+*/
+exports.checkSupremacy = function (base, against, roles){
+	if((!Array.isArray(base)) && (Object.prototype.toString.call(base) !== '[object String]')){
+		throw new Error('Base role set is not valid');
+	}else{
+		if(!Array.isArray(base)){
+			base = [base];
+		}
+	}
+
+	if((!Array.isArray(against)) && (Object.prototype.toString.call(against) !== '[object String]')){
+		throw new Error('Against role set is not valid');
+	}else{
+		if(!Array.isArray(against)){
+			against = [against];
+		}
+	}
+
+	if(!Array.isArray(roles)){
+		throw new Error('No roles supremacy order!');
+	}
+
+	let baseIndex = -1;
+	let againstIndex = -1;
+	roles.forEach((role, index)=>{
+		if((Object.prototype.toString.call(role) !== '[object String]')){
+			throw new Error('Supremacy order element is not a string');
+		}
+		if(baseIndex === -1){
+			if(base.indexOf(role) > -1){
+				baseIndex = index;
+			}
+		}
+		if(againstIndex === -1){
+			if(against.indexOf(role) > -1){
+				againstIndex = index;
+			}
+		}
+	});
+	if((baseIndex > -1) && ((baseIndex < againstIndex) || againstIndex === -1)){
+		return true;
+	}else{
+		return false;
+	}
+};
