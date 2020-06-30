@@ -38,12 +38,13 @@ class notApp extends notDomain{
 
 	/**
 	*	Returns application manifest
+	*	@params		{object}	req 			Express request object
 	*	@return 	{object}	manifest
 	**/
-	getManifest(){
+	getManifest(req){
 		let manifest = {};
 		for(let modName of Object.keys(this.modules)){
-			manifest = extend(manifest, this.modules[modName].getManifest());
+			manifest = extend(manifest, this.modules[modName].getManifest(req));
 		}
 		this.requiredManifests = manifest;
 		return manifest;

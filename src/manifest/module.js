@@ -2,6 +2,7 @@
 const protoModel = require('../model/proto.js'),
 	fs = require('fs'),
 	path = require('path'),
+	Auth = require('../auth/auth.js'),
 	notLocale = require('not-locale'),
 	log = require('not-log')(module),
 	notManifest = require('./manifest.js');
@@ -202,8 +203,22 @@ class notModule {
 		this.manifests[routeName] = manifest;
 	}
 
-	getManifest() {
-		return this.manifests;
+	getManifest(req) {
+		if (req){
+			let user = {
+				auth: Auth.ifUser(req),
+				role: Auth.getRole(req),
+				admin: Auth.ifAdmin(req),
+			};
+			return this.manifest.filterManifest(
+				this.manifests,
+				user.auth,
+				user.role,
+				user.admin
+			);
+		}else{
+			return this.manifests;
+		}
 	}
 
 	getModelFile(modelName) {

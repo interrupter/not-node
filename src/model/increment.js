@@ -35,9 +35,7 @@ function newGetNext() {
 		} else {
 			doc = await thisModel.update(which, cmd, opts).exec();
 		}
-		console.log(doc);
 		doc = await thisModel.find(which).exec();
-		console.log(doc);
 		if (doc.length > 0) {
 			return doc[0].seq;
 		} else {

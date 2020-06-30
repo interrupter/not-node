@@ -164,7 +164,7 @@ exports.compareRoles = function(userRoles, actionRoles) {
 		if(Array.isArray(actionRoles)) {
 			return actionRoles.indexOf(userRoles) > -1;
 		} else {
-			return userRoles == actionRoles;
+			return userRoles === actionRoles;
 		}
 	}
 };
