@@ -293,7 +293,6 @@ function add(data) {
 	return routine.add(this, data);
 }
 
-
 exports.statics = {
 	sanitizeInput,
 	getOne,
@@ -327,7 +326,6 @@ function close() {
 	this.__closed = true;
 	this.save();
 }
-
 exports.methods = {
 	getID,
 	close

@@ -210,12 +210,13 @@ class notModule {
 				role: Auth.getRole(req),
 				admin: Auth.ifAdmin(req),
 			};
-			return this.manifest.filterManifest(
+			let filtered = this.manifest.filterManifest(
 				this.manifests,
 				user.auth,
 				user.role,
 				user.admin
 			);
+			return filtered;
 		}else{
 			return this.manifests;
 		}
@@ -320,6 +321,7 @@ class notModule {
 			log.error(`Cant exec ${methodName} in module ${this.path}, module not loaded`);
 		}
 	}
+
 }
 
 module.exports = notModule;

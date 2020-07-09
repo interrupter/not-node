@@ -97,6 +97,7 @@ class notRoute{
 			return next(new HttpError(403, ['rule for router not found', this.moduleName, this.routeName].join('; ')));
 		}
 	}
+
 }
 
 module.exports = notRoute;
