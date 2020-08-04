@@ -9,4 +9,5 @@ exports.Proto = require('./src/model/proto.js');
 exports.Enrich = require('./src/model/enrich.js');
 exports.Routine = require('./src/model/routine.js');
 exports.Common = require('./src/common.js');
+exports.Fields = require('./src/fields.js');
 exports.Application = null;
