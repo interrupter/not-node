@@ -15,6 +15,19 @@ const FIELDS = {
 			readonly: true
 		}
 	},
+	uuid: {
+		ui: {
+			component: 'UITextfield',
+			placeholder: 'UUID',
+			label: 'UUID',
+			readonly: true
+		},
+		model:{
+			type: String,
+			searchable: true,
+			required: true
+		}
+	},
 	title: {
 		ui: {
 			component: 'UITextfield',
@@ -124,6 +137,45 @@ const FIELDS = {
 			sortable: true
 		}
 	},
+	size: {
+		ui:{
+			component: 'UITextfield',
+			label: 'Размер',
+			placeholder: 'Размер'
+		},
+		model:{
+			type: Number,
+			required: true,
+			searchable: true,
+			sortable: true
+		}
+	},
+	ip: {
+		ui:{
+			component: 'UITextfield',
+			label: 'IP',
+			placeholder: 'IP'
+		},
+		model:{
+			type: String,
+			searchable: true,
+			required: true
+		}
+	},
+
+	session: {
+		ui:{
+			component: 'UITextfield',
+			label: 'Session',
+			placeholder: 'Session'
+		},
+		model:{
+			type: String,
+			searchable: true,
+			required: true
+		}
+	},
+
 };
 
 
@@ -143,7 +195,7 @@ exports.registerFields = (fields, overwrite = false, compose = true)=>{
 	for(let t in fields){
 		exports.registerField(t, fields[t], overwrite, compose);
 	}
-}
+};
 
 /**
 list = [
