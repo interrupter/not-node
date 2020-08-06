@@ -162,7 +162,6 @@ const FIELDS = {
 			required: true
 		}
 	},
-
 	session: {
 		ui:{
 			component: 'UITextfield',

@@ -3,6 +3,7 @@ const protoModel = require('../model/proto.js'),
 	fs = require('fs'),
 	path = require('path'),
 	Auth = require('../auth/auth.js'),
+	Fields = require('../fields.js'),
 	notLocale = require('not-locale'),
 	log = require('not-log')(module),
 	notManifest = require('./manifest.js');
@@ -101,18 +102,18 @@ class notModule {
 			if (this.module.paths.locales) {
 				notLocale.fromDir(this.module.paths.locales);
 			}
-			/*
-			if (this.module.paths.controllers) {
-
+			if (this.module.paths.fields) {
+				this.findFieldsIn(this.module.paths.fields);
 			}
-			if (this.module.paths.views) {
-
-			}*/
+			/*
+			if (this.module.paths.controllers) {}
+			if (this.module.paths.views) {}
+			*/
 		}
 	}
 
 	findModelsIn(modelsPath) {
-		fs.readdirSync(modelsPath).forEach(function(file) {
+		fs.readdirSync(modelsPath).forEach((file) => {
 			let modelPath = path.join(modelsPath, file);
 			log.info(`Checking model in ${modelPath}`);
 			if (fs.lstatSync(modelPath).isFile()) {
@@ -123,11 +124,11 @@ class notModule {
 				}
 				this.registerModel(model, modelName);
 			}
-		}.bind(this));
+		});
 	}
 
 	findMixinsIn(mixinsPath) {
-		fs.readdirSync(mixinsPath).forEach(function(file) {
+		fs.readdirSync(mixinsPath).forEach((file) =>{
 			let mixinPath = path.join(mixinsPath, file);
 			if (fs.lstatSync(mixinPath).isFile()) {
 				let mixin = require(mixinPath),
@@ -137,7 +138,19 @@ class notModule {
 				}
 				this.registerMixin(mixin, modelName);
 			}
-		}.bind(this));
+		});
+	}
+
+	findFieldsIn(fieldsDir) {
+		fs.readdirSync(fieldsDir).forEach((file) => {
+			let fieldsPath = path.join(fieldsDir, file);
+			if (fs.lstatSync(fieldsPath).isFile()) {
+				let fields = require(fieldsPath);
+				if (fields && Object.prototype.hasOwnProperty.call(fields, 'FIELDS')) {
+					Fields.registerFields(fields.FIELDS);
+				}
+			}
+		});
 	}
 
 	findRoutesIn(routesPath) {
