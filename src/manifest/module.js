@@ -150,7 +150,7 @@ class notModule {
 				if (fields && Object.prototype.hasOwnProperty.call(fields, 'FIELDS')) {
 					Fields.registerFields(fields.FIELDS, this.fieldsImportRules);
 				}else{
-					let parts = paty.parse(fieldsPath);
+					let parts = path.parse(fieldsPath);
 					Fields.registerField(parts.name, fields, this.fieldsImportRules);
 				}
 			}

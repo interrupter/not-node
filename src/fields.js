@@ -1,3 +1,4 @@
+const Schema = require('mongoose').Schema;
 const FIELDS = {
 	_id: {
 		ui: {
@@ -174,7 +175,18 @@ const FIELDS = {
 			required: true
 		}
 	},
-
+	userId: {
+		ui:{
+			component: 'UITextfield',
+			label: 'Пользователь',
+			placeholder: 'Пользователь'
+		},
+		model: {
+			type: Schema.Types.ObjectId,
+			ref: 'User',
+			required: false
+		}
+	},
 };
 
 
