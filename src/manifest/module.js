@@ -22,6 +22,7 @@ class notModule {
 		this.module = options.modObject;
 		this.mongoose = options.mongoose;
 		this.notApp = options.notApp;
+		this.fieldsImportRules = Object.prototype.hasOwnProperty.call(options, 'fields')?options.fields: undefined;
 		this.description = {};
 		this.routes = {};
 		this.models = {};
@@ -147,7 +148,10 @@ class notModule {
 			if (fs.lstatSync(fieldsPath).isFile()) {
 				let fields = require(fieldsPath);
 				if (fields && Object.prototype.hasOwnProperty.call(fields, 'FIELDS')) {
-					Fields.registerFields(fields.FIELDS);
+					Fields.registerFields(fields.FIELDS, this.fieldsImportRules);
+				}else{
+					let parts = paty.parse(fieldsPath);
+					Fields.registerField(parts.name, fields, this.fieldsImportRules);
 				}
 			}
 		});

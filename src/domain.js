@@ -69,7 +69,8 @@ class notDomain{
 			modPath:modulePath,
 			modObject: null,
 			mongoose: this.options.mongoose,
-			notApp: this
+			notApp: this,
+			fields: this.options.fields
 		});
 		if (mod){
 			this.importModule(mod, moduleName || mod.getModuleName());
@@ -322,7 +323,7 @@ class notDomain{
 	report(err){
 		this.reporter.report(err).catch(this.logger.error);
 	}
-	
+
 	/**
 	*	informer - messages
 	*/

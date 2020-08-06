@@ -178,7 +178,7 @@ const FIELDS = {
 };
 
 
-exports.registerField = (name, value, overwrite = false, compose = true)=>{
+exports.registerField = (name, value, {overwrite = false, compose = true})=>{
 	if(Object.prototype.hasOwnProperty.call(FIELDS, name)){
 		if(overwrite){
 			FIELDS[name] = value;
@@ -190,9 +190,9 @@ exports.registerField = (name, value, overwrite = false, compose = true)=>{
 	}
 };
 
-exports.registerFields = (fields, overwrite = false, compose = true)=>{
+exports.registerFields = (fields, {overwrite = false, compose = true})=>{
 	for(let t in fields){
-		exports.registerField(t, fields[t], overwrite, compose);
+		exports.registerField(t, fields[t], {overwrite, compose});
 	}
 };
 
