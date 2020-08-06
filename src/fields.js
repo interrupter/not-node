@@ -126,6 +126,25 @@ const FIELDS = {
 	},
 };
 
+
+exports.registerField = (name, value, overwrite = false, compose = true)=>{
+	if(Object.prototype.hasOwnProperty.call(FIELDS, name)){
+		if(overwrite){
+			FIELDS[name] = value;
+		}else if(compose){
+			Object.assign(FIELDS[name], value);
+		}
+	}else{
+		FIELDS[name] = value;
+	}
+};
+
+exports.registerFields = (fields, overwrite = false, compose = true)=>{
+	for(let t in fields){
+		exports.registerField(t, fields[t], overwrite, compose);
+	}
+}
+
 /**
 list = [
 	'title', //for standart only name
