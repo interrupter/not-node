@@ -5,7 +5,8 @@ const protoModel = require('../model/proto.js'),
 	Auth = require('../auth/auth.js'),
 	Fields = require('../fields.js'),
 	notLocale = require('not-locale'),
-	log = require('not-log')(module),
+	logger = require('not-log'),
+	log = logger(module, 'notModule'),
 	notManifest = require('./manifest.js');
 
 //defining CONSTS
@@ -191,6 +192,7 @@ class notModule {
 			model.getModelFile = this.notApp.getModelFile.bind(this.notApp);
 			model.getModelSchema = this.notApp.getModelSchema.bind(this.notApp);
 			model.getModule = this.notApp.getModule.bind(this.notApp);
+			model.log = logger(model, `Model#${modelName}`);
 		}else{
 			log.debug(`Register model ${modelName} skiped, no Application`);
 		}
@@ -210,6 +212,7 @@ class notModule {
 			route.getModelFile = this.notApp.getModelFile.bind(this.notApp);
 			route.getModelSchema = this.notApp.getModelSchema.bind(this.notApp);
 			route.getModule = this.notApp.getModule.bind(this.notApp);
+			route.log = logger(route, `Route#${routeName}`);
 		}else{
 			log.debug(`Register route ${routeName} skiped, no Application`);
 		}

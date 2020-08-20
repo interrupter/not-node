@@ -4,7 +4,7 @@ const enrich = require('./enrich'),
 	saveVersion = require('./versioning'),
 	Schema = require('mongoose').Schema,
 	defaultModel= require('./default'),
-	log = require('not-log')(module);
+	log = require('not-log')(module, 'ModelProto');
 
 exports.fabricate = function (targetModule, options, mongoose) {
 	if (!options) {

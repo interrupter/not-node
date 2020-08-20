@@ -34,7 +34,7 @@ export default {
 		file:'build/client/core.js',
 		format: 'iife'
 	},
-	name: 'FrameMuse',
+	name: 'Project',
 	sourceMap: false && (process.env.NODE_ENV === 'production' ? false : 'inline'),
 	plugins: [
 		postcss({
