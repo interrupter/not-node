@@ -118,6 +118,7 @@ class notModule {
 				if (model && model.thisModelName) {
 					modelName = model.thisModelName;
 				}
+				model.filename = modelPath;
 				this.registerModel(model, modelName);
 			}
 		});
@@ -132,6 +133,7 @@ class notModule {
 				if (mixin && mixin.modelName) {
 					modelName = mixin.modelName;
 				}
+				mixin.filename = mixinPath;
 				this.registerMixin(mixin, modelName);
 			}
 		});
@@ -168,6 +170,7 @@ class notModule {
 						if (route && route.thisRouteName) {
 							routeName = route.thisRouteName;
 						}
+						route.filename = routePath;
 						this.registerRoute(route, routeName);
 						this.registerManifest(routeManifest, routeName);
 					}catch(e){
