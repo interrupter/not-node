@@ -75,8 +75,7 @@ class notModule {
 			}
 		} catch (e) {
 			this.faulty = true;
-			// eslint-disable-next-line no-console
-			console.error(e);
+			log.error(e);
 		}
 	}
 
@@ -85,8 +84,7 @@ class notModule {
 			this.registerContent();
 		} catch (e) {
 			this.faulty = true;
-			// eslint-disable-next-line no-console
-			console.error(e);
+			log.error(e);
 		}
 	}
 
@@ -107,10 +105,6 @@ class notModule {
 			if (this.module.paths.fields) {
 				this.findFieldsIn(this.module.paths.fields);
 			}
-			/*
-			if (this.module.paths.controllers) {}
-			if (this.module.paths.views) {}
-			*/
 		}
 	}
 
