@@ -23,7 +23,7 @@ class notModule {
 		this.module = options.modObject;
 		this.mongoose = options.mongoose;
 		this.notApp = options.notApp;
-		this.fieldsImportRules = Object.prototype.hasOwnProperty.call(options, 'fields')?options.fields: undefined;
+		this.fieldsImportRules = (Object.prototype.hasOwnProperty.call(options, 'fields') && options.fields )?options.fields: {};
 		this.description = {};
 		this.routes = {};
 		this.models = {};
@@ -90,6 +90,9 @@ class notModule {
 
 	registerContent() {
 		if (this.module.paths){
+			if (this.module.paths.fields) {
+				this.findFieldsIn(this.module.paths.fields);
+			}
 			if (this.module.paths.models) {
 				this.findModelsIn(this.module.paths.models);
 			}
@@ -101,9 +104,6 @@ class notModule {
 			}
 			if (this.module.paths.locales) {
 				notLocale.fromDir(this.module.paths.locales);
-			}
-			if (this.module.paths.fields) {
-				this.findFieldsIn(this.module.paths.fields);
 			}
 		}
 	}
