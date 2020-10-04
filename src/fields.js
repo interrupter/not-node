@@ -187,6 +187,32 @@ const FIELDS = {
 			required: false
 		}
 	},
+	createdAt:{
+		ui:{
+			component: 'UITextfield',
+			label: 'Дата и время создания',
+			placeholder: 'Дата и время',
+			readonly: true
+		},
+		model: {
+			type: Date,
+			required: true,
+			default: Date.now
+		}
+	},
+	updatedAt:{
+		ui:{
+			component: 'UITextfield',
+			label: 'Дата и время последнего изменения',
+			placeholder: 'Дата и время',
+			readonly: true
+		},
+		model: {
+			type: Date,
+			required: true,
+			default: Date.now
+		}
+	}
 };
 
 
