@@ -209,11 +209,19 @@ const FIELDS = {
 		}
 	},
 	expiredAt: {
-		type: Date,
-		required: false,
-		safe: {
-			update: ['@owner', 'root', 'admin'],
-			read: ['@owner', 'root', 'admin']
+		ui:{
+			component: 'UITextfield',
+			label: 'Дата и время истечения срока действия',
+			placeholder: 'Дата и время',
+			readonly: true
+		},
+		model:{
+			type: Date,
+			required: false,
+			safe: {
+				update: ['@owner', 'root', 'admin'],
+				read: ['@owner', 'root', 'admin']
+			}
 		}
 	},
 	updatedAt:{
