@@ -39,7 +39,11 @@ const FIELDS = {
 			type: String,
 			required: true,
 			searchable: true,
-			sortable: true
+			sortable: true,
+			safe: {
+				update: ['@owner', 'root', 'admin'],
+				read: ['@owner', 'root', 'admin']
+			}
 		}
 	},
 	codeName: {
@@ -197,7 +201,19 @@ const FIELDS = {
 		model: {
 			type: Date,
 			required: true,
-			default: Date.now
+			default: Date.now,
+			safe: {
+				update: ['@owner', 'root', 'admin'],
+				read: ['@owner', 'root', 'admin']
+			}
+		}
+	},
+	expiredAt: {
+		type: Date,
+		required: false,
+		safe: {
+			update: ['@owner', 'root', 'admin'],
+			read: ['@owner', 'root', 'admin']
 		}
 	},
 	updatedAt:{
@@ -210,7 +226,43 @@ const FIELDS = {
 		model: {
 			type: Date,
 			required: true,
-			default: Date.now
+			default: Date.now,
+			safe: {
+				update: ['@owner', 'root', 'admin'],
+				read: ['@owner', 'root', 'admin']
+			}
+		}
+	},
+	owner:{
+		model:{
+			type: Schema.Types.ObjectId,
+			refPath: 'ownerModel',
+			required: false,
+			safe: {
+				update: ['@owner', 'root', 'admin'],
+				read: ['@owner', 'root', 'admin']
+			}
+		}
+	},
+	ownerModel:{
+		model: 	{
+			type: String,
+			required: false,
+			safe: {
+				update: ['@owner', 'root', 'admin'],
+				read: ['@owner', 'root', 'admin']
+			}
+		}
+	},
+	requiredObject:{
+		model:{
+			type: Schema.Types.Mixed,
+			required: true,
+			default: {},
+			safe: {
+				update: ['@owner', 'root', 'admin'],
+				read: ['@owner', 'root', 'admin']
+			}
 		}
 	}
 };
