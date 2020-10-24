@@ -37,7 +37,23 @@ exports.fabricate = function (targetModule, options, mongoose) {
 			}
 		}
 
+		//collecting information of unique fields, removing unique flag from schema
+		let fieldsForIndexes = [];
+		for(let fieldName in targetModule.thisSchema){
+			let field = targetModule.thisSchema[fieldName];
+			if (field.unique){
+				fieldsForIndexes.push(fieldName);
+				field.unique = false;
+			}
+		}
+		//creating schema for model
 		schema = new Schema(targetModule.thisSchema, options.schemaOptions);
+		//creating unique indexes
+		for(let fieldName of fieldsForIndexes){
+			let rule = {__closed: 1, __latest: 1};
+			rule[fieldName] = 1;
+			schema.index(rule, { unique: true });
+		}
 
 		if (targetModule.enrich) {
 			if (targetModule.enrich.increment) {
