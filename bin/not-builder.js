@@ -504,12 +504,14 @@ async function build_Server(pathToRoot, roles, targetName, targetManifest){
 			await lib.renderScript(path.join(pathToRoot,targetManifest.index), {
 				mods:list[role].controllers,
 				scss: list[role].styles,
+				env: opts.environment,
 				role
 			}, indexFile);
 			await lib.renderScript(path.join(pathToRoot,targetManifest.rollup), {
-				appName: targetManifest.name,
-				inputPath: indexFile,
+				appName: 		targetManifest.name,
+				inputPath: 	indexFile,
 				outputPath: bundleFile,
+				env: 				opts.environment,
 				role
 			}, rollupFile);
 			child_process.execFileSync(opts.rollup, ['-c', rollupFile], {
