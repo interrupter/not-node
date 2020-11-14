@@ -90,6 +90,24 @@ class notDomain{
 	}
 
 	/**
+	*	Returns route
+	*	@param 	{string}	name 	'moduleName//routeName//functionName' ('not-user//user//add')
+	*	@return {function}			route
+	**/
+	getRoute(name){
+		if (name.indexOf('//') > 0){
+			let [moduleName, routeName, routeFunctionName] = name.split('//');
+			if (this.modules && this.modules.hasOwnProperty(moduleName)){
+				let route = this.modules[moduleName].getRoute(routeName);
+				if(Object.prototype.hasOwnProperty.call(route, routeFunctionName)){
+					return route[routeFunctionName];
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
 	*	Returns model
 	*	@param 	{string}	name 	'modelName' or 'moduleName//modelName'
 	*									('User', 'moduleName//User')
