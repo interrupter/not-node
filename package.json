@@ -46,7 +46,7 @@
 				"lower-case": "*",
 				"mongoose": "*",
 				"mongoose-validator": "*",
-				"nconf": "^0.10.0",
+				"nconf": "^0.11.0",
 				"node-sass": "^4.14.1",
 				"not-filter": "*",
 				"not-locale": "*",
