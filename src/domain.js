@@ -3,7 +3,7 @@
 *	But can be used for hosting modules and models.
 *
 */
-
+const EventEmitter = require('events');
 const notModule = require('./manifest/module'),
 	path = require('path'),
 	fs = require('fs');
@@ -33,8 +33,9 @@ const notModule = require('./manifest/module'),
 	*		.importModulesFrom(__dirname+'/directoryOfUsefullessModules')
 	*		.importModule(require('notModule'), 'notModule');
 	**/
-class notDomain{
+class notDomain extends EventEmitter{
 	constructor(options){
+		super();
 		this.options = options;
 		//named array of notModules wrappers for notModule format modules
 		this.modules = {};
