@@ -324,8 +324,9 @@ function getID() {
 */
 function close() {
 	this.__closed = true;
-	this.save();
+	return this.save();
 }
+
 exports.methods = {
 	getID,
 	close
