@@ -5,8 +5,11 @@
 */
 const EventEmitter = require('events');
 const notModule = require('./manifest/module'),
+	process           = require('process'),
 	path = require('path'),
 	fs = require('fs');
+
+const OPT_DEFAULT_SHUTDOWN_TIMEOUT = 5000;
 
 /**
 	*	Domain
@@ -44,6 +47,9 @@ class notDomain extends EventEmitter{
 		this._informer = null;
 		//store
 		this.envs = {};
+		//on errors and exceptions
+		process.on('uncaughtException', this.report.bind(this));
+		process.on('unhandledRejection', this.report.bind(this));
 		return this;
 	}
 
@@ -360,6 +366,12 @@ class notDomain extends EventEmitter{
 
 	inform(data /* look for not-informer.Informer.now */){
 		this.informer.now(data);
+	}
+
+	shutdown(timeout = OPT_DEFAULT_SHUTDOWN_TIMEOUT){
+		this.log(`Перезагрузка сервиса через ${timeout}мс...`);
+		this.emit('app:shutdown');
+		setTimeout(process.exit, timeout);
 	}
 
 }
