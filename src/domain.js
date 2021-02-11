@@ -387,7 +387,7 @@ class notDomain extends EventEmitter {
 		const mods = Object.keys(this.modules);
 		let stats = {
 			modules: {
-				count: mods.legnth,
+				count: mods.length,
 				list: mods
 			},
 			routes: {
