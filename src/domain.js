@@ -413,7 +413,7 @@ class notDomain extends EventEmitter {
 			stats.routes.count += modStatus.routes.count;
 			stats.models.count += modStatus.models.count;
 			stats.actions.count += modStatus.actions.count;
-			for (let t in ['routes', 'models', 'actions']) {
+			for (let t of ['routes', 'models', 'actions']) {
 				stats[t].list.push(...(modStatus[t].list.map(itmName => `${modName}//${itmName}`)));
 			}
 		}
