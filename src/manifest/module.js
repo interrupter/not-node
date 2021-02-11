@@ -339,6 +339,39 @@ class notModule {
 		}
 	}
 
+	getStatus(){
+		const modelsList = Object.keys(this.models);
+		const routesList = Object.keys(this.routes);
+		const actionsList = this.getActionsList();
+		let status = {
+			models:{
+				count: modelsList.length,
+				list: modelsList
+			},
+			routes:{
+				count: routesList.length,
+				list: routesList
+			},
+			actions:{
+				count: actionsList.length,
+				list: actionsList
+			}
+		};
+		return status;
+	}
+
+	getActionsList(){
+		let list = [];
+		for(let route in this.manifests){
+			if (this.manifests[route] && this.manifests[route].actions){
+				for(let action in this.manifests[route].actions){
+					list.push(`${route}//${action}`);
+				}
+			}
+		}
+		return list;
+	}
+
 }
 
 module.exports = notModule;

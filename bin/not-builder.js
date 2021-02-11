@@ -514,7 +514,7 @@ async function build_Server(pathToRoot, roles, targetName, targetManifest){
 				env: 				opts.environment,
 				role
 			}, rollupFile);
-			child_process.execFileSync(opts.rollup, ['-c', rollupFile], {
+			child_process.execFileSync('node', [opts.rollup, '-c', rollupFile], {
 				env : {
 					NODE_ENV: opts.environment
 				}
