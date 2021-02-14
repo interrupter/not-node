@@ -346,7 +346,8 @@ class notModule {
 		let status = {
 			models:{
 				count: modelsList.length,
-				list: modelsList
+				list: modelsList,
+				content: this.getModelsStatuses()
 			},
 			routes:{
 				count: routesList.length,
@@ -389,6 +390,14 @@ class notModule {
 			};
 		}
 		return result;
+	}
+
+	getModelsStatuses(){
+		let content = {};
+		Object.keys(this.models).forEach((name)=>{
+			content[name] = this.getModelSchema(name);
+		})
+		return content;
 	}
 
 }
