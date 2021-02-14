@@ -396,7 +396,7 @@ class notModule {
 		let content = {};
 		Object.keys(this.models).forEach((name)=>{
 			content[name] = this.getModelSchema(name);
-		})
+		});
 		return content;
 	}
 
