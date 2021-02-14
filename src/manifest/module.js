@@ -350,7 +350,8 @@ class notModule {
 			},
 			routes:{
 				count: routesList.length,
-				list: routesList
+				list: routesList,
+				content: this.getRoutesStatuses()
 			},
 			actions:{
 				count: actionsList.length,
@@ -370,6 +371,24 @@ class notModule {
 			}
 		}
 		return list;
+	}
+
+	getRoutesStatuses(){
+		let result = {};
+		for(let route in this.manifests){
+			let count = 0, actions = [];
+			if (this.manifests[route] && this.manifests[route].actions){
+				count = this.manifests[route].actions.count;
+				for(let action in this.manifests[route].actions){
+					actions.push(`${action}`);
+				}
+			}
+			result[route] = {
+				count,
+				actions
+			};
+		}
+		return result;
 	}
 
 }

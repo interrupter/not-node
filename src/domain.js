@@ -388,7 +388,8 @@ class notDomain extends EventEmitter {
 		let stats = {
 			modules: {
 				count: mods.length,
-				list: mods
+				list: mods,
+				content: {}
 			},
 			routes: {
 				count: 0,
@@ -410,6 +411,7 @@ class notDomain extends EventEmitter {
 		for (let modName in this.modules) {
 			const mod = this.modules[modName];
 			let modStatus = mod.getStatus();
+			stats.modules.content[modName] = modStatus;
 			stats.routes.count += modStatus.routes.count;
 			stats.models.count += modStatus.models.count;
 			stats.actions.count += modStatus.actions.count;
