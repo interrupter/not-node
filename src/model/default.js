@@ -293,6 +293,17 @@ function add(data) {
 	return routine.add(this, data);
 }
 
+/**
+*	Starts update routine
+*	@static
+*	@param	{object} 		filter		search criteria
+*	@param	{object} 		data			data
+*	@return {Promise}					Promise
+*/
+function update(filter, data) {
+	return routine.update(this, filter, data);
+}
+
 exports.statics = {
 	sanitizeInput,
 	getOne,
@@ -306,7 +317,8 @@ exports.statics = {
 	countWithFilter,
 	listAndPopulate,
 	listAndCount,
-	add
+	add,
+	update
 };
 
 /**
