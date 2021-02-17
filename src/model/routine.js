@@ -86,7 +86,7 @@ function updateWithoutVersion(thisModel, filter, data) {
 function updateWithVersion(thisModel, filter, data) {
 	filter.__latest = true;
 	filter.__closed = false;
-	return this.updateOne(filter, data, {new: true}).exec()
+	return thisModel.updateOne(filter, data, {new: true}).exec()
 		.then((item) => thisModel.saveVersion(item._id) );
 }
 
