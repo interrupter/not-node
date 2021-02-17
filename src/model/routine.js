@@ -76,18 +76,18 @@ async function update(model, filter, data){
 }
 
 function updateWithoutVersion(thisModel, filter, data) {
-	return thisModel.updateOne(
+	return thisModel.findOneAndUpdate(
 		filter,
 		data,
-		{new: true}
-	);
+		{returnOriginal: false}
+	).exec();
 }
 
 function updateWithVersion(thisModel, filter, data) {
 	filter.__latest = true;
 	filter.__closed = false;
-	return thisModel.updateOne(filter, data, {new: true}).exec()
-		.then((item) => thisModel.saveVersion(item._id) );
+	return thisModel.findOneAndUpdate(filter, data, {returnOriginal: false}).exec()
+		.then(item => thisModel.saveVersion(item._id));
 }
 
 module.exports = {
