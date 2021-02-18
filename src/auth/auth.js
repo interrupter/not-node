@@ -1,8 +1,8 @@
 /** @module Auth */
 const HttpError = require('../error').Http;
 
-exports.DEFAULT_USER_ROLE_FOR_ADMIN = 'root';
-exports.DEFAULT_USER_ROLE_FOR_GUEST = 'guest';
+const DEFAULT_USER_ROLE_FOR_ADMIN = 'root';
+const DEFAULT_USER_ROLE_FOR_GUEST = 'guest';
 
 /**
  *	Two arrays in - one intersection of two out
@@ -11,7 +11,7 @@ exports.DEFAULT_USER_ROLE_FOR_GUEST = 'guest';
  *	@return {array}		array consisted of elements presented in both input arrays
  **/
 
-exports.intersect_safe = function(a, b) {
+function intersect_safe(a, b) {
 	var result = [];
 	if (Array.isArray(a) && Array.isArray(b)) {
 		if (b.length > a.length) {
@@ -25,16 +25,23 @@ exports.intersect_safe = function(a, b) {
 		});
 	}
 	return result;
-};
+}
 
 /**
  *	Checks if user is authenticated, by searching req.session.user
  *	@param	{object}	req 	Express Request object
  *	@return {boolean}	true - authenticated, false - guest
  **/
-exports.ifUser = function(req) {
+
+function isUser(req) {
 	return (req.session && req.session.user) ? true : false;
-};
+}
+
+function ifUser(req) {
+	console.error('ifUser is obsolete, use new version as isUser');
+	return isUser(req);
+}
+
 
 /**
  *	Checks if user is authenticated, by searching req.session.user
@@ -43,22 +50,27 @@ exports.ifUser = function(req) {
  *	@param	{object}	res 	Express Repost object
  *	@param	{function}	next 	callback
  **/
-exports.checkUser = function(req, res, next) {
-	if (this.ifUser(req)) {
+function checkUser(req, res, next) {
+	if (isUser(req)) {
 		return next();
 	} else {
 		return next(new HttpError(401, 'Вы не авторизованы'));
 	}
-};
+}
 
 /**
  *	Returns true if user is admin
  *	@param	{object}	req 	Express Request object
  *	@return {boolean}	true - admin, false - not admin
  **/
-exports.ifAdmin = function(req) {
-	return this.ifUser(req) && this.compareRoles(this.getRole(req), this.DEFAULT_USER_ROLE_FOR_ADMIN);
-};
+function ifAdmin(req) {
+	console.error('ifAdmin is obsolete, use new version as isRoot');
+	return isRoot(req);
+}
+
+function isRoot(req) {
+	return isUser(req) && compareRoles(getRole(req), DEFAULT_USER_ROLE_FOR_ADMIN);
+}
 
 /**
  *	Checks if user is authenticated, by searching req.session.user
@@ -67,44 +79,81 @@ exports.ifAdmin = function(req) {
  *	@param	{object}	res 	Express Repost object
  *	@param	{function}	next 	callback
  **/
-exports.checkAdmin = function(req, res, next) {
-	if (exports.ifAdmin(req)) {
+function checkAdmin(req, res, next) {
+	console.error('checkAdmin is obsolete, use new version as checkRoot');
+	return checkRoot(req, res, next);
+}
+
+function checkRoot(req, res, next) {
+	if (isRoot(req)) {
 		return next();
 	} else {
 		return next(new HttpError(401, 'Вы не авторизованы ' + req.session.user + ':' + req.session.role));
 	}
-};
+}
 
 /**
  *	Returns user role from request object
  *	@param	{object}	req 	Express Request
  *	@return user role
  **/
-exports.getRole = function(req) {
+function getRole(req) {
 	return (req.session && req.session.role) ? req.session.role : undefined;
-};
+}
 
 /**
  *	Set user role for active session
  *	@param	{object}	req 	Express Request
- *	@param	{string}	role 	role name
+ *	@param	{[string]}	role 	array of roles
  **/
-exports.setRole = (req, role) => {
+function setRole(req, role) {
 	if (req && req.session) {
 		req.session.role = role;
 	}
-};
+}
+
+function setId(req, _id) {
+	console.error('setId is obsolete, use new version as setUserId');
+	return setUserId(req, _id);
+}
 
 /**
  *	Set user id for active session
  *	@param	{object}	req 	Express Request
  *	@param	{string}	_id 	user id
  **/
-exports.setId = (req, _id) => {
+function setUserId(req, _id) {
 	if (req && req.session) {
 		req.session.user = _id;
 	}
-};
+}
+
+/**
+ *	Get user id for active session
+ *	@param	{object}	req 	Express Request
+ **/
+function getUserId(req) {
+	return req.session.user;
+}
+
+/**
+ *	Get session id for active session
+ *	@param	{object}	req 	Express Request
+ **/
+function getSessionId(req) {
+	return req.session.id.toString();
+}
+
+/**
+ *	Get request ip
+ *	@param	{object}	req 	Express Request
+ **/
+function getIP(req) {
+	return req.headers['x-forwarded-for'] ||
+		req.connection.remoteAddress ||
+		req.socket.remoteAddress ||
+		req.connection.socket.remoteAddress;
+}
 
 /**
  *	Set auth data in session, user id and role
@@ -112,37 +161,50 @@ exports.setId = (req, _id) => {
  *	@param	{string}	id 		user id
  *	@param	{string}	role 	user role
  **/
-exports.setAuth = (req, id, role) => {
-	this.setId(req, id);
-	this.setRole(req, role);
-};
-
+function setAuth(req, id, role) {
+	setId(req, id);
+	setRole(req, role);
+}
 
 /**
  *	Set auth data in session to Guest
  *	@param	{object}	req 	Express Request
  **/
-exports.setGuest = (req) => {
+function setGuest(req) {
 	if (req.session) {
 		req.user = null;
 		req.session.user = null;
-		req.session.role = exports.DEFAULT_USER_ROLE_FOR_GUEST;
+		setRole(req, [DEFAULT_USER_ROLE_FOR_GUEST]);
 	}
-};
+}
 
 /**
  *	Reset session
  *	@param	{object}	req 	Express Request
  **/
-exports.cleanse = (req) => {
+function cleanse(req) {
 	if (req && req.session) {
-		req.session.user = null;
-		req.session.role = exports.DEFAULT_USER_ROLE_FOR_GUEST;
+		setGuest(req);
 		if (req.session.destroy) {
 			req.session.destroy();
 		}
 	}
-};
+}
+
+/**
+ *	Collects various authentification and authorization data from request object
+ *	@params {object}	req 			ExpressRequest
+ * @return {object}  various authentification data for actor { root:boolean, auth: boolean, role: [string], uid: ObjectId, sid: string, ip:string }
+ */
+function extractAuthData(req) {
+	return {
+		root: isRoot(req),
+		auth: isUser(req),
+		role: getRole(req),
+		uid: getUserId(req),
+		sid: getSessionId(req),
+	};
+}
 
 /**
  *	Compares two list of roles
@@ -150,14 +212,14 @@ exports.cleanse = (req) => {
  *	@param	{array|string}	actionRoles 	roles of action
  *	@return {boolean}	if user roles comply to action roles
  **/
-exports.compareRoles = function(userRoles, actionRoles) {
+function compareRoles(userRoles, actionRoles) {
 	//console.log('compare roles', userRoles, actionRoles);
 	//user have many roles
 	if (userRoles && Array.isArray(userRoles)) {
 		//action can be accessed by various roles
 		if (actionRoles && Array.isArray(actionRoles)) {
 			//if we have similar elements in those two arrays - grant access
-			return this.intersect_safe(userRoles, actionRoles).length > 0;
+			return intersect_safe(userRoles, actionRoles).length > 0;
 		} else {
 			return userRoles.indexOf(actionRoles) > -1;
 		}
@@ -168,24 +230,23 @@ exports.compareRoles = function(userRoles, actionRoles) {
 			return userRoles === actionRoles;
 		}
 	}
-};
+}
 
 /**
  *	Returns Express middleware witch check role against one presented in request
  *	@param	{string|array}	role	action roles
  *	@return	{function}				express middleware
  **/
-exports.checkRoleBuilder = function(role) {
-	let that = this;
-	return function(req, res, next) {
-		let userRole = that.getRole(req);
-		if (that.ifUser(req) && that.compareRoles(userRole, role)) {
+function checkRoleBuilder(role) {
+	return (req, res, next) => {
+		let userRole = getRole(req);
+		if (isUser(req) && compareRoles(userRole, role)) {
 			return next();
 		} else {
 			return next(new HttpError(401, 'Вы не авторизованы ' + req.session.user + ':' + req.session.role));
 		}
 	};
-};
+}
 
 /**
  *	Check rule against presented credentials
@@ -200,7 +261,7 @@ exports.checkRoleBuilder = function(role) {
  *	@param {Boolean}		admin	user state of admin
  *	@return {boolean}		pass or not
  */
-exports.checkCredentials = function(rule, auth, role, admin) {
+function checkCredentials(rule, auth, role, admin) {
 	if (typeof rule === 'undefined' || rule === null) {
 		return false;
 	} else {
@@ -212,7 +273,7 @@ exports.checkCredentials = function(rule, auth, role, admin) {
 			}
 		} else {
 			if (Object.prototype.hasOwnProperty.call(rule, 'role')) {
-				if (exports.compareRoles(rule.role, role)) {
+				if (compareRoles(rule.role, role)) {
 					if (Object.prototype.hasOwnProperty.call(rule, 'auth')) {
 						if (rule.auth && auth) {
 							return true;
@@ -243,7 +304,7 @@ exports.checkCredentials = function(rule, auth, role, admin) {
 		}
 	}
 	return false;
-};
+}
 
 /**
  *	Check to sets of roles against each other
@@ -253,7 +314,7 @@ exports.checkCredentials = function(rule, auth, role, admin) {
  *	@param 	{Array}						roles				roles in order of supremacy from highest to lowest
  *	@return {boolean}					true if base > against
  */
-exports.checkSupremacy = function(base, against, roles) {
+function checkSupremacy(base, against, roles) {
 	if ((!Array.isArray(base)) && (Object.prototype.toString.call(base) !== '[object String]')) {
 		throw new Error('Base role set is not valid');
 	} else {
@@ -296,10 +357,10 @@ exports.checkSupremacy = function(base, against, roles) {
 	} else {
 		return false;
 	}
-};
+}
 
-exports.extractSafeFields = (schema, action, data, roles, actorId, system = false) => {
-	let fields = this.getSafeFieldsForRoleAction(schema, action, roles, this.isOwner(data, actorId), system);
+function extractSafeFields(schema, action, data, roles, actorId, system = false) {
+	let fields = getSafeFieldsForRoleAction(schema, action, roles, isOwner(data, actorId), system);
 	let result = {};
 	fields.forEach((field) => {
 		if (Object.prototype.hasOwnProperty.call(data, field)) {
@@ -307,9 +368,9 @@ exports.extractSafeFields = (schema, action, data, roles, actorId, system = fals
 		}
 	});
 	return result;
-};
+}
 
-exports.getSafeFieldsForRoleAction = (schema, action, roles, owner, system) => {
+function getSafeFieldsForRoleAction(schema, action, roles, owner, system) {
 	let fields = [];
 	let special = [];
 	if (owner) {
@@ -326,9 +387,9 @@ exports.getSafeFieldsForRoleAction = (schema, action, roles, owner, system) => {
 					fields.push(t);
 				} else if (Array.isArray(field.safe[action])) {
 					if ( //если роли пользователя в списке
-						this.intersect_safe(roles, field.safe[action]) ||
+						intersect_safe(roles, field.safe[action]) ||
 						//или он в спец группе (владелец, система)
-						this.intersect_safe(special, field.safe[action])
+						intersect_safe(special, field.safe[action])
 					) {
 						fields.push(t);
 					}
@@ -337,11 +398,42 @@ exports.getSafeFieldsForRoleAction = (schema, action, roles, owner, system) => {
 		}
 	}
 	return fields;
-};
+}
 
-exports.isOwner = (data, user_id) => {
+function isOwner(data, user_id) {
 	if (typeof user_id === 'undefined' || user_id === 0) {
 		return false;
 	}
 	return (Object.prototype.hasOwnProperty.call(data, '_id') && data._id.toString() === user_id.toString());
+}
+
+module.exports = {
+	DEFAULT_USER_ROLE_FOR_ADMIN,
+	DEFAULT_USER_ROLE_FOR_GUEST,
+	intersect_safe,
+	ifUser,
+	isUser,
+	checkUser,
+	ifAdmin,
+	isRoot,
+	checkAdmin,
+	checkRoot,
+	getRole,
+	setRole,
+	setId,
+	setUserId,
+	getUserId,
+	getSessionId,
+	getIP,
+	setAuth,
+	setGuest,
+	cleanse,
+	extractAuthData,
+	compareRoles,
+	checkRoleBuilder,
+	checkCredentials,
+	checkSupremacy,
+	extractSafeFields,
+	getSafeFieldsForRoleAction,
+	isOwner
 };

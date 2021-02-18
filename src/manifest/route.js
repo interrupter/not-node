@@ -34,12 +34,12 @@ class notRoute{
 		if (this.actionData){
 			if(this.actionData.rules && this.actionData.rules.length > 0){
 				for(var i = 0; i < this.actionData.rules.length; i++){
-					if (Auth.checkCredentials(this.actionData.rules[i], Auth.ifUser(req), Auth.getRole(req), Auth.ifAdmin(req))){
+					if (Auth.checkCredentials(this.actionData.rules[i], Auth.isUser(req), Auth.getRole(req), Auth.isRoot(req))){
 						return this.actionData.rules[i];
 					}
 				}
 			}else{
-				if (Auth.checkCredentials(this.actionData, Auth.ifUser(req), Auth.getRole(req), Auth.ifAdmin(req))){
+				if (Auth.checkCredentials(this.actionData, Auth.isUser(req), Auth.getRole(req), Auth.isRoot(req))){
 					return Object.assign({}, this.actionData, this.actionData.rules);
 				}
 			}

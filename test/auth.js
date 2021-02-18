@@ -30,21 +30,21 @@ describe('Auth', function() {
 		});
 	});
 
-	describe('ifUser', function() {
+	describe('isUser', function() {
 		it('check if user exists - true', function() {
 			var t = {
 				session:{
 					user: true
 				}
 			};
-			var res = auth.ifUser(t);
+			var res = auth.isUser(t);
 			expect(res).to.eql(true);
 		});
 		it('check if user exists - false', function() {
 			var t = {
 				session:{}
 			};
-			var res = auth.ifUser(t);
+			var res = auth.isUser(t);
 			expect(res).to.eql(false);
 		});
 	});
@@ -73,7 +73,7 @@ describe('Auth', function() {
 		});
 	});
 
-	describe('ifAdmin', function() {
+	describe('isRoot', function() {
 	  it('check if user admin - true', function() {
 		  var t = {
 			  session:{
@@ -81,7 +81,7 @@ describe('Auth', function() {
 				  role: 'root'
 			  }
 		  };
-		  var res = auth.ifAdmin(t);
+		  var res = auth.isRoot(t);
 		  expect(res).to.eql(true);
 	  });
 	  it('check if user admin - false', function() {
@@ -90,21 +90,21 @@ describe('Auth', function() {
 				  user: true
 			  }
 		  };
-		  var res = auth.ifAdmin(t);
+		  var res = auth.isRoot(t);
 		  expect(res).to.eql(false);
 	  });
 	});
 
-	describe('checkAdmin', function() {
+	describe('checkRoot', function() {
 		it('check if admin exists and continues', function() {
 			const req = {
 					session: {
 						user: true,
-						role: auth.DEFAULT_USER_ROLE_FOR_ADMIN
+						role: [auth.DEFAULT_USER_ROLE_FOR_ADMIN]
 					}
 				},
 				next = function(val){return val;};
-			let result = auth.checkAdmin(req, false, next);
+			let result = auth.checkRoot(req, false, next);
 			expect(result).to.deep.equal();
 		});
 
@@ -116,7 +116,7 @@ describe('Auth', function() {
 					}
 				},
 				next = function(val){return val;};
-			let result = auth.checkAdmin(req, false, next);
+			let result = auth.checkRoot(req, false, next);
 			expect(result).to.deep.equal(new HttpError(401, 'Вы не авторизованы ' + req.session.user + ':' + req.session.role));
 		});
 	});
