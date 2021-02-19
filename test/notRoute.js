@@ -28,7 +28,7 @@ describe('RouterAction', function () {
 					}, {
 						auth: true
 					}, {
-						admin: true
+						root: true
 					}]
 				},
 				routerAction = new notRoute({}, 'not-user', 'user', 'list', actionData);
@@ -45,7 +45,7 @@ describe('RouterAction', function () {
 				actionData = {
 					method: 'get',
 					rules: [{
-						admin: true
+						root: true
 					}, {
 						auth: false
 					}, {
@@ -70,7 +70,7 @@ describe('RouterAction', function () {
 						auth: true,
 						role: ['manager']
 					}, {
-						admin: true
+						root: true
 					}]
 				},
 				routerAction = new notRoute({}, 'not-user', 'user', 'listAll', actionData);
@@ -90,7 +90,7 @@ describe('RouterAction', function () {
 						auth: true,
 						role: ['manager']
 					}, {
-						admin: true
+						root: true
 					}]
 				},
 				routerAction = new notRoute({}, 'not-user', 'user', 'listAll', actionData);
@@ -110,7 +110,7 @@ describe('RouterAction', function () {
 				actionData = {
 					method: 'get',
 					rules: [{
-						admin: true
+						root: true
 					}, {
 						auth: true,
 						role: ['manager']
@@ -118,7 +118,7 @@ describe('RouterAction', function () {
 				},
 				routerAction = new notRoute({}, 'not-user', 'user', 'listAll', actionData);
 			expect(routerAction.selectRule(req)).to.deep.equal({
-				admin: true
+				root: true
 			});
 		});
 
@@ -194,7 +194,7 @@ describe('RouterAction', function () {
 						auth: true,
 						role: ['manager']
 					}, {
-						admin: true
+						root: true
 					}]
 				},
 				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'listAll', actionData);
@@ -223,7 +223,7 @@ describe('RouterAction', function () {
 				actionData = {
 					method: 'get',
 					rules: [{
-						admin: true
+						root: true
 					}, {
 						auth: true,
 						role: ['manager']
@@ -257,7 +257,7 @@ describe('RouterAction', function () {
 					}, {
 						auth: false
 					}, {
-						admin: true
+						root: true
 					}]
 				},
 				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData);
@@ -287,7 +287,7 @@ describe('RouterAction', function () {
 					rules: [{
 						auth: false,
 					}, {
-						admin: true,
+						root: true,
 					}, {
 						auth: true
 					}]
@@ -319,7 +319,7 @@ describe('RouterAction', function () {
 					rules: [{
 						auth: false,
 					}, {
-						admin: true,
+						root: true,
 						actionName: 'manager_listAll'
 					}, {
 						auth: true
@@ -352,7 +352,7 @@ describe('RouterAction', function () {
 					rules: [{
 						auth: false,
 					}, {
-						admin: true,
+						root: true,
 						actionPrefix: '__'
 					}, {
 						auth: true
@@ -384,7 +384,7 @@ describe('RouterAction', function () {
 					rules: [{
 						auth: false,
 					}, {
-						admin: true
+						root: true
 					}, {
 						auth: true,
 						actionPrefix: '__'
@@ -416,7 +416,7 @@ describe('RouterAction', function () {
 					rules: [{
 						auth: false,
 					}, {
-						admin: true
+						root: true
 					}, {
 						auth: true,
 						actionName: 'manager_listAll'
@@ -449,7 +449,7 @@ describe('RouterAction', function () {
 					rules: [{
 						auth: false,
 					}, {
-						admin: true
+						root: true
 					}, {
 						auth: true,
 						role: 'manager',
@@ -483,7 +483,7 @@ describe('RouterAction', function () {
 					rules: [{
 						auth: false,
 					}, {
-						admin: true
+						root: true
 					}, {
 						auth: true,
 						role: 'manager',
@@ -517,7 +517,7 @@ describe('RouterAction', function () {
 					rules: [{
 						auth: false,
 					}, {
-						admin: true
+						root: true
 					}, {
 						auth: true,
 						role: 'manager',
@@ -542,7 +542,7 @@ describe('RouterAction', function () {
 				actionData = {
 					method: 'get',
 					rules: [{
-						admin: true
+						root: true
 					}, {
 						auth: true,
 						role: 'manager',

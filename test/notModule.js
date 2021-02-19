@@ -18,7 +18,7 @@ const moduleManifest = {
       list: {
         method: 'get',
         rules: [{
-          admin: true
+          root: true
         }]
       }
     }

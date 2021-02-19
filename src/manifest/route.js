@@ -4,6 +4,7 @@ const	CONST_BEFORE_ACTION = 'before';
 const	CONST_AFTER_ACTION = 'after';
 
 const Auth = require('../auth/auth.js'),
+	log = require('not-log')(module, 'not-node'),
 	HttpError = require('../error').Http;
 
 /**
@@ -57,6 +58,9 @@ class notRoute{
 	exec(req, res, next){
 		let rule = this.selectRule(req);
 		if (rule){
+			if(Object.prototype.hasOwnProperty.call(rule, 'admin')){
+				log.log('Route rule options "admin" is obsolete; user "root"');
+			}
 			let actionName = this.actionName;
 			if (rule.actionPrefix){
 				actionName = rule.actionPrefix + actionName;
@@ -64,7 +68,7 @@ class notRoute{
 				if(rule.actionName){
 					actionName = rule.actionName;
 				}else{
-					if(rule.admin){
+					if(rule.root || rule.admin /*obsolete*/){
 						actionName = '_' + actionName;
 					}
 				}

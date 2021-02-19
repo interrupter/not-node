@@ -10,7 +10,7 @@ module.exports = {
                 auth: true,
                 actionPrefix: 'user'
             },{
-                admin: true,
+                root: true,
                 actionName: 'listForAdmin'
             }]
         },
@@ -21,7 +21,7 @@ module.exports = {
                 role: ['manager'],
                 actionName: 'managerListAll'
             },{
-                admin: true,
+                root: true,
                 actionPrefix: '__',
                 actionName: 'listForAdmin'
             }]

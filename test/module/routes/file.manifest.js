@@ -5,7 +5,7 @@ module.exports = {
 		list:{
 			method: 'get',
 			rules:[{
-				admin: true
+				root: true
 			}]
 		}
 	}

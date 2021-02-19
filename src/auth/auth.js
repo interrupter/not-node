@@ -1,5 +1,6 @@
 /** @module Auth */
 const HttpError = require('../error').Http;
+const log = require('not-log')(module, 'Auth');
 
 const DEFAULT_USER_ROLE_FOR_ADMIN = 'root';
 const DEFAULT_USER_ROLE_FOR_GUEST = 'guest';
@@ -38,7 +39,7 @@ function isUser(req) {
 }
 
 function ifUser(req) {
-	console.error('ifUser is obsolete, use new version as isUser');
+	log.error('ifUser is obsolete, use new version as isUser');
 	return isUser(req);
 }
 
@@ -64,7 +65,7 @@ function checkUser(req, res, next) {
  *	@return {boolean}	true - admin, false - not admin
  **/
 function ifAdmin(req) {
-	console.error('ifAdmin is obsolete, use new version as isRoot');
+	log.error('ifAdmin is obsolete, use new version as isRoot');
 	return isRoot(req);
 }
 
@@ -80,7 +81,7 @@ function isRoot(req) {
  *	@param	{function}	next 	callback
  **/
 function checkAdmin(req, res, next) {
-	console.error('checkAdmin is obsolete, use new version as checkRoot');
+	log.error('checkAdmin is obsolete, use new version as checkRoot');
 	return checkRoot(req, res, next);
 }
 
@@ -113,7 +114,7 @@ function setRole(req, role) {
 }
 
 function setId(req, _id) {
-	console.error('setId is obsolete, use new version as setUserId');
+	log.error('setId is obsolete, use new version as setUserId');
 	return setUserId(req, _id);
 }
 
@@ -211,22 +212,31 @@ function extractAuthData(req) {
  *	Compares two list of roles
  *	@param	{array|string}	userRoles 		roles of user
  *	@param	{array|string}	actionRoles 	roles of action
+ *	@param	{boolean}				strict 				if true userRoles should contain all of actionRoles. else atleast one
  *	@return {boolean}	if user roles comply to action roles
  **/
-function compareRoles(userRoles, actionRoles) {
+function compareRoles(userRoles, actionRoles, strict = true) {
 	//console.log('compare roles', userRoles, actionRoles);
 	//user have many roles
 	if (userRoles && Array.isArray(userRoles)) {
 		//action can be accessed by various roles
 		if (actionRoles && Array.isArray(actionRoles)) {
 			//if we have similar elements in those two arrays - grant access
-			return intersect_safe(userRoles, actionRoles).length > 0;
+			if(strict){
+				return intersect_safe(userRoles, actionRoles).length === actionRoles.length;
+			}else{
+				return intersect_safe(userRoles, actionRoles).length > 0;
+			}
 		} else {
 			return userRoles.indexOf(actionRoles) > -1;
 		}
 	} else {
 		if (Array.isArray(actionRoles)) {
-			return actionRoles.indexOf(userRoles) > -1;
+			if(strict){
+				return false;
+			}else{
+				return actionRoles.indexOf(userRoles) > -1;
+			}
 		} else {
 			return userRoles === actionRoles;
 		}
@@ -266,6 +276,12 @@ function checkCredentials(rule, auth, role, admin) {
 	if (typeof rule === 'undefined' || rule === null) {
 		return false;
 	} else {
+		if (Object.prototype.hasOwnProperty.call(rule, 'user')){
+			log.error('Missformed rule, field "user" is not allowed, use "auth" instead');
+		}
+		if (Object.prototype.hasOwnProperty.call(rule, 'admin')){
+			log.error('Missformed rule, field "admin" is obsolete, use "root" instead');
+		}
 		if ((Object.prototype.hasOwnProperty.call(rule, 'admin') && rule.admin) || (Object.prototype.hasOwnProperty.call(rule, 'root') && rule.root)) {
 			if (Object.prototype.hasOwnProperty.call(rule, 'admin')) {
 				return rule.admin && admin;
@@ -298,7 +314,15 @@ function checkCredentials(rule, auth, role, admin) {
 							return true;
 						}
 					}
-				} else {
+				} else if (Object.prototype.hasOwnProperty.call(rule, 'user')) {
+					if (rule.user && auth) {
+						return true;
+					} else {
+						if (!rule.user && !auth) {
+							return true;
+						}
+					}
+				}else {
 					return true;
 				}
 			}

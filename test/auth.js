@@ -159,9 +159,14 @@ describe('Auth', function() {
 		  expect(res).to.deep.equal(false);
 	  });
 
-	  it('user - guest, action - [root, admin, guest]', function() {
-		  var res = auth.compareRoles('guest', ['root', 'admin', 'guest']);
+	  it('user - guest, action - [root, admin, guest], strict - false', function() {
+		  var res = auth.compareRoles('guest', ['root', 'admin', 'guest'], false);
 		  expect(res).to.deep.equal(true);
+	  });
+
+		it('user - guest, action - [root, admin, guest], strict - true', function() {
+		  var res = auth.compareRoles('guest', ['root', 'admin', 'guest']);
+		  expect(res).to.deep.equal(false);
 	  });
 
 	  it('user - [user, notActivated], action - notActivated', function() {

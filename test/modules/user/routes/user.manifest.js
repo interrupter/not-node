@@ -5,7 +5,7 @@ module.exports = {
         list:{
             method: 'get',
             rules:[{
-                admin: true
+                root: true
             }]
         },
         profile:{
@@ -13,7 +13,7 @@ module.exports = {
             rules:[{
                 auth: true
             },{
-                admin: true
+                root: true
             }]
         },
         activate:{

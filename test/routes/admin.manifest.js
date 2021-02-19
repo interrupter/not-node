@@ -5,7 +5,7 @@ module.exports = {
         reboot:{
             method: 'post',
             rules:[{
-                admin: true
+                root: true
             }]
         }
     }
