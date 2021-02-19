@@ -223,15 +223,15 @@ class notModule {
 	getManifest(req) {
 		if (req){
 			let user = {
-				auth: Auth.ifUser(req),
+				auth: Auth.isUser(req),
 				role: Auth.getRole(req),
-				admin: Auth.ifAdmin(req),
+				root: Auth.isRoot(req),
 			};
 			let filtered = this.manifest.filterManifest(
 				this.manifests,
 				user.auth,
 				user.role,
-				user.admin
+				user.root
 			);
 			return filtered;
 		}else{
@@ -377,17 +377,9 @@ class notModule {
 	getRoutesStatuses(){
 		let result = {};
 		for(let route in this.manifests){
-			let count = 0, actions = [];
 			if (this.manifests[route] && this.manifests[route].actions){
-				count = this.manifests[route].actions.count;
-				for(let action in this.manifests[route].actions){
-					actions.push(`${action}`);
-				}
+				result[route] = this.manifests[route].actions;
 			}
-			result[route] = {
-				count,
-				actions
-			};
 		}
 		return result;
 	}

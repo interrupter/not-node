@@ -12,7 +12,7 @@ const DEFAULT_USER_ROLE_FOR_GUEST = 'guest';
  **/
 
 function intersect_safe(a, b) {
-	var result = [];
+	let result = [];
 	if (Array.isArray(a) && Array.isArray(b)) {
 		if (b.length > a.length) {
 			// indexOf to loop over shorter
@@ -20,7 +20,7 @@ function intersect_safe(a, b) {
 			b = a;
 			a = t;
 		}
-		result = a.filter(function(e) {
+		result = a.filter((e) => {
 			if (b.indexOf(e) !== -1) return true;
 		});
 	}
@@ -198,11 +198,12 @@ function cleanse(req) {
  */
 function extractAuthData(req) {
 	return {
-		root: isRoot(req),
-		auth: isUser(req),
-		role: getRole(req),
-		uid: getUserId(req),
-		sid: getSessionId(req),
+		root: 	isRoot(req),
+		auth: 	isUser(req),
+		role: 	getRole(req),
+		uid: 		getUserId(req),
+		sid: 		getSessionId(req),
+		ip: 		getIP(req)
 	};
 }
 
