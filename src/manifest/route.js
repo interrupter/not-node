@@ -35,11 +35,23 @@ class notRoute{
 		if (this.actionData){
 			if(this.actionData.rules && this.actionData.rules.length > 0){
 				for(var i = 0; i < this.actionData.rules.length; i++){
+					if (Object.prototype.hasOwnProperty.call(this.actionData.rules[i], 'user')){
+						log.error('Missformed rule, field "user" is not allowed, use "auth" instead: '+req.originalUrl);
+					}
+					if (Object.prototype.hasOwnProperty.call(this.actionData.rules[i], 'admin')){
+						log.error('Missformed rule, field "admin" is obsolete, use "root" instead: '+req.originalUrl);
+					}
 					if (Auth.checkCredentials(this.actionData.rules[i], Auth.isUser(req), Auth.getRole(req), Auth.isRoot(req))){
 						return this.actionData.rules[i];
 					}
 				}
 			}else{
+				if (Object.prototype.hasOwnProperty.call(this.actionData, 'user')){
+					log.error('Missformed rule, field "user" is not allowed, use "auth" instead: '+req.originalUrl);
+				}
+				if (Object.prototype.hasOwnProperty.call(this.actionData, 'admin')){
+					log.error('Missformed rule, field "admin" is obsolete, use "root" instead: '+req.originalUrl);
+				}
 				if (Auth.checkCredentials(this.actionData, Auth.isUser(req), Auth.getRole(req), Auth.isRoot(req))){
 					return Object.assign({}, this.actionData, this.actionData.rules);
 				}
