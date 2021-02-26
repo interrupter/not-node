@@ -66,6 +66,7 @@ function checkUser(req, res, next) {
  **/
 function ifAdmin(req) {
 	log.error('ifAdmin is obsolete, use new version as isRoot');
+	console.trace();
 	return isRoot(req);
 }
 
@@ -82,6 +83,7 @@ function isRoot(req) {
  **/
 function checkAdmin(req, res, next) {
 	log.error('checkAdmin is obsolete, use new version as checkRoot');
+	console.trace();
 	return checkRoot(req, res, next);
 }
 
@@ -115,6 +117,7 @@ function setRole(req, role) {
 
 function setId(req, _id) {
 	log.error('setId is obsolete, use new version as setUserId');
+	console.trace();
 	return setUserId(req, _id);
 }
 
@@ -278,9 +281,11 @@ function checkCredentials(rule, auth, role, admin) {
 	} else {
 		if (Object.prototype.hasOwnProperty.call(rule, 'user')){
 			log.error('Missformed rule, field "user" is not allowed, use "auth" instead');
+			console.trace();
 		}
 		if (Object.prototype.hasOwnProperty.call(rule, 'admin')){
 			log.error('Missformed rule, field "admin" is obsolete, use "root" instead');
+			console.trace();
 		}
 		if ((Object.prototype.hasOwnProperty.call(rule, 'admin') && rule.admin) || (Object.prototype.hasOwnProperty.call(rule, 'root') && rule.root)) {
 			if (Object.prototype.hasOwnProperty.call(rule, 'admin')) {
