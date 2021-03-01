@@ -74,6 +74,7 @@ class notManifest {
 		delete copy.rules;
 		delete copy.admin;
 		delete copy.root;
+		delete copy.safe;
 		delete copy.auth;
 		delete copy.role;
 		delete copy.actionName;

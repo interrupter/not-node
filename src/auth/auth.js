@@ -281,11 +281,9 @@ function checkCredentials(rule, auth, role, admin) {
 	} else {
 		if (Object.prototype.hasOwnProperty.call(rule, 'user')){
 			log.error('Missformed rule, field "user" is not allowed, use "auth" instead');
-			log.error(req.originalUrl);
 		}
 		if (Object.prototype.hasOwnProperty.call(rule, 'admin')){
 			log.error('Missformed rule, field "admin" is obsolete, use "root" instead');
-			log.error(req.originalUrl);
 		}
 		if ((Object.prototype.hasOwnProperty.call(rule, 'admin') && rule.admin) || (Object.prototype.hasOwnProperty.call(rule, 'root') && rule.root)) {
 			if (Object.prototype.hasOwnProperty.call(rule, 'admin')) {
