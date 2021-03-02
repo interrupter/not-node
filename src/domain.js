@@ -48,9 +48,6 @@ class notDomain extends EventEmitter {
 		this._informer = null;
 		//store
 		this.envs = {};
-		//on errors and exceptions
-		process.on('uncaughtException', this.report.bind(this));
-		process.on('unhandledRejection', this.report.bind(this));
 		return this;
 	}
 
