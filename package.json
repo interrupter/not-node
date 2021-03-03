@@ -1,6 +1,6 @@
 {
 		"name": "not-node",
-		"version": "3.3.94",
+		"version": "3.3.95",
 		"description": "node complimentary part for client side notFramework.",
 		"main": "index.js",
 		"scripts": {
@@ -31,7 +31,7 @@
 				"url": "https://github.com/interrupter/not-node/issues"
 		},
 		"dependencies": {
-				"@babel/core": "^7.12.16",
+				"@babel/core": "^7.13.8",
 				"babel-polyfill": "*",
 				"babel-preset-es2015-rollup": "*",
 				"babel-runtime": "*",
@@ -51,7 +51,7 @@
 				"not-filter": "*",
 				"not-locale": "*",
 				"not-log": "*",
-				"npm": "^7.5.4",
+				"npm": "^7.6.0",
 				"nyc": "^15.1.0",
 				"postcss-cssnext": "*",
 				"postcss-env-replace": "*",

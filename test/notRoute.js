@@ -144,7 +144,9 @@ describe('RouterAction', function () {
 		//manifest.registerRoutesPath('', __dirname + '/routes');
 		//manifest.getManifest();
 		let fakeRoute = {
-				list:()=>{return 'list';}
+				list:()=>{
+					return 'list';
+				}
 			},
 		 fakeMod = {
 				getRoute:()=>{
@@ -154,7 +156,7 @@ describe('RouterAction', function () {
 			fakeNotApp = {
 				getModule:()=>{return fakeMod;}
 			};
-		it('Guest request post.list', function () {
+		it('Guest request post.list', function (done) {
 			let req = {
 					session: {
 						user: false
@@ -164,13 +166,18 @@ describe('RouterAction', function () {
 					method: 'get',
 					auth: false
 				},
-				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData),
-				result = routerAction.exec(req);
+				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData);
+				routerAction.exec(req)
+					.then((result)=>{
+						expect(result).to.deep.equal('list');
+						done();
+					})
+					.catch(done);
 			//console.log('result', routerAction, actionData, result);
-			expect(result).to.deep.equal('list');
+
 		});
 
-		it('Admin request post.listAll', function () {
+		it('Admin request post.listAll', function (done) {
 			let fakeRoute = {
 					_listAll:()=>{return '_listAll';}
 				},
@@ -198,11 +205,15 @@ describe('RouterAction', function () {
 					}]
 				},
 				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'listAll', actionData);
-			let result = routerAction.exec(req);
-			expect(result).to.deep.equal('_listAll');
+			routerAction.exec(req)
+				.then((result)=>{
+					expect(result).to.deep.equal('_listAll');
+					done()
+				})
+				.catch(done);
 		});
 
-		it('Auth with manager role request post.listAll', function () {
+		it('Auth with manager role request post.listAll', function (done) {
 			let fakeRoute = {
 					listAll:()=>{return 'listAll';}
 				},
@@ -230,10 +241,15 @@ describe('RouterAction', function () {
 					}]
 				},
 				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'listAll', actionData);
-			expect(routerAction.exec(req)).to.deep.equal('listAll');
+				routerAction.exec(req)
+					.then((result)=>{
+						expect(result).to.deep.equal('listAll');
+						done();
+					})
+					.catch(done);
 		});
 
-		it('Auth request post.list', function () {
+		it('Auth request post.list', function (done) {
 			let fakeRoute = {
 					list:()=>{return 'list';}
 				},
@@ -261,10 +277,15 @@ describe('RouterAction', function () {
 					}]
 				},
 				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData);
-			expect(routerAction.exec(req)).to.deep.equal('list');
+				routerAction.exec(req)
+					.then((result)=>{
+						expect(result).to.deep.equal('list');
+						done();
+					})
+					.catch(done);
 		});
 
-		it('Admin request post.list', function () {
+		it('Admin request post.list', function (done) {
 			let fakeRoute = {
 					_list:()=>{return '_list';}
 				},
@@ -293,10 +314,15 @@ describe('RouterAction', function () {
 					}]
 				},
 				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData);
-			expect(routerAction.exec(req)).to.deep.equal('_list');
+				routerAction.exec(req)
+					.then((result)=>{
+						expect(result).to.deep.equal('_list');
+						done();
+					})
+					.catch(done);
 		});
 
-		it('Admin request post.list with actionName override', function () {
+		it('Admin request post.list with actionName override', function (done) {
 			let fakeRoute = {
 					manager_listAll:()=>{return 'manager_listAll';}
 				},
@@ -326,10 +352,15 @@ describe('RouterAction', function () {
 					}]
 				},
 				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData);
-			expect(routerAction.exec(req)).to.deep.equal('manager_listAll');
+				routerAction.exec(req)
+					.then((result)=>{
+						expect(result).to.deep.equal('manager_listAll');
+						done();
+					})
+					.catch(done);
 		});
 
-		it('Admin request post.list with actionPrefix override', function () {
+		it('Admin request post.list with actionPrefix override', function (done) {
 			let fakeRoute = {
 					__listAll:()=>{return '__listAll';}
 				},
@@ -359,10 +390,15 @@ describe('RouterAction', function () {
 					}]
 				},
 				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'listAll', actionData);
-			expect(routerAction.exec(req)).to.deep.equal('__listAll');
+				routerAction.exec(req)
+					.then((result)=>{
+						expect(result).to.deep.equal('__listAll');
+						done();
+					})
+					.catch(done);
 		});
 
-		it('Auth request post.list with actionPrefix override', function () {
+		it('Auth request post.list with actionPrefix override', function (done) {
 			let fakeRoute = {
 					__list:()=>{return '__list';}
 				},
@@ -391,10 +427,15 @@ describe('RouterAction', function () {
 					}]
 				},
 				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData);
-			expect(routerAction.exec(req)).to.deep.equal('__list');
+				routerAction.exec(req)
+					.then((result)=>{
+						expect(result).to.deep.equal('__list');
+						done();
+					})
+					.catch(done);
 		});
 
-		it('Auth request post.list with actionName override', function () {
+		it('Auth request post.list with actionName override', function (done) {
 			let fakeRoute = {
 					manager_listAll:()=>{return 'manager_listAll';}
 				},
@@ -423,10 +464,15 @@ describe('RouterAction', function () {
 					}]
 				},
 				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData);
-			expect(routerAction.exec(req)).to.deep.equal('manager_listAll');
+				routerAction.exec(req)
+				 .then((result)=>{
+					 expect(result).to.deep.equal('manager_listAll');
+					 done();
+				 })
+				 .catch(done);
 		});
 
-		it('Auth with manager role request post.list with actionPrefix override', function () {
+		it('Auth with manager role request post.list with actionPrefix override', function (done) {
 			let fakeRoute = {
 					__list:()=>{return '__list';}
 				},
@@ -457,10 +503,15 @@ describe('RouterAction', function () {
 					}]
 				},
 				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData);
-			expect(routerAction.exec(req)).to.deep.equal('__list');
+				routerAction.exec(req)
+					.then((result)=>{
+						expect(result).to.deep.equal('__list');
+						done();
+					})
+					.catch(done);
 		});
 
-		it('Auth with manager role request post.list with actionName override', function () {
+		it('Auth with manager role request post.list with actionName override', function (done) {
 			let fakeRoute = {
 					manager_listAll:()=>{return 'manager_listAll';}
 				},
@@ -491,7 +542,12 @@ describe('RouterAction', function () {
 					}]
 				},
 				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData);
-			expect(routerAction.exec(req)).to.deep.equal('manager_listAll');
+				routerAction.exec(req)
+					.then((result)=>{
+						expect(result).to.deep.equal('manager_listAll');
+						done();
+					})
+					.catch(done);
 		});
 
 		it('Wrong modelName', function () {
