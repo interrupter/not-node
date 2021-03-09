@@ -1,6 +1,6 @@
 {
 		"name": "not-node",
-		"version": "3.3.95",
+		"version": "3.3.96",
 		"description": "node complimentary part for client side notFramework.",
 		"main": "index.js",
 		"scripts": {
@@ -69,7 +69,6 @@
 				"rollup-plugin-postcss": "*",
 				"rollup-plugin-replace": "*",
 				"rollup-plugin-sass": "*",
-				"rollup-plugin-uglify": "*",
 				"simple-git": "*",
 				"yargs": "*"
 		},
