@@ -180,9 +180,10 @@ function list(skip, size, sorter, filter){
 
 function listByField(field, list = [], filter = {}, populate = []){
 	let query = this.makeQuery('find', {
-		[field]: Object.assign({
-			$in: list
-		}, filter)
+		[field]: {
+			$in: list,
+			...filter
+		}
 	});
 	populateQuery(query, populate, this.schema.statics.__versioning);
 	return query.exec();

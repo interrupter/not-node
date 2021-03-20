@@ -55,6 +55,7 @@ exports.fabricate = function (targetModule, options, mongoose) {
 			schema.index(rule, { unique: true });
 		}
 
+
 		if (targetModule.enrich) {
 			if (targetModule.enrich.increment) {
 				enrich.markForIncrement(schema, targetModule.thisModelName);
@@ -62,6 +63,10 @@ exports.fabricate = function (targetModule, options, mongoose) {
 			if (targetModule.enrich.versioning) {
 				enrich.markForVersioning(schema);
 				schema.statics.saveVersion = saveVersion;
+			}
+
+			if(targetModule.enrich.textIndex){
+				schema.index(targetModule.enrich.textIndex);
 			}
 		}
 
