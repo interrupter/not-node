@@ -2,9 +2,10 @@
 
 const enrich = require('./enrich'),
 	saveVersion = require('./versioning'),
-	Schema = require('mongoose').Schema,
+	{Schema} = require('mongoose'),
 	defaultModel= require('./default'),
 	log = require('not-log')(module, 'ModelProto');
+
 
 exports.fabricate = function (targetModule, options, mongoose) {
 	if (!options) {
@@ -55,6 +56,9 @@ exports.fabricate = function (targetModule, options, mongoose) {
 			schema.index(rule, { unique: true });
 		}
 
+		if(targetModule.enrich.textIndex){
+			schema.index(targetModule.enrich.textIndex, {name: Object.keys(targetModule.enrich.textIndex).join('__')});
+		}
 
 		if (targetModule.enrich) {
 			if (targetModule.enrich.increment) {
@@ -63,10 +67,6 @@ exports.fabricate = function (targetModule, options, mongoose) {
 			if (targetModule.enrich.versioning) {
 				enrich.markForVersioning(schema);
 				schema.statics.saveVersion = saveVersion;
-			}
-
-			if(targetModule.enrich.textIndex){
-				schema.index(targetModule.enrich.textIndex);
 			}
 		}
 
@@ -117,6 +117,7 @@ exports.fabricate = function (targetModule, options, mongoose) {
 		}else{
 			targetModule[targetModule.thisModelName] = mongoose.connection.model(targetModule.thisModelName);
 		}
+		targetModule[targetModule.thisModelName].createIndexes();
 	} catch (error) {
 		log.error(error);
 	}
