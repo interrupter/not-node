@@ -2,12 +2,15 @@
 
 const enrich = require('./enrich'),
 	saveVersion = require('./versioning'),
-	{Schema} = require('mongoose'),
+	{ Schema } = require('mongoose'),
 	defaultModel= require('./default'),
 	log = require('not-log')(module, 'ModelProto');
 
 
 exports.fabricate = function (targetModule, options, mongoose) {
+	if(targetModule.IGNORE){
+		return;
+	}
 	if (!options) {
 		options = {
 			schemaOptions: {}
