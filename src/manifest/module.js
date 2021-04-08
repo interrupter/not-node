@@ -205,14 +205,14 @@ class notModule {
 	registerLogic(logic, logicName) {
 		if(this.notApp){
 			log.debug(`Register logic ${logicName}`);
-			model.getLogic = this.notApp.getLogic.bind(this.notApp);
-			model.getLogicFile = this.notApp.getLogicFile.bind(this.notApp);
-			model.getModule = this.notApp.getModule.bind(this.notApp);
-			model.log = logger(logic, `Logic#${logicName}`);
+			logic.getLogic = this.notApp.getLogic.bind(this.notApp);
+			logic.getLogicFile = this.notApp.getLogicFile.bind(this.notApp);
+			logic.getModule = this.notApp.getModule.bind(this.notApp);
+			logic.log = logger(logic, `Logic#${logicName}`);
 		}else{
 			log.debug(`Register logic ${logicName} skiped, no Application`);
 		}
-		model.getThisModule = () => this;
+		logic.getThisModule = () => this;
 		this.logics[logicName] = logic;
 	}
 
