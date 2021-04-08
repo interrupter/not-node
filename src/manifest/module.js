@@ -304,7 +304,7 @@ class notModule {
 
 	getLogic(logicName) {
 		try{
-			let logicFile = this.getModelFile(logicName);
+			let logicFile = this.getLogicFile(logicName);
 			if (logicFile && (logicName in logicFile)) {
 				return logicFile[logicName];
 			}else{
