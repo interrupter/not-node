@@ -27,6 +27,7 @@ class notModule {
 		this.description = {};
 		this.routes = {};
 		this.models = {};
+		this.logics = {};
 		this.mixins = {};
 		this.manifests = {};
 		this.faulty = false;
@@ -99,6 +100,9 @@ class notModule {
 			if (this.module.paths.mixins) {
 				this.findMixinsIn(this.module.paths.mixins);
 			}
+			if (this.module.paths.logics) {
+				this.findLogicsIn(this.module.paths.logics);
+			}
 			if (this.module.paths.routes) {
 				this.findRoutesIn(this.module.paths.routes);
 			}
@@ -106,6 +110,22 @@ class notModule {
 				notLocale.fromDir(this.module.paths.locales);
 			}
 		}
+	}
+
+	findLogicsIn(logicsPath) {
+		fs.readdirSync(logicsPath).forEach((file) => {
+			let logicPath = path.join(logicsPath, file);
+			log.info(`Checking logic in ${logicPath}`);
+			if (fs.lstatSync(logicPath).isFile()) {
+				let logic = require(logicPath),
+					logicName = file;
+				if (logic && logic.thisLogicName) {
+					logicName = logic.thisLogicName;
+				}
+				logic.filename = logicPath;
+				this.registerLogic(logic, logicName);
+			}
+		});
 	}
 
 	findModelsIn(modelsPath) {
@@ -180,6 +200,20 @@ class notModule {
 			}
 
 		}.bind(this));
+	}
+
+	registerLogic(logic, logicName) {
+		if(this.notApp){
+			log.debug(`Register logic ${logicName}`);
+			model.getLogic = this.notApp.getLogic.bind(this.notApp);
+			model.getLogicFile = this.notApp.getLogicFile.bind(this.notApp);
+			model.getModule = this.notApp.getModule.bind(this.notApp);
+			model.log = logger(logic, `Logic#${logicName}`);
+		}else{
+			log.debug(`Register logic ${logicName} skiped, no Application`);
+		}
+		model.getThisModule = () => this;
+		this.logics[logicName] = logic;
 	}
 
 	registerModel(model, modelName) {
@@ -259,6 +293,28 @@ class notModule {
 			log.error(e);
 		}
 	}
+
+	getLogicFile(logicName) {
+		if (this.logics && Object.prototype.hasOwnProperty.call(this.logics,logicName)) {
+			return this.logics[logicName];
+		}else{
+			return null;
+		}
+	}
+
+	getLogic(logicName) {
+		try{
+			let logicFile = this.getModelFile(logicName);
+			if (logicFile && (logicName in logicFile)) {
+				return logicFile[logicName];
+			}else{
+				return null;
+			}
+		}catch(e){
+			log.error(e);
+		}
+	}
+
 
 	getModelSchema(modelName) {
 		let modelFile = this.getModelFile(modelName);

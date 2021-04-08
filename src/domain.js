@@ -178,7 +178,6 @@ class notDomain extends EventEmitter {
 		return (result && result.length === 1) ? result[0] : result;
 	}
 
-
 	/**
 	 *	Returns specified by name or 'moduleName//modelName' model Schema
 	 *	@param {string} modelName	'modelName' or 'moduleName//modelName'
@@ -232,6 +231,73 @@ class notDomain extends EventEmitter {
 			}
 		}
 		return result;
+	}
+
+
+  /**
+	 *	Returns logic
+	 *	@param 	{string}	name 	'logicName' or 'moduleName//logicName'
+	 *									('User', 'moduleName//User')
+	 *	@return {object}				logic
+	 **/
+	getLogic(name) {
+		let result = null;
+		if (name.indexOf('//') > 0) {
+			let [moduleName, logicName] = name.split('//');
+			if (this.modules && this.modules.hasOwnProperty(moduleName)) {
+				return this.modules[moduleName].getLogic(logicName);
+			} else {
+				return result;
+			}
+		} else {
+			let mNames = Object.keys(this.modules);
+			for (let t = 0; t < mNames.length; t++) {
+				if (!this.modules.hasOwnProperty(mNames[t])) {
+					continue;
+				}
+				let tmp = this.modules[mNames[t]].getLogic(name);
+				if (tmp) {
+					if (!result) {
+						result = [];
+					}
+					result.push(tmp);
+				}
+			}
+		}
+		return (result && result.length === 1) ? result[0] : result;
+	}
+
+
+	/**
+	 *	Returns file with logic declarations
+	 *	@param {string} 	logicName	'logicName' or 'moduleName//logicName'
+	 *	@return	{object}				CommonJS module object
+	 **/
+	getLogicFile(logicName) {
+		let result = null;
+		if (logicName.indexOf('//') > 0) {
+			let [moduleName, logicName] = logicName.split('//');
+			if (this.modules && this.modules.hasOwnProperty(moduleName)) {
+				return this.modules.getLogicFile(logicName);
+			} else {
+				return result;
+			}
+		} else {
+			let mNames = Object.keys(this.modules);
+			for (let t = 0; t < mNames.length; t++) {
+				if (!this.modules.hasOwnProperty(mNames[t])) {
+					continue;
+				}
+				let tmp = this.modules[mNames[t]].getLogicFile(logicName);
+				if (tmp) {
+					if (!result) {
+						result = [];
+					}
+					result.push(tmp);
+				}
+			}
+		}
+		return (result && result.length === 1) ? result[0] : result;
 	}
 
 	/**
