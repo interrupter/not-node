@@ -4,32 +4,32 @@ const routine = require('./routine');
 const notQuery = require('not-filter');
 
 exports.extractVariants = function (items) {
-	var variants = [];
-	if (items && items.length) {
-		for (var i = 0; i < items.length; i++) {
-			variants.push(items[i].getVariant());
-		}
-	}
-	return variants;
+  var variants = [];
+  if (items && items.length) {
+    for (var i = 0; i < items.length; i++) {
+      variants.push(items[i].getVariant());
+    }
+  }
+  return variants;
 };
 
 let populateQuery = (query, populate, versioning = false) => {
-	if (populate && populate.length) {
-		for(let key of populate){
-			if(versioning){
-				query.populate({
-					path: key,
-					match: {
-						__latest: true
-					}
-				});
-			}else{
-				query.populate({
-					path: key
-				});
-			}
-		}
-	}
+  if (populate && populate.length) {
+    for(let key of populate){
+      if(versioning){
+        query.populate({
+          path: key,
+          match: {
+            __latest: true
+          }
+        });
+      }else{
+        query.populate({
+          path: key
+        });
+      }
+    }
+  }
 };
 
 /**
@@ -39,10 +39,10 @@ let populateQuery = (query, populate, versioning = false) => {
 *	@return	{object}	data;
 **/
 function sanitizeInput(input) {
-	if (!Object.prototype.hasOwnProperty.call(input, 'default')) {
-		input.default = false;
-	}
-	return input;
+  if (!Object.prototype.hasOwnProperty.call(input, 'default')) {
+    input.default = false;
+  }
+  return input;
 }
 
 /**
@@ -54,25 +54,25 @@ function sanitizeInput(input) {
 *	@return {Promise}	Promise
 **/
 function getOne(id, population = []) {
-	if (this.schema.statics.__versioning) {
-		let query = this.findOne({
-			_id: id,
-			__latest: true,
-			__closed: false
-		});
-		if(Array.isArray(population)&&population.length){
-			population.push('__versions');
-		}else{
-			population = ['__versions'];
-		}
-		populateQuery(query, population, this.schema.statics.__versioning);
-		return query.exec();
-	} else {
-		let query = this.findOne({
-			_id: id
-		});
-		return query.exec();
-	}
+  if (this.schema.statics.__versioning) {
+    let query = this.findOne({
+      _id: id,
+      __latest: true,
+      __closed: false
+    });
+    if(Array.isArray(population)&&population.length){
+      population.push('__versions');
+    }else{
+      population = ['__versions'];
+    }
+    populateQuery(query, population, this.schema.statics.__versioning);
+    return query.exec();
+  } else {
+    let query = this.findOne({
+      _id: id
+    });
+    return query.exec();
+  }
 }
 
 /**
@@ -83,18 +83,18 @@ function getOne(id, population = []) {
 *	@return {Promise}	Promise or NULL if increment is OFF
 **/
 function getOneByID(ID) {
-	if (this.schema.statics.__incField) {
-		let by = (this.schema.statics.__versioning ? {
-				__latest: true,
-				__closed: false
-			} : {}),
-			query;
-		by[this.schema.statics.__incField] = ID;
-		query = this.findOne(by);
-		return query.exec();
-	} else {
-		return null;
-	}
+  if (this.schema.statics.__incField) {
+    let by = (this.schema.statics.__versioning ? {
+        __latest: true,
+        __closed: false
+      } : {}),
+      query;
+    by[this.schema.statics.__incField] = ID;
+    query = this.findOne(by);
+    return query.exec();
+  } else {
+    return null;
+  }
 }
 
 
@@ -105,10 +105,10 @@ function getOneByID(ID) {
 *	@return {Promise}	Promise
 **/
 function getOneRaw(id) {
-	let query = this.findOne({
-		_id: id
-	});
-	return query.exec();
+  let query = this.findOne({
+    _id: id
+  });
+  return query.exec();
 }
 
 /**
@@ -119,38 +119,38 @@ function getOneRaw(id) {
 *	@return {Query}						mongoose query object
 **/
 function makeQuery(method, filter){
-	let versioningMod = {
-			__latest: true,
-			__closed: false
-		},
-		query;
-	switch(notQuery.filter.getFilterType(filter)){
-	case notQuery.filter.OPT_OR:
-		if (this.schema.statics.__versioning){
-			query = this[method]({
-				$and: [versioningMod, {$or: filter}]
-			});
-		}else{
-			query = this[method]({
-				$or: filter
-			});
-		}
-		break;
-	case notQuery.filter.OPT_AND:
-		if (this.schema.statics.__versioning){
-			query = this[method]({
-				$and: [versioningMod, filter]
-			});
-		}else{
-			query = this[method]({
-				$and:[filter]
-			});
-		}
-		break;
-	default:
-		query = this[method](this.schema.statics.__versioning?versioningMod:{});
-	}
-	return query;
+  let versioningMod = {
+      __latest: true,
+      __closed: false
+    },
+    query;
+  switch(notQuery.filter.getFilterType(filter)){
+  case notQuery.filter.OPT_OR:
+    if (this.schema.statics.__versioning){
+      query = this[method]({
+        $and: [versioningMod, {$or: filter}]
+      });
+    }else{
+      query = this[method]({
+        $or: filter
+      });
+    }
+    break;
+  case notQuery.filter.OPT_AND:
+    if (this.schema.statics.__versioning){
+      query = this[method]({
+        $and: [versioningMod, filter]
+      });
+    }else{
+      query = this[method]({
+        $and:[filter]
+      });
+    }
+    break;
+  default:
+    query = this[method](this.schema.statics.__versioning?versioningMod:{});
+  }
+  return query;
 }
 
 /**
@@ -163,8 +163,8 @@ function makeQuery(method, filter){
 *	@return {Promise}					Promise
 */
 function list(skip, size, sorter, filter){
-	let query = this.makeQuery('find', filter);
-	return query.sort(sorter).skip(skip).limit(size).exec();
+  let query = this.makeQuery('find', filter);
+  return query.sort(sorter).skip(skip).limit(size).exec();
 }
 
 
@@ -179,14 +179,14 @@ function list(skip, size, sorter, filter){
 */
 
 function listByField(field, list = [], filter = {}, populate = []){
-	let query = this.makeQuery('find', {
-		[field]: {
-			$in: list,
-			...filter
-		}
-	});
-	populateQuery(query, populate, this.schema.statics.__versioning);
-	return query.exec();
+  let query = this.makeQuery('find', {
+    [field]: {
+      $in: list,
+      ...filter
+    }
+  });
+  populateQuery(query, populate, this.schema.statics.__versioning);
+  return query.exec();
 }
 
 /**
@@ -200,10 +200,10 @@ function listByField(field, list = [], filter = {}, populate = []){
 *	@return {Promise}					Promise
 */
 function listAndPopulate(skip, size, sorter, filter, populate) {
-	let query = this.makeQuery('find', filter);
-	query.sort(sorter).skip(skip).limit(size);
-	populateQuery(query, populate, this.schema.statics.__versioning);
-	return query.exec();
+  let query = this.makeQuery('find', filter);
+  query.sort(sorter).skip(skip).limit(size);
+  populateQuery(query, populate, this.schema.statics.__versioning);
+  return query.exec();
 }
 
 /**
@@ -214,14 +214,14 @@ function listAndPopulate(skip, size, sorter, filter, populate) {
 *	@return {Promise}					Promise
 */
 function listAll() {
-	let by = (this.schema.statics.__versioning ? {
-			__latest: true,
-			__closed: false
-		} : {}),
-		query = this.find(by).sort([
-			['_id', 'descending']
-		]);
-	return query.exec();
+  let by = (this.schema.statics.__versioning ? {
+      __latest: true,
+      __closed: false
+    } : {}),
+    query = this.find(by).sort([
+      ['_id', 'descending']
+    ]);
+  return query.exec();
 }
 
 /**
@@ -233,16 +233,16 @@ function listAll() {
 *	@return {Promise}					Promise
 */
 function listAllAndPopulate(populate) {
-	let by = this.schema.statics.__versioning ? {
-			__latest: true,
-			__closed: false
-		} : {},
-		query = this.find(by);
-	query.sort([
-		['_id', 'descending']
-	]);
-	populateQuery(query, populate,this.schema.statics.__versioning);
-	return query.exec();
+  let by = this.schema.statics.__versioning ? {
+      __latest: true,
+      __closed: false
+    } : {},
+    query = this.find(by);
+  query.sort([
+    ['_id', 'descending']
+  ]);
+  populateQuery(query, populate,this.schema.statics.__versioning);
+  return query.exec();
 }
 
 /**
@@ -258,18 +258,18 @@ function listAllAndPopulate(populate) {
 *	@return {Promise}		{list, count, pages}
 */
 function listAndCount(skip, size, sorter, filter, search, populate = ['']){
-	let list = this.listAndPopulate(skip, size, sorter, search || filter, populate),
-		count = this.countWithFilter(search || filter);
-	return Promise.all([list, count])
-		.then(([list, count])=>{
-			return {
-				list,
-				skip,
-				count,
-				page: Math.floor(skip / size) + (skip % size === 0? 1:0),
-				pages: Math.ceil(count / size),
-			};
-		});
+  let list = this.listAndPopulate(skip, size, sorter, search || filter, populate),
+    count = this.countWithFilter(search || filter);
+  return Promise.all([list, count])
+    .then(([list, count])=>{
+      return {
+        list,
+        skip,
+        count,
+        page: Math.floor(skip / size) + (skip % size === 0? 1:0),
+        pages: Math.ceil(count / size),
+      };
+    });
 }
 
 /**
@@ -279,8 +279,8 @@ function listAndCount(skip, size, sorter, filter, search, populate = ['']){
 *	@return {Promise}					Promise
 */
 function countWithFilter(filter){
-	let query =  this.makeQuery('countDocuments', filter);
-	return query.exec();
+  let query =  this.makeQuery('countDocuments', filter);
+  return query.exec();
 }
 
 
@@ -291,7 +291,7 @@ function countWithFilter(filter){
 *	@return {Promise}					Promise
 */
 function add(data) {
-	return routine.add(this, data);
+  return routine.add(this, data);
 }
 
 /**
@@ -302,24 +302,24 @@ function add(data) {
 *	@return {Promise}					Promise
 */
 function update(filter, data) {
-	return routine.update(this, filter, data);
+  return routine.update(this, filter, data);
 }
 
 exports.statics = {
-	sanitizeInput,
-	getOne,
-	getOneByID,
-	getOneRaw,
-	makeQuery,
-	list,
-	listByField,
-	listAll,
-	listAllAndPopulate,
-	countWithFilter,
-	listAndPopulate,
-	listAndCount,
-	add,
-	update
+  sanitizeInput,
+  getOne,
+  getOneByID,
+  getOneRaw,
+  makeQuery,
+  list,
+  listByField,
+  listAll,
+  listAllAndPopulate,
+  countWithFilter,
+  listAndPopulate,
+  listAndCount,
+  add,
+  update
 };
 
 /**
@@ -327,7 +327,7 @@ exports.statics = {
 *	@return {numeric}	ID
 */
 function getID() {
-	return this.schema.statics.__incField ? this[this.schema.statics.__incField] : 0;
+  return this.schema.statics.__incField ? this[this.schema.statics.__incField] : 0;
 }
 
 /**
@@ -336,11 +336,11 @@ function getID() {
 *	@return {numeric}	ID
 */
 function close() {
-	this.__closed = true;
-	return this.save();
+  this.__closed = true;
+  return this.save();
 }
 
 exports.methods = {
-	getID,
-	close
+  getID,
+  close
 };

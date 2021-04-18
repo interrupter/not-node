@@ -11,12 +11,7 @@
 	},
 	"extends": "eslint:recommended",
 	"rules": {
-		"indent": [
-			"error",
-			"tab", {
-				"SwitchCase": 0
-			}
-		],
+		"indent": ["error", 2],
 		"linebreak-style": [
 			"error",
 			"unix"

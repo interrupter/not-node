@@ -10,15 +10,13 @@
 */
 
 var argv = require('yargs').argv,
-	git = require('simple-git'),
+
 	fs = require('fs'),
-	os = require('os'),
-	fse = require('fs-extra'),
-	rmdir = require('rmdir'),
+
 	path = require('path'),
 	child_process = require('child_process'),
 	deepMerge = require('deepmerge'),
-	readline = require('readline'),
+	
 	lib = require('../src/lib.js');
 
 const TEMPLATES_EXT = '.html';

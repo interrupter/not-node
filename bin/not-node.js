@@ -10,13 +10,7 @@
 */
 
 var argv = require('yargs').argv,
-	git = require('simple-git'),
 	fs = require('fs'),
-	os = require('os'),
-	fse = require('fs-extra'),
-	rmdir = require('rmdir'),
-	path = require('path'),
-	readline = require('readline'),
 	lib = require('../src/lib.js');
 
 let opts = {

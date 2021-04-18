@@ -13,19 +13,19 @@ const DEFAULT_USER_ROLE_FOR_GUEST = 'guest';
  **/
 
 function intersect_safe(a, b) {
-	let result = [];
-	if (Array.isArray(a) && Array.isArray(b)) {
-		if (b.length > a.length) {
-			// indexOf to loop over shorter
-			let t = b;
-			b = a;
-			a = t;
-		}
-		result = a.filter((e) => {
-			if (b.indexOf(e) !== -1) return true;
-		});
-	}
-	return result;
+  let result = [];
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (b.length > a.length) {
+      // indexOf to loop over shorter
+      let t = b;
+      b = a;
+      a = t;
+    }
+    result = a.filter((e) => {
+      if (b.indexOf(e) !== -1) return true;
+    });
+  }
+  return result;
 }
 
 /**
@@ -35,12 +35,12 @@ function intersect_safe(a, b) {
  **/
 
 function isUser(req) {
-	return (req.session && req.session.user) ? true : false;
+  return (req.session && req.session.user) ? true : false;
 }
 
 function ifUser(req) {
-	log.error('ifUser is obsolete, use new version as isUser');
-	return isUser(req);
+  log.error('ifUser is obsolete, use new version as isUser');
+  return isUser(req);
 }
 
 
@@ -52,11 +52,11 @@ function ifUser(req) {
  *	@param	{function}	next 	callback
  **/
 function checkUser(req, res, next) {
-	if (isUser(req)) {
-		return next();
-	} else {
-		return next(new HttpError(401, 'Вы не авторизованы'));
-	}
+  if (isUser(req)) {
+    return next();
+  } else {
+    return next(new HttpError(401, 'Вы не авторизованы'));
+  }
 }
 
 /**
@@ -65,13 +65,13 @@ function checkUser(req, res, next) {
  *	@return {boolean}	true - admin, false - not admin
  **/
 function ifAdmin(req) {
-	log.error('ifAdmin is obsolete, use new version as isRoot');
-	log.error(req.originalUrl);
-	return isRoot(req);
+  log.error('ifAdmin is obsolete, use new version as isRoot');
+  log.error(req.originalUrl);
+  return isRoot(req);
 }
 
 function isRoot(req) {
-	return isUser(req) && compareRoles(getRole(req), DEFAULT_USER_ROLE_FOR_ADMIN);
+  return isUser(req) && compareRoles(getRole(req), DEFAULT_USER_ROLE_FOR_ADMIN);
 }
 
 /**
@@ -82,17 +82,17 @@ function isRoot(req) {
  *	@param	{function}	next 	callback
  **/
 function checkAdmin(req, res, next) {
-	log.error('checkAdmin is obsolete, use new version as checkRoot');
-	log.error(req.originalUrl);
-	return checkRoot(req, res, next);
+  log.error('checkAdmin is obsolete, use new version as checkRoot');
+  log.error(req.originalUrl);
+  return checkRoot(req, res, next);
 }
 
 function checkRoot(req, res, next) {
-	if (isRoot(req)) {
-		return next();
-	} else {
-		return next(new HttpError(401, 'Вы не авторизованы ' + req.session.user + ':' + req.session.role));
-	}
+  if (isRoot(req)) {
+    return next();
+  } else {
+    return next(new HttpError(401, 'Вы не авторизованы ' + req.session.user + ':' + req.session.role));
+  }
 }
 
 /**
@@ -101,7 +101,7 @@ function checkRoot(req, res, next) {
  *	@return user role
  **/
 function getRole(req) {
-	return (req.session && req.session.role) ? req.session.role : undefined;
+  return (req.session && req.session.role) ? req.session.role : undefined;
 }
 
 /**
@@ -110,15 +110,15 @@ function getRole(req) {
  *	@param	{[string]}	role 	array of roles
  **/
 function setRole(req, role) {
-	if (req && req.session) {
-		req.session.role = role;
-	}
+  if (req && req.session) {
+    req.session.role = role;
+  }
 }
 
 function setId(req, _id) {
-	log.error('setId is obsolete, use new version as setUserId');
-	log.error(req.originalUrl);
-	return setUserId(req, _id);
+  log.error('setId is obsolete, use new version as setUserId');
+  log.error(req.originalUrl);
+  return setUserId(req, _id);
 }
 
 /**
@@ -127,9 +127,9 @@ function setId(req, _id) {
  *	@param	{string}	_id 	user id
  **/
 function setUserId(req, _id) {
-	if (req && req.session) {
-		req.session.user = _id;
-	}
+  if (req && req.session) {
+    req.session.user = _id;
+  }
 }
 
 /**
@@ -137,7 +137,7 @@ function setUserId(req, _id) {
  *	@param	{object}	req 	Express Request
  **/
 function getUserId(req) {
-	return req.session.user;
+  return req.session.user;
 }
 
 /**
@@ -145,7 +145,7 @@ function getUserId(req) {
  *	@param	{object}	req 	Express Request
  **/
 function getSessionId(req) {
-	return req.session.id.toString();
+  return req.session.id.toString();
 }
 
 /**
@@ -153,7 +153,7 @@ function getSessionId(req) {
  *	@param	{object}	req 	Express Request
  **/
 function getIP(req) {
-	return req.headers['x-forwarded-for'] ||
+  return req.headers['x-forwarded-for'] ||
 		req.connection.remoteAddress ||
 		req.socket.remoteAddress ||
 		req.connection.socket.remoteAddress;
@@ -166,8 +166,8 @@ function getIP(req) {
  *	@param	{string}	role 	user role
  **/
 function setAuth(req, id, role) {
-	setId(req, id);
-	setRole(req, role);
+  setId(req, id);
+  setRole(req, role);
 }
 
 /**
@@ -175,11 +175,11 @@ function setAuth(req, id, role) {
  *	@param	{object}	req 	Express Request
  **/
 function setGuest(req) {
-	if (req.session) {
-		req.user = null;
-		req.session.user = null;
-		setRole(req, [DEFAULT_USER_ROLE_FOR_GUEST]);
-	}
+  if (req.session) {
+    req.user = null;
+    req.session.user = null;
+    setRole(req, [DEFAULT_USER_ROLE_FOR_GUEST]);
+  }
 }
 
 /**
@@ -187,12 +187,12 @@ function setGuest(req) {
  *	@param	{object}	req 	Express Request
  **/
 function cleanse(req) {
-	if (req && req.session) {
-		setGuest(req);
-		if (req.session.destroy) {
-			req.session.destroy();
-		}
-	}
+  if (req && req.session) {
+    setGuest(req);
+    if (req.session.destroy) {
+      req.session.destroy();
+    }
+  }
 }
 
 /**
@@ -201,14 +201,14 @@ function cleanse(req) {
  * @return {object}  various authentification data for actor { root:boolean, auth: boolean, role: [string], uid: ObjectId, sid: string, ip:string }
  */
 function extractAuthData(req) {
-	return {
-		root: 	isRoot(req),
-		auth: 	isUser(req),
-		role: 	getRole(req),
-		uid: 		getUserId(req),
-		sid: 		getSessionId(req),
-		ip: 		getIP(req)
-	};
+  return {
+    root: 	isRoot(req),
+    auth: 	isUser(req),
+    role: 	getRole(req),
+    uid: 		getUserId(req),
+    sid: 		getSessionId(req),
+    ip: 		getIP(req)
+  };
 }
 
 /**
@@ -219,31 +219,31 @@ function extractAuthData(req) {
  *	@return {boolean}	if user roles comply to action roles
  **/
 function compareRoles(userRoles, actionRoles, strict = true) {
-	//console.log('compare roles', userRoles, actionRoles);
-	//user have many roles
-	if (userRoles && Array.isArray(userRoles)) {
-		//action can be accessed by various roles
-		if (actionRoles && Array.isArray(actionRoles)) {
-			//if we have similar elements in those two arrays - grant access
-			if(strict){
-				return intersect_safe(userRoles, actionRoles).length === actionRoles.length;
-			}else{
-				return intersect_safe(userRoles, actionRoles).length > 0;
-			}
-		} else {
-			return userRoles.indexOf(actionRoles) > -1;
-		}
-	} else {
-		if (Array.isArray(actionRoles)) {
-			if(strict){
-				return false;
-			}else{
-				return actionRoles.indexOf(userRoles) > -1;
-			}
-		} else {
-			return userRoles === actionRoles;
-		}
-	}
+  //console.log('compare roles', userRoles, actionRoles);
+  //user have many roles
+  if (userRoles && Array.isArray(userRoles)) {
+    //action can be accessed by various roles
+    if (actionRoles && Array.isArray(actionRoles)) {
+      //if we have similar elements in those two arrays - grant access
+      if(strict){
+        return intersect_safe(userRoles, actionRoles).length === actionRoles.length;
+      }else{
+        return intersect_safe(userRoles, actionRoles).length > 0;
+      }
+    } else {
+      return userRoles.indexOf(actionRoles) > -1;
+    }
+  } else {
+    if (Array.isArray(actionRoles)) {
+      if(strict){
+        return false;
+      }else{
+        return actionRoles.indexOf(userRoles) > -1;
+      }
+    } else {
+      return userRoles === actionRoles;
+    }
+  }
 }
 
 /**
@@ -252,14 +252,14 @@ function compareRoles(userRoles, actionRoles, strict = true) {
  *	@return	{function}				express middleware
  **/
 function checkRoleBuilder(role) {
-	return (req, res, next) => {
-		let userRole = getRole(req);
-		if (isUser(req) && compareRoles(userRole, role)) {
-			return next();
-		} else {
-			return next(new HttpError(401, 'Вы не авторизованы ' + req.session.user + ':' + req.session.role));
-		}
-	};
+  return (req, res, next) => {
+    let userRole = getRole(req);
+    if (isUser(req) && compareRoles(userRole, role)) {
+      return next();
+    } else {
+      return next(new HttpError(401, 'Вы не авторизованы ' + req.session.user + ':' + req.session.role));
+    }
+  };
 }
 
 /**
@@ -276,62 +276,62 @@ function checkRoleBuilder(role) {
  *	@return {boolean}		pass or not
  */
 function checkCredentials(rule, auth, role, admin) {
-	if (typeof rule === 'undefined' || rule === null) {
-		return false;
-	} else {
-		if (Object.prototype.hasOwnProperty.call(rule, 'user')){
-			log.error('Missformed rule, field "user" is not allowed, use "auth" instead');
-		}
-		if (Object.prototype.hasOwnProperty.call(rule, 'admin')){
-			log.error('Missformed rule, field "admin" is obsolete, use "root" instead');
-		}
-		if ((Object.prototype.hasOwnProperty.call(rule, 'admin') && rule.admin) || (Object.prototype.hasOwnProperty.call(rule, 'root') && rule.root)) {
-			if (Object.prototype.hasOwnProperty.call(rule, 'admin')) {
-				return rule.admin && admin;
-			} else {
-				return rule.root && admin;
-			}
-		} else {
-			if (Object.prototype.hasOwnProperty.call(rule, 'role')) {
-				if (compareRoles(rule.role, role)) {
-					if (Object.prototype.hasOwnProperty.call(rule, 'auth')) {
-						if (rule.auth && auth) {
-							return true;
-						} else {
-							if (!rule.auth && !auth) {
-								return true;
-							}
-						}
-					} else {
-						return true;
-					}
-				} else {
-					return false;
-				}
-			} else {
-				if (Object.prototype.hasOwnProperty.call(rule, 'auth')) {
-					if (rule.auth && auth) {
-						return true;
-					} else {
-						if (!rule.auth && !auth) {
-							return true;
-						}
-					}
-				} else if (Object.prototype.hasOwnProperty.call(rule, 'user')) {
-					if (rule.user && auth) {
-						return true;
-					} else {
-						if (!rule.user && !auth) {
-							return true;
-						}
-					}
-				}else {
-					return true;
-				}
-			}
-		}
-	}
-	return false;
+  if (typeof rule === 'undefined' || rule === null) {
+    return false;
+  } else {
+    if (Object.prototype.hasOwnProperty.call(rule, 'user')){
+      log.error('Missformed rule, field "user" is not allowed, use "auth" instead');
+    }
+    if (Object.prototype.hasOwnProperty.call(rule, 'admin')){
+      log.error('Missformed rule, field "admin" is obsolete, use "root" instead');
+    }
+    if ((Object.prototype.hasOwnProperty.call(rule, 'admin') && rule.admin) || (Object.prototype.hasOwnProperty.call(rule, 'root') && rule.root)) {
+      if (Object.prototype.hasOwnProperty.call(rule, 'admin')) {
+        return rule.admin && admin;
+      } else {
+        return rule.root && admin;
+      }
+    } else {
+      if (Object.prototype.hasOwnProperty.call(rule, 'role')) {
+        if (compareRoles(rule.role, role)) {
+          if (Object.prototype.hasOwnProperty.call(rule, 'auth')) {
+            if (rule.auth && auth) {
+              return true;
+            } else {
+              if (!rule.auth && !auth) {
+                return true;
+              }
+            }
+          } else {
+            return true;
+          }
+        } else {
+          return false;
+        }
+      } else {
+        if (Object.prototype.hasOwnProperty.call(rule, 'auth')) {
+          if (rule.auth && auth) {
+            return true;
+          } else {
+            if (!rule.auth && !auth) {
+              return true;
+            }
+          }
+        } else if (Object.prototype.hasOwnProperty.call(rule, 'user')) {
+          if (rule.user && auth) {
+            return true;
+          } else {
+            if (!rule.user && !auth) {
+              return true;
+            }
+          }
+        }else {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
 }
 
 /**
@@ -343,125 +343,125 @@ function checkCredentials(rule, auth, role, admin) {
  *	@return {boolean}					true if base > against
  */
 function checkSupremacy(base, against, roles) {
-	if ((!Array.isArray(base)) && (Object.prototype.toString.call(base) !== '[object String]')) {
-		throw new Error('Base role set is not valid');
-	} else {
-		if (!Array.isArray(base)) {
-			base = [base];
-		}
-	}
+  if ((!Array.isArray(base)) && (Object.prototype.toString.call(base) !== '[object String]')) {
+    throw new Error('Base role set is not valid');
+  } else {
+    if (!Array.isArray(base)) {
+      base = [base];
+    }
+  }
 
-	if ((!Array.isArray(against)) && (Object.prototype.toString.call(against) !== '[object String]')) {
-		throw new Error('Against role set is not valid');
-	} else {
-		if (!Array.isArray(against)) {
-			against = [against];
-		}
-	}
+  if ((!Array.isArray(against)) && (Object.prototype.toString.call(against) !== '[object String]')) {
+    throw new Error('Against role set is not valid');
+  } else {
+    if (!Array.isArray(against)) {
+      against = [against];
+    }
+  }
 
-	if (!Array.isArray(roles)) {
-		throw new Error('No roles supremacy order!');
-	}
+  if (!Array.isArray(roles)) {
+    throw new Error('No roles supremacy order!');
+  }
 
-	let baseIndex = -1;
-	let againstIndex = -1;
-	roles.forEach((role, index) => {
-		if ((Object.prototype.toString.call(role) !== '[object String]')) {
-			throw new Error('Supremacy order element is not a string');
-		}
-		if (baseIndex === -1) {
-			if (base.indexOf(role) > -1) {
-				baseIndex = index;
-			}
-		}
-		if (againstIndex === -1) {
-			if (against.indexOf(role) > -1) {
-				againstIndex = index;
-			}
-		}
-	});
-	if ((baseIndex > -1) && ((baseIndex < againstIndex) || againstIndex === -1)) {
-		return true;
-	} else {
-		return false;
-	}
+  let baseIndex = -1;
+  let againstIndex = -1;
+  roles.forEach((role, index) => {
+    if ((Object.prototype.toString.call(role) !== '[object String]')) {
+      throw new Error('Supremacy order element is not a string');
+    }
+    if (baseIndex === -1) {
+      if (base.indexOf(role) > -1) {
+        baseIndex = index;
+      }
+    }
+    if (againstIndex === -1) {
+      if (against.indexOf(role) > -1) {
+        againstIndex = index;
+      }
+    }
+  });
+  if ((baseIndex > -1) && ((baseIndex < againstIndex) || againstIndex === -1)) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 function extractSafeFields(schema, action, data, roles, actorId, system = false) {
-	let fields = getSafeFieldsForRoleAction(schema, action, roles, isOwner(data, actorId), system);
-	let result = {};
-	fields.forEach((field) => {
-		if (Object.prototype.hasOwnProperty.call(data, field)) {
-			result[field] = data[field];
-		}
-	});
-	return result;
+  let fields = getSafeFieldsForRoleAction(schema, action, roles, isOwner(data, actorId), system);
+  let result = {};
+  fields.forEach((field) => {
+    if (Object.prototype.hasOwnProperty.call(data, field)) {
+      result[field] = data[field];
+    }
+  });
+  return result;
 }
 
 function getSafeFieldsForRoleAction(schema, action, roles, owner, system) {
-	let fields = [];
-	let special = [];
-	if (owner) {
-		special.push('@owner');
-	}
-	if (system) {
-		special.push('@system');
-	}
-	for (let t in schema) {
-		let field = schema[t];
-		if (Object.prototype.hasOwnProperty.call(field, 'safe')) {
-			if (Object.prototype.hasOwnProperty.call(field.safe, action)) {
-				if (field.safe[action] === '*') {
-					fields.push(t);
-				} else if (Array.isArray(field.safe[action])) {
-					if ( //если роли пользователя в списке
-						intersect_safe(roles, field.safe[action]) ||
+  let fields = [];
+  let special = [];
+  if (owner) {
+    special.push('@owner');
+  }
+  if (system) {
+    special.push('@system');
+  }
+  for (let t in schema) {
+    let field = schema[t];
+    if (Object.prototype.hasOwnProperty.call(field, 'safe')) {
+      if (Object.prototype.hasOwnProperty.call(field.safe, action)) {
+        if (field.safe[action] === '*') {
+          fields.push(t);
+        } else if (Array.isArray(field.safe[action])) {
+          if ( //если роли пользователя в списке
+            intersect_safe(roles, field.safe[action]) ||
 						//или он в спец группе (владелец, система)
 						intersect_safe(special, field.safe[action])
-					) {
-						fields.push(t);
-					}
-				}
-			}
-		}
-	}
-	return fields;
+          ) {
+            fields.push(t);
+          }
+        }
+      }
+    }
+  }
+  return fields;
 }
 
 function isOwner(data, user_id) {
-	if (typeof user_id === 'undefined' || user_id === 0) {
-		return false;
-	}
-	return (Object.prototype.hasOwnProperty.call(data, '_id') && data._id.toString() === user_id.toString());
+  if (typeof user_id === 'undefined' || user_id === 0) {
+    return false;
+  }
+  return (Object.prototype.hasOwnProperty.call(data, '_id') && data._id.toString() === user_id.toString());
 }
 
 module.exports = {
-	DEFAULT_USER_ROLE_FOR_ADMIN,
-	DEFAULT_USER_ROLE_FOR_GUEST,
-	intersect_safe,
-	ifUser,
-	isUser,
-	checkUser,
-	ifAdmin,
-	isRoot,
-	checkAdmin,
-	checkRoot,
-	getRole,
-	setRole,
-	setId,
-	setUserId,
-	getUserId,
-	getSessionId,
-	getIP,
-	setAuth,
-	setGuest,
-	cleanse,
-	extractAuthData,
-	compareRoles,
-	checkRoleBuilder,
-	checkCredentials,
-	checkSupremacy,
-	extractSafeFields,
-	getSafeFieldsForRoleAction,
-	isOwner
+  DEFAULT_USER_ROLE_FOR_ADMIN,
+  DEFAULT_USER_ROLE_FOR_GUEST,
+  intersect_safe,
+  ifUser,
+  isUser,
+  checkUser,
+  ifAdmin,
+  isRoot,
+  checkAdmin,
+  checkRoot,
+  getRole,
+  setRole,
+  setId,
+  setUserId,
+  getUserId,
+  getSessionId,
+  getIP,
+  setAuth,
+  setGuest,
+  cleanse,
+  extractAuthData,
+  compareRoles,
+  checkRoleBuilder,
+  checkCredentials,
+  checkSupremacy,
+  extractSafeFields,
+  getSafeFieldsForRoleAction,
+  isOwner
 };

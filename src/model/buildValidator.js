@@ -8,9 +8,9 @@ const validate = require('mongoose-validator');
  */
 
 module.exports = function(validators) {
-	var result = null;
-	result = validators.map((item) => {
-		return validate(item);
-	});
-	return result;
+  var result = null;
+  result = validators.map((item) => {
+    return validate(item);
+  });
+  return result;
 };
