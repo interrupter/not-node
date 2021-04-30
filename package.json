@@ -1,6 +1,6 @@
 {
   "name": "not-node",
-  "version": "3.4.2",
+  "version": "3.4.3",
   "description": "node complimentary part for client side notFramework.",
   "main": "index.js",
   "scripts": {
@@ -35,13 +35,15 @@
     "deepmerge": "^4.2.2",
     "ejs": "^3.1.6",
     "escape-string-regexp": "*",
-
+    "jsonwebtoken": "*",
     "fs-extra": "^9.1.0",
     "lower-case": "*",
     "mongoose": "*",
     "mongoose-validator": "*",
     "nconf": "^0.11.2",
     "not-filter": "*",
+    "not-path": "*",
+    "not-ws": "*",
     "not-locale": "*",
     "not-log": "*",
     "rmdir": "^1.0.0",

@@ -10,4 +10,7 @@ exports.Enrich = require('./src/model/enrich.js');
 exports.Routine = require('./src/model/routine.js');
 exports.Common = require('./src/common.js');
 exports.Fields = require('./src/fields.js');
+
+exports.Init = require('./src/init.js').Init;
+
 exports.Application = null;

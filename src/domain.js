@@ -38,6 +38,7 @@ const OPT_DEFAULT_SHUTDOWN_TIMEOUT = 5000;
  *    .importModule(require('notModule'), 'notModule');
  **/
 class notDomain extends EventEmitter {
+  static OPT_DEFAULT_SHUTDOWN_TIMEOUT = OPT_DEFAULT_SHUTDOWN_TIMEOUT;
   constructor(options) {
     super();
     this.options = options;

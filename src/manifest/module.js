@@ -11,6 +11,7 @@ const protoModel = require('../model/proto.js'),
 
 //defining CONSTS
 const DEFAULT_MANIFEST_FILE_ENDING = '.manifest.js';
+const DEFAULT_WS_ROUTE_ACTION_SPLITTER = '//';
 /**
  *	Module representation
  *	@class
@@ -26,7 +27,10 @@ class notModule {
     this.fieldsImportRules = (Object.prototype.hasOwnProperty.call(options, 'fields') && options.fields) ? options.fields : {};
     this.description = {};
     this.routes = {};
-    this.wsEndPoints = {};
+    this.wsEndPoints = {
+      servers: {},
+      clients: {},
+    };
     this.models = {};
     this.logics = {};
     this.mixins = {};
@@ -202,7 +206,7 @@ class notModule {
           route,
           wsEndPoints,
           routeName = routeBasename,
-          wsEndPointName = routeBasename;
+          wsRouteName = routeBasename;
         //проверяем есть ли файл роутов и манифеста
         if (this.tryFile(routeManifestPath)) {
           routeManifest = require(routeManifestPath);
@@ -217,7 +221,7 @@ class notModule {
         if (this.tryFile(routeWSPath)) {
           wsEndPoints = require(routeWSPath);
           if (wsEndPoints && wsEndPoints.thisRouteName) {
-            wsEndPointName = wsEndPoints.thisRouteName;
+            wsRouteName = wsEndPoints.thisRouteName;
           }
         }
         if (routeManifest && (route || wsEndPoints)) {
@@ -226,7 +230,7 @@ class notModule {
             this.registerRoute(route, routeName);
           }
           if (wsEndPoints) {
-            this.registerWSEndPoints(wsEndPoints, wsEndPointName);
+            this.registerWSEndPoints(wsEndPoints, wsRouteName);
           }
         }
       }
@@ -289,31 +293,49 @@ class notModule {
     this.manifests[routeName] = manifest;
   }
 
-  registerWSEndPoints(wsEndPoints, wsEndPointName) {
-    if (this.notApp) {
-      wsEndPoints.getLogic = this.notApp.getLogic.bind(this.notApp);
-      wsEndPoints.getLogicFile = this.notApp.getLogicFile.bind(this.notApp);
-      wsEndPoints.getModel = this.notApp.getModel.bind(this.notApp);
-      wsEndPoints.getModelFile = this.notApp.getModelFile.bind(this.notApp);
-      wsEndPoints.getModelSchema = this.notApp.getModelSchema.bind(this.notApp);
-      wsEndPoints.getModule = this.notApp.getModule.bind(this.notApp);
-    }
-    Object.keys(wsEndPoints).forEach((endPointType) => {
-      this.checkWSEndPointType(endPointType);
-      Object.keys(wsEndPoints[endPointType]).forEach((actionName) => {
-        this.addEndPoint(wsEndPointName, endPointType, actionName, wsEndPoints[endPointType][actionName]);
+  bindWSEndPointEntityFunctions(wsEndPoints, wsRouteName, collectionType){
+    if(Object.prototype.hasOwnProperty.call(wsEndPoints, collectionType)){
+      Object.keys(wsEndPoints[collectionType]).forEach((collectionItem) => {
+        const entity = wsEndPoints[collectionType][collectionItem];
+        entity.getLogic = this.notApp.getLogic.bind(this.notApp);
+        entity.getLogicFile = this.notApp.getLogicFile.bind(this.notApp);
+        entity.getModel = this.notApp.getModel.bind(this.notApp);
+        entity.getModelFile = this.notApp.getModelFile.bind(this.notApp);
+        entity.getModelSchema = this.notApp.getModelSchema.bind(this.notApp);
+        entity.getModule = this.notApp.getModule.bind(this.notApp);
+        Object.keys(entity).forEach((endPointType) => {
+          this.checkWSEndPointType(collectionType, collectionItem, endPointType);
+          Object.keys(entity[endPointType]).forEach((endPointName) => {
+            this.addEndPoint(
+              collectionType, collectionItem,
+              endPointType, wsRouteName,
+              endPointName,
+              entity[endPointType][endPointName]
+            );
+          });
+        });
       });
-    });
-  }
-
-  checkWSEndPointType(endPointType) {
-    if (!Object.prototype.hasOwnProperty.call(this.wsEndPoints, endPointType)) {
-      this.wsEndPoints[endPointType] = {};
     }
   }
 
-  addEndPoint(endPointName, type, action, func) {
-    this.wsEndPoints[type][`${endPointName}.${action}`] = func;
+  registerWSEndPoints(wsEndPoints, wsRouteName) {
+    if (this.notApp) {
+      this.bindWSEndPointEntityFunctions(wsEndPoints, wsRouteName, 'servers');
+      this.bindWSEndPointEntityFunctions(wsEndPoints, wsRouteName, 'clients');
+    }
+  }
+
+  checkWSEndPointType(collectionType, collectionItem, endPointType) {
+    if (!Object.prototype.hasOwnProperty.call(this.wsEndPoints[collectionType], collectionItem)) {
+      this.wsEndPoints[collectionType][collectionItem] = {};
+    }
+    if (!Object.prototype.hasOwnProperty.call(this.wsEndPoints[collectionType][collectionItem], endPointType)) {
+      this.wsEndPoints[collectionType][collectionItem][endPointType] = {};
+    }
+  }
+
+  addEndPoint(collectionType, collectionItem, endPointType, wsRouteName, action, func) {
+    this.wsEndPoints[collectionType][collectionItem][endPointType][`${wsRouteName}${DEFAULT_WS_ROUTE_ACTION_SPLITTER}${action}`] = func;
   }
 
   getEndPoints() {
