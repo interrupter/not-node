@@ -3,7 +3,7 @@ const
   serveStatic = require('serve-static'),
   path = require('path'),
   fs = require('fs'),
-  notNode = require('./lib'),
+  notNode = require('./../index.js'),
   notAppConstructor = notNode.notApp,
   {
     notError,
@@ -52,7 +52,7 @@ class Init {
   }
 
   static getAbsolutePath(subPath){
-    return path.resolve(this.options.pathToApp, subPath);
+    return path.join(this.options.pathToApp, subPath);
   }
 
   static initEnv() {
@@ -61,6 +61,7 @@ class Init {
       this.config.set('staticPath',  this.getAbsolutePath(this.config.get('path:static') || 'static'));
       this.config.set('modulesPath', this.getAbsolutePath(this.config.get('path:modules') || 'modules'));
       this.config.set('dbDumpsPath', this.getAbsolutePath(this.config.get('path:dbDumps') || '../../db.dumps'));
+      this.config.set('frontPath',   this.getAbsolutePath(this.config.get('path:front') || '../front/build'));
       this.config.set('appPath', this.options.pathToApp);
       this.config.set('npmPath', this.options.pathToNPM);
       this.config.set('fullServerName', this.getFullServerName());
@@ -74,9 +75,9 @@ class Init {
 
   static getCSPDirectives() {
     try {
-      let corsArr = config.get('cors');
+      let corsArr = this.config.get('cors');
       let corsLine = (corsArr ? corsArr.join(' ') : '');
-      let CSPDirectives = config.get('CSP');
+      let CSPDirectives = this.config.get('CSP');
       let result = {};
       Object.keys(CSPDirectives).forEach((nm) => {
         result[nm + 'Src'] = CSPDirectives[nm].join(' ');
@@ -111,7 +112,7 @@ class Init {
       log.log('Development monitor initialized');
     } catch (e) {
       log.error(e);
-      this.throwError(e.message, 1);
+      this.throwError(e, 1);
     }
   }
 
@@ -126,12 +127,12 @@ class Init {
         })
         .catch((e) => {
           log.error(e);
-          this.throwError(e.message, 1);
+          this.throwError(e, 1);
         });
       notNode.Increment.init(this.mongoose);
     } catch (e) {
       log.error(e);
-      this.throwError(e.message, 1);
+      this.throwError(e, 1);
     }
   }
 
@@ -153,26 +154,30 @@ class Init {
     this.expressApp.use(compression());
   }
 
-  initWSEnvironments(){
-    if(this.config.set('wsPath')){
+  static initWSEnvironments(){
+    if (this.config.get('modules:ws')){
+      log.log(this.config.get('modules:ws'));
+      this.notApp.setEnv('WS', this.config.get('modules:ws'));
+    }
+    if(this.config.get('wsPath')){
       var  wsHelpers;
       try{
-        wsHelpers = require(this.config.set('wsPath'));
+        wsHelpers = require(this.config.get('wsPath'));
       }catch(e){
-        log.error('wsPath not valid');
+        log.error('wsPath not valid', this.config.get('wsPath'));
       }
       if(wsHelpers.Helpers){
-        this.notApp.setENV('WSHelpers', wsHelpers.Helpers);
+        this.notApp.setEnv('WSHelpers', wsHelpers.Helpers);
       }else{
         log.log('no ws helpers');
       }
       if(wsHelpers.Validators){
-        this.notApp.setENV('WSValidators', wsHelpers.Validators);
+        this.notApp.setEnv('WSValidators', wsHelpers.Validators);
       }else{
         log.log('no ws validators');
       }
       if(wsHelpers.Types){
-        this.notApp.setENV('WSTypes', wsHelpers.Types);
+        this.notApp.setEnv('WSTypes', wsHelpers.Types);
       }else{
         log.log('no ws types');
       }
@@ -183,12 +188,13 @@ class Init {
 
   static initNotApp() {
     this.notApp = new notAppConstructor({
-      mongoose: mongoose
+      mongoose: this.mongoose
     }).importModulesFrom(this.config.get('modulesPath'));
     //
-    this.notApp.setEnv('hostname', this.config.get('hostname'));
+    this.notApp.setEnv('hostname', this.config.get('host'));
     this.notApp.setEnv('server', `https://` + this.config.get('host'));
     this.notApp.setEnv('appPath', this.config.get('appPath'));
+    this.notApp.setEnv('frontPath', this.config.get('frontPath'));
     this.notApp.setEnv('name', this.manifest.name);
     this.notApp.setEnv('fullServerName', this.config.get('fullServerName'));
     this.notApp.setEnv('dbDumpsPath', this.config.get('dbDumpsPath'));
@@ -239,7 +245,7 @@ class Init {
       this.initNotApp();
     } catch (e) {
       log.error(e);
-      this.throwError(e.message, 1);
+      this.throwError(e, 1);
     }
   }
 
@@ -280,8 +286,8 @@ class Init {
         store
       }));
     } catch (e) {
-      this.notApp.report(new notError('User session init failed', {}, e));
-      this.throwError(e.message, 1);
+      this.notApp && this.notApp.report && this.notApp.report(new notError('User session init failed', {}, e));
+      this.throwError(e, 1);
     }
   }
 
@@ -328,25 +334,27 @@ class Init {
         }
       }
     } catch (e) {
-      this.throwError(e.message, 1);
+      this.throwError(e, 1);
     }
   }
 
   static createStaticFrontServer(ext){
     return (req, res, next) => {
-      let rolesPriority = this.config.get('user:roles:priority') || ['root', 'admin', 'client', 'user', 'guest'],
-        frontAppRoot = this.config.get('path:front'),
-        frontApp = path.join(frontAppRoot, `guest.min.${ext}`);
+      let
+        postfix =( ENV === 'development'?'':'.min'),
+        rolesPriority = this.config.get('user:roles:priority') || ['root', 'admin', 'client', 'user', 'guest'],
+        frontAppRoot = this.config.get('frontPath'),
+        frontApp = path.join(frontAppRoot, `/guest${postfix}.${ext}`);
       if (req.user) {
         for (let role of rolesPriority) {
           if (req.user.role.indexOf(role) > -1) {
-            frontApp = path.join(frontAppRoot, role + `.min.${ext}`);
+            frontApp = path.join(frontAppRoot, `/${role}${postfix}.${ext}`);
             break;
           }
         }
       }
-      let pathTo = path.resolve(this.options.pathToApp, frontApp);
-      return serveStatic(pathTo)(req, res, next);
+    log.log(frontApp);
+      return serveStatic(frontApp)(req, res, next);
     }
   }
 
@@ -374,7 +382,7 @@ class Init {
         return;
       });
     } catch (e) {
-      this.throwError(e.message, 1);
+      this.throwError(e, 1);
     }
   }
 
@@ -387,11 +395,11 @@ class Init {
     try {
       log.log('try to create informer');
       const {
-        notInform
+        Inform
       } = require('not-inform');
-      this.notApp.informer = new notInform();
+      this.notApp.informer = new Inform();
     } catch (e) {
-      this.throwError(e.message, 1);
+      this.throwError(e, 1);
     }
   }
 
@@ -420,7 +428,7 @@ class Init {
         });
       }
     } catch (e) {
-      this.throwError(e.message, 1);
+      this.throwError(e, 1);
     }
   }
 
@@ -455,49 +463,69 @@ class Init {
     this.initEnv();
     if (this.config.get('mongoose')) {
       this.initMongoose(this.config.get('mongoose'));
+    }else{
+      log.log('skip initMongoose');
     }
-    if (this.config.get('hostname')) {
+    if (this.config.get('host')) {
       this.initServerApp();
+    }else{
+      log.log('skip initServerApp');
     }
     if (this.config.get('mongoose')) {
-      this.initUserSessions(config.get('mongoose'));
+      this.initUserSessions(this.config.get('mongoose'));
+    }else{
+      log.log('skip initUserSessions');
     }
     if (this.config.get('template')) {
       this.initTemplateEngine(this.config.get('template'));
+    }else{
+      log.log('skip initTemplateEngine');
     }
 
     if (this.config.get('cors')) {
       this.initCORS(this.config.get('cors'));
+    }else{
+      log.log('skip initCORS');
     }
     if (this.config.get('middleware')) {
       this.initMiddleware(this.config.get('middleware'));
+    }else{
+      log.log('skip initMiddleware');
     }
 
     if (this.notApp) {
       this.initExposeRoutes();
+    }else{
+      log.log('skip initExposeRoutes');
     }
 
     if (this.expressApp) {
       this.initModules();
+    }else{
+      log.log('skip initModules');
     }
 
     if (this.config.get('modules:informer')) {
       this.initInformer();
+    }else{
+      log.log('skip initInformer');
     }
 
     this.startup();
     //startup server
 
-    this.initWS();
+    //this.initWS();
 
     if (options.monitor) {
       this.initMonitor();
+    }else{
+      log.log('skip initMonitor');
     }
   }
 
   static throwError(errMsg = 'Fatal error', errCode = 1) {
     log.error(errMsg);
-    this.log(`Exit process...with code ${errCode}`);
+    log.log(`Exit process...with code ${errCode}`);
     process.exit(errCode);
   }
 

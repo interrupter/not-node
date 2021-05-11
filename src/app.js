@@ -135,9 +135,11 @@ class notApp extends notDomain {
       notWSRouter = notWS.notWSRouter;
       notWSMessenger = notWS.notWSMessenger;
       const opts = this.getEnv('WS');
+      log.log('WS', opts);
       if (this.hasWSEndPoints(this.__WS.servers)){
         if(Object.prototype.hasOwnProperty.call(opts, 'servers')){
           for(let serverName in opts.servers){
+            log.log(serverName, opts.servers[serverName]);
             this.initWSServer(serverName, opts.servers[serverName]);
           }
         }
@@ -158,29 +160,33 @@ class notApp extends notDomain {
     log.info(`Starting WSServer(${serverName})...`);
     try {
       if(!opts){
+        log.log(opts);
         throw new Error(`No WS server(${serverName}) options`);
       }
       const secure = opts.secure;
 			const types = this.getWSTypes(opts, 'servers', serverName);
-      const validators = this.getWSValidators(opts, serverName);
+      const validators = this.getWSValidators(opts, 'servers', serverName);
+      const serverRoutes = this.__WS.servers[serverName];
+      log.log(JSON.stringify(types, null, 4));
       const WSServer = new notWSServer({
         port: opts.port,
-        getRouter() {
-          return new notWSRouter({}, this.__WS.servers[serverName]);
+        getRouter(){
+          return new notWSRouter({}, serverRoutes);
         },
         getMessenger() {
           return new notWSMessenger({
+            validateTypeAndName: false,
             secure,
             types,
             validators
           });
         },
-        secure: opts.secure,
+        secure,
         jwt: {
           key: opts.secret
         }
       });
-      notApp.addWSServer(serverName, WSServer);
+      this.addWSServer(serverName, WSServer);
       WSServer.start();
       log.info(`WS server(${serverName}) listening on port ` + opts.port);
     } catch (e) {
@@ -209,10 +215,10 @@ class notApp extends notDomain {
         router: this.getWSClientRouter(clientName, opts),
         messenger: this.getWSClientMessenger(clientName, opts),
       });
-      notApp.addWSClient(clientName, WSClient);
-      log.info(`WS server(${serverName}) listening on port ` + opts.port);
+      this.addWSClient(clientName, WSClient);
+      log.info(`WS server(${clientName}) connected to `+ opts.host+ ':' + opts.port);
     } catch (e) {
-      log.error(`WS server(${serverName}) startup failure`);
+      log.error(`WS server(${clientName}) startup failure`);
       log.error(e);
     }
   }
@@ -229,7 +235,7 @@ class notApp extends notDomain {
     }
   }
 
-  getWSClientRouter(name){
+  getWSClientRouter(name, opts){
     let routes = {};
     if(Object.prototype.hasOwnProperty.call(this.__WS.clients, name)){
       routes = this.__WS.clients[name];
@@ -264,21 +270,7 @@ class notApp extends notDomain {
       return opts.validators;
     }else{
       const jwt = require('jsonwebtoken');
-      return {
-        credentials(credentials) {
-          try {
-            let data = jwt.verify(credentials, opts.secret);
-            if (data && typeof data.active === 'boolean') {
-              return data.active;
-            } else {
-              return false;
-            }
-          } catch (e) {
-            log.error(e);
-            return false;
-          }
-        }
-      };
+      return {};
     }
   }
 
@@ -292,6 +284,7 @@ class notApp extends notDomain {
       for(let type in this.__WS[collectionType][collectionName]){
         types[type] = Object.keys(this.__WS[collectionType][collectionName][type]);
       }
+      types['__service'] = ['updateToken'];
       return types;
     }
   }
