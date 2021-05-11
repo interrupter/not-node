@@ -183,7 +183,6 @@ class notModule {
     try{
       return fs.lstatSync(filePath) && fs.lstatSync(filePath).isFile();
     }catch(e){
-      log.error(e);
       return false;
     }
   }

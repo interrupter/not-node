@@ -3,8 +3,8 @@ const
   serveStatic = require('serve-static'),
   path = require('path'),
   fs = require('fs'),
-  notNode = require('./../index.js'),
-  notAppConstructor = notNode.notApp,
+  Increment = require('./model/increment.js'),
+  notAppConstructor = require('./app.js'),
   {
     notError,
     notErrorReporter
@@ -52,7 +52,7 @@ class Init {
   }
 
   static getAbsolutePath(subPath){
-    return path.join(this.options.pathToApp, subPath);
+    return path.resolve(this.options.pathToApp, subPath);
   }
 
   static initEnv() {
@@ -61,11 +61,11 @@ class Init {
       this.config.set('staticPath',  this.getAbsolutePath(this.config.get('path:static') || 'static'));
       this.config.set('modulesPath', this.getAbsolutePath(this.config.get('path:modules') || 'modules'));
       this.config.set('dbDumpsPath', this.getAbsolutePath(this.config.get('path:dbDumps') || '../../db.dumps'));
-      this.config.set('frontPath',   this.getAbsolutePath(this.config.get('path:front') || '../front/build'));
       this.config.set('appPath', this.options.pathToApp);
       this.config.set('npmPath', this.options.pathToNPM);
       this.config.set('fullServerName', this.getFullServerName());
       if(this.config.get('path:ws')){
+        log.log('wsPath', this.getAbsolutePath(this.config.get('path:ws')));
         this.config.set('wsPath', this.getAbsolutePath(this.config.get('path:ws')));
       }
     } else {
@@ -112,7 +112,7 @@ class Init {
       log.log('Development monitor initialized');
     } catch (e) {
       log.error(e);
-      this.throwError(e, 1);
+      this.throwError(e.message, 1);
     }
   }
 
@@ -127,12 +127,12 @@ class Init {
         })
         .catch((e) => {
           log.error(e);
-          this.throwError(e, 1);
+          this.throwError(e.message, 1);
         });
-      notNode.Increment.init(this.mongoose);
+      Increment.init(this.mongoose);
     } catch (e) {
       log.error(e);
-      this.throwError(e, 1);
+      this.throwError(e.message, 1);
     }
   }
 
@@ -155,16 +155,12 @@ class Init {
   }
 
   static initWSEnvironments(){
-    if (this.config.get('modules:ws')){
-      log.log(this.config.get('modules:ws'));
-      this.notApp.setEnv('WS', this.config.get('modules:ws'));
-    }
     if(this.config.get('wsPath')){
       var  wsHelpers;
       try{
         wsHelpers = require(this.config.get('wsPath'));
       }catch(e){
-        log.error('wsPath not valid', this.config.get('wsPath'));
+        log.error('wsPath not valid');
       }
       if(wsHelpers.Helpers){
         this.notApp.setEnv('WSHelpers', wsHelpers.Helpers);
@@ -191,10 +187,9 @@ class Init {
       mongoose: this.mongoose
     }).importModulesFrom(this.config.get('modulesPath'));
     //
-    this.notApp.setEnv('hostname', this.config.get('host'));
+    this.notApp.setEnv('hostname', this.config.get('hostname'));
     this.notApp.setEnv('server', `https://` + this.config.get('host'));
     this.notApp.setEnv('appPath', this.config.get('appPath'));
-    this.notApp.setEnv('frontPath', this.config.get('frontPath'));
     this.notApp.setEnv('name', this.manifest.name);
     this.notApp.setEnv('fullServerName', this.config.get('fullServerName'));
     this.notApp.setEnv('dbDumpsPath', this.config.get('dbDumpsPath'));
@@ -245,7 +240,7 @@ class Init {
       this.initNotApp();
     } catch (e) {
       log.error(e);
-      this.throwError(e, 1);
+      this.throwError(e.message, 1);
     }
   }
 
@@ -286,8 +281,8 @@ class Init {
         store
       }));
     } catch (e) {
-      this.notApp && this.notApp.report && this.notApp.report(new notError('User session init failed', {}, e));
-      this.throwError(e, 1);
+      this.notApp.report(new notError('User session init failed', {}, e));
+      this.throwError(e.message, 1);
     }
   }
 
@@ -334,27 +329,25 @@ class Init {
         }
       }
     } catch (e) {
-      this.throwError(e, 1);
+      this.throwError(e.message, 1);
     }
   }
 
   static createStaticFrontServer(ext){
     return (req, res, next) => {
-      let
-        postfix =( ENV === 'development'?'':'.min'),
-        rolesPriority = this.config.get('user:roles:priority') || ['root', 'admin', 'client', 'user', 'guest'],
-        frontAppRoot = this.config.get('frontPath'),
-        frontApp = path.join(frontAppRoot, `/guest${postfix}.${ext}`);
+      let rolesPriority = this.config.get('user:roles:priority') || ['root', 'admin', 'client', 'user', 'guest'],
+        frontAppRoot = this.config.get('path:front'),
+        frontApp = path.join(frontAppRoot, `guest.min.${ext}`);
       if (req.user) {
         for (let role of rolesPriority) {
           if (req.user.role.indexOf(role) > -1) {
-            frontApp = path.join(frontAppRoot, `/${role}${postfix}.${ext}`);
+            frontApp = path.join(frontAppRoot, role + `.min.${ext}`);
             break;
           }
         }
       }
-    log.log(frontApp);
-      return serveStatic(frontApp)(req, res, next);
+      let pathTo = path.resolve(this.options.pathToApp, frontApp);
+      return serveStatic(pathTo)(req, res, next);
     }
   }
 
@@ -382,14 +375,13 @@ class Init {
         return;
       });
     } catch (e) {
-      this.throwError(e, 1);
+      this.throwError(e.message, 1);
     }
   }
 
   static initModules() {
     this.notApp.execInModules('initialize');
   }
-
 
   static initInformer() {
     try {
@@ -399,7 +391,7 @@ class Init {
       } = require('not-inform');
       this.notApp.informer = new Inform();
     } catch (e) {
-      this.throwError(e, 1);
+      this.throwError(e.message, 1);
     }
   }
 
@@ -428,7 +420,7 @@ class Init {
         });
       }
     } catch (e) {
-      this.throwError(e, 1);
+      this.throwError(e.message, 1);
     }
   }
 
@@ -463,63 +455,45 @@ class Init {
     this.initEnv();
     if (this.config.get('mongoose')) {
       this.initMongoose(this.config.get('mongoose'));
-    }else{
-      log.log('skip initMongoose');
     }
-    if (this.config.get('host')) {
+    if (this.config.get('hostname')) {
       this.initServerApp();
     }else{
-      log.log('skip initServerApp');
+      log.error('no hostname');
     }
     if (this.config.get('mongoose')) {
       this.initUserSessions(this.config.get('mongoose'));
-    }else{
-      log.log('skip initUserSessions');
     }
     if (this.config.get('template')) {
       this.initTemplateEngine(this.config.get('template'));
-    }else{
-      log.log('skip initTemplateEngine');
     }
 
     if (this.config.get('cors')) {
       this.initCORS(this.config.get('cors'));
-    }else{
-      log.log('skip initCORS');
     }
     if (this.config.get('middleware')) {
       this.initMiddleware(this.config.get('middleware'));
-    }else{
-      log.log('skip initMiddleware');
     }
 
     if (this.notApp) {
       this.initExposeRoutes();
-    }else{
-      log.log('skip initExposeRoutes');
     }
 
     if (this.expressApp) {
       this.initModules();
-    }else{
-      log.log('skip initModules');
     }
 
     if (this.config.get('modules:informer')) {
       this.initInformer();
-    }else{
-      log.log('skip initInformer');
     }
 
     this.startup();
     //startup server
 
-    //this.initWS();
+    this.initWS();
 
     if (options.monitor) {
       this.initMonitor();
-    }else{
-      log.log('skip initMonitor');
     }
   }
 
