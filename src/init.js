@@ -340,11 +340,11 @@ class Init {
     return (req, res, next) => {
       let rolesPriority = this.config.get('user:roles:priority') || ['root', 'admin', 'client', 'user', 'guest'],
         frontAppRoot = this.config.get('path:front'),
-        frontApp = path.join(frontAppRoot, `guest.min.${ext}`);
+        frontApp = path.join(frontAppRoot, `guest.${ext}`);
       if (req.user) {
         for (let role of rolesPriority) {
           if (req.user.role.indexOf(role) > -1) {
-            frontApp = path.join(frontAppRoot, role + `.min.${ext}`);
+            frontApp = path.join(frontAppRoot, role + `.${ext}`);
             break;
           }
         }
