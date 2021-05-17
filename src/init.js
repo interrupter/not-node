@@ -180,6 +180,9 @@ class Init {
     }else{
       log.log('path to ws options not set');
     }
+    if(this.config.get('modules.ws')){
+      this.notApp.setEnv('WS', this.config.get('modules.ws'));
+    }
   }
 
   static initNotApp() {

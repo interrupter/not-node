@@ -135,21 +135,25 @@ class notApp extends notDomain {
       notWSRouter = notWS.notWSRouter;
       notWSMessenger = notWS.notWSMessenger;
       const opts = this.getEnv('WS');
-      log.log('WS', opts);
-      if (this.hasWSEndPoints(this.__WS.servers)){
-        if(Object.prototype.hasOwnProperty.call(opts, 'servers')){
-          for(let serverName in opts.servers){
-            log.log(serverName, opts.servers[serverName]);
-            this.initWSServer(serverName, opts.servers[serverName]);
+      if(typeof opts !== 'undeifned'){
+        log.log('WS', opts);
+        if (this.hasWSEndPoints(this.__WS.servers)){
+          if(Object.prototype.hasOwnProperty.call(opts, 'servers')){
+            for(let serverName in opts.servers){
+              log.log(serverName, opts.servers[serverName]);
+              this.initWSServer(serverName, opts.servers[serverName]);
+            }
           }
         }
-      }
-      if (this.hasWSEndPoints(this.__WS.clients)) {
-        if(Object.prototype.hasOwnProperty.call(opts, 'clients')){
-          for(let clientName in opts.clients){
-            this.initWSClient(clientName, opts.clients[clientName]);
+        if (this.hasWSEndPoints(this.__WS.clients)) {
+          if(Object.prototype.hasOwnProperty.call(opts, 'clients')){
+            for(let clientName in opts.clients){
+              this.initWSClient(clientName, opts.clients[clientName]);
+            }
           }
         }
+      }else{
+        log.log('WS options is not defined');
       }
     } catch (e) {
       log.error(e);
