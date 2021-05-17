@@ -440,13 +440,13 @@ class Init {
 
   static initWSServers(list){
     for(let serverName in list){
-      this.notApp.initWSServer(serverName, );
+      this.notApp.initWSServer(serverName, list[serverName]);
     }
   }
 
   static initWSClients(list){
     for(let clientName in list){
-      this.notApp.initWSClient(clientName, );
+      this.notApp.initWSClient(clientName,  list[clientName]);
     }
   }
 
@@ -493,7 +493,7 @@ class Init {
     this.startup();
     //startup server
 
-    this.initWS();
+    //this.initWS();
 
     if (options.monitor) {
       this.initMonitor();
