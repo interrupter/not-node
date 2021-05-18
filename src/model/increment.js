@@ -26,7 +26,7 @@ function notContainedInData(fields, data){
 function formId(modelName, filterFields, data){
   let idParts = [
     modelName,
-    ...filterFields.map(field => data[field])
+    ...filterFields.map( field => data[field].toString() )
   ];
   return idParts.join('_');
 }
