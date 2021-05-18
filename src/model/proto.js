@@ -65,7 +65,11 @@ exports.fabricate = function (targetModule, options, mongoose) {
 
     if (targetModule.enrich) {
       if (targetModule.enrich.increment) {
-        enrich.markForIncrement(schema, targetModule.thisModelName);
+        if(Object.prototype.hasOwnProperty.call(targetModule.enrich, 'incrementOptions')){
+          enrich.markForIncrement(schema, targetModule.thisModelName, targetModule.enrich.incrementOptions);
+        }else{
+          enrich.markForIncrement(schema, targetModule.thisModelName);
+        }
       }
       if (targetModule.enrich.versioning) {
         enrich.markForVersioning(schema);

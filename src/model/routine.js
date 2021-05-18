@@ -27,7 +27,7 @@ function add(model, data) {
     that = this;
   return new Promise((resolve, reject) => {
     if (model.__incField) {
-      incrementNext.next(model.__incModel)
+      incrementNext.next(model.__incModel, model.__incFilter, data)
         .then((modelId) => {
           data[model.__incField] = modelId;
           if (model.__versioning) {
@@ -57,21 +57,11 @@ function add(model, data) {
 
 
 async function update(model, filter, data){
-  let thisModel = model,
-    that = this;
-  if (model.__incField) {
-    data[model.__incField] = await incrementNext.next(model.__incModel);
-    if (model.__versioning) {
-      return that.updateWithVersion(thisModel, filter, data);
-    } else {
-      return that.updateWithoutVersion(thisModel, filter, data);
-    }
+  let thisModel = model;
+  if (model.__versioning) {
+    return this.updateWithVersion(thisModel, filter, data);
   } else {
-    if (model.__versioning) {
-      return this.updateWithVersion(thisModel, filter, data);
-    } else {
-      return this.addWithoutVersion(thisModel, filter, data);
-    }
+    return this.addWithoutVersion(thisModel, filter, data);
   }
 }
 

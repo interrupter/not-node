@@ -15,11 +15,36 @@ var thisSchema = {
 var mongooseLocal = null;
 var schema = null;
 
+function notContainedInData(fields, data){
+  let keys = Object.keys(data);
+  return fields.filter((field)=>{
+    return !keys.includes(field);
+  });
+}
+
+
+function formId(modelName, filterFields, data){
+  let idParts = [
+    modelName,
+    ...filterFields.map(field => data[field])
+  ];
+  return idParts.join('_');
+}
+
 function newGetNext() {
-  return async function(modelName) {
+  return async function(modelName, filterFields, data) {
     let thisModel = this;
+    let id = modelName;
+    if(filterFields && Array.isArray(filterFields) && filterFields.length){
+      let miss = notContainedInData(filterFields, data);
+      if(miss.length === 0){
+        id = formId(modelName, filterFields, data);
+      }else{
+        throw new Error('Fields not exist in data object: ' + miss.join(', '));
+      }
+    }
     let which = {
-        id: modelName
+        id
       },
       cmd = {
         $inc: {
@@ -40,7 +65,7 @@ function newGetNext() {
       return doc[0].seq;
     } else {
       let t = {
-        id: modelName,
+        id,
         seq: 1
       };
       await thisModel.collection.insertOne(t);
