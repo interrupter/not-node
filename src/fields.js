@@ -202,6 +202,8 @@ const FIELDS = {
 			type: Date,
 			required: true,
 			default: Date.now,
+			searchable: true,
+			sortable: true,
 			safe: {
 				update: ['@owner', 'root', 'admin'],
 				read: ['@owner', 'root', 'admin']
@@ -218,6 +220,8 @@ const FIELDS = {
 		model:{
 			type: Date,
 			required: false,
+			searchable: true,
+			sortable: true,
 			safe: {
 				update: ['@owner', 'root', 'admin'],
 				read: ['@owner', 'root', 'admin']
@@ -232,6 +236,8 @@ const FIELDS = {
 			readonly: true
 		},
 		model: {
+			searchable: true,
+			sortable: true,
 			type: Date,
 			required: true,
 			default: Date.now,

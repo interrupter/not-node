@@ -209,6 +209,7 @@ class Init {
     }
 
     try {
+      notErrorReporter.setOrigin({ server: this.config.get('host')});
       this.notApp.reporter = notErrorReporter;
       this.notApp.logger = logger(module, 'notApplication');
     } catch (e) {
@@ -456,38 +457,59 @@ class Init {
     log.info('Kick start app...');
     this.initConfig();
     this.initEnv();
+
     if (this.config.get('mongoose')) {
       this.initMongoose(this.config.get('mongoose'));
+    }else{
+      log.error('CORS off');
     }
+
     if (this.config.get('hostname')) {
       this.initServerApp();
     }else{
       log.error('no hostname');
     }
+
     if (this.config.get('mongoose')) {
       this.initUserSessions(this.config.get('mongoose'));
+    }else{
+      log.error('user sessions off');
     }
+
     if (this.config.get('template')) {
       this.initTemplateEngine(this.config.get('template'));
+    }else{
+      log.error('template off');
     }
 
     if (this.config.get('cors')) {
       this.initCORS(this.config.get('cors'));
+    }else{
+      log.error('CORS off');
     }
+
     if (this.config.get('middleware')) {
       this.initMiddleware(this.config.get('middleware'));
+    }else{
+      log.error('middleware off');
     }
 
     if (this.notApp) {
       this.initExposeRoutes();
+    }else{
+      log.error('notApp off');
     }
 
     if (this.expressApp) {
       this.initModules();
+    }else{
+      log.error('expressApp off');
     }
 
     if (this.config.get('modules:informer')) {
       this.initInformer();
+    }else{
+      log.error('informer off');
     }
 
     this.startup();
@@ -497,6 +519,8 @@ class Init {
 
     if (options.monitor) {
       this.initMonitor();
+    }else{
+      log.error('monitor off');
     }
   }
 
