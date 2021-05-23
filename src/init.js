@@ -185,10 +185,10 @@ class Init {
     }
   }
 
-  static initNotApp() {
+  static initNotApp({additional}) {
     this.notApp = new notAppConstructor({
       mongoose: this.mongoose
-    }).importModulesFrom(this.config.get('modulesPath'));
+    });
     //
     this.notApp.setEnv('hostname', this.config.get('hostname'));
     this.notApp.setEnv('server', `https://` + this.config.get('host'));
@@ -198,6 +198,12 @@ class Init {
     this.notApp.setEnv('dbDumpsPath', this.config.get('dbDumpsPath'));
     this.notApp.setEnv('rolesPriority', this.manifest.targets.server.roles);
     this.notApp.ENV = ENV;
+
+    if(additional && additional.initNotAppEnv){
+      additional.initNotAppEnv();
+    }
+
+    this.notApp.importModulesFrom(this.config.get('modulesPath'));
 
     this.initWSEnvironments();
 
@@ -234,14 +240,14 @@ class Init {
     this.expressApp.use(methodOverride());
   }
 
-  static initServerApp() {
+  static initServerApp({additional}) {
     try {
       log.info('Init express app...');
       //init express
       this.initExpressApp();
       //init notApp
       log.info('Init not-app...');
-      this.initNotApp();
+      this.initNotApp({additional});
     } catch (e) {
       log.error(e);
       this.throwError(e.message, 1);
@@ -451,12 +457,16 @@ class Init {
     }
   }
 
-  static run({options, manifest}) {
+  static run({options, manifest, additional}) {
     this.options = options; // pathToApp, pathToNPM
     this.setManifest(manifest);
     log.info('Kick start app...');
     this.initConfig();
     this.initEnv();
+
+    if(additional && additional.initEnv && typeof additional.initEnv === 'function'){
+      additional.initEnv();
+    }
 
     if (this.config.get('mongoose')) {
       this.initMongoose(this.config.get('mongoose'));
@@ -465,12 +475,12 @@ class Init {
     }
 
     if (this.config.get('hostname')) {
-      this.initServerApp();
+      this.initServerApp({additional});
     }else{
       log.error('no hostname');
     }
 
-    if (this.config.get('mongoose')) {
+    if (this.config.get('session')) {
       this.initUserSessions(this.config.get('mongoose'));
     }else{
       log.error('user sessions off');

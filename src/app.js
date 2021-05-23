@@ -168,8 +168,8 @@ class notApp extends notDomain {
         throw new Error(`No WS server(${serverName}) options`);
       }
       const secure = opts.secure;
-			const types = this.getWSTypes(opts, 'servers', serverName);
-      const validators = this.getWSValidators(opts, 'servers', serverName);
+			const types = this.getWSTypes('servers', serverName, opts);
+      const validators = this.getWSValidators('servers', serverName, opts);
       const serverRoutes = this.__WS.servers[serverName];
       log.log(JSON.stringify(types, null, 4));
       const WSServer = new notWSServer({
@@ -247,23 +247,31 @@ class notApp extends notDomain {
     return new notWSRouter(opts.router || {}, routes);
   }
 
-  getWSClientMessenger(opts, name = DEFAULT_WS_SERVER_NAME){
-    return new notWSMessenger({
+  getWSClientMessenger(name = DEFAULT_WS_SERVER_NAME, opts){
+    log.log('creating client', name);
+    const options = {
 			secure: opts.secure,
-			types: this.getWSTypes(opts, 'clients', name),
-      validators: this.getWSValidatorsForClient(opts, name)
-		});
+			types: this.getWSTypes('clients', name, opts),
+      validators: this.getWSValidatorsForClient(name, opts)
+		};
+    if(Object.prototype.hasOwnProperty.call(opts, 'validateType')){
+      options.validateType = opts.validateType;
+    }
+    if(Object.prototype.hasOwnProperty.call(opts, 'validateTypeAndName')){
+      options.validateTypeAndName = opts.validateTypeAndName;
+    }
+    return new notWSMessenger(options);
   }
 
-  getWSValidatorsForServer(opts, name = DEFAULT_WS_SERVER_NAME){
+  getWSValidatorsForServer(name = DEFAULT_WS_SERVER_NAME, opts){
     return this.getWSValidators(opts, 'servers', name);
   }
 
-  getWSValidatorsForClient(opts, name = DEFAULT_WS_SERVER_NAME){
-    return this.getWSValidators(opts, 'clients', name);
+  getWSValidatorsForClient(name = DEFAULT_WS_SERVER_NAME, opts){
+    return this.getWSValidators('clients', name, opts);
   }
 
-  getWSValidators(opts, type = 'servers', name = DEFAULT_WS_SERVER_NAME){
+  getWSValidators(type = 'servers', name = DEFAULT_WS_SERVER_NAME, opts){
     if(
       this.getEnv('WSValidators') &&
       this.getEnv('WSValidators')[type] &&
@@ -278,7 +286,7 @@ class notApp extends notDomain {
     }
   }
 
-  getWSTypes(opts, collectionType = 'servers', collectionName = DEFAULT_WS_SERVER_NAME){
+  getWSTypes(collectionType = 'servers', collectionName = DEFAULT_WS_SERVER_NAME, opts){
     if(this.getEnv('WSTypes') && this.getEnv('WSTypes')[collectionType] && this.getEnv('WSTypes')[collectionType][collectionName]){
       return this.getEnv('WSTypes')[collectionType][collectionName];
     }else if(opts.types){
