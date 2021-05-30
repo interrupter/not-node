@@ -1,7 +1,7 @@
 const Auth = require('../auth/auth');
 const Parser = require('../parser');
 const Route = require('./route');
-const extend = require('extend');
+const merge = require('deepmerge');
 
 /**
  *	API manifest
@@ -70,7 +70,7 @@ class notManifest {
 	 **/
 
   clearActionFromRules(action, ruleSet = null) {
-    let copy = extend({}, action);
+    let copy = merge({}, action);
     delete copy.rules;
     delete copy.admin;
     delete copy.root;
@@ -100,7 +100,7 @@ class notManifest {
 	 **/
 
   filterManifestRoute(route, auth, role, admin) {
-    var result = extend({}, route);
+    var result = merge({}, route);
     result.actions = {};
     if (route && route.actions) {
       for (let actionName in route.actions) {

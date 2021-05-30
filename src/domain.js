@@ -57,6 +57,22 @@ class notDomain extends EventEmitter {
   }
 
   /**
+   *  Cycles throu all imported modules, passes name, module, and itself
+   *  to argument function
+   *  @param   {function}  func  function to perfom some action with module
+   **/
+  forEachMod(func){
+    if (this.modules) {
+      for (let t of Object.keys(this.modules)) {
+        let mod = this.modules[t];
+        if (mod) {
+          func(t, mod, this);
+        }
+      }
+    }
+  }
+
+  /**
    *  Importing modules from directory. Chainable.
    *  @param   {string}  modulesPath  path to container directory
    *  @return {object}        notDomain

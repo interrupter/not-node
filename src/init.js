@@ -154,37 +154,6 @@ class Init {
     this.expressApp.use(compression());
   }
 
-  static initWSEnvironments(){
-    if(this.config.get('wsPath')){
-      var  wsHelpers;
-      try{
-        wsHelpers = require(this.config.get('wsPath'));
-      }catch(e){
-        log.error('wsPath not valid');
-      }
-      if(wsHelpers.Helpers){
-        this.notApp.setEnv('WSHelpers', wsHelpers.Helpers);
-      }else{
-        log.log('no ws helpers');
-      }
-      if(wsHelpers.Validators){
-        this.notApp.setEnv('WSValidators', wsHelpers.Validators);
-      }else{
-        log.log('no ws validators');
-      }
-      if(wsHelpers.Types){
-        this.notApp.setEnv('WSTypes', wsHelpers.Types);
-      }else{
-        log.log('no ws types');
-      }
-    }else{
-      log.log('path to ws options not set');
-    }
-    if(this.config.get('modules.ws')){
-      this.notApp.setEnv('WS', this.config.get('modules.ws'));
-    }
-  }
-
   static initNotApp({additional}) {
     this.notApp = new notAppConstructor({
       mongoose: this.mongoose
@@ -204,8 +173,6 @@ class Init {
     }
 
     this.notApp.importModulesFrom(this.config.get('modulesPath'));
-
-    this.initWSEnvironments();
 
     //
     if (Array.isArray(this.config.get('importModulesFromNPM'))) {
@@ -434,29 +401,6 @@ class Init {
     }
   }
 
-
-  static initWS(){
-    if(this.config.get('modules.ws.servers')){
-      this.initWSServers(this.config.get('modules.ws.servers'));
-    }
-
-    if(this.config.get('modules.ws.clients')){
-      this.initWSClients(this.config.get('modules.ws.clients'));
-    }
-  }
-
-  static initWSServers(list){
-    for(let serverName in list){
-      this.notApp.initWSServer(serverName, list[serverName]);
-    }
-  }
-
-  static initWSClients(list){
-    for(let clientName in list){
-      this.notApp.initWSClient(clientName,  list[clientName]);
-    }
-  }
-
   static run({options, manifest, additional}) {
     this.options = options; // pathToApp, pathToNPM
     this.setManifest(manifest);
@@ -524,9 +468,6 @@ class Init {
 
     this.startup();
     //startup server
-
-    //this.initWS();
-
     if (options.monitor) {
       this.initMonitor();
     }else{

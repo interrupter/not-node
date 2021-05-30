@@ -15,7 +15,7 @@ const rawRoutesManifest = {
 			reboot: {
 				method: 'post',
 				rules: [{
-					admin: true
+					root: true
 				}]
 			}
 		}
@@ -32,7 +32,7 @@ const rawRoutesManifest = {
 					auth: true,
 					actionPrefix: 'user'
 				}, {
-					admin: true,
+					root: true,
 					actionName: 'listForAdmin'
 				}]
 			},
@@ -43,7 +43,7 @@ const rawRoutesManifest = {
 					role: ['manager'],
 					actionName: 'managerListAll'
 				}, {
-					admin: true,
+					root: true,
 					actionPrefix: '__',
 					actionName: 'listForAdmin'
 				}]
@@ -57,7 +57,7 @@ const rawRoutesManifest = {
 			list: {
 				method: 'get',
 				rules: [{
-					admin: true
+					root: true
 				}]
 			},
 			profile: {
@@ -65,7 +65,7 @@ const rawRoutesManifest = {
 				rules: [{
 					auth: true
 				}, {
-					admin: true
+					root: true
 				}]
 			},
 			activate: {
@@ -85,7 +85,7 @@ describe('Manifest', function () {
 				rules: [{
 					auth: true,
 				}, {
-					admin: true,
+					root: true,
 				}]
 			};
 			const result = manifest.clearActionFromRules(input);
@@ -99,7 +99,7 @@ describe('Manifest', function () {
 				modelName: 'jelly',
 				auth: true,
 				role: ['root'],
-				admin: true,
+				root: true,
 			};
 			const result = manifest.clearActionFromRules(input);
 			expect(result).to.deep.equal({
@@ -114,7 +114,7 @@ describe('Manifest', function () {
 				list: {
 					postFix: ':actionName',
 					rules: [{
-						admin: true
+						root: true
 					}, {
 						auth: true
 					}, {
@@ -124,7 +124,7 @@ describe('Manifest', function () {
 				get: {
 					formData: true,
 					rules: [{
-						admin: true
+						root: true
 					}]
 				},
 				update: {
@@ -340,7 +340,7 @@ describe('Manifest', function () {
 							reboot: {
 								method: 'post',
 								rules: [{
-									admin: true
+									root: true
 								}]
 							}
 						}
@@ -352,7 +352,7 @@ describe('Manifest', function () {
 							list: {
 								method: 'get',
 								rules: [{
-									admin: true
+									root: true
 								}]
 							},
 							profile: {
@@ -360,7 +360,7 @@ describe('Manifest', function () {
 								rules: [{
 									auth: true
 								}, {
-									admin: true
+									root: true
 								}]
 							},
 							activate: {
@@ -382,7 +382,7 @@ describe('Manifest', function () {
 									auth: true,
 									actionPrefix: 'user'
 								}, {
-									admin: true,
+									root: true,
 									actionName: 'listForAdmin'
 								}]
 							},
@@ -393,7 +393,7 @@ describe('Manifest', function () {
 									role: ['manager'],
 									actionName: 'managerListAll'
 								}, {
-									admin: true,
+									root: true,
 									actionPrefix: '__',
 									actionName: 'listForAdmin'
 								}]
