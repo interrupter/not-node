@@ -96,9 +96,11 @@ function updateManyWithoutVersion(thisModel, filter, data) {
 }
 
 async function updateManyWithVersion(thisModel, filter, data) {
-  filter.__latest = true;
-  filter.__closed = false;
-  let list = await thisModel.find(filter).exec();
+  let list = await thisModel.find({
+    __closed: false,
+    __latest: true,
+    ...filter
+  }).exec();
   return await Promise.all(list.map((item) => {
     return updateWithVersion(thisModel, {_id: item._id }, data);
   }));
