@@ -305,6 +305,17 @@ function update(filter, data) {
   return routine.update(this, filter, data);
 }
 
+/**
+*	Starts updateMany routine
+*	@static
+*	@param	{object} 		filter		search criteria
+*	@param	{object} 		data			data
+*	@return {Promise}					Promise
+*/
+function updateMany(filter, data) {
+  return routine.updateMany(this, filter, data);
+}
+
 exports.statics = {
   sanitizeInput,
   getOne,
@@ -319,7 +330,8 @@ exports.statics = {
   listAndPopulate,
   listAndCount,
   add,
-  update
+  update,
+  updateMany
 };
 
 /**
