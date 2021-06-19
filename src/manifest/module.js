@@ -112,7 +112,7 @@ class notModule {
         this.findRoutesIn(this.module.paths.routes);
       }
       if (this.module.paths.locales) {
-        notLocale.fromDir(this.module.paths.locales);
+        notLocale.fromDir(this.module.paths.locales, this.module.name);
       }
     }
   }
@@ -292,6 +292,7 @@ class notModule {
     this.manifests[routeName] = manifest;
   }
 
+
   bindWSEndPointEntityFunctions(wsEndPoints, wsRouteName, collectionType){
     if(Object.prototype.hasOwnProperty.call(wsEndPoints, collectionType)){
       Object.keys(wsEndPoints[collectionType]).forEach((collectionItem) => {
@@ -359,7 +360,11 @@ class notModule {
       return this.manifests;
     }
   }
+  /*
+  getActionManifest({auth, role, root}){
 
+  }
+  */
   getModelFile(modelName) {
     if (this.models && Object.prototype.hasOwnProperty.call(this.models, modelName)) {
       return this.models[modelName];

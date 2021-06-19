@@ -72,6 +72,7 @@ class notManifest {
   clearActionFromRules(action, ruleSet = null) {
     let copy = merge({}, action);
     delete copy.rules;
+    delete copy.ws;
     delete copy.admin;
     delete copy.root;
     delete copy.safe;
@@ -89,17 +90,17 @@ class notManifest {
 
   /**
 	 *	Clear route from action variants that not permited for user according to
-	 *	his auth, role, admin status
+	 *	his auth, role, root status
 	 *
 	 *	@param {object}		route	route object
 	 *	@param {boolean}	auth	user auth status
 	 *	@param {boolean}	role	user role status
-	 *	@param {boolean}	admin	user admin status
+	 *	@param {boolean}	root	user root status
 	 *
-	 *	@return {object}	Return router with only actions user can access with current states of auth, role, admin. With removed definitions of what rules of access are.
+	 *	@return {object}	Return router with only actions user can access with current states of auth, role, root. With removed definitions of what rules of access are.
 	 **/
 
-  filterManifestRoute(route, auth, role, admin) {
+  filterManifestRoute(route, auth, role, root) {
     var result = merge({}, route);
     result.actions = {};
     if (route && route.actions) {
@@ -108,13 +109,13 @@ class notManifest {
         if (actionSet) {
           if (actionSet.rules && actionSet.rules.length > 0) {
             for (let i = 0; i < actionSet.rules.length; i++) {
-              if (Auth.checkCredentials(actionSet.rules[i], auth, role, admin)) {
+              if (Auth.checkCredentials(actionSet.rules[i], auth, role, root)) {
                 result.actions[actionName] = this.clearActionFromRules(actionSet, actionSet.rules[i]);
                 break;
               }
             }
           } else {
-            if (Auth.checkCredentials(actionSet, auth, role, admin)) {
+            if (Auth.checkCredentials(actionSet, auth, role, root)) {
               result.actions[actionName] = this.clearActionFromRules(actionSet);
             }
           }
@@ -123,23 +124,27 @@ class notManifest {
     }
     return result;
   }
+  /*
+  getActionManifest(action, auth, role, root){
 
+  }
+  */
   /**
-	 *	Filters manifest for current user auth, role, admin.
+	 *	Filters manifest for current user auth, role, root.
 	 *	Removes all actions that can not be performed
 	 *
 	 *	@param {object} 	manifest	full raw manifest
 	 *	@param {boolean}	auth		user auth status
 	 *	@param {boolean}	role		user role status
-	 *	@param {boolean}	admin		user admin status
+	 *	@param {boolean}	root		user root status
 	 *
 	 *	@return {object}	filtered manifest
 	 **/
 
-  filterManifest(manifest, auth, role, admin) {
+  filterManifest(manifest, auth, role, root) {
     var result = {};
     for (let routeName in manifest) {
-      let routeMan = this.filterManifestRoute(manifest[routeName], auth, role, admin);
+      let routeMan = this.filterManifestRoute(manifest[routeName], auth, role, root);
       if (Object.keys(routeMan.actions).length > 0) {
         result[routeName] = routeMan;
       }

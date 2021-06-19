@@ -32,6 +32,13 @@ class notApp extends notDomain {
   constructor(options) {
     super(options);
     parent.Application = this;
+    parent.getModel = this.getModel.bind(this);
+    parent.getLogic = this.getLogic.bind(this);
+    parent.getRoute = this.getRoute.bind(this);
+    parent.getModelFile = this.getModelFile.bind(this);
+    parent.getModelSchema = this.getModelSchema.bind(this);
+    parent.getLogicFile = this.getLogicFile.bind(this);
+    parent.execInModules = this.execInModules.bind(this);
     return this;
   }
 
