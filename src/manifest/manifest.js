@@ -72,7 +72,6 @@ class notManifest {
   clearActionFromRules(action, ruleSet = null) {
     let copy = merge({}, action);
     delete copy.rules;
-    delete copy.ws;
     delete copy.admin;
     delete copy.root;
     delete copy.safe;
