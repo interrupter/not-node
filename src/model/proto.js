@@ -54,7 +54,7 @@ exports.fabricate = function (targetModule, options, mongoose) {
     schema = new Schema(targetModule.thisSchema, options.schemaOptions);
     //creating unique indexes
     for(let fieldName of fieldsForIndexes){
-      let rule = {__closed: 1, __latest: 1};
+      let rule = {__closed: 1, __latest: 1, __id: 1};
       rule[fieldName] = 1;
       schema.index(rule, { unique: true });
     }
