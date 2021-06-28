@@ -116,12 +116,19 @@ class Init {
     }
   }
 
+  static fixMongooseOptions(opts){
+    let options = Object.assign({}, opts);
+    delete options.host;
+    delete options.db;
+    return options;
+  }
+
   static initMongoose(input) {
     try {
       log.info('Setting up mongoose connection...');
       this.mongoose = require('mongoose');
       this.mongoose.Promise = global.Promise;
-      this.mongoose.connect(input.uri, input.options)
+      this.mongoose.connect(input.uri, this.fixMongooseOptions(input.options))
         .then(() => {
           log.info('Mongoose connected...');
         })
