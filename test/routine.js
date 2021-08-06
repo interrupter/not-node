@@ -12,22 +12,20 @@ const expect = require('chai').expect,
 
 describe('Model/Routine', function () {
 	before( (done) => {
-		mongod = new MongoMemoryServer();
-		mongod.getUri()
-			.then((uri)=>{
-				mongoose.connect(uri, (err) => {
-					if(err){
-						console.error(err);
-						done(err);
-					}else{
-						increment.init(mongoose);
-						fabricateModel(userProto, null, mongoose);
-						fabricateModel(plainProto, null, mongoose);
-						done();
-					}
-				});
-			})
-			.catch(done);
+		MongoMemoryServer.create()
+		 .then((mongodi)=>{
+			 mongod = mongodi;
+			 let uri = mongod.getUri();
+			 mongoose.connect(uri, (err) => {
+				 if (err) {
+					 console.error(err);
+					 done(err);
+				 } else {
+					increment.init(mongoose);
+					done();
+				 }
+			 });
+		 });
 	});
 
 	it('returnErrors', function (done) {

@@ -166,7 +166,6 @@ class notDomain extends EventEmitter {
     return (result && result.length === 1) ? result[0] : result;
   }
 
-
   /**
    *  Returns file with model declarations
    *  @param {string}   modelName  'modelName' or 'moduleName//modelName'

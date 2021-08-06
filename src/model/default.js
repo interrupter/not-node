@@ -16,18 +16,22 @@ exports.extractVariants = function (items) {
 let populateQuery = (query, populate, versioning = false) => {
   if (populate && populate.length) {
     for(let key of populate){
-      if(versioning){
-        query.populate({
-          path: key,
-          match: {
-            __latest: true
-          }
-        });
+      let inst = {};
+      if(typeof key === 'string'){
+        inst.path = key;
+      }else if(Object.prototype.hasOwnProperty.call(key, 'path')){
+        Object.assign(inst, key);
       }else{
-        query.populate({
-          path: key
-        });
+        throw new Error(`No path to populate: \n` + JSON.stringify(key, null, 4));
       }
+      if(versioning){
+        if(Object.prototype.hasOwnProperty.call(inst, 'match')){
+          inst.match.__latest = true;
+        }else{
+          inst.match = {__latest: true};
+        }
+      }
+      query.populate(inst);
     }
   }
 };

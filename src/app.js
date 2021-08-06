@@ -1,3 +1,4 @@
+const Auth = require('./auth/auth');
 const notDomain = require('./domain');
 const merge = require('deepmerge');
 const parent = require('../index.js');
@@ -50,7 +51,11 @@ class notApp extends notDomain {
   getManifest(req) {
     let manifest = {};
     for (let modName of Object.keys(this.modules)) {
-      manifest = merge(manifest, this.modules[modName].getManifest(req));
+      manifest = merge(manifest, this.modules[modName].getManifest({
+        auth: Auth.isUser(req),
+        role: Auth.getRole(req),
+        root: Auth.isRoot(req)
+      }));
     }
     this.requiredManifests = manifest;
     return manifest;
@@ -66,6 +71,24 @@ class notApp extends notDomain {
         mod.expose(app, modName);
       }
     });
+  }
+
+  getActionManifestForUser(model, action, user) {
+    for (let modName of Object.keys(this.modules)) {
+      const manifest = this.modules[modName].getManifest({
+        auth: user.auth,
+        role: user.role,
+        root: user.root
+      });
+      if(Object.keys(manifest).indexOf(model) > -1){
+        if(Object.prototype.hasOwnProperty.call(manifest[model], 'actions')){
+          if(Object.prototype.hasOwnProperty.call(manifest[model].actions, action)){
+            return manifest[model].actions[action];
+          }
+        }
+      }
+    }
+    return false;
   }
 
 }

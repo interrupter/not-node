@@ -200,6 +200,10 @@ class Init {
       log.log(req.ip, req.method, req.url);
       return next();
     });
+    const fileUpload = require('express-fileupload');
+    this.expressApp.use(fileUpload({
+      createParentPath: true
+    }));
     //HTTP input formating
     const bodyParser = require('body-parser');
     this.expressApp.use(bodyParser.json({

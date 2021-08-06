@@ -29,6 +29,23 @@ class notRoute{
     return this;
   }
 
+  static actionAvailableByRule(action, user){
+    if (action){
+      if(action.rules && action.rules.length > 0){
+        for(let i = 0; i < action.rules.length; i++){
+          if (Auth.checkCredentials(action.rules[i], user.auth, user.role, user.root)){
+            return Object.assign({}, action.rules[i]);
+          }
+        }
+      }else{
+        if (Auth.checkCredentials(action, user.auth, user.role, user.root)){
+          return Object.assign({}, action, action.rules);
+        }
+      }
+    }
+    return null;
+  }
+
   /**
 	*	Select rule from available or return null
 	*	@param	{object}	req 	Express Request Object
