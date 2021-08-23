@@ -189,8 +189,11 @@ class Init {
     }
 
     try {
-      notErrorReporter.setOrigin({ server: this.config.get('host')});
-      this.notApp.reporter = notErrorReporter;
+      this.notApp.reporter = new notErrorReporter({
+        origin:{
+          server: this.config.get('host')
+        },
+      });
       this.notApp.logger = logger(module, 'notApplication');
     } catch (e) {
       log.error(e);
