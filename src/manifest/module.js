@@ -342,23 +342,14 @@ class notModule {
     return this.wsEndPoints;
   }
 
-  getManifest(req) {
-    if (req) {
-      let user = {
-        auth: Auth.isUser(req),
-        role: Auth.getRole(req),
-        root: Auth.isRoot(req),
-      };
-      let filtered = this.manifest.filterManifest(
-        this.manifests,
-        user.auth,
-        user.role,
-        user.root
-      );
-      return filtered;
-    } else {
-      return this.manifests;
-    }
+  getManifest(auth, role, root) {
+    let filtered = this.manifest.filterManifest(
+      this.manifests,
+      auth,
+      role,
+      root
+    );
+    return filtered;
   }
   /*
   getActionManifest({auth, role, root}){
