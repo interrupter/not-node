@@ -1,6 +1,7 @@
 const expect = require('chai').expect,
   HttpError = require('../src/error').Http,
   notModule = require('../src/manifest/module'),
+  notManifest = require('../src/manifest/manifest'),
   mongoose = require('mongoose'),
   increment = require('../src/model/increment'),
   validators = require('./validators'),
@@ -16,10 +17,7 @@ const moduleManifest = {
     url: '/api/:modelName',
     actions: {
       list: {
-        method: 'get',
-        rules: [{
-          root: true
-        }]
+        method: 'get'        
       }
     }
   }
@@ -79,7 +77,8 @@ describe('notModule', function() {
         modObject: require('./module'),
         mongoose: mongoose
       });
-      expect(mod.getManifest()).to.deep.equal(moduleManifest);
+      mod.manifest = new notManifest(null, null, 'not-post');
+      expect(mod.getManifest({auth:true, role: 'root', root: true})).to.deep.equal(moduleManifest);
     });
   });
 

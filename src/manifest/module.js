@@ -2,7 +2,7 @@
 const protoModel = require('../model/proto.js'),
   fs = require('fs'),
   path = require('path'),
-  Auth = require('../auth/auth.js'),
+  Auth = require('../auth/auth'),
   Fields = require('../fields.js'),
   notLocale = require('not-locale'),
   logger = require('not-log'),
@@ -342,7 +342,7 @@ class notModule {
     return this.wsEndPoints;
   }
 
-  getManifest(auth, role, root) {
+  getManifest({auth, role, root} = {auth: false, role: Auth.DEFAULT_USER_ROLE_FOR_GUEST, root: false}) {
     let filtered = this.manifest.filterManifest(
       this.manifests,
       auth,
