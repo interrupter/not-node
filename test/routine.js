@@ -8,7 +8,7 @@ const expect = require('chai').expect,
 	{ MongoMemoryServer } = require('mongodb-memory-server');
 
 
-	var mongod = null;
+	let mongod = null;
 
 describe('Model/Routine', function () {
 	before( (done) => {
@@ -30,7 +30,7 @@ describe('Model/Routine', function () {
 
 
 	it('addWithoutVersion', function (done) {
-		var PlainModel = plainProto.PlainModel;
+		let PlainModel = plainProto.PlainModel;
 		routine.addWithoutVersion(PlainModel, {
 			name: 'User name 1',
 			price: 10
@@ -48,7 +48,7 @@ describe('Model/Routine', function () {
 	});
 
 	it('addWithoutVersion with validation error', function (done) {
-		var PlainModel = plainProto.PlainModel;
+		let PlainModel = plainProto.PlainModel;
 		routine.addWithoutVersion(PlainModel, {
 			name: 'User name 1'
 		})
@@ -64,10 +64,10 @@ describe('Model/Routine', function () {
 	});
 
 	it('addWithVersion', function (done) {
-		var User = userProto.UserLocal;
+		let User = userProto.UserLocal;
 		routine.addWithVersion(User, {
-			name: 'User name 1',
 			userLocalID: 1,
+			name: 'User name 1',
 			price: 10
 		})
 			.then((item) => {
@@ -84,7 +84,7 @@ describe('Model/Routine', function () {
 	});
 
 	it('addWithVersion with validation error', function (done) {
-		var User = userProto.UserLocal;
+		let User = userProto.UserLocal;
 		routine.addWithVersion(User, {
 			name: 'User name 1',
 			price: 10
@@ -101,7 +101,7 @@ describe('Model/Routine', function () {
 	});
 
 	it('add - versioning OFF', function (done) {
-		var PlainModel = plainProto.PlainModel;
+		let PlainModel = plainProto.PlainModel;
 		routine.add(PlainModel, {
 			name: 'User name 1',
 			price: 10
@@ -119,7 +119,7 @@ describe('Model/Routine', function () {
 	});
 
 	it('add - versioning ON, ID=1', function (done) {
-		var User = userProto.UserLocal;
+		let User = userProto.UserLocal;
 		expect(userProto.mongooseSchema.methods).to.have.keys(['close', 'getID']);
 		routine.add(User, {
 			name: 'User name 1',
@@ -140,7 +140,7 @@ describe('Model/Routine', function () {
 	});
 
 	it('add - versioning ON, ID=2', function (done) {
-		var User = userProto.UserLocal;
+		let User = userProto.UserLocal;
 		routine.add(User, {
 			name: 'User name 12',
 			price: 11

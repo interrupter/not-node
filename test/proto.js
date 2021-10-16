@@ -7,7 +7,7 @@ const expect = require('chai').expect,
 	defaultModel = require('../src/model/default'),
 	{ MongoMemoryServer } = require('mongodb-memory-server');
 
-var mongod = null;
+let mongod = null;
 
 describe('Model/Proto', function () {
 	before( (done) => {
@@ -27,8 +27,152 @@ describe('Model/Proto', function () {
 		 });
 	});
 
+	it('isIgnored, set to TRUE', () => {
+		let targetModule = {
+			IGNORE: true
+		},
+			result = proto.isIgnored(targetModule);
+		expect(result).to.be.true;
+	});
+
+	it('isIgnored, set to TRUE', () => {
+		let targetModule = {
+			IGNORE: false
+		},
+			result = proto.isIgnored(targetModule);
+		expect(result).to.be.false;
+	});
+
+	it('initOptions, targetModule.schemaOptions is set, but options is NULL', () => {
+		let targetModule = {
+			schemaOptions: {
+				foor: 'bar'
+			}
+		},
+			result = proto.initOptions(null, targetModule);
+		expect(result.schemaOptions).to.exist;
+		expect(result.schemaOptions.foor).to.be.equal('bar');
+	});
+
+	it('initOptions, targetModule.schemaOptions is set, but options is NULL', () => {
+		let targetModule = {
+			schemaOptions: {
+				foor: 'bar'
+			}
+		},
+			options = {
+				schemaOptions:{legacy: 'instruction'}
+			},
+			result = proto.initOptions(options, targetModule);
+		expect(result.schemaOptions).to.exist;
+		expect(result.schemaOptions.foor).to.be.equal('bar');
+	});
+
+
+	it('extendBySource, targetModule full', () => {
+		let schema = {
+			methods: {
+				secure(){}
+			},
+			statics: {
+				insecure(){}
+			},
+			virtual(l){
+				expect(l).to.be.equal('neo');
+				return {
+					get(){
+						return {set(){}};
+					}
+				};
+			},
+			pre(key, l){
+				expect(key).to.be.equal('update');
+				expect(l(2)).to.be.equal(4);
+			},
+			post(key, l){
+				expect(key).to.be.equal('update');
+				expect(l(2)).to.be.equal(1);
+			},
+		};
+		let targetModule = {
+			thisMethods: {
+				foo(){}
+			},
+			thisStatics: {
+				bar(){}
+			},
+			thisVirtuals: {
+				neo:{
+					get(){},
+					set(){}
+				}
+			},
+			thisPre: {
+				update(n){return n*2;},
+			},
+			thisPost: {
+				update(n){return n/2;},
+			},
+		};
+		proto.extendBySource(schema, targetModule);
+		expect(schema.methods).to.have.keys(['secure','foo']);
+		expect(schema.statics).to.have.keys(['insecure','bar']);
+	});
+
+	it('extendBySource, targetModule not full, different structure of virtuals', () => {
+		let schema = {
+			methods: {
+				secure(){}
+			},
+			statics: {
+				insecure(){}
+			},
+			virtual(l){
+				expect(l).to.be.equal('neo');
+			},
+			pre(key, l){
+				expect(key).to.be.equal('update');
+				expect(l(2)).to.be.equal(4);
+			},
+			post(key, l){
+				expect(key).to.be.equal('update');
+				expect(l(2)).to.be.equal(1);
+			},
+		};
+		let targetModule = {
+			thisVirtuals: {
+				neo(){}
+			},
+			thisPre: {
+				update(n){return n*2;},
+			},
+			thisPost: {
+				update(n){return n/2;},
+			},
+		};
+		proto.extendBySource(schema, targetModule);
+		expect(schema.methods).to.have.keys(['secure']);
+		expect(schema.statics).to.have.keys(['insecure']);
+	});
+
+
+	it('enrichByFields, enrich not exist', () => {
+		let targetModule = {};
+		proto.enrichByFields(targetModule);
+		expect(targetModule).to.be.deep.equal({});
+	});
+
+	it('enrichByFields, enrich not filled', () => {
+		let targetModule = {
+			enrich:{}
+		};
+		proto.enrichByFields(targetModule);
+		expect(targetModule).to.be.deep.equal({enrich:{}});
+	});
+
+
 	it('extractVariants', () => {
-		var items = [{
+		let items = [{
 				getVariant: () => {
 					return 'variant';
 				}
@@ -44,7 +188,7 @@ describe('Model/Proto', function () {
 	});
 
 	it('fabricate with options', function () {
-		var moduleProto1 = {
+		let moduleProto1 = {
 			thisSchema: {
 				name: {
 					type: String,
@@ -74,7 +218,7 @@ describe('Model/Proto', function () {
 		proto.fabricate(moduleProto1, {}, mongoose);
 		expect(moduleProto1.User1).to.exist;
 		expect(moduleProto1.User1.returnFalse()).to.be.false;
-		var item = new moduleProto1.User1({
+		let item = new moduleProto1.User1({
 			name: 'val'
 		});
 		expect(item.getName()).to.be.equal('val 1');
@@ -82,7 +226,7 @@ describe('Model/Proto', function () {
 		expect(moduleProto1.mongooseSchema.methods).to.have.keys(['getName', 'getID', 'close']);
 	});
 
-	var moduleProto = {
+	let moduleProto = {
 		thisSchema: {
 			username: {
 				type: String,
@@ -113,11 +257,11 @@ describe('Model/Proto', function () {
 		expect(moduleProto.User).to.exist;
 	});
 
-	var savedItem = null;
+	let savedItem = null;
 
 	describe('Model/Proto/Statics', function () {
 		beforeEach(function (done) {
-			var d = new Date().getTime();
+			let d = new Date().getTime();
 			moduleProto.User.add({
 				username: 'tester ' + Math.random() + d,
 				default: false
@@ -138,7 +282,7 @@ describe('Model/Proto', function () {
 		});
 
 		it('sanitizeInput', function () {
-			var sanitized = moduleProto.User.sanitizeInput({});
+			let sanitized = moduleProto.User.sanitizeInput({});
 			expect(sanitized).to.deep.equal({
 				default: false
 			});

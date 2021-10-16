@@ -52,6 +52,19 @@ module.exports = class ModelFabricate{
         }
       }
     }
+
+    if (targetModule.thisPre) {
+      for (let j in targetModule.thisPre) {
+        schema.pre(j, targetModule.thisPre[j]);
+      }
+    }
+
+    if (targetModule.thisPost) {
+      for (let j in targetModule.thisPost) {
+        schema.post(j, targetModule.thisPost[j]);
+      }
+    }
+
   }
 
   static enrichByFields(targetModule){
