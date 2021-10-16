@@ -28,19 +28,6 @@ describe('Model/Routine', function () {
 		 });
 	});
 
-	it('returnErrors', function (done) {
-		var err = routine.returnErrors({
-			errors: {
-				fieldName: {
-					message: 'message'
-				}
-			}
-		}, function (err, report) {
-			expect(report).to.have.keys(['fieldName']);
-			expect(report.fieldName).to.be.equal('message');
-			done();
-		});
-	});
 
 	it('addWithoutVersion', function (done) {
 		var PlainModel = plainProto.PlainModel;

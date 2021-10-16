@@ -1,6 +1,5 @@
 /** @module Model/Default */
 const routine = require('./routine');
-
 const notQuery = require('not-filter');
 
 exports.extractVariants = function (items) {
@@ -314,7 +313,7 @@ function update(filter, data, many = false) {
   }
 }
 
-exports.statics = {
+exports.thisStatics = {
   sanitizeInput,
   getOne,
   getOneByID,
@@ -349,7 +348,7 @@ function close() {
   return this.save();
 }
 
-exports.methods = {
+exports.thisMethods = {
   getID,
   close
 };
