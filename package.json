@@ -1,6 +1,6 @@
 {
   "name": "not-node",
-  "version": "3.4.35",
+  "version": "3.4.36",
   "description": "node complimentary part for client side notFramework.",
   "main": "index.js",
   "scripts": {

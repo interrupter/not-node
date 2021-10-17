@@ -356,12 +356,17 @@ class Init {
       this.expressApp.use(serveStatic(this.config.get('staticPath')));
       this.expressApp.use(this.options.indexRoute);
       this.expressApp.use((err, req, res) => {
-        if (res && res.status && res.json) {
-          res.status(err.statusCode || 500);
-          this.notApp.report(`Internal error(${res.statusCode}): %${req.url} - %${err.message}`);
-          res.json({
-            error: err.message
-          });
+        if(err instanceof notError){
+          this.notApp.report(err);
+        }else if (err instanceof Error){
+          if (res && res.status && res.json) {
+            res.status(err.statusCode || 500);
+            this.notApp.report(new notError(`Internal error(${res.statusCode}): %${req.url} - %${err.message}`, {}, err));
+            res.json({
+              status: 'error',
+              error: err.message
+            });
+          }
         }
         return;
       });
