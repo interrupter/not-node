@@ -332,6 +332,7 @@ describe('RouterAction', function () {
 					}
 				},
 				fakeNotApp = {
+					report(e){done(e);},
 					getModule:()=>{return fakeMod;}
 				};
 			let req = {
@@ -370,6 +371,7 @@ describe('RouterAction', function () {
 					}
 				},
 				fakeNotApp = {
+					report(e){done(e);},
 					getModule:()=>{return fakeMod;}
 				};
 			let req = {
@@ -408,6 +410,7 @@ describe('RouterAction', function () {
 					}
 				},
 				fakeNotApp = {
+					report(e){done(e);},
 					getModule:()=>{return fakeMod;}
 				};
 			let req = {
@@ -445,6 +448,7 @@ describe('RouterAction', function () {
 					}
 				},
 				fakeNotApp = {
+					report(e){done(e);},
 					getModule:()=>{return fakeMod;}
 				};
 			let req = {
@@ -482,6 +486,7 @@ describe('RouterAction', function () {
 					}
 				},
 				fakeNotApp = {
+					report(e){done(e);},
 					getModule:()=>{return fakeMod;}
 				};
 			let req = {
@@ -511,7 +516,7 @@ describe('RouterAction', function () {
 					.catch(done);
 		});
 
-		it('Auth with manager role request post.list with actionName override', function (done) {
+		it('Auth with manager role request post.list with actionName override', async () => {
 			let fakeRoute = {
 					manager_listAll:()=>{return 'manager_listAll';}
 				},
@@ -521,7 +526,13 @@ describe('RouterAction', function () {
 					}
 				},
 				fakeNotApp = {
-					getModule:()=>{return fakeMod;}
+					report(e){
+						console.error(e);
+						throw e;
+					},
+					getModule:()=>{
+						return fakeMod;
+					}
 				};
 			let req = {
 					session: {
@@ -542,15 +553,13 @@ describe('RouterAction', function () {
 					}]
 				},
 				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData);
-				routerAction.exec(req)
-					.then((result)=>{
-						expect(result).to.deep.equal('manager_listAll');
-						done();
-					})
-					.catch(done);
+				const result = await routerAction.exec(req, {}, (e)=>{
+					console.error(e); throw e;
+				});
+				expect(result).to.deep.equal('manager_listAll');
 		});
 
-		it('Wrong modelName', function () {
+		it('Wrong modelName', function (done) {
 			let fakeRoute = {
 					manager_listAll:()=>{return 'manager_listAll';}
 				},
@@ -560,6 +569,10 @@ describe('RouterAction', function () {
 					}
 				},
 				fakeNotApp = {
+					report(e){
+						console.error(e);
+						done(e);
+					},
 					getModule:()=>{return null;}
 				};
 			let req = {
@@ -582,13 +595,14 @@ describe('RouterAction', function () {
 				},
 				routerAction = new notRoute(fakeNotApp, 'not-user', 'post1', 'listasdf', actionData);
 
-			expect(routerAction.exec(req, {}, err => err )).to.be.an.instanceof(Error);
+			routerAction.exec(req, {}, (err) => {
+				expect(err).to.be.instanceof(Error);
+				done();
+			})
 		});
 
 		it('Wrong rule', function () {
-			let next = function (val) {
-					return val;
-				},
+			let
 				req = {
 					session: {
 						user: false,
@@ -606,7 +620,9 @@ describe('RouterAction', function () {
 					}]
 				},
 				routerAction = new notRoute({}, 'not-user', 'post', 'list', actionData);
-			expect(routerAction.exec(req, false, next)).to.deep.equal(new HttpError(403, 'rule for router not found; not-user; post'));
+			routerAction.exec(req, false, (err)=>{
+				expect(err).to.be.deep.equal(new HttpError(403, 'rule for router not found; not-user; post'));
+			})
 		});
 	});
 });

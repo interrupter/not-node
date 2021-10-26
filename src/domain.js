@@ -342,11 +342,19 @@ class notDomain extends EventEmitter {
    *  Execute method in modules
    *  @param {string}  methodName  name of the method to execute
    **/
-  execInModules(methodName) {
+  async execInModules(methodName) {
     for (let t in this.modules) {
       let mod = this.modules[t];
       if (mod && typeof mod.exec === 'function') {
-        mod.exec(methodName);
+        try{
+          if(mod.exec.constructor.name === 'AsyncFunction'){
+            await mod.exec(methodName);
+          }else{
+            mod.exec(methodName);
+          }
+        }catch(e){
+          this.report(e);
+        }
       }
     }
   }

@@ -33,6 +33,34 @@ exports.validateObjectId = (id)=>{
 };
 
 /**
+ *	Validates and compares ObjectIds in string or Object form
+ *	@param	{string|ObjectId}	firstId 	first id
+ *	@param	{string|ObjectId}	secondId 	second id
+ *	@return {booelean}				true if equal
+ */
+exports.compareObjectIds = (firstId, secondId)=>{
+	try{
+		let a = firstId, b = secondId;
+		if(typeof firstId !== 'string'){
+			a = a.toString();
+		}
+		if(typeof secondId !== 'string'){
+			b = b.toString();
+		}
+		if(
+			!exports.validateObjectId(a)
+			||
+			!exports.validateObjectId(b)
+		){
+			return false;
+		}
+		return a === b;
+	}catch(e){
+		return false;
+	}
+};
+
+/**
  *	Returns today Date object without hours, minutes, seconds
  *	@return {Date}	current date with 00:00:00
  */

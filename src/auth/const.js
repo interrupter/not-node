@@ -1,0 +1,17 @@
+
+const DEFAULT_USER_ROLE_FOR_ADMIN = 'root';
+const DEFAULT_USER_ROLE_FOR_GUEST = 'guest';
+
+const OBJECT_STRING = '[object String]';
+
+const ERR_NOT_AUTHORIZED = 'you_are_not_authorized';
+
+const DOCUMENT_OWNER_FIELD_NAME = 'ownerId';
+
+module.exports = {
+  ERR_NOT_AUTHORIZED,
+  OBJECT_STRING,
+  DEFAULT_USER_ROLE_FOR_GUEST,
+  DEFAULT_USER_ROLE_FOR_ADMIN,
+  DOCUMENT_OWNER_FIELD_NAME
+};

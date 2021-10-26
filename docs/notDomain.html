@@ -40,14 +40,14 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="notApp.html">notApp</a></li><li><a href="notDomain.html">notDomain</a></li><li><a href="notManifest.html">notManifest</a></li><li><a href="global.html#notModule">notModule</a></li><li><a href="notRoute.html">notRoute</a></li>
+					<li><a href="notApp.html">notApp</a></li><li><a href="notDomain.html">notDomain</a></li><li><a href="notManifest.html">notManifest</a></li><li><a href="notModule.html">notModule</a></li><li><a href="notRoute.html">notRoute</a></li>
 				</ul>
 			</li>
 			
 			<li class="dropdown">
 				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="global.html">Global</a></li>
+					<li><a href="global.html#checkAdmin">checkAdmin</a></li><li><a href="global.html#checkCredentials">checkCredentials</a></li><li><a href="global.html#checkRoleBuilder">checkRoleBuilder</a></li><li><a href="global.html#checkSupremacy">checkSupremacy</a></li><li><a href="global.html#checkUser">checkUser</a></li><li><a href="global.html#cleanse">cleanse</a></li><li><a href="global.html#compareRoles">compareRoles</a></li><li><a href="global.html#createSpecial">createSpecial</a></li><li><a href="global.html#EventEmitter">EventEmitter</a></li><li><a href="global.html#extractAuthData">extractAuthData</a></li><li><a href="global.html#extractSafeFields">extractSafeFields</a></li><li><a href="global.html#fieldIsSafe">fieldIsSafe</a></li><li><a href="global.html#getIP">getIP</a></li><li><a href="global.html#getOwnerId">getOwnerId</a></li><li><a href="global.html#getRole">getRole</a></li><li><a href="global.html#getSafeFieldsForRoleAction">getSafeFieldsForRoleAction</a></li><li><a href="global.html#getSessionId">getSessionId</a></li><li><a href="global.html#getUserId">getUserId</a></li><li><a href="global.html#ifAdmin">ifAdmin</a></li><li><a href="global.html#initFields">initFields</a></li><li><a href="global.html#intersect_safe">intersect_safe</a></li><li><a href="global.html#isOwner">isOwner</a></li><li><a href="global.html#isUser">isUser</a></li><li><a href="global.html#ruleIsWildcard">ruleIsWildcard</a></li><li><a href="global.html#setAuth">setAuth</a></li><li><a href="global.html#setGuest">setGuest</a></li><li><a href="global.html#setRole">setRole</a></li><li><a href="global.html#setUserId">setUserId</a></li>
 				</ul>
 			</li>
 			
@@ -157,14 +157,14 @@
             
 
             <td class="description last">application options
-	{
-		mongoose: mongooseConnectionToDB
-		modulesCollectionPaths: [__dirname + '/modules'], 	//each path to folder with modules
-		modulesPaths: [],									//each path to module
-		modules: {
-			filestore: require('not-filestore') 			//each npm not-* module with custom overriden name as key
-		}
-	}</td>
+ {
+   mongoose: mongooseConnectionToDB
+   modulesCollectionPaths: [__dirname + '/modules'],   //each path to folder with modules
+   modulesPaths: [],                  //each path to module
+   modules: {
+     filestore: require('not-filestore')       //each npm not-* module with custom overriden name as key
+   }
+ }</td>
         </tr>
 
     
@@ -231,16 +231,16 @@
         <p class="code-caption">Domain creation routine</p>
     
     <pre class="sunlight-highlight-javascript">let App = new new notDomain({
-		mongoose: mongooseLink
-		modulesCollectionPaths: [__dirname + &#x27;/modules&#x27;], //each path to folder with modules
-		modulesPaths: [],	//each path to module
-		modules: {
-			filestore: require(&#x27;not-filestore&#x27;) //each npm not-* module with custom overriden name as key
-		}
-	})
-		.importModuleFrom(__dirname+&#x27;/anotherModule&#x27;, &#x27;anotherCustomModuleName&#x27;)	//import module from path
-		.importModulesFrom(__dirname+&#x27;/directoryOfUsefullessModules&#x27;)
-		.importModule(require(&#x27;notModule&#x27;), &#x27;notModule&#x27;);</pre>
+   mongoose: mongooseLink
+   modulesCollectionPaths: [__dirname + &#x27;/modules&#x27;], //each path to folder with modules
+   modulesPaths: [],  //each path to module
+   modules: {
+     filestore: require(&#x27;not-filestore&#x27;) //each npm not-* module with custom overriden name as key
+   }
+ })
+   .importModuleFrom(__dirname+&#x27;/anotherModule&#x27;, &#x27;anotherCustomModuleName&#x27;)  //import module from path
+   .importModulesFrom(__dirname+&#x27;/directoryOfUsefullessModules&#x27;)
+   .importModule(require(&#x27;notModule&#x27;), &#x27;notModule&#x27;);</pre>
 
 
     
@@ -452,7 +452,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="execInModules"><span class="type-signature"></span>execInModules(methodName)</h4>
+    <h4 class="name" id="execInModules"><span class="type-signature">&lt;async> </span>execInModules(methodName)</h4>
     
     
 </dt>
@@ -589,7 +589,7 @@
     
     <div class="description">
         Execute fabricateModels methods on all registered modules
-	Create mongoose models.
+ Create mongoose models.
     </div>
     
 
@@ -598,6 +598,135 @@
     
 
     
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="forEachMod"><span class="type-signature"></span>forEachMod(func)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Cycles throu all imported modules, passes name, module, and itself
+ to argument function
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>func</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">function to perfom some action with module</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
     
 
     
@@ -814,6 +943,311 @@
             
 <hr>
 <dt>
+    <h4 class="name" id="getLogic"><span class="type-signature"></span>getLogic(name)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Returns logic
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">'logicName' or 'moduleName//logicName'
+                 ('User', 'moduleName//User')</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    logic
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="getLogicFile"><span class="type-signature"></span>getLogicFile(logicName)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Returns file with logic declarations
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>logicName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">'logicName' or 'moduleName//logicName'</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    CommonJS module object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
     <h4 class="name" id="getModel"><span class="type-signature"></span>getModel(name)</h4>
     
     
@@ -875,7 +1309,7 @@
             
 
             <td class="description last">'modelName' or 'moduleName//modelName'
-									('User', 'moduleName//User')</td>
+                 ('User', 'moduleName//User')</td>
         </tr>
 
     
@@ -1559,6 +1993,158 @@
     <dd>
         
 <span class="param-type">object</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="getRoute"><span class="type-signature"></span>getRoute(name)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Returns route
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">'moduleName//routeName//functionName' ('not-user//user//add')</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    route
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">function</span>
 
 
 
@@ -2299,9 +2885,9 @@
 
 
 <span class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a>
 	
-		on 2020-06-22T15:51:24+03:00
+		on 2021-10-26T21:09:57+03:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

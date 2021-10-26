@@ -1,4 +1,4 @@
-const Auth = require('./auth/auth');
+const Auth = require('./auth');
 const notDomain = require('./domain');
 const merge = require('deepmerge');
 const parent = require('../index.js');

@@ -17,7 +17,7 @@ const moduleManifest = {
     url: '/api/:modelName',
     actions: {
       list: {
-        method: 'get'        
+        method: 'get'
       }
     }
   }
@@ -44,7 +44,7 @@ describe('notModule', function() {
   });
 
   describe('constructor', function() {
-    it('With init from path', function() {
+    it('With init from path: ' + modulePath, function() {
       var mod = new notModule({
         modPath: modulePath,
         mongoose: mongoose

@@ -106,7 +106,7 @@ function newRebase(){
   };
 }
 
-exports.init = function(mongoose) {
+module.exports.init = function(mongoose) {
   mongooseLocal = mongoose;
   schema = new(mongooseLocal.Schema)(thisSchema);
   schema.statics.getNext = newGetNext();
@@ -117,7 +117,7 @@ exports.init = function(mongoose) {
   } catch (e) {
     model = mongooseLocal.model('Increment');
   }
-  exports.model = model;
-  exports.next = model.getNext.bind(model);
-  exports.rebase = model.rebase.bind(model);
+  module.exports.model = model;
+  module.exports.next = model.getNext.bind(model);
+  module.exports.rebase = model.rebase.bind(model);
 };

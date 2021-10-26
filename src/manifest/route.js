@@ -3,7 +3,7 @@ const	CONST_BEFORE_ACTION = 'before';
 
 const	CONST_AFTER_ACTION = 'after';
 
-const Auth = require('../auth/auth.js'),
+const Auth = require('../auth'),
   log = require('not-log')(module, 'not-node'),
   HttpError = require('../error').Http;
 
@@ -46,6 +46,25 @@ class notRoute{
     return null;
   }
 
+  cycleThruRules(rules, req){
+    for(var i = 0; i < rules.length; i++){
+      this.postWarning(rules[i], req.originalUrl);
+      if (Auth.checkCredentials(rules[i], Auth.isUser(req), Auth.getRole(req), Auth.isRoot(req))){
+        return rules[i];
+      }
+    }
+    return false;
+  }
+
+  postWarning(data, url){
+    if (propExist(data, 'user')){
+      log.error('Missformed rule, field "user" is not allowed, use "auth" instead: '+url);
+    }
+    if (propExist(data, 'admin')){
+      log.error('Missformed rule, field "admin" is obsolete, use "root" instead: '+url);
+    }
+  }
+
   /**
 	*	Select rule from available or return null
 	*	@param	{object}	req 	Express Request Object
@@ -54,24 +73,10 @@ class notRoute{
   selectRule(req){
     if (this.actionData){
       if(this.actionData.rules && this.actionData.rules.length > 0){
-        for(var i = 0; i < this.actionData.rules.length; i++){
-          if (propExist(this.actionData.rules[i], 'user')){
-            log.error('Missformed rule, field "user" is not allowed, use "auth" instead: '+req.originalUrl);
-          }
-          if (propExist(this.actionData.rules[i], 'admin')){
-            log.error('Missformed rule, field "admin" is obsolete, use "root" instead: '+req.originalUrl);
-          }
-          if (Auth.checkCredentials(this.actionData.rules[i], Auth.isUser(req), Auth.getRole(req), Auth.isRoot(req))){
-            return this.actionData.rules[i];
-          }
-        }
+        let result = this.cycleThruRules(this.actionData.rules, req);
+        if (result){ return result;}
       }else{
-        if (propExist(this.actionData, 'user')){
-          log.error('Missformed rule, field "user" is not allowed, use "auth" instead: '+req.originalUrl);
-        }
-        if (propExist(this.actionData, 'admin')){
-          log.error('Missformed rule, field "admin" is obsolete, use "root" instead: '+req.originalUrl);
-        }
+        this.postWarning(this.actionData, req.originalUrl);
         if (Auth.checkCredentials(this.actionData, Auth.isUser(req), Auth.getRole(req), Auth.isRoot(req))){
           return Object.assign({}, this.actionData, this.actionData.rules);
         }
@@ -90,29 +95,27 @@ class notRoute{
   exec(req, res, next){
     try{
       let rule = this.selectRule(req);
-      if (rule){
-        if(propExist(rule, 'admin')){
-          log.log('Route rule options "admin" is obsolete; user "root"');
-        }
-        let actionName = this.selectActionName(rule);
-        let mod = this.notApp.getModule(this.moduleName);
-        if (mod){
-          let modRoute = mod.getRoute(this.routeName);
-          req.notRouteData = {
-            actionName,
-            rule: 				{...rule},
-            'actionData': {...this.actionData}
-          };
-          if (this.routeIsRunnable(modRoute, actionName)){
-            return this.executeRoute(modRoute, actionName, {req, res, next});
-          }else{
-            return next(new HttpError(404, ['route not found', this.moduleName, this.routeName,actionName].join('; ')));
-          }
-        }else{
-          return next(new HttpError(404, ['module not found', this.moduleName, this.routeName,actionName].join('; ')));
-        }
-      }else{
+      if (!rule){
         return next(new HttpError(403, ['rule for router not found', this.moduleName, this.routeName].join('; ')));
+      }
+      if(propExist(rule, 'admin')){
+        log.log('Route rule options "admin" is obsolete; user "root"');
+      }
+      let actionName = this.selectActionName(rule);
+      let mod = this.notApp.getModule(this.moduleName);
+      if (!mod){
+        return next(new HttpError(404, ['module not found', this.moduleName, this.routeName, actionName].join('; ')));
+      }
+      let modRoute = mod.getRoute(this.routeName);
+      req.notRouteData = {
+        actionName,
+        rule: 				{...rule},
+        'actionData': {...this.actionData}
+      };
+      if (this.routeIsRunnable(modRoute, actionName)){
+        return this.executeRoute(modRoute, actionName, {req, res, next});
+      }else{
+        return next(new HttpError(404, ['route not found', this.moduleName, this.routeName, actionName].join('; ')));
       }
     }catch(e){
       this.notApp.report(e);

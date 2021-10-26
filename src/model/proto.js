@@ -34,6 +34,18 @@ module.exports = class ModelFabricate{
     return targetModule.keepNotExtended;
   }
 
+  static extendSchemaFrom(src, dest){
+    if (src) {
+      for (let j in src) {
+        if (typeof src[j].get === 'function' && typeof src[j].set === 'function') {
+          dest(j).get(src[j].get).set(src[j].set);
+        } else {
+          dest(j, src[j]);
+        }
+      }
+    }
+  }
+
   static extendBySource(schema, targetModule){
     if (targetModule.thisMethods) {
       Object.assign(schema.methods, targetModule.thisMethods);
@@ -43,27 +55,9 @@ module.exports = class ModelFabricate{
       Object.assign(schema.statics, targetModule.thisStatics);
     }
 
-    if (targetModule.thisVirtuals) {
-      for (let j in targetModule.thisVirtuals) {
-        if (typeof targetModule.thisVirtuals[j].get === 'function' && typeof targetModule.thisVirtuals[j].set === 'function') {
-          schema.virtual(j).get(targetModule.thisVirtuals[j].get).set(targetModule.thisVirtuals[j].set);
-        } else {
-          schema.virtual(j, targetModule.thisVirtuals[j]);
-        }
-      }
-    }
-
-    if (targetModule.thisPre) {
-      for (let j in targetModule.thisPre) {
-        schema.pre(j, targetModule.thisPre[j]);
-      }
-    }
-
-    if (targetModule.thisPost) {
-      for (let j in targetModule.thisPost) {
-        schema.post(j, targetModule.thisPost[j]);
-      }
-    }
+    this.extendSchemaFrom(targetModule.thisVirtuals, schema.virtual);
+    this.extendSchemaFrom(targetModule.thisPre, schema.pre);
+    this.extendSchemaFrom(targetModule.thisPost, schema.post);
 
   }
 

@@ -47,11 +47,9 @@ class ModelEnricher{
   static markForIncrement(mongooseSchema, modelName, options) {
     mongooseSchema.statics.__incField = this.getIncrementalFieldName(modelName);
     mongooseSchema.statics.__incModel = modelName;
-    if(options){
-      if(options.filter){
-        mongooseSchema.statics.__incFilter = options.filter;
-      }
-    }
+    if(options && options.filter){
+      mongooseSchema.statics.__incFilter = options.filter;
+    }    
     return mongooseSchema;
   }
 

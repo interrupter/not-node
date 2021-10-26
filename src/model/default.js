@@ -2,7 +2,7 @@
 const routine = require('./routine');
 const notQuery = require('not-filter');
 
-exports.extractVariants = function (items) {
+module.exports.extractVariants = function (items) {
   var variants = [];
   if (items && items.length) {
     for (var i = 0; i < items.length; i++) {
@@ -11,6 +11,16 @@ exports.extractVariants = function (items) {
   }
   return variants;
 };
+
+function populateQuery_markVersioning(versioning, inst){
+  if(versioning){
+    if(Object.prototype.hasOwnProperty.call(inst, 'match')){
+      inst.match.__latest = true;
+    }else{
+      inst.match = {__latest: true};
+    }
+  }
+}
 
 let populateQuery = (query, populate, versioning = false) => {
   if (populate && populate.length) {
@@ -23,13 +33,7 @@ let populateQuery = (query, populate, versioning = false) => {
       }else{
         throw new Error(`No path to populate: \n` + JSON.stringify(key, null, 4));
       }
-      if(versioning){
-        if(Object.prototype.hasOwnProperty.call(inst, 'match')){
-          inst.match.__latest = true;
-        }else{
-          inst.match = {__latest: true};
-        }
-      }
+      populateQuery_markVersioning(versioning, inst);
       query.populate(inst);
     }
   }
@@ -313,7 +317,7 @@ function update(filter, data, many = false) {
   }
 }
 
-exports.thisStatics = {
+module.exports.thisStatics = {
   sanitizeInput,
   getOne,
   getOneByID,
@@ -348,7 +352,7 @@ function close() {
   return this.save();
 }
 
-exports.thisMethods = {
+module.exports.thisMethods = {
   getID,
   close
 };

@@ -1,8 +1,11 @@
 const expect = require('chai').expect,
-	auth = require('../src/auth/auth'),
+	auth = require('../src/auth'),
 	HttpError = require('../src/error').Http;
 
+console.log(Object.keys(auth));
+
 describe('Auth', function() {
+
 	describe('intersect_safe', function() {
 		it('a - array, b - array', function() {
 			var res = auth.intersect_safe(['safe1', 'safe', 'unsafebutpresented'], ['unsafe','safe', 'safeguard']);
@@ -30,118 +33,6 @@ describe('Auth', function() {
 		});
 	});
 
-	describe('isUser', function() {
-		it('check if user exists - true', function() {
-			var t = {
-				session:{
-					user: true
-				}
-			};
-			var res = auth.isUser(t);
-			expect(res).to.eql(true);
-		});
-		it('check if user exists - false', function() {
-			var t = {
-				session:{}
-			};
-			var res = auth.isUser(t);
-			expect(res).to.eql(false);
-		});
-	});
-
-	describe('checkUser', function() {
-		it('check if user exists and continues', function() {
-			const req = {
-					session: {
-						user: true
-					}
-				},
-				next = function(val){return val;};
-			let result = auth.checkUser(req, false, next);
-			expect(result).to.deep.equal();
-		});
-
-		it('check if user exists and throw exception', function() {
-			const req = {
-					session: {
-						user: false
-					}
-				},
-				next = function(val){return val;};
-			let result = auth.checkUser(req, false, next);
-			expect(result).to.deep.equal(new HttpError(401, 'Вы не авторизованы'));
-		});
-	});
-
-	describe('isRoot', function() {
-	  it('check if user admin - true', function() {
-		  var t = {
-			  session:{
-				  user: true,
-				  role: 'root'
-			  }
-		  };
-		  var res = auth.isRoot(t);
-		  expect(res).to.eql(true);
-	  });
-	  it('check if user admin - false', function() {
-		  var t = {
-			  session:{
-				  user: true
-			  }
-		  };
-		  var res = auth.isRoot(t);
-		  expect(res).to.eql(false);
-	  });
-	});
-
-	describe('checkRoot', function() {
-		it('check if admin exists and continues', function() {
-			const req = {
-					session: {
-						user: true,
-						role: [auth.DEFAULT_USER_ROLE_FOR_ADMIN]
-					}
-				},
-				next = function(val){return val;};
-			let result = auth.checkRoot(req, false, next);
-			expect(result).to.deep.equal();
-		});
-
-		it('check if admin exists and throw exception', function() {
-			const req = {
-					session: {
-						user: true,
-						role: 'manager'
-					}
-				},
-				next = function(val){return val;};
-			let result = auth.checkRoot(req, false, next);
-			expect(result).to.deep.equal(new HttpError(401, 'Вы не авторизованы ' + req.session.user + ':' + req.session.role));
-		});
-	});
-
-	describe('getRole', function() {
-	  it('get role - root', function() {
-		  var t = {
-			  session:{
-				  user: true,
-				  role: 'root'
-			  }
-		  };
-		  var res = auth.getRole(t);
-		  expect(res).to.eql('root');
-	  });
-	  it('get role - undefined', function() {
-		  var t = {
-			  session:{
-				  user: true
-			  }
-		  };
-		  var res = auth.getRole(t);
-		  expect(res).to.eql(undefined);
-	  });
-	});
 
 	describe('compareRoles', function() {
 	  it('user - guest, action - root', function() {
@@ -181,35 +72,6 @@ describe('Auth', function() {
 
 	});
 
-	describe('checkRoleBuilder', function() {
-		it('Role', function() {
-			const role = 'user',
-				req = {
-					session: {
-						user: true,
-						role: 'user'
-					}
-				},
-				next = function(val){return val;};
-			let resultFunction = auth.checkRoleBuilder(role),
-				result = resultFunction(req, false, next);
-			expect(result).to.deep.equal();
-		});
-
-		it('Role with error', function() {
-			const role = 'manager',
-				req = {
-					session: {
-						user: true,
-						role: 'user'
-					}
-				},
-				next = function(val){return val;};
-			let resultFunction = auth.checkRoleBuilder(role),
-				result = resultFunction(req, false, next);
-			expect(result).to.deep.equal(new HttpError(401, 'Вы не авторизованы ' + req.session.user + ':' + req.session.role));
-		});
-	});
 
 	describe('checkCredentials', function() {
 		const rule = {
@@ -357,6 +219,12 @@ describe('Auth', function() {
 			expect(auth.checkSupremacy('manager', 'client', ['root', 'admin', 'client', 'user', 'guest'])).to.be.equal(false);
 			expect(auth.checkSupremacy('admin', 'client', ['root', 'admin', 'client', 'user', 'guest'])).to.be.equal(true);
 		});
-
 	});
+
+	require('./auth/routes.js')({Auth: auth, HttpError, expect});
+	require('./auth/roles.js')({Auth: auth, HttpError, expect});
+	require('./auth/rules.js')({Auth: auth, HttpError, expect});
+	require('./auth/session.js')({Auth: auth, HttpError, expect});
+	require('./auth/obsolete.js')({Auth: auth, HttpError, expect});
+	require('./auth/fields.js')({Auth: auth, HttpError, expect});
 });

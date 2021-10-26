@@ -2,7 +2,7 @@
 const protoModel = require('../model/proto.js'),
   fs = require('fs'),
   path = require('path'),
-  Auth = require('../auth/auth'),
+  Auth = require('../auth'),
   Fields = require('../fields.js'),
   notLocale = require('not-locale'),
   logger = require('not-log'),
@@ -95,7 +95,8 @@ class notModule {
   }
 
   registerContent() {
-    if (this.module.paths) {
+    try{
+      if (!this.module.paths) {return;}
       if (this.module.paths.fields) {
         this.findFieldsIn(this.module.paths.fields);
       }
@@ -114,6 +115,8 @@ class notModule {
       if (this.module.paths.locales) {
         notLocale.fromDir(this.module.paths.locales, this.module.name);
       }
+    }catch(e){
+      console.error(e);
     }
   }
 
@@ -179,10 +182,10 @@ class notModule {
     });
   }
 
-  tryFile(filePath){
-    try{
+  tryFile(filePath) {
+    try {
       return fs.lstatSync(filePath) && fs.lstatSync(filePath).isFile();
-    }catch(e){
+    } catch (e) {
       return false;
     }
   }
@@ -193,48 +196,76 @@ class notModule {
     });
   }
 
+  tryRouteFile({routesPath, routeBasename}){
+    const routePath = path.join(routesPath, routeBasename + '.js');
+    if (this.tryFile(routePath)) {
+      const route = require(routePath);
+      route.filename = routePath;
+      if (!route.thisRouteName) {
+        route.thisRouteName = routeBasename;
+      }
+      return route;
+    }
+  }
+
+  tryRouteManifestFile(routesPath, file){
+    const routeManifestPath = path.join(routesPath, file);
+    if (this.tryFile(routeManifestPath)) {
+      return require(routeManifestPath);
+    }else{
+      return false;
+    }
+  }
+
+  tryWSRouteFile({routesPath, routeBasename}){
+    const routeWSPath = path.join(routesPath, routeBasename + '.ws.js');
+    if (this.tryFile(routeWSPath)) {
+      const wsRoute = require(routeWSPath);
+      if (!wsRoute.thisRouteName) {
+        wsRoute.thisRouteName = routeBasename;
+      }
+      return wsRoute;
+    }else{
+      return false;
+    }
+  }
+
   findRouteIn(file, routesPath) {
     try {
       //если имя похоже на название манифеста
-      if (file.indexOf(DEFAULT_MANIFEST_FILE_ENDING) > -1) {
-        let routeBasename = file.substr(0, file.indexOf(DEFAULT_MANIFEST_FILE_ENDING)),
-          routePath = path.join(routesPath, routeBasename + '.js'),
-          routeWSPath = path.join(routesPath, routeBasename + '.ws.js'),
-          routeManifestPath = path.join(routesPath, file);
-        let routeManifest,
-          route,
-          wsEndPoints,
-          routeName = routeBasename,
-          wsRouteName = routeBasename;
-        //проверяем есть ли файл роутов и манифеста
-        if (this.tryFile(routeManifestPath)) {
-          routeManifest = require(routeManifestPath);
-        }
-        if (this.tryFile(routePath)) {
-          route = require(routePath);
-          if (route && route.thisRouteName) {
-            routeName = route.thisRouteName;
-          }
-          route.filename = routePath;
-        }
-        if (this.tryFile(routeWSPath)) {
-          wsEndPoints = require(routeWSPath);
-          if (wsEndPoints && wsEndPoints.thisRouteName) {
-            wsRouteName = wsEndPoints.thisRouteName;
-          }
-        }
-        if (routeManifest && (route || wsEndPoints)) {
-          this.registerManifest(routeManifest, routeName);
-          if (route) {
-            this.registerRoute(route, routeName);
-          }
-          if (wsEndPoints) {
-            this.registerWSEndPoints(wsEndPoints, wsRouteName);
-          }
-        }
+      if (file.indexOf(DEFAULT_MANIFEST_FILE_ENDING) === -1) {
+        return;
       }
+      const routeBasename = file.substr(0, file.indexOf(DEFAULT_MANIFEST_FILE_ENDING));
+      const routeManifest = this.tryRouteManifestFile(routesPath, file);
+      //без манифеста ничего выставить на ружу не выйдет
+      if(!routeManifest){
+        return;
+      }
+      //ищем end-points
+      const route = this.tryRouteFile({routesPath, routeBasename});
+      const wsRoute = this.tryWSRouteFile({routesPath, routeBasename});
+      if(!route && !wsRoute){
+        return;
+      }
+      this.registerManiestAndRoutes({
+        routeManifest,
+        routeName: route?route.thisRouteName:routeBasename,
+        route, wsRoute
+      });
     } catch (e) {
       log.error(e);
+    }
+  }
+
+
+  registerManiestAndRoutes({routeName, routeManifest, route, wsRoute}){
+    this.registerManifest(routeManifest, routeName);
+    if (route) {
+      this.registerRoute(route, route.thisRouteName);
+    }
+    if (wsRoute) {
+      this.registerWSEndPoints(wsRoute, wsRoute.thisRouteName);
     }
   }
 
@@ -272,7 +303,7 @@ class notModule {
   }
 
   registerRoute(route, routeName) {
-    this.routes[routeName] = route;
+    this.routes[route.thisRouteName] = route;
     if (this.notApp) {
       log.debug(`Register route ${routeName}`);
       route.getLogic = this.notApp.getLogic.bind(this.notApp);
@@ -293,8 +324,8 @@ class notModule {
   }
 
 
-  bindWSEndPointEntityFunctions(wsEndPoints, wsRouteName, collectionType){
-    if(Object.prototype.hasOwnProperty.call(wsEndPoints, collectionType)){
+  bindWSEndPointEntityFunctions(wsEndPoints, wsRouteName, collectionType) {
+    if (Object.prototype.hasOwnProperty.call(wsEndPoints, collectionType)) {
       Object.keys(wsEndPoints[collectionType]).forEach((collectionItem) => {
         const entity = wsEndPoints[collectionType][collectionItem];
         entity.getLogic = this.notApp.getLogic.bind(this.notApp);
@@ -342,14 +373,21 @@ class notModule {
     return this.wsEndPoints;
   }
 
-  getManifest({auth, role, root} = {auth: false, role: Auth.DEFAULT_USER_ROLE_FOR_GUEST, root: false}) {
-    let filtered = this.manifest.filterManifest(
+  getManifest({
+    auth,
+    role,
+    root
+  } = {
+    auth: false,
+    role: Auth.DEFAULT_USER_ROLE_FOR_GUEST,
+    root: false
+  }) {
+    return this.manifest.filterManifest(
       this.manifests,
       auth,
       role,
       root
     );
-    return filtered;
   }
   /*
   getActionManifest({auth, role, root}){
@@ -423,23 +461,26 @@ class notModule {
     }
   }
 
-  fabricateModel(model, mixins) {
-    if (mixins && Array.isArray(mixins) && mixins.length) {
-      for (let mixin of mixins) {
-        if (model.thisSchema && mixin.schema) {
-          model.thisSchema = Object.assign(model.thisSchema, mixin.schema);
-        }
-        if (model.thisMethods && mixin.methods) {
-          model.thisMethods = Object.assign(model.thisMethods, mixin.methods);
-        }
-        if (model.thisStatics && mixin.statics) {
-          model.thisStatics = Object.assign(model.thisStatics, mixin.statics);
-        }
-        if (model.thisVirtuals && mixin.virtuals) {
-          model.thisVirtuals = Object.assign(model.thisVirtuals, mixin.virtuals);
-        }
+  applyMixins(model, mixins){
+    if (!Array.isArray(mixins)) {return;}
+    for (let mixin of mixins) {
+      if (model.thisSchema && mixin.schema) {
+        model.thisSchema = Object.assign(model.thisSchema, mixin.schema);
+      }
+      if (model.thisMethods && mixin.methods) {
+        model.thisMethods = Object.assign(model.thisMethods, mixin.methods);
+      }
+      if (model.thisStatics && mixin.statics) {
+        model.thisStatics = Object.assign(model.thisStatics, mixin.statics);
+      }
+      if (model.thisVirtuals && mixin.virtuals) {
+        model.thisVirtuals = Object.assign(model.thisVirtuals, mixin.virtuals);
       }
     }
+  }
+
+  fabricateModel(model, mixins) {
+    this.applyMixins(model, mixins);
     protoModel.fabricate(model, {}, this.mongoose);
   }
 
@@ -462,19 +503,24 @@ class notModule {
     }
   }
 
-  exec(methodName) {
-    if (this.module) {
-      if (Object.prototype.hasOwnProperty.call(this.module, methodName)) {
-        if (typeof this.module[methodName] === 'function') {
-          try {
-            this.module[methodName](this.notApp);
-          } catch (e) {
-            log.error(e);
-          }
-        }
-      }
-    } else {
+  async exec(methodName) {
+    if (!this.module) {
       log.error(`Cant exec ${methodName} in module ${this.path}, module not loaded`);
+      return;
+    }
+    if (
+      (Object.prototype.hasOwnProperty.call(this.module, methodName))
+      && (typeof this.module[methodName] === 'function')
+    ) {
+      try {
+        if (this.module[methodName].constructor.name === 'AsyncFunction') {
+          await this.module[methodName](this.notApp);
+        } else {
+          this.module[methodName](this.notApp);
+        }
+      } catch (e) {
+        log.error(e);
+      }
     }
   }
 
@@ -482,7 +528,7 @@ class notModule {
     const modelsList = Object.keys(this.models);
     const routesList = Object.keys(this.routes);
     const actionsList = this.getActionsList();
-    let status = {
+    return {
       models: {
         count: modelsList.length,
         list: modelsList,
@@ -498,7 +544,6 @@ class notModule {
         list: actionsList
       }
     };
-    return status;
   }
 
   getActionsList() {
