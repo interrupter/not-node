@@ -3,8 +3,7 @@ const log = require('not-log')(module, 'not-node//init');
 const ADDS = require('../additional');
 
 module.exports = class InitSessionsMongo{
-  static createStore({config, master}){
-    const expressSession = require('express-session');
+  static createStore({config, master, expressSession}){
     const MongoDBStore = require('connect-mongodb-session')(expressSession);
     const mongooseOptions = config.get('mongoose.options');
     let store = new MongoDBStore({
@@ -25,7 +24,8 @@ module.exports = class InitSessionsMongo{
   }
 
   static async run({config, options, master}) {
-    log.info('Setting up user sessions handler...');
+    const expressSession = require('express-session');
+    log.info('Setting up user sessions handler(mongo)...');
     try {
       await ADDS.run('sessions.pre', {config, options, master});
       master.expressApp.use(expressSession({
@@ -34,13 +34,13 @@ module.exports = class InitSessionsMongo{
         cookie: config.get('session:cookie'),
         resave: true,
         saveUninitialized: true,
-        store: InitSessionsMongo.createStore({config})
+        store: InitSessionsMongo.createStore({config, expressSession})
       }));
       await ADDS.run('sessions.post', {config, options, master});
     } catch (e) {
-      master.notApp.report(new notError('User session init failed', {}, e));
+      master.notApp.report(new notError('User sessions init failed', {}, e));
       master.throwError(e.message, 1);
     }
   }
 
-}
+};

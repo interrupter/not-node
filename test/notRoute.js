@@ -1,19 +1,18 @@
-const Parser = require('../src/parser'),
+const
 	HttpError = require('../src/error').Http,
-	notManifest = require('../src/manifest/manifest'),
 	notRoute = require('../src/manifest/route'),
-	notApp = require('../src/app'),
+	{copyObj} = require('../src/common'),
 	expect = require('chai').expect;
 
 describe('RouterAction', function () {
-	describe('RouterAction init call', function () {
+	describe('init call', function () {
 		it('Init object', function () {
 			let routerAction = new notRoute({}, 'not-user', 'user', 'getAll', {});
 			expect(routerAction).to.have.keys(['notApp', 'routeName', 'moduleName', 'actionName', 'actionData']);
 		});
 	});
 
-	describe('RouterAction.selectRule', function () {
+	describe('selectRule', function () {
 		it('User(auth) request, post.list action', function () {
 			let req = {
 					session: {
@@ -138,9 +137,23 @@ describe('RouterAction', function () {
 			expect(rule.method).to.be.equal('get');
 			expect(rule.auth).to.be.equal(false);
 		});
+
+		it('actionData - null', function () {
+			let req = {
+					session: {
+						user: false
+					}
+				},
+				actionData = false,
+				routerAction = new notRoute({}, 'not-user', 'user', 'list', actionData),
+				rule = routerAction.selectRule(req);
+			expect(rule).to.be.null;
+		});
+
+
 	});
 
-	describe('RouterAction.exec', function () {
+	describe('exec', function () {
 		//manifest.registerRoutesPath('', __dirname + '/routes');
 		//manifest.getManifest();
 		let fakeRoute = {
@@ -527,7 +540,6 @@ describe('RouterAction', function () {
 				},
 				fakeNotApp = {
 					report(e){
-						console.error(e);
 						throw e;
 					},
 					getModule:()=>{
@@ -554,7 +566,7 @@ describe('RouterAction', function () {
 				},
 				routerAction = new notRoute(fakeNotApp, 'not-user', 'post', 'list', actionData);
 				const result = await routerAction.exec(req, {}, (e)=>{
-					console.error(e); throw e;
+					throw e;
 				});
 				expect(result).to.deep.equal('manager_listAll');
 		});
@@ -570,7 +582,6 @@ describe('RouterAction', function () {
 				},
 				fakeNotApp = {
 					report(e){
-						console.error(e);
 						done(e);
 					},
 					getModule:()=>{return null;}
@@ -622,7 +633,154 @@ describe('RouterAction', function () {
 				routerAction = new notRoute({}, 'not-user', 'post', 'list', actionData);
 			routerAction.exec(req, false, (err)=>{
 				expect(err).to.be.deep.equal(new HttpError(403, 'rule for router not found; not-user; post'));
+			});
+		});
+
+		it('Route is not runnable', function () {
+			let
+				fakeRoute = {
+					list: 'not runnable string'
+				},
+				fakeMod = {
+					getRoute:()=>{
+						return fakeRoute;
+					}
+				},
+				fakeApp = {
+					getModule(){
+						return fakeMod
+					}
+				},
+				req = {
+					session: {
+						user: true,
+						role: 'user'
+					}
+				},
+				actionData = {
+					method: 'get',
+					rules: [{
+						root: true
+					}, {
+						auth: true
+					}]
+				},
+				routerAction = new notRoute(fakeApp, 'not-user', 'post', 'list', actionData);
+			routerAction.exec(req, false, (err)=>{
+				console.error(err);
+				expect(err).to.instanceof(HttpError);
+				expect(err.status).to.be.equal(404);
+				expect(err.message.indexOf('route not found')).to.be.equal(0);
 			})
 		});
+
+		it('Exception throwned', function () {
+			let throwned = false;
+			let
+				fakeApp = {
+					getModule: false,
+					report(){throwned = true;}
+				},
+				req = {
+					session: {
+						user: true,
+						role: 'user'
+					}
+				},
+				actionData = {
+					method: 'get',
+					rules: [{
+						root: true
+					}, {
+						auth: true
+					}]
+				},
+				routerAction = new notRoute(fakeApp, 'not-user', 'post', 'list', actionData);
+			routerAction.exec(req, false, ()=>{});
+			expect(throwned).to.be.true;
+		});
+
+		describe('copyObj', function () {
+			it('empty', function () {
+				let rule = {};
+				expect(copyObj(rule)).to.be.deep.equal({});
+			});
+
+			it('not empty, then modification of new rule is not changes original', function () {
+				let rule = {some: ['data']};
+				let copyOfRule = copyObj(rule);
+				delete copyOfRule.some;
+				expect(rule).to.be.deep.equal({some: ['data']});
+			});
+		});
+
+		describe('actionAvailableByRule', function () {
+			it('rules[{auth:true,role:"client"},{auth:false}] X user(auth:true) = null', function () {
+				const action = {
+					rules: [{
+						auth: true,
+						role: 'client'
+					}, {
+						auth: false
+					}]
+				},
+					user = {
+						auth: true
+					};
+				const role = notRoute.actionAvailableByRule(action, user);
+				expect(role).to.be.null;
+			});
+
+			it('rules[{auth:true,role:"client"},{auth:true}] X user(auth:false) = {auth:false}', function () {
+				const action = {
+					rules: [{
+						auth: true,
+						role: 'client'
+					}, {
+						auth: false
+					}]
+				},
+					user = {
+						auth: false
+					};
+				const role = notRoute.actionAvailableByRule(action, user);
+				expect(role).to.be.deep.equal({auth:false});
+			});
+
+
+			it('action({root:true,fields:[]}]) X user(root:true) = {root:true, fields:[]}', function () {
+				const action = {
+					root: true,
+					fields: ['some', 'foo', 'bar']
+				},
+					user = {
+						root: true
+					};
+				const role = notRoute.actionAvailableByRule(action, user);
+				expect(role).to.be.deep.equal({
+					root: true,
+					fields: ['some', 'foo', 'bar']
+				});
+			});
+
+			it('action - false X user(root:true) = null', function () {
+				const action = false,
+					user = {
+						root: true
+					};
+				const role = notRoute.actionAvailableByRule(action, user);
+				expect(role).to.be.null;
+			});
+
+			it('action(auth:true) X user(auth:false) = null', function () {
+				const action = {auth: true},
+					user = {
+						auth: false
+					};
+				const role = notRoute.actionAvailableByRule(action, user);
+				expect(role).to.be.null;
+			});
+		});
+
 	});
 });

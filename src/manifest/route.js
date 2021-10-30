@@ -1,14 +1,12 @@
 
 const	CONST_BEFORE_ACTION = 'before';
-
 const	CONST_AFTER_ACTION = 'after';
 
+const obsoleteWarning = require('../obsolete');
 const Auth = require('../auth'),
-  log = require('not-log')(module, 'not-node'),
   HttpError = require('../error').Http;
 
-
-const propExist = (obj, name) => Object.prototype.hasOwnProperty.call(obj, name);
+const {objHas, copyObj, executeObjectFunction} = require('../common');
 
 /**
 *	Route representation
@@ -29,40 +27,33 @@ class notRoute{
     return this;
   }
 
+  /**
+  * Cycle throu rules of action and checking user credentials against them
+  * If user creds comply to some rule - returns copy of rule
+  * @param {object}   action    action rules object
+  * @param {object}   user      user credentials (auth, role, root)
+  * @return {object|null}       returns rule or null
+  **/
   static actionAvailableByRule(action, user){
-    if (action){
-      if(action.rules && action.rules.length > 0){
-        for(let i = 0; i < action.rules.length; i++){
-          if (Auth.checkCredentials(action.rules[i], user.auth, user.role, user.root)){
-            return Object.assign({}, action.rules[i]);
-          }
-        }
-      }else{
-        if (Auth.checkCredentials(action, user.auth, user.role, user.root)){
-          return Object.assign({}, action, action.rules);
-        }
+    if (!action){ return null;}
+    if(Array.isArray(action.rules) && action.rules.length > 0){
+      return notRoute.cycleThruRules(action.rules, user);
+    }else{
+      if (Auth.checkCredentials(action, user.auth, user.role, user.root)){
+        return copyObj(action);
       }
     }
     return null;
   }
 
-  cycleThruRules(rules, req){
-    for(var i = 0; i < rules.length; i++){
-      this.postWarning(rules[i], req.originalUrl);
-      if (Auth.checkCredentials(rules[i], Auth.isUser(req), Auth.getRole(req), Auth.isRoot(req))){
-        return rules[i];
+  static cycleThruRules(rules, user, url = ''){
+    for(let i = 0; i < rules.length; i++){
+      obsoleteWarning(rules[i], url);
+      if (Auth.checkCredentials(rules[i], user.auth, user.role, user.root)){
+        return copyObj(rules[i]);
       }
     }
-    return false;
-  }
-
-  postWarning(data, url){
-    if (propExist(data, 'user')){
-      log.error('Missformed rule, field "user" is not allowed, use "auth" instead: '+url);
-    }
-    if (propExist(data, 'admin')){
-      log.error('Missformed rule, field "admin" is obsolete, use "root" instead: '+url);
-    }
+    return null;
   }
 
   /**
@@ -71,18 +62,20 @@ class notRoute{
 	*	@return	{object}	rule or null
 	*/
   selectRule(req){
+    const user = Auth.extractAuthData(req);
     if (this.actionData){
-      if(this.actionData.rules && this.actionData.rules.length > 0){
-        let result = this.cycleThruRules(this.actionData.rules, req);
-        if (result){ return result;}
-      }else{
-        this.postWarning(this.actionData, req.originalUrl);
-        if (Auth.checkCredentials(this.actionData, Auth.isUser(req), Auth.getRole(req), Auth.isRoot(req))){
-          return Object.assign({}, this.actionData, this.actionData.rules);
-        }
-      }
+      return notRoute.actionAvailableByRule(this.actionData, user);
     }
     return null;
+  }
+
+
+  setRequestRouteData(req, actionName, rule){
+    req.notRouteData = {
+      actionName,
+      rule: 				copyObj(rule),
+      actionData:   copyObj(this.actionData)
+    };
   }
 
   /**
@@ -98,20 +91,14 @@ class notRoute{
       if (!rule){
         return next(new HttpError(403, ['rule for router not found', this.moduleName, this.routeName].join('; ')));
       }
-      if(propExist(rule, 'admin')){
-        log.log('Route rule options "admin" is obsolete; user "root"');
-      }
+      obsoleteWarning(rule, req.originalUrl);
       let actionName = this.selectActionName(rule);
       let mod = this.notApp.getModule(this.moduleName);
       if (!mod){
         return next(new HttpError(404, ['module not found', this.moduleName, this.routeName, actionName].join('; ')));
       }
       let modRoute = mod.getRoute(this.routeName);
-      req.notRouteData = {
-        actionName,
-        rule: 				{...rule},
-        'actionData': {...this.actionData}
-      };
+      this.setRequestRouteData(req, actionName, rule);
       if (this.routeIsRunnable(modRoute, actionName)){
         return this.executeRoute(modRoute, actionName, {req, res, next});
       }else{
@@ -138,40 +125,28 @@ class notRoute{
     return realActionName;
   }
 
-
   routeIsRunnable(modRoute, actionName){
     return (
       modRoute &&
-			propExist(modRoute, actionName) &&
+			objHas(modRoute, actionName) &&
 			typeof modRoute[actionName] === 'function'
     );
   }
 
   async executeRoute(modRoute, actionName, {req, res, next}){
-    try{
-      let prepared = await this.executeFunction(modRoute, CONST_BEFORE_ACTION, [req, res, next]);
-      let result = await this.executeFunction(modRoute, actionName, [req, res, next, prepared]);
-      return this.executeFunction(modRoute, CONST_AFTER_ACTION, [req, res, next, result]);
-    }catch(e){
-      this.notApp.report(e);
-    }
+    //waiting preparation
+    let prepared = await this.executeFunction(modRoute, CONST_BEFORE_ACTION, [req, res, next]);
+    //waiting results
+    let result = await this.executeFunction(modRoute, actionName, [req, res, next, prepared]);
+    //run after with results, continue without waiting when it finished
+    return this.executeFunction(modRoute, CONST_AFTER_ACTION, [req, res, next, result]);
   }
 
   async executeFunction(obj, name, params) {
     let result = params.length > 3 ? params[3]:undefined;
-    try{
-      if (obj &&
-				propExist(obj, name) &&
-				typeof obj[name] === 'function'
-      ) {
-        if (obj[name].constructor.name === 'AsyncFunction') {
-          return await obj[name](...params);
-        } else {
-          return obj[name](...params);
-        }
-      }
-    }catch(e){
-      this.notApp.report(e);
+    const newResult = await executeObjectFunction(obj, name, params);
+    if(typeof newResult !== 'undefined'){
+      return newResult;
     }
     return result;
   }

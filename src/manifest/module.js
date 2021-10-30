@@ -1,59 +1,70 @@
 //importing modules
 const protoModel = require('../model/proto.js'),
   fs = require('fs'),
-  path = require('path'),
   Auth = require('../auth'),
-  Fields = require('../fields.js'),
-  notLocale = require('not-locale'),
   logger = require('not-log'),
   log = logger(module, 'notModule'),
-  notManifest = require('./manifest.js');
+  notManifest = require('./manifest.js'),
+  notModuleRegistrator = require('./registrator'),
+  {objHas, mapBind} = require('../common');
 
-//defining CONSTS
-const DEFAULT_MANIFEST_FILE_ENDING = '.manifest.js';
+
+/**
+ * Standart splitter of module resources paths
+ * @constant
+ * @type {string}
+ */
 const DEFAULT_WS_ROUTE_ACTION_SPLITTER = '//';
+
+
+/**
+ * List of methods to be binded from notApp to notModule
+ * @constant
+ * @type {string}
+ */
+const MODULE_BINDINGS_LIST = [
+  'getModel',
+  'getModelSchema',
+  'getModelFile'
+];
 /**
  *	Module representation
  *	@class
- *	@param	{object} 	options			options
+ *	@param	{Object} 	options			options
+ *	@param	{String} 	options.modPath			path to module location
+ *	@param	{Object} 	options.modObject		loaded module object
  **/
 class notModule {
   constructor(options) {
-    log.info(`Creating module: ${options.modPath}`);
     this.path = options.modPath;
     this.module = options.modObject;
     this.mongoose = options.mongoose;
     this.notApp = options.notApp;
-    this.fieldsImportRules = (Object.prototype.hasOwnProperty.call(options, 'fields') && options.fields) ? options.fields : {};
-    this.description = {};
     this.routes = {};
-    this.wsEndPoints = {
+    this.routesWS = {
       servers: {},
       clients: {},
     };
     this.models = {};
     this.logics = {};
-    this.mixins = {};
     this.manifests = {};
     this.faulty = false;
     this.paths = {
       routes: {},
       models: {}
     };
+    this.fieldsImportRules = (objHas(options, 'fields') && options.fields) ? options.fields : {};
+
+    log.info(`Creating module: ${this.getModuleName()}`);
     this.init();
     return this;
   }
 
   getModuleName() {
-    return this.description.name || this.module.name || this.path;
-  }
-
-  map(to, list) {
-    for (let item of list) {
-      if (typeof this[item] === 'function') {
-        to[item] = this[item].bind(this.notApp);
-      }
+    if(this.module && this.module.name){
+      return this.module.name;
     }
+    return this.path;
   }
 
   init() {
@@ -61,15 +72,13 @@ class notModule {
       this.initFromPath(this.path);
     } else if (this.module) {
       this.initFromModule(this.module);
+    }else{
+      return false;
     }
     if (this.module === null || typeof this.module === 'undefined') {
       log.error(`Module ${this.path} not loaded`);
-    } else {
-      this.map(this.module, [
-        'getModel',
-        'getModelSchema',
-        'getModelFile'
-      ]);
+    } else if(this.appIsSet()) {
+      mapBind(this.notApp, this.module, MODULE_BINDINGS_LIST);
     }
   }
 
@@ -77,7 +86,9 @@ class notModule {
     try {
       if (fs.lstatSync(modulePath).isDirectory()) {
         this.module = require(modulePath);
-        this.registerContent();
+        notModuleRegistrator.registerContent({nModule: this});
+      }else{
+        return false;
       }
     } catch (e) {
       this.faulty = true;
@@ -87,290 +98,15 @@ class notModule {
 
   initFromModule() {
     try {
-      this.registerContent();
+      notModuleRegistrator.registerContent({nModule: this});
     } catch (e) {
       this.faulty = true;
       log.error(e);
     }
   }
 
-  registerContent() {
-    try{
-      if (!this.module.paths) {return;}
-      if (this.module.paths.fields) {
-        this.findFieldsIn(this.module.paths.fields);
-      }
-      if (this.module.paths.models) {
-        this.findModelsIn(this.module.paths.models);
-      }
-      if (this.module.paths.mixins) {
-        this.findMixinsIn(this.module.paths.mixins);
-      }
-      if (this.module.paths.logics) {
-        this.findLogicsIn(this.module.paths.logics);
-      }
-      if (this.module.paths.routes) {
-        this.findRoutesIn(this.module.paths.routes);
-      }
-      if (this.module.paths.locales) {
-        notLocale.fromDir(this.module.paths.locales, this.module.name);
-      }
-    }catch(e){
-      console.error(e);
-    }
-  }
-
-  findLogicsIn(logicsPath) {
-    fs.readdirSync(logicsPath).forEach((file) => {
-      let logicPath = path.join(logicsPath, file);
-      log.info(`Checking logic in ${logicPath}`);
-      if (fs.lstatSync(logicPath).isFile()) {
-        let logic = require(logicPath),
-          logicName = file;
-        if (logic && logic.thisLogicName) {
-          logicName = logic.thisLogicName;
-        }
-        logic.filename = logicPath;
-        this.registerLogic(logic, logicName);
-      }
-    });
-  }
-
-  findModelsIn(modelsPath) {
-    fs.readdirSync(modelsPath).forEach((file) => {
-      let modelPath = path.join(modelsPath, file);
-      log.info(`Checking model in ${modelPath}`);
-      if (fs.lstatSync(modelPath).isFile()) {
-        let model = require(modelPath),
-          modelName = file;
-        if (model && model.thisModelName) {
-          modelName = model.thisModelName;
-        }
-        model.filename = modelPath;
-        this.registerModel(model, modelName);
-      }
-    });
-  }
-
-  findMixinsIn(mixinsPath) {
-    fs.readdirSync(mixinsPath).forEach((file) => {
-      let mixinPath = path.join(mixinsPath, file);
-      if (fs.lstatSync(mixinPath).isFile()) {
-        let mixin = require(mixinPath),
-          modelName = file;
-        if (mixin && mixin.modelName) {
-          modelName = mixin.modelName;
-        }
-        mixin.filename = mixinPath;
-        this.registerMixin(mixin, modelName);
-      }
-    });
-  }
-
-  findFieldsIn(fieldsDir) {
-    fs.readdirSync(fieldsDir).forEach((file) => {
-      let fieldsPath = path.join(fieldsDir, file);
-      if (fs.lstatSync(fieldsPath).isFile()) {
-        let fields = require(fieldsPath);
-        if (fields && Object.prototype.hasOwnProperty.call(fields, 'FIELDS')) {
-          Fields.registerFields(fields.FIELDS, this.fieldsImportRules);
-        } else {
-          let parts = path.parse(fieldsPath);
-          Fields.registerField(parts.name, fields, this.fieldsImportRules);
-        }
-      }
-    });
-  }
-
-  tryFile(filePath) {
-    try {
-      return fs.lstatSync(filePath) && fs.lstatSync(filePath).isFile();
-    } catch (e) {
-      return false;
-    }
-  }
-
-  findRoutesIn(routesPath) {
-    fs.readdirSync(routesPath).forEach((file) => {
-      this.findRouteIn(file, routesPath);
-    });
-  }
-
-  tryRouteFile({routesPath, routeBasename}){
-    const routePath = path.join(routesPath, routeBasename + '.js');
-    if (this.tryFile(routePath)) {
-      const route = require(routePath);
-      route.filename = routePath;
-      if (!route.thisRouteName) {
-        route.thisRouteName = routeBasename;
-      }
-      return route;
-    }
-  }
-
-  tryRouteManifestFile(routesPath, file){
-    const routeManifestPath = path.join(routesPath, file);
-    if (this.tryFile(routeManifestPath)) {
-      return require(routeManifestPath);
-    }else{
-      return false;
-    }
-  }
-
-  tryWSRouteFile({routesPath, routeBasename}){
-    const routeWSPath = path.join(routesPath, routeBasename + '.ws.js');
-    if (this.tryFile(routeWSPath)) {
-      const wsRoute = require(routeWSPath);
-      if (!wsRoute.thisRouteName) {
-        wsRoute.thisRouteName = routeBasename;
-      }
-      return wsRoute;
-    }else{
-      return false;
-    }
-  }
-
-  findRouteIn(file, routesPath) {
-    try {
-      //если имя похоже на название манифеста
-      if (file.indexOf(DEFAULT_MANIFEST_FILE_ENDING) === -1) {
-        return;
-      }
-      const routeBasename = file.substr(0, file.indexOf(DEFAULT_MANIFEST_FILE_ENDING));
-      const routeManifest = this.tryRouteManifestFile(routesPath, file);
-      //без манифеста ничего выставить на ружу не выйдет
-      if(!routeManifest){
-        return;
-      }
-      //ищем end-points
-      const route = this.tryRouteFile({routesPath, routeBasename});
-      const wsRoute = this.tryWSRouteFile({routesPath, routeBasename});
-      if(!route && !wsRoute){
-        return;
-      }
-      this.registerManiestAndRoutes({
-        routeManifest,
-        routeName: route?route.thisRouteName:routeBasename,
-        route, wsRoute
-      });
-    } catch (e) {
-      log.error(e);
-    }
-  }
-
-
-  registerManiestAndRoutes({routeName, routeManifest, route, wsRoute}){
-    this.registerManifest(routeManifest, routeName);
-    if (route) {
-      this.registerRoute(route, route.thisRouteName);
-    }
-    if (wsRoute) {
-      this.registerWSEndPoints(wsRoute, wsRoute.thisRouteName);
-    }
-  }
-
-  registerLogic(logic, logicName) {
-    if (this.notApp) {
-      log.debug(`Register logic ${logicName}`);
-      logic.getLogic = this.notApp.getLogic.bind(this.notApp);
-      logic.getLogicFile = this.notApp.getLogicFile.bind(this.notApp);
-      logic.getModule = this.notApp.getModule.bind(this.notApp);
-      logic.log = logger(logic, `Logic#${logicName}`);
-    } else {
-      log.debug(`Register logic ${logicName} skiped, no Application`);
-    }
-    logic.getThisModule = () => this;
-    this.logics[logicName] = logic;
-  }
-
-  registerModel(model, modelName) {
-    if (this.notApp) {
-      log.debug(`Register model ${modelName}`);
-      model.getModel = this.notApp.getModel.bind(this.notApp);
-      model.getModelFile = this.notApp.getModelFile.bind(this.notApp);
-      model.getModelSchema = this.notApp.getModelSchema.bind(this.notApp);
-      model.getModule = this.notApp.getModule.bind(this.notApp);
-      model.log = logger(model, `Model#${modelName}`);
-    } else {
-      log.debug(`Register model ${modelName} skiped, no Application`);
-    }
-    model.getThisModule = () => this;
-    this.models[modelName] = model;
-  }
-
-  registerMixin(mixin, modelName) {
-    this.mixins[modelName] = mixin;
-  }
-
-  registerRoute(route, routeName) {
-    this.routes[route.thisRouteName] = route;
-    if (this.notApp) {
-      log.debug(`Register route ${routeName}`);
-      route.getLogic = this.notApp.getLogic.bind(this.notApp);
-      route.getLogicFile = this.notApp.getLogicFile.bind(this.notApp);
-      route.getModel = this.notApp.getModel.bind(this.notApp);
-      route.getModelFile = this.notApp.getModelFile.bind(this.notApp);
-      route.getModelSchema = this.notApp.getModelSchema.bind(this.notApp);
-      route.getModule = this.notApp.getModule.bind(this.notApp);
-      route.log = logger(route, `Route#${routeName}`);
-    } else {
-      log.debug(`Register route ${routeName} skiped, no Application`);
-    }
-    route.getThisModule = () => this;
-  }
-
-  registerManifest(manifest, routeName) {
-    this.manifests[routeName] = manifest;
-  }
-
-
-  bindWSEndPointEntityFunctions(wsEndPoints, wsRouteName, collectionType) {
-    if (Object.prototype.hasOwnProperty.call(wsEndPoints, collectionType)) {
-      Object.keys(wsEndPoints[collectionType]).forEach((collectionItem) => {
-        const entity = wsEndPoints[collectionType][collectionItem];
-        entity.getLogic = this.notApp.getLogic.bind(this.notApp);
-        entity.getLogicFile = this.notApp.getLogicFile.bind(this.notApp);
-        entity.getModel = this.notApp.getModel.bind(this.notApp);
-        entity.getModelFile = this.notApp.getModelFile.bind(this.notApp);
-        entity.getModelSchema = this.notApp.getModelSchema.bind(this.notApp);
-        entity.getModule = this.notApp.getModule.bind(this.notApp);
-        Object.keys(entity).forEach((endPointType) => {
-          this.checkWSEndPointType(collectionType, collectionItem, endPointType);
-          Object.keys(entity[endPointType]).forEach((endPointName) => {
-            this.addEndPoint(
-              collectionType, collectionItem,
-              endPointType, wsRouteName,
-              endPointName,
-              entity[endPointType][endPointName]
-            );
-          });
-        });
-      });
-    }
-  }
-
-  registerWSEndPoints(wsEndPoints, wsRouteName) {
-    if (this.notApp) {
-      this.bindWSEndPointEntityFunctions(wsEndPoints, wsRouteName, 'servers');
-      this.bindWSEndPointEntityFunctions(wsEndPoints, wsRouteName, 'clients');
-    }
-  }
-
-  checkWSEndPointType(collectionType, collectionItem, endPointType) {
-    if (!Object.prototype.hasOwnProperty.call(this.wsEndPoints[collectionType], collectionItem)) {
-      this.wsEndPoints[collectionType][collectionItem] = {};
-    }
-    if (!Object.prototype.hasOwnProperty.call(this.wsEndPoints[collectionType][collectionItem], endPointType)) {
-      this.wsEndPoints[collectionType][collectionItem][endPointType] = {};
-    }
-  }
-
-  addEndPoint(collectionType, collectionItem, endPointType, wsRouteName, action, func) {
-    this.wsEndPoints[collectionType][collectionItem][endPointType][`${wsRouteName}${DEFAULT_WS_ROUTE_ACTION_SPLITTER}${action}`] = func;
-  }
-
   getEndPoints() {
-    return this.wsEndPoints;
+    return this.routesWS;
   }
 
   getManifest({
@@ -395,7 +131,7 @@ class notModule {
   }
   */
   getModelFile(modelName) {
-    if (this.models && Object.prototype.hasOwnProperty.call(this.models, modelName)) {
+    if (this.models && objHas(this.models, modelName)) {
       return this.models[modelName];
     } else {
       return null;
@@ -403,20 +139,16 @@ class notModule {
   }
 
   getModel(modelName) {
-    try {
-      let modelFile = this.getModelFile(modelName);
-      if (modelFile && (modelName in modelFile)) {
-        return modelFile[modelName];
-      } else {
-        return null;
-      }
-    } catch (e) {
-      log.error(e);
+    let modelFile = this.getModelFile(modelName);
+    if (modelFile && (modelName in modelFile)) {
+      return modelFile[modelName];
+    } else {
+      return null;
     }
   }
 
   getLogicFile(logicName) {
-    if (this.logics && Object.prototype.hasOwnProperty.call(this.logics, logicName)) {
+    if (this.logics && objHas(this.logics, logicName)) {
       return this.logics[logicName];
     } else {
       return null;
@@ -424,93 +156,53 @@ class notModule {
   }
 
   getLogic(logicName) {
-    try {
-      let logicFile = this.getLogicFile(logicName);
-      if (logicFile && (logicName in logicFile)) {
-        return logicFile[logicName];
-      } else {
-        return null;
-      }
-    } catch (e) {
-      log.error(e);
+    let logicFile = this.getLogicFile(logicName);
+    if (logicFile && (logicName in logicFile)) {
+      return logicFile[logicName];
+    } else {
+      return null;
     }
   }
 
 
   getModelSchema(modelName) {
     let modelFile = this.getModelFile(modelName);
-    if (modelFile && Object.prototype.hasOwnProperty.call(modelFile, modelName) && modelFile.thisSchema) {
+    if (modelFile && objHas(modelFile, modelName) && modelFile.thisSchema) {
       return modelFile.thisSchema;
     }
     return null;
   }
 
-  getMixin(modelName) {
-    if (this.mixins && Object.prototype.hasOwnProperty.call(this.mixins, modelName)) {
-      return this.mixins[modelName];
-    } else {
-      return null;
-    }
-  }
-
-  getRoute(routeName) {
-    if (this.routes && Object.prototype.hasOwnProperty.call(this.routes, routeName)) {
-      return this.routes[routeName];
-    } else {
-      return null;
-    }
-  }
-
-  applyMixins(model, mixins){
-    if (!Array.isArray(mixins)) {return;}
-    for (let mixin of mixins) {
-      if (model.thisSchema && mixin.schema) {
-        model.thisSchema = Object.assign(model.thisSchema, mixin.schema);
-      }
-      if (model.thisMethods && mixin.methods) {
-        model.thisMethods = Object.assign(model.thisMethods, mixin.methods);
-      }
-      if (model.thisStatics && mixin.statics) {
-        model.thisStatics = Object.assign(model.thisStatics, mixin.statics);
-      }
-      if (model.thisVirtuals && mixin.virtuals) {
-        model.thisVirtuals = Object.assign(model.thisVirtuals, mixin.virtuals);
-      }
-    }
-  }
-
-  fabricateModel(model, mixins) {
-    this.applyMixins(model, mixins);
+  fabricateModel(model) {
     protoModel.fabricate(model, {}, this.mongoose);
   }
 
   fabricateModels() {
     for (let modelName in this.models) {
       log.info(`Fabricating model: ${modelName}`);
-      let modelMixins = [];
-      if (this.notApp) {
-        modelMixins = this.notApp.getModelMixins(modelName);
-      }
-      this.fabricateModel(this.models[modelName], modelMixins);
+      this.fabricateModel(this.models[modelName]);
     }
   }
 
   expose(app, moduleName) {
     if (this.manifests && app) {
       this.fabricateModels();
-      this.manifest = new notManifest(app, this.notApp, moduleName);
+      this.initManifest(app, moduleName);
       this.manifest.registerRoutes(this.manifests);
     }
+  }
+
+  initManifest(app, moduleName){
+    this.manifest = new notManifest(app, this.notApp, moduleName);
   }
 
   async exec(methodName) {
     if (!this.module) {
       log.error(`Cant exec ${methodName} in module ${this.path}, module not loaded`);
-      return;
+      return false;
     }
-    if (
-      (Object.prototype.hasOwnProperty.call(this.module, methodName))
-      && (typeof this.module[methodName] === 'function')
+    if ((objHas(this.module, methodName)) &&
+      (typeof this.module[methodName] === 'function')
     ) {
       try {
         if (this.module[methodName].constructor.name === 'AsyncFunction') {
@@ -518,9 +210,13 @@ class notModule {
         } else {
           this.module[methodName](this.notApp);
         }
+        return true;
       } catch (e) {
         log.error(e);
+        return false;
       }
+    }else{
+      return false;
     }
   }
 
@@ -574,6 +270,74 @@ class notModule {
       content[name] = this.getModelSchema(name);
     });
     return content;
+  }
+
+
+  setManifest(key, val){
+    this.manifests[key] = val;
+  }
+
+  setModel(key, val){
+    this.models[key] = val;
+  }
+
+  setRoute(key, val){
+    this.routes[key] = val;
+  }
+
+  getRoute(routeName) {
+    if (this.routes && objHas(this.routes, routeName)) {
+      return this.routes[routeName];
+    } else {
+      return null;
+    }
+  }
+
+  appIsSet(){
+    return typeof this.notApp !== 'undefined';
+  }
+
+  getApp(){
+    return this.notApp;
+  }
+
+  getName(){
+    return this.module.name;
+  }
+
+  setRouteWS({
+    collectionType,
+    collectionName,
+    endPointType,
+    wsRouteName,
+    action,
+    func
+  }) {
+    //servers/client
+    const collection = this.routesWS[collectionType];
+    //concrete client or server
+    const wsConnection =  collection[collectionName];
+    //request, event, response etc
+    const endPoints = wsConnection[endPointType];
+    //endPoint name
+    const endPointName = `${wsRouteName}${DEFAULT_WS_ROUTE_ACTION_SPLITTER}${action}`;
+    //finally assigning function
+    endPoints[endPointName] = func;
+  }
+
+  createEmptyIfNotExistsRouteWSType(
+    {
+      collectionType, //client, server
+      collectionName, //concrete client/server name
+      endPointType    //request,event,response, etc
+    }
+  ) {
+    if (!objHas(this.routesWS[collectionType], collectionName)) {
+      this.routesWS[collectionType][collectionName] = {};
+    }
+    if (!objHas(this.routesWS[collectionType][collectionName], endPointType)) {
+      this.routesWS[collectionType][collectionName][endPointType] = {};
+    }
   }
 
 }

@@ -1,3 +1,5 @@
+require('not-log')(false);
+
 const expect = require('chai').expect,
 	auth = require('../src/auth'),
 	HttpError = require('../src/error').Http;

@@ -4,9 +4,10 @@
  *
  */
 const EventEmitter = require('events');
+const {objHas, firstLetterToUpper} = require('./common');
+
 const
   notModule = require('./manifest/module'),
-  process = require('process'),
   path = require('path'),
   fs = require('fs');
 
@@ -123,9 +124,9 @@ class notDomain extends EventEmitter {
   getRoute(name) {
     if (name.indexOf('//') > 0) {
       let [moduleName, routeName, routeFunctionName] = name.split('//');
-      if (this.modules && this.modules.hasOwnProperty(moduleName)) {
+      if (this.modules && objHas(this.modules, moduleName)) {
         let route = this.modules[moduleName].getRoute(routeName);
-        if (Object.prototype.hasOwnProperty.call(route, routeFunctionName)) {
+        if (objHas(route, routeFunctionName)) {
           return route[routeFunctionName];
         }
       }
@@ -140,30 +141,30 @@ class notDomain extends EventEmitter {
    *  @return {object}        model
    **/
   getModel(name) {
-    let result = null;
     if (name.indexOf('//') > 0) {
-      let [moduleName, modelName] = name.split('//');
-      if (this.modules && this.modules.hasOwnProperty(moduleName)) {
-        return this.modules[moduleName].getModel(modelName);
-      } else {
-        return result;
-      }
+      return this.getByFullPath(name, 'model');
     } else {
       let mNames = Object.keys(this.modules);
       for (let t = 0; t < mNames.length; t++) {
-        if (!this.modules.hasOwnProperty(mNames[t])) {
+        if (!objHas(this.modules, mNames[t])) {
           continue;
         }
         let tmp = this.modules[mNames[t]].getModel(name);
         if (tmp) {
-          if (!result) {
-            result = [];
-          }
-          result.push(tmp);
+          return tmp;
         }
       }
     }
-    return (result && result.length === 1) ? result[0] : result;
+    return null;
+  }
+
+  getByFullPath(name, type){
+    let [moduleName, resourceName] = name.split('//');
+    if (this.modules && objHas(this.modules, moduleName)) {
+      return this.modules[moduleName][`get${firstLetterToUpper(type)}`](resourceName);
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -172,30 +173,21 @@ class notDomain extends EventEmitter {
    *  @return  {object}        CommonJS module object
    **/
   getModelFile(modelName) {
-    let result = null;
     if (modelName.indexOf('//') > 0) {
-      let [moduleName, modelName] = modelName.split('//');
-      if (this.modules && this.modules.hasOwnProperty(moduleName)) {
-        return this.modules.getModelFile(modelName);
-      } else {
-        return result;
-      }
+      return this.getByFullPath(modelName, 'modelFile');
     } else {
       let mNames = Object.keys(this.modules);
       for (let t = 0; t < mNames.length; t++) {
-        if (!this.modules.hasOwnProperty(mNames[t])) {
+        if (!objHas(this.modules, mNames[t])) {
           continue;
         }
         let tmp = this.modules[mNames[t]].getModelFile(modelName);
         if (tmp) {
-          if (!result) {
-            result = [];
-          }
-          result.push(tmp);
+          return tmp;
         }
       }
     }
-    return (result && result.length === 1) ? result[0] : result;
+    return null;
   }
 
   /**
@@ -205,54 +197,22 @@ class notDomain extends EventEmitter {
    **/
 
   getModelSchema(modelName) {
-    let result = null;
     if (modelName.indexOf('//') > 0) {
-      let [moduleName, modelName] = modelName.split('//');
-      if (this.modules && this.modules.hasOwnProperty(moduleName)) {
-        return this.modules.getModelSchema(modelName);
-      } else {
-        return result;
-      }
+      return this.getByFullPath(modelName, 'modelSchema');
     } else {
       let mNames = Object.keys(this.modules);
       for (let t = 0; t < mNames.length; t++) {
-        if (!this.modules.hasOwnProperty(mNames[t])) {
+        if (!objHas(this.modules, mNames[t])) {
           continue;
         }
         let tmp = this.modules[mNames[t]].getModelSchema(modelName);
         if (tmp) {
-          if (!result) {
-            result = [];
-          }
-          result.push(tmp);
+          return tmp;
         }
       }
     }
-    return (result && result.length === 1) ? result[0] : result;
+    return null;
   }
-
-
-  /**
-   *  Return mixins for model
-   *  @param {string}  modelNamespecified by 'moduleName//modelName' or 'modelName'
-   *  @return  {array}  of mixins
-   */
-  getModelMixins(modelName) {
-    let result = [],
-      mNames = Object.keys(this.modules);
-    for (let modName of mNames) {
-      let mod = this.modules[modName];
-      if (!mod) {
-        continue;
-      }
-      let tmp = mod.getMixin(modelName);
-      if (tmp) {
-        result.push(tmp);
-      }
-    }
-    return result;
-  }
-
 
   /**
    *  Returns logic
@@ -261,30 +221,21 @@ class notDomain extends EventEmitter {
    *  @return {object}        logic
    **/
   getLogic(name) {
-    let result = null;
     if (name.indexOf('//') > 0) {
-      let [moduleName, logicName] = name.split('//');
-      if (this.modules && this.modules.hasOwnProperty(moduleName)) {
-        return this.modules[moduleName].getLogic(logicName);
-      } else {
-        return result;
-      }
+      return this.getByFullPath(name, 'logic');
     } else {
       let mNames = Object.keys(this.modules);
       for (let t = 0; t < mNames.length; t++) {
-        if (!this.modules.hasOwnProperty(mNames[t])) {
+        if (!objHas(this.modules, mNames[t])) {
           continue;
         }
         let tmp = this.modules[mNames[t]].getLogic(name);
         if (tmp) {
-          if (!result) {
-            result = [];
-          }
-          result.push(tmp);
+          return tmp;
         }
       }
     }
-    return (result && result.length === 1) ? result[0] : result;
+    return null;
   }
 
 
@@ -294,30 +245,21 @@ class notDomain extends EventEmitter {
    *  @return  {object}        CommonJS module object
    **/
   getLogicFile(logicName) {
-    let result = null;
     if (logicName.indexOf('//') > 0) {
-      let [moduleName, logicName] = logicName.split('//');
-      if (this.modules && this.modules.hasOwnProperty(moduleName)) {
-        return this.modules.getLogicFile(logicName);
-      } else {
-        return result;
-      }
+      return this.getByFullPath(logicName, 'logicFile');
     } else {
       let mNames = Object.keys(this.modules);
       for (let t = 0; t < mNames.length; t++) {
-        if (!this.modules.hasOwnProperty(mNames[t])) {
+        if (!objHas(this.modules,mNames[t])) {
           continue;
         }
         let tmp = this.modules[mNames[t]].getLogicFile(logicName);
         if (tmp) {
-          if (!result) {
-            result = [];
-          }
-          result.push(tmp);
+          return tmp;
         }
       }
     }
-    return (result && result.length === 1) ? result[0] : result;
+    return null;
   }
 
   /**
@@ -326,7 +268,7 @@ class notDomain extends EventEmitter {
    *  @return {object}  module
    **/
   getModule(moduleName) {
-    if (this.modules && this.modules.hasOwnProperty(moduleName)) {
+    if (this.modules && objHas(this.modules,moduleName)) {
       return this.modules[moduleName];
     } else {
       for (let t in this.modules) {
@@ -377,7 +319,7 @@ class notDomain extends EventEmitter {
    *  @return {object|undefined}    value or undefined
    */
   getEnv(key) {
-    if (this.envs.hasOwnProperty(key)) {
+    if (objHas(this.envs,key)) {
       return this.envs[key];
     } else {
       return undefined;
@@ -473,7 +415,7 @@ class notDomain extends EventEmitter {
   }
 
   WSServer(name = 'main') {
-    if (Object.prototype.hasOwnProperty.call(this._wss, name)) {
+    if (objHas(this._wss, name)) {
       return this._wss[name];
     } else {
       return undefined;
@@ -485,7 +427,7 @@ class notDomain extends EventEmitter {
   }
 
   WSClient(name) {
-    if (Object.prototype.hasOwnProperty.call(this._wsc, name)) {
+    if (objHas(this._wsc, name)) {
       return this._wsc[name];
     } else {
       return undefined;

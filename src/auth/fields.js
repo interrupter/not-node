@@ -1,8 +1,7 @@
 const ABSTRACT = require('./abstract');
 const COMMON = require('../common');
 const CONST = require('./const');
-
-const objHas = (pile, nail) => Object.prototype.hasOwnProperty.call(pile, nail);
+const {objHas}  = require('../common');
 
 /**
 * Get data owner ObjectId

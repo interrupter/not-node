@@ -2,6 +2,7 @@ const Auth = require('./auth');
 const notDomain = require('./domain');
 const merge = require('deepmerge');
 const parent = require('../index.js');
+const {objHas} = require('./common');
 
 /**
  *	Application
@@ -80,12 +81,11 @@ class notApp extends notDomain {
         role: user.role,
         root: user.root
       });
-      if(Object.keys(manifest).indexOf(model) > -1){
-        if(Object.prototype.hasOwnProperty.call(manifest[model], 'actions')){
-          if(Object.prototype.hasOwnProperty.call(manifest[model].actions, action)){
-            return manifest[model].actions[action];
-          }
-        }
+      if(Object.keys(manifest).indexOf(model) > -1 &&
+        objHas(manifest[model], 'actions') &&
+        objHas(manifest[model].actions, action)
+      ){
+        return manifest[model].actions[action];
       }
     }
     return false;

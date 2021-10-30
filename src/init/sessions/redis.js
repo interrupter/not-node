@@ -1,9 +1,12 @@
-
+const {notError} = require('not-error');
+const log = require('not-log')(module, 'not-node//init');
+const ADDS = require('../additional');
 
 module.exports = class InitSessionsMongo{
-  static run(input) {
-    log.info('Setting up user sessions handler...');
+  static async run({config, options, master}) {
+    log.info('Setting up user sessions handler(redis)...');
     try {
+      await ADDS.run('sessions.pre', {config, options, master});
       const redis = require('redis');
       const expressSession = require('express-session');
       const redisClient = redis.createClient();
@@ -34,18 +37,24 @@ module.exports = class InitSessionsMongo{
         log.info('Sessions client closed connection');
       });
 
-      this.expressApp.use(expressSession({
-        secret: this.config.get('session:secret'),
-        key: this.config.get('session:key'),
-        cookie: this.config.get('session:cookie'),
-        resave: false,
-        saveUninitialized: true,
-        store: new redisStore({ host: 'localhost', port: 6379, client: redisClient, ttl: 86400 })
+      master.expressApp.use(expressSession({
+        secret:             config.get('session:secret'),
+        key:                config.get('session:key'),
+        cookie:             config.get('session:cookie'),
+        resave:             false,
+        saveUninitialized:  true,
+        store: new redisStore({
+          host:             'localhost',
+          port:             6379,
+          client:           redisClient,
+          ttl:              86400
+        })
       }));
+      await ADDS.run('sessions.post', {config, options, master});
     } catch (e) {
-      this.notApp.report(new notError('User session init failed', {}, e));
-      this.throwError(e.message, 1);
+      master.notApp.report(new notError('User sessions init failed', {}, e));
+      master.throwError(e.message, 1);
     }
   }
 
-}
+};

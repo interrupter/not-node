@@ -1,5 +1,5 @@
 const ROLES = require('./roles');
-const postWarning = require('./obsolete');
+const postWarning = require('../obsolete');
 
 function ruleHasRootDirective(rule){
   return (Object.prototype.hasOwnProperty.call(rule, 'admin') && rule.admin) || (Object.prototype.hasOwnProperty.call(rule, 'root') && rule.root);

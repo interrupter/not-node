@@ -1,4 +1,4 @@
-const obsolete = require('../../src/auth/obsolete');
+const obsolete = require('../../src/obsolete');
 module.exports = () => {
   describe('Obsolete params warnings', () => {
     it('user', ()=>{
