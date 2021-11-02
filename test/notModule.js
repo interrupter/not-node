@@ -3,8 +3,7 @@ const expect = require('chai').expect,
   notModule = require('../src/manifest/module'),
   notManifest = require('../src/manifest/manifest'),
   mongoose = require('mongoose'),
-  increment = require('../src/model/increment'),
-  modulePath = __dirname + '/module',
+  modulePath = __dirname + '/testies/module',
   {
     MongoMemoryServer
   } = require('mongodb-memory-server');
@@ -24,21 +23,10 @@ const moduleManifest = {
 var mongod = null;
 
 describe('notModule', function() {
-  before((done) => {
-    MongoMemoryServer.create()
-      .then((mongodi) => {
-        mongod = mongodi;
-        let uri = mongod.getUri();
-        mongoose.connect(uri, (err) => {
-          if (err) {
-            console.error(err);
-            done(err);
-          } else {
-            increment.init(mongoose);
-            done();
-          }
-        });
-      });
+  before(async () => {
+    mongod = await MongoMemoryServer.create();
+    let uri = mongod.getUri();
+    await mongoose.connect(uri);
   });
 
   describe('constructor', function() {
@@ -59,7 +47,7 @@ describe('notModule', function() {
 
     it('With init from module', function() {
       var mod = new notModule({
-        modObject: require('./module'),
+        modObject: require('./testies/module'),
         mongoose: mongoose
       });
       expect(mod.faulty).to.deep.equal(false);
@@ -211,7 +199,7 @@ describe('notModule', function() {
   describe('initFromPath', function() {
     it('modPath is points to a directory, require failed', function() {
       const mod = new notModule({
-        modPath: path.join(__dirname, 'badmodule'),
+        modPath: path.join(__dirname, 'testies/badmodule'),
         mongoose: mongoose
       });
       expect(mod.faulty).to.be.true;
@@ -219,7 +207,7 @@ describe('notModule', function() {
 
     it('modPath is points to a file, require failed', function() {
       const mod = new notModule({
-        modPath: path.join(__dirname, 'module/index.js'),
+        modPath: path.join(__dirname, 'testies/module/index.js'),
         mongoose: mongoose
       });
       expect(mod.faulty).to.be.false;
@@ -229,7 +217,7 @@ describe('notModule', function() {
   describe('initFromModule', function() {
     it('throws', function() {
       const mod = new notModule({
-        modPath: path.join(__dirname, 'badmodule'),
+        modPath: path.join(__dirname, 'testies/badmodule'),
         mongoose: mongoose
       });
       mod.registerContent = () => {
@@ -655,18 +643,12 @@ describe('notModule', function() {
   });
 
 
-  require('./not.module.subs')({
+  require('./module')({
     expect
   });
 
-  after(function(done) {
-    mongoose.disconnect(async () => {
-      try {
-        await mongod.stop();
-        done();
-      } catch (e) {
-        done(e)
-      }
-    });
+  after(async() => {
+    await mongoose.disconnect()
+    await mongod.stop();
   });
 });

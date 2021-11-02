@@ -1,6 +1,8 @@
 /** @module Model/Increment */
 
-var thisSchema = {
+
+
+const thisSchema = {
   id: {
     type: String,
     unique: true,
@@ -12,9 +14,16 @@ var thisSchema = {
     required: true
   }
 };
-var mongooseLocal = null;
-var schema = null;
 
+let mongooseLocal = null;
+let schema = null;
+
+/**
+* Returns sub-list of fields which is not contained in object
+* @param {Array.string} fields  list of fields
+* @param {Object}       data    object to filter against
+* @return {Array.string}        sub-list of fields not contained in object
+**/
 function notContainedInData(fields, data){
   let keys = Object.keys(data);
   return fields.filter((field)=>{
@@ -22,7 +31,11 @@ function notContainedInData(fields, data){
   });
 }
 
+module.exports.notContainedInData = notContainedInData;
 
+/**
+*
+**/
 function formId(modelName, filterFields, data){
   let idParts = [
     modelName,
@@ -31,11 +44,42 @@ function formId(modelName, filterFields, data){
   return idParts.join('_');
 }
 
+module.exports.formId = formId;
+/**
+* Some drivers versions work-arounds
+* @param  {Mongoose.Model} thisModel   counter model
+* @param  {Object}         which     filter object of update request
+* @param  {Object}         cmd          command object of update request
+* @param  {Object}         opts       options of request
+**/
+function secureUpdate(thisModel, which, cmd, opts){
+  if (typeof thisModel.updateOne === 'function') {
+    return thisModel.updateOne(which, cmd, opts).exec();
+  } else {
+    return thisModel.update(which, cmd, opts).exec();
+  }
+}
+
+module.exports.secureUpdate = secureUpdate;
+
+/**
+* Generate new ID for current model and filterFields
+**/
 function newGetNext() {
+  /**
+  * Generates next ID for modelName with additional possibility to index only in
+  * sub-set of all documents, which is grouped by fields (filterFields) with
+  * same value
+  * @param  {string}  modelName
+  * @param  {Array.string}  filterFields    list of fild names, which is used for grouping
+  * @param  {Object}  data                  item data
+  * @return
+  **/
   return async function(modelName, filterFields, data) {
     let thisModel = this;
     let id = modelName;
-    if(filterFields && Array.isArray(filterFields) && filterFields.length){
+    if(Array.isArray(filterFields)){
+      //if we miss fields in data for grouping
       let miss = notContainedInData(filterFields, data);
       if(miss.length === 0){
         id = formId(modelName, filterFields, data);
@@ -52,28 +96,28 @@ function newGetNext() {
         }
       },
       opts = {
-        new: true
+        new: true,
+        upsert: true
       };
-    let doc;
-    if (typeof thisModel.updateOne === 'function') {
-      doc = await thisModel.updateOne(which, cmd, opts).exec();
-    } else {
-      doc = await thisModel.update(which, cmd, opts).exec();
-    }
-    doc = await thisModel.find(which).exec();
-    if (doc.length > 0) {
-      return doc[0].seq;
-    } else {
-      let t = {
-        id,
-        seq: 1
-      };
-      await thisModel.collection.insertOne(t);
-      return 1;
+    let res = await secureUpdate(thisModel, which, cmd, opts);
+    if(res.ok === 1 && res.n === 1){
+      const doc = await thisModel.findOne({id});
+      return doc.seq;
+    }else{
+      throw new Error('ID generation failed');
     }
   };
 }
 
+module.exports.newGetNext = newGetNext;
+
+
+
+/**
+* Sets new current ID for model
+* @param {string} modelName   name of target model
+* @param {number} ID          desired new start ID for model
+**/
 function newRebase(){
   return async function(modelName, ID) {
     let thisModel = this;
@@ -84,37 +128,30 @@ function newRebase(){
         seq: ID
       },
       opts = {
-        new: true
+        new: true,
+        upsert: true
       };
-    let doc;
-    if (typeof thisModel.updateOne === 'function') {
-      doc = await thisModel.updateOne(which, cmd, opts).exec();
-    } else {
-      doc = await thisModel.update(which, cmd, opts).exec();
-    }
-    doc = await thisModel.find(which).exec();
-    if (doc.length > 0) {
-      return doc[0].seq;
-    } else {
-      let t = {
-        id: modelName,
-        seq: 1
-      };
-      await thisModel.collection.insertOne(t);
-      return 1;
+    //updating
+    let res = await secureUpdate(thisModel, which, cmd, opts);
+    if(res.ok === 1 && res.n === 1){
+      return ID;
+    }else{
+      throw new Error('ID generator rebase failed');
     }
   };
 }
+
+module.exports.newRebase = newRebase;
 
 module.exports.init = function(mongoose) {
   mongooseLocal = mongoose;
   schema = new(mongooseLocal.Schema)(thisSchema);
   schema.statics.getNext = newGetNext();
   schema.statics.rebase = newRebase();
-  var model = null;
+  let model = null;
   try {
     model = mongooseLocal.model('Increment', schema);
-  } catch (e) {
+  }catch{
     model = mongooseLocal.model('Increment');
   }
   module.exports.model = model;

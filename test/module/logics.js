@@ -46,7 +46,7 @@ module.exports = ({
     });
 
     describe('run', () => {
-      const logicsPath = path.join(__dirname, '../module/logics');
+      const logicsPath = path.join(__dirname, '../testies/module/logics');
       it('path to logics is not defined', function() {
         const ctx = {
           findAll(){}
@@ -150,7 +150,7 @@ module.exports = ({
 
 
     describe('register', () => {
-      const logicsPath = path.join(__dirname, '../module/logics/one.js');
+      const logicsPath = path.join(__dirname, '../testies/module/logics/one.js');
       it('file exists', function(done) {
         const ctx = {
           extend(){}
@@ -173,7 +173,7 @@ module.exports = ({
 
 
     describe('findAll', () => {
-      const logicsPath = path.join(__dirname, '../module/logics');
+      const logicsPath = path.join(__dirname, '../testies/module/logics');
       it('path exists', function() {
         let result = [];
         const ctx = {

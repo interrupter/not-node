@@ -22,7 +22,7 @@ module.exports = ({
     });
 
     describe('run', function() {
-      const modelsPath = path.join(__dirname, 'module/models');
+      const modelsPath = path.join(__dirname, 'testies/module/models');
       it('path to models is not defined', function() {
         const ctx = {};
         const param = {

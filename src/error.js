@@ -1,4 +1,5 @@
-/** @module Error */
+/** @module not-node/Error */
+
 const {objHas} = require('./common');
 const
   util = require('util'),

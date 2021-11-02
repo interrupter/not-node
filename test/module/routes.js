@@ -5,7 +5,7 @@ module.exports = ({
   expect
 }) => {
   describe('notModuleRegistratorRoutes', () => {
-    const routesPath = path.join(__dirname, '../module/routes');
+    const routesPath = path.join(__dirname, '../testies/module/routes');
     describe('getPath', () => {
       it('module paths(routes)', function() {
         const testPath = 'path_to_routes';

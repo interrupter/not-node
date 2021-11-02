@@ -57,10 +57,10 @@ module.exports = ({
 
 
     it('findAll', function() {
-      const logicsPath = path.join(__dirname, '../module/fields');
+      const logicsPath = path.join(__dirname, '../testies/module/fields');
       const list = [
-        path.resolve(__dirname, '../module/fields/collection.js'),
-        path.resolve(__dirname, '../module/fields/single.js')
+        path.resolve(__dirname, '../testies/module/fields/collection.js'),
+        path.resolve(__dirname, '../testies/module/fields/single.js')
       ].sort();
       let result = [];
       const ctx = {
@@ -100,7 +100,7 @@ module.exports = ({
               one: true
             }
           },
-          fromPath: path.resolve(__dirname, '../module/fields/collection.js')
+          fromPath: path.resolve(__dirname, '../testies/module/fields/collection.js')
         };
         notModuleRegistratorFields.prototype.register.call(ctx, param);
         expect(result).to.be.deep.equal(list);
@@ -127,7 +127,7 @@ module.exports = ({
               one: true
             }
           },
-          fromPath: path.resolve(__dirname, '../module/fields/single.js')
+          fromPath: path.resolve(__dirname, '../testies/module/fields/single.js')
         };
         notModuleRegistratorFields.prototype.register.call(ctx, param);
         expect(result).to.be.deep.equal(list);
@@ -140,7 +140,7 @@ module.exports = ({
         const ctx = {};
         const param = {
           fieldsImportRules:{},
-          lib: require(path.resolve(__dirname, '../module/fields/collection.js')).FIELDS
+          lib: require(path.resolve(__dirname, '../testies/module/fields/collection.js')).FIELDS
         };
         notModuleRegistratorFields.prototype.registerFields.call(ctx, param);
         expect(Object.keys(FIELDS.LIB).includes('collectionItem')).to.be.true;
@@ -152,7 +152,7 @@ module.exports = ({
         const ctx = {};
         const param = {
           name: 'single',
-          field: require(path.resolve(__dirname, '../module/fields/single.js')),
+          field: require(path.resolve(__dirname, '../testies/module/fields/single.js')),
           fieldsImportRules:{},
         };
         notModuleRegistratorFields.prototype.registerField.call(ctx, param);

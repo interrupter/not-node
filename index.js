@@ -1,16 +1,34 @@
-exports.Error = require('./src/error.js');
-exports.Auth = require('./src/auth');
-exports.Manifest = require('./src/manifest/manifest.js');
-exports.notApp = require('./src/app.js');
-exports.notDomain = require('./src/domain.js');
-exports.Versioning = require('./src/model/versioning.js');
-exports.Increment = require('./src/model/increment.js');
-exports.Proto = require('./src/model/proto.js');
-exports.Enrich = require('./src/model/enrich.js');
-exports.Routine = require('./src/model/routine.js');
-exports.Common = require('./src/common.js');
-exports.Fields = require('./src/fields.js');
+/**
+* @module not-node
+*/
 
-exports.Init = require('./src/init').Init;
-
-exports.Application = null;
+/** Error module
+ * @type {not-node/Error}
+ */
+module.exports.Error = require('./src/error.js');
+/** Authentication module */
+module.exports.Auth = require('./src/auth');
+/** Manifest infrastructure */
+module.exports.Manifest = require('./src/manifest/manifest.js');
+/** Web Application */
+module.exports.notApp = require('./src/app.js');
+/** General Application */
+module.exports.notDomain = require('./src/domain.js');
+/** Mongoose Documents versioning */
+module.exports.Versioning = require('./src/model/versioning.js');
+/** Mongoose Model autoincrement field */
+module.exports.Increment = require('./src/model/increment.js');
+/** Mongoose Model prototype */
+module.exports.Proto = require('./src/model/proto.js');
+/** Mongoose Model additional features enricher */
+module.exports.Enrich = require('./src/model/enrich.js');
+/** Mongoose Documents routine operation*/
+module.exports.Routine = require('./src/model/routine.js');
+/** Common functions */
+module.exports.Common = require('./src/common.js');
+/** Fields library manager */
+module.exports.Fields = require('./src/fields.js');
+/** Application initialization procedures */
+module.exports.Init = require('./src/init').Init;
+/** Application object */
+module.exports.Application = null;

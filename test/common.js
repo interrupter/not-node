@@ -60,9 +60,9 @@ describe('Common', function() {
 
 
 	describe('tryFile', function() {
-		const pathToExistingFile = path.join(__dirname, 'module/fields/collection.js');
-		const pathToAbsentFile = path.join(__dirname, 'module/fields/collection.ejs');
-		const pathToDirectory = path.join(__dirname, 'module/fields/empty');
+		const pathToExistingFile = path.join(__dirname, 'testies/module/fields/collection.js');
+		const pathToAbsentFile = path.join(__dirname, 'testies/module/fields/collection.ejs');
+		const pathToDirectory = path.join(__dirname, 'testies/module/fields/empty');
 
 		it('file exists, type file', function() {
 			const res = Common.tryFile(pathToExistingFile);
@@ -78,7 +78,20 @@ describe('Common', function() {
 			const res = Common.tryFile(pathToDirectory);
 			expect(res).to.be.equal(false);
 		});
+	});
 
+	describe('copyObj', function () {
+		it('empty', function () {
+			let rule = {};
+			expect(Common.copyObj(rule)).to.be.deep.equal({});
+		});
+
+		it('not empty, then modification of new rule is not changes original', function () {
+			let rule = {some: ['data']};
+			let copyOfRule = Common.copyObj(rule);
+			delete copyOfRule.some;
+			expect(rule).to.be.deep.equal({some: ['data']});
+		});
 	});
 
 });

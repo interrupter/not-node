@@ -66,20 +66,20 @@ class ModelVersioning{
   * @param {MongooseModel} thisModel      model to use
   * @return {Promise<MongooseDocument>}   current version with updated versioning tags
   */
-  static async saveVersion(id, data, thisModel){
+  static async saveVersion(id, data, model){
     let preservedVersionNumber = ModelVersioning.extractVersionNumber(data),
       preservedVersionsList = [...data.__versions];//making copy
-    let different = await ModelVersioning.isNew(thisModel, data);
+    let different = await ModelVersioning.isNew(model, data);
     if (different) {
       //it's not latest version, it's archived copy
       delete data.__latest;
       //saves to archive with preserved data
-      let versionDoc = new thisModel(data);
+      let versionDoc = new model(data);
       versionDoc.__version = preservedVersionNumber;
       versionDoc.__versions = preservedVersionsList;
       await versionDoc.save();
       //updating history
-      let originalDoc = await thisModel.findById(id).exec();
+      let originalDoc = await model.findById(id).exec();
       originalDoc.__version = preservedVersionNumber + 1;
       return await ModelVersioning.addVersionToHistory(originalDoc, versionDoc);
     }

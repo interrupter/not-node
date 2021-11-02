@@ -4,8 +4,6 @@ const expect = require('chai').expect,
 	auth = require('../src/auth'),
 	HttpError = require('../src/error').Http;
 
-console.log(Object.keys(auth));
-
 describe('Auth', function() {
 
 	describe('intersect_safe', function() {

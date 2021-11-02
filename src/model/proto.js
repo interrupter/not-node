@@ -54,7 +54,6 @@ module.exports = class ModelFabricate{
     if (targetModule.thisStatics) {
       Object.assign(schema.statics, targetModule.thisStatics);
     }
-
     this.extendSchemaFrom(targetModule.thisVirtuals, schema.virtual);
     this.extendSchemaFrom(targetModule.thisPre, schema.pre);
     this.extendSchemaFrom(targetModule.thisPost, schema.post);
@@ -98,7 +97,12 @@ module.exports = class ModelFabricate{
 
   static createIndexesForText(schema, targetModule){
     if(targetModule.enrich.textIndex){
-      schema.index(targetModule.enrich.textIndex, {name: Object.keys(targetModule.enrich.textIndex).join('__')});
+      schema.index(
+        targetModule.enrich.textIndex,
+        {
+          name: Object.keys(targetModule.enrich.textIndex).join('__')
+        }
+      );
     }
   }
 
@@ -127,15 +131,19 @@ module.exports = class ModelFabricate{
       let fieldsForIndexes = ModelFabricate.collectFieldsForIndexes(targetModule);
       //creating schema for model
       let schema = new Schema(targetModule.thisSchema, options.schemaOptions);
-      //creating unique indexes
-      ModelFabricate.createIndexesForFields(schema, fieldsForIndexes);
-      ModelFabricate.createIndexesForText(schema, targetModule);
-      //adding specific fields and indetificators
-      ModelFabricate.markFor(schema, targetModule);
-      //extending schema methods, statics, virtuals by user defined and default content
-      ModelFabricate.extendBySource(schema, targetModule);
-      ModelFabricate.extendBySource(schema, defaultModel);
-      return schema;
+      if(schema){
+        //creating unique indexes
+        ModelFabricate.createIndexesForFields(schema, fieldsForIndexes);
+        ModelFabricate.createIndexesForText(schema, targetModule);
+        //adding specific fields and indetificators
+        ModelFabricate.markFor(schema, targetModule);
+        //extending schema methods, statics, virtuals by user defined and default content
+        ModelFabricate.extendBySource(schema, targetModule);
+        ModelFabricate.extendBySource(schema, defaultModel);
+        return schema;
+      }else{
+        return false;
+      }
     }
   }
 
@@ -155,12 +163,13 @@ module.exports = class ModelFabricate{
     options = ModelFabricate.initOptions(options, targetModule);
 
     const schema = ModelFabricate.extendSchema(targetModule, options);
-    targetModule.mongooseSchema = schema;
-
-    try {
-      ModelFabricate.initMongooseModel(targetModule, schema, mongoose);
-    } catch (error) {
-      log.error(error);
+    if(schema){
+      targetModule.mongooseSchema = schema;
+      try {
+        ModelFabricate.initMongooseModel(targetModule, schema, mongoose);
+      } catch (error) {
+        log.error(error);
+      }
     }
   }
 };
