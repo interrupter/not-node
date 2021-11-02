@@ -1,54 +1,200 @@
 const expect = require('chai').expect,
-	HttpError = require('../src/error').Http,
-	testie = require('../src/app'),
-	routesPath = __dirname + '/testies/routes',
-	modulesPath = __dirname + '/testies/modules';
+  notApp = require('../src/app');
 
 describe('noApp', function() {
 
-	describe('Constructor', function() {
-		it('With options', function() {
-			var app = new testie({someOption: true});
-			expect(app.options).to.deep.equal({someOption: true});
-			expect(app.modules).to.deep.equal({});
-		});
-	});
+  describe('Constructor', function() {
+    it('With options', function() {
+      let app = new notApp({
+        someOption: true
+      });
+      expect(app.options).to.deep.equal({
+        someOption: true
+      });
+      expect(app.modules).to.deep.equal({});
+    });
+  });
 
-	describe('importModulesFrom', function() {
-		it('TODO', function() {
-			var app = new testie();
-			expect(true).to.deep.equal(true);
-		});
-	});
+  describe('getManifest', function() {
+    it('getManifest', function() {
+      const ctx = {
+        collectManifest() {
+          return {
+            manifest: true
+          };
+        }
+      };
+      const res = notApp.prototype.getManifest.call(ctx);
+      expect(res).to.deep.equal({
+        manifest: true
+      });
+    });
+  });
 
-	describe('importModuleFrom', function() {
-		it('TODO', function() {
-			expect(true).to.deep.equal(true);
-		});
-	});
+  describe('collectManifest', function() {
+    it('modules - empty', function() {
+      const ctx = {
+        modules: {}
+      };
+      const res = notApp.prototype.collectManifest.call(ctx);
+      expect(res).to.deep.equal({});
+    });
 
-	describe('importModule', function() {
-		it('TODO', function() {
-			expect(true).to.deep.equal(true);
-		});
-	});
+    it('modules - empty', function() {
+      const ctx = {
+        modules: {
+          user: {
+            getManifest() {
+              return {
+                user: {
+                  url: '/api/:modelName',
+                  modelName: 'user',
+                  actions: {
+                    tst: {
+                      mathod: 'get'
+                    }
+                  }
+                }
+              };
+            }
+          },
+          far: {
+            getManifest() {
+              return {
+                far: {
+                  url: '/api/:modelName',
+                  modelName: 'far',
+                  actions: {
+                    pst: {
+                      mathod: 'get'
+                    }
+                  }
+                }
+              };
+            }
+          }
+        }
+      };
+      const res = notApp.prototype.collectManifest.call(ctx);
+      expect(res).to.deep.equal({
+        user: {
+          url: '/api/:modelName',
+          modelName: 'user',
+          actions: {
+            tst: {
+              mathod: 'get'
+            }
+          }
+        },
+        far: {
+          url: '/api/:modelName',
+          modelName: 'far',
+          actions: {
+            pst: {
+              mathod: 'get'
+            }
+          }
+        }
+      });
+    });
+  });
 
-	describe('getManifest', function() {
-		it('TODO', function() {
-			expect(true).to.deep.equal(true);
-		});
-	});
+  describe('expose', function() {
+    it('ok', function() {
+      let exposed = [];
+      const ctx = {
+        forEachMod(cb) {
+          [
+            [
+              'mod1',
+              {
+                expose(app, n) {
+                  exposed.push(n);
+                }
+              }
+            ],
+            ['mod2', {}]
+          ].forEach(item => cb(...item));
+        }
+      };
+      notApp.prototype.expose.call(ctx);
+      expect(exposed).to.deep.equal(['mod1']);
+    });
+  });
 
-	describe('getModel', function() {
-		it('TODO', function() {
-			expect(true).to.deep.equal(true);
-		});
-	});
 
-	describe('Expose', function() {
-		it('TODO', function() {
-			expect(true).to.deep.equal(true);
-		});
-	});
+
+  describe('getActionManifestForUser', function() {
+    it('model and action exists', function() {
+      const ctx = {
+        collectManifest() {
+          return {
+            user: {
+              actions: {
+                tst: {
+                  lf: true
+                }
+              }
+            }
+          };
+        }
+      };
+      const model = 'user',
+        action = 'tst',
+        user = {
+          auth: true
+        };
+      const res = notApp.prototype.getActionManifestForUser.call(ctx, model, action, user);
+      expect(res).to.deep.equal({
+        lf: true
+      });
+    });
+
+    it('model not exists', function() {
+      const ctx = {
+        collectManifest() {
+          return {
+            book: {
+              actions: {
+                tst: {
+                  lf: true
+                }
+              }
+            }
+          };
+        }
+      };
+      const model = 'user',
+        action = 'tst',
+        user = {
+          auth: true
+        };
+      const res = notApp.prototype.getActionManifestForUser.call(ctx, model, action, user);
+      expect(res).to.deep.equal(false);
+    });
+
+    it('action not exists', function() {
+      const ctx = {
+        collectManifest() {
+          return {
+            user: {
+              actions: {
+                look: {
+                  lf: true
+                }
+              }
+            }
+          };
+        }
+      };
+      const model = 'user',
+        action = 'tst',
+        user = {
+          auth: true
+        };
+      const res = notApp.prototype.getActionManifestForUser.call(ctx, model, action, user);
+      expect(res).to.deep.equal(false);
+    });
+  });
 
 });

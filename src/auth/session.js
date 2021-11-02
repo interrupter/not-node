@@ -9,7 +9,7 @@ const ROLES = require('./roles');
  **/
 
 function isUser(req) {
-  return (req.session && req.session.user) ? true : false;
+  return (req && req.session && req.session.user) ? true : false;
 }
 
 function ifUser(req) {
@@ -23,7 +23,7 @@ function ifUser(req) {
  *	@return user role
  **/
 function getRole(req) {
-  return (req.session && req.session.role) ? req.session.role : undefined;
+  return (req && req.session && req.session.role) ? req.session.role : undefined;
 }
 
 /**
@@ -78,7 +78,7 @@ function isRoot(req) {
  *	@param	{object}	req 	Express Request
  **/
 function getUserId(req) {
-  if(req.session){
+  if(req && req.session){
     return req.session.user;
   }else{
     return undefined;
@@ -90,7 +90,7 @@ function getUserId(req) {
  *	@param	{object}	req 	Express Request
  **/
 function getSessionId(req) {
-  if(req.session && req.session.id){
+  if(req && req.session && req.session.id){
     return req.session.id.toString();
   }else{
     return undefined;
@@ -115,7 +115,7 @@ function setAuth(req, id, role) {
  *	@param	{object}	req 	Express Request
  **/
 function setGuest(req) {
-  if (req.session) {
+  if (req && req.session) {
     req.user = null;
     req.session.user = null;
     setRole(req, [CONST.DEFAULT_USER_ROLE_FOR_GUEST]);

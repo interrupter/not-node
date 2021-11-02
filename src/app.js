@@ -45,20 +45,25 @@ class notApp extends notDomain {
   }
 
   /**
-   *	Returns application manifest
+   *	Returns application manifest, by ExpressRequest
    *	@params		{object}	req 			Express request object
    *	@return 	{object}	manifest
    **/
   getManifest(req) {
+    const creds = Auth.extractAuthData(req);
+    return this.collectManifest(creds);
+  }
+
+  /**
+   *	Returns application manifest, by user credentials object
+   *	@params		{object}	creds 		not-node Auth.extractAuthData result
+   *	@return 	{object}	manifest
+   **/
+  collectManifest(creds){
     let manifest = {};
     for (let modName of Object.keys(this.modules)) {
-      manifest = merge(manifest, this.modules[modName].getManifest({
-        auth: Auth.isUser(req),
-        role: Auth.getRole(req),
-        root: Auth.isRoot(req)
-      }));
+      manifest = merge(manifest, this.modules[modName].getManifest(creds));
     }
-    this.requiredManifests = manifest;
     return manifest;
   }
 
@@ -68,25 +73,19 @@ class notApp extends notDomain {
    **/
   expose(app) {
     this.forEachMod((modName, mod)=>{
-      if (mod.expose) {
+      if (typeof mod.expose === 'function') {
         mod.expose(app, modName);
       }
     });
   }
 
   getActionManifestForUser(model, action, user) {
-    for (let modName of Object.keys(this.modules)) {
-      const manifest = this.modules[modName].getManifest({
-        auth: user.auth,
-        role: user.role,
-        root: user.root
-      });
-      if(Object.keys(manifest).indexOf(model) > -1 &&
-        objHas(manifest[model], 'actions') &&
-        objHas(manifest[model].actions, action)
-      ){
-        return manifest[model].actions[action];
-      }
+    const manifest = this.collectManifest(user);
+    if(Object.keys(manifest).includes(model)
+      && objHas(manifest[model], 'actions')
+      && objHas(manifest[model].actions, action)
+    ){
+      return manifest[model].actions[action];
     }
     return false;
   }
