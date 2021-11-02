@@ -64,7 +64,7 @@ module.exports.compareObjectIds = (firstId, secondId)=>{
 
 /**
  *  Returns today Date object without hours, minutes, seconds
- *  @return {Date}  current date with 00:00:00
+ *  @return {number}  current date with 00:00:00 in ms of unix time
  */
 module.exports.getTodayDate = ()=>{
   let t = new Date();

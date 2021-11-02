@@ -23,11 +23,59 @@ describe('Common', function() {
 		it(`Mongoose.Types.ObjectId.isValid('${testie}') -> true`, function(){
 			expect(ObjectId.isValid(testie)).to.be.ok;
 		});
+
 		it(`validateObjectId(${testie}) -> false`, function() {
 			expect(Common.validateObjectId(testie)).to.be.not.ok;
 		});
+
 		it('validateObjectId(`5af96abbce4adb46c5202ed3`) -> true', function() {
 			expect(Common.validateObjectId('5af96abbce4adb46c5202ed3')).to.be.ok;
+		});
+
+		it('validateObjectId(undefined) -> false', function() {
+			expect(Common.validateObjectId(undefined)).to.be.false;
+		});
+	});
+
+	describe('compareObjectIds', function() {
+		it('null and null -> false', function() {
+			expect(Common.compareObjectIds(null, null)).to.be.false;
+		});
+		it('1 and 1 -> false', function() {
+			expect(Common.compareObjectIds(1, 1)).to.be.false;
+		});
+		it('"1" and 1 -> false', function() {
+			expect(Common.compareObjectIds("1", 1)).to.be.false;
+		});
+	});
+
+
+	describe('getTodayDate', ()=>{
+		it('today', ()=>{
+			const res = Common.getTodayDate();
+			expect(typeof res).to.be.equal('number');
+		});
+	});
+	//
+	describe('executeObjectFunction', ()=>{
+		it('promise', async ()=>{
+			const obj = {
+				async method(...params){
+					return 'apple '+params.join('.');
+				}
+			}, name = 'method', params = [1,2,3,true];
+			const res = await Common.executeObjectFunction(obj, name, params);
+			expect(res).to.be.equal('apple 1.2.3.true');
+		});
+
+		it('function', async ()=>{
+			const obj = {
+				method(...params){
+					return 'apple '+params.join('.');
+				}
+			}, name = 'method', params = [1,2,3,true];
+			const res = await Common.executeObjectFunction(obj, name, params);
+			expect(res).to.be.equal('apple 1.2.3.true');
 		});
 	});
 
