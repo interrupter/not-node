@@ -4,7 +4,7 @@
  *
  */
 const EventEmitter = require('events');
-const {objHas, firstLetterToUpper} = require('./common');
+const {executeObjectFunction, objHas, firstLetterToUpper} = require('./common');
 
 const
   notModule = require('./manifest/module'),
@@ -99,9 +99,7 @@ class notDomain extends EventEmitter {
       notApp: this,
       fields: this.options.fields
     });
-    if (mod) {
-      this.importModule(mod, moduleName || mod.getModuleName());
-    }
+    this.importModule(mod, moduleName || mod.getModuleName());
     return this;
   }
 
@@ -141,21 +139,12 @@ class notDomain extends EventEmitter {
    *  @return {object}        model
    **/
   getModel(name) {
+    const type = 'model';
     if (name.indexOf('//') > 0) {
-      return this.getByFullPath(name, 'model');
+      return this.getByFullPath(name, type);
     } else {
-      let mNames = Object.keys(this.modules);
-      for (let t = 0; t < mNames.length; t++) {
-        if (!objHas(this.modules, mNames[t])) {
-          continue;
-        }
-        let tmp = this.modules[mNames[t]].getModel(name);
-        if (tmp) {
-          return tmp;
-        }
-      }
+      return this.getByShortPath(name, type);
     }
-    return null;
   }
 
   getByFullPath(name, type){
@@ -167,27 +156,28 @@ class notDomain extends EventEmitter {
     }
   }
 
+  getByShortPath(resourceName, type){
+    for (let moduleName of Object.keys(this.modules)) {
+      const res = this.modules[moduleName][`get${firstLetterToUpper(type)}`](resourceName);
+      if(res){
+        return res;
+      }
+    }
+    return null;
+  }
+
   /**
    *  Returns file with model declarations
    *  @param {string}   modelName  'modelName' or 'moduleName//modelName'
    *  @return  {object}        CommonJS module object
    **/
   getModelFile(modelName) {
+    const type = 'modelFile';
     if (modelName.indexOf('//') > 0) {
-      return this.getByFullPath(modelName, 'modelFile');
+      return this.getByFullPath(modelName, type);
     } else {
-      let mNames = Object.keys(this.modules);
-      for (let t = 0; t < mNames.length; t++) {
-        if (!objHas(this.modules, mNames[t])) {
-          continue;
-        }
-        let tmp = this.modules[mNames[t]].getModelFile(modelName);
-        if (tmp) {
-          return tmp;
-        }
-      }
+      return this.getByShortPath(modelName, type);
     }
-    return null;
   }
 
   /**
@@ -197,21 +187,12 @@ class notDomain extends EventEmitter {
    **/
 
   getModelSchema(modelName) {
+    const type = 'modelSchema';
     if (modelName.indexOf('//') > 0) {
-      return this.getByFullPath(modelName, 'modelSchema');
+      return this.getByFullPath(modelName, type);
     } else {
-      let mNames = Object.keys(this.modules);
-      for (let t = 0; t < mNames.length; t++) {
-        if (!objHas(this.modules, mNames[t])) {
-          continue;
-        }
-        let tmp = this.modules[mNames[t]].getModelSchema(modelName);
-        if (tmp) {
-          return tmp;
-        }
-      }
+      return this.getByShortPath(modelName, type);
     }
-    return null;
   }
 
   /**
@@ -221,21 +202,12 @@ class notDomain extends EventEmitter {
    *  @return {object}        logic
    **/
   getLogic(name) {
+    const type = 'logic';
     if (name.indexOf('//') > 0) {
-      return this.getByFullPath(name, 'logic');
+      return this.getByFullPath(name, type);
     } else {
-      let mNames = Object.keys(this.modules);
-      for (let t = 0; t < mNames.length; t++) {
-        if (!objHas(this.modules, mNames[t])) {
-          continue;
-        }
-        let tmp = this.modules[mNames[t]].getLogic(name);
-        if (tmp) {
-          return tmp;
-        }
-      }
+      return this.getByShortPath(name, type);
     }
-    return null;
   }
 
 
@@ -245,21 +217,12 @@ class notDomain extends EventEmitter {
    *  @return  {object}        CommonJS module object
    **/
   getLogicFile(logicName) {
+    const type = 'logicFile';
     if (logicName.indexOf('//') > 0) {
-      return this.getByFullPath(logicName, 'logicFile');
+      return this.getByFullPath(logicName, type);
     } else {
-      let mNames = Object.keys(this.modules);
-      for (let t = 0; t < mNames.length; t++) {
-        if (!objHas(this.modules,mNames[t])) {
-          continue;
-        }
-        let tmp = this.modules[mNames[t]].getLogicFile(logicName);
-        if (tmp) {
-          return tmp;
-        }
-      }
+      return this.getByShortPath(logicName, type);
     }
-    return null;
   }
 
   /**
@@ -285,18 +248,11 @@ class notDomain extends EventEmitter {
    *  @param {string}  methodName  name of the method to execute
    **/
   async execInModules(methodName) {
-    for (let t in this.modules) {
-      let mod = this.modules[t];
-      if (mod && typeof mod.exec === 'function') {
-        try{
-          if(mod.exec.constructor.name === 'AsyncFunction'){
-            await mod.exec(methodName);
-          }else{
-            mod.exec(methodName);
-          }
-        }catch(e){
-          this.report(e);
-        }
+    for (let mod of Object.values(this.modules)) {
+      try{
+        await executeObjectFunction(mod, 'exec', [methodName]);
+      }catch(e){
+        this.report(e);
       }
     }
   }
@@ -306,10 +262,8 @@ class notDomain extends EventEmitter {
    *  Create mongoose models.
    **/
   fabricate() {
-    if (this.modules) {
-      for (let t of Object.keys(this.modules)) {
-        this.modules[t] && this.modules[t].expose && this.modules[t].fabricateModels();
-      }
+    for (let mod of Object.values(this.modules)) {
+      mod.fabricateModels && mod.fabricateModels();
     }
   }
 
@@ -363,16 +317,8 @@ class notDomain extends EventEmitter {
 
   get DEFAULT_REPORTER() {
     return {
-      report(...params) {
-        return new Promise((res, rej) => {
-          try {
-            console.error(params);
-            res();
-          } catch (e) {
-            console.error(e);
-            rej(e);
-          }
-        });
+      async report(...params) {
+        console.error(params);
       }
     };
   }
@@ -434,12 +380,30 @@ class notDomain extends EventEmitter {
     }
   }
 
+
+  /**
+  *
+  * Logging message about shutdown.
+  * Emits event app:shutdown
+  * Exits from process after timeout
+  * @param {number} timeout=OPT_DEFAULT_SHUTDOWN_TIMEOUT  time in ms before exit
+  **/
   shutdown(timeout = OPT_DEFAULT_SHUTDOWN_TIMEOUT) {
     this.log(`Перезагрузка сервиса через ${timeout}мс...`);
     this.emit('app:shutdown');
     setTimeout(process.exit, timeout);
   }
 
+
+  /**
+  * Returns info about whole system.
+  * Modules - total count, list, content
+  * Routes - total count, list
+  * Models - total count, list
+  * Actions - total count, list
+  * Roles - total count, list
+  * @return {Object}  complex object with results
+  **/
   getStatus() {
     const mods = Object.keys(this.modules);
     let stats = {
