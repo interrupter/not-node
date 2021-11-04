@@ -1,5 +1,10 @@
 const expect = require('chai').expect,
   notApp = require('../src/app');
+const mock = require('mock-require');
+
+mock('not-inform',{
+  Inform: class FakeInformer{}
+});
 
 describe('noApp', function() {
 

@@ -1,13 +1,24 @@
-const InitSessionsMongo = require('./mongo');
+
 
 module.exports = class InitSessions{
-
-  static async run(input) {
-    try{
-      await InitSessionsMongo.run(input);
-    }catch(e){
-      input.master.throwError(e.message, 1);
+  /**
+  * Returns constructor of Session driver
+  * @param {Object} conf  configuration os session from application config
+  * @param {string} conf.driver  name of session storage engine
+  * @return {Object}          class constructor or undefined
+  **/
+  static getConstructor(conf){
+    switch(conf.driver){
+    case 'redis': return require('./redis.js');
+    case 'mongo': return require('./mongo.js');
+    default:      return require('./mongo.js');
     }
+  }
+
+  async run({master, config, options}) {
+    const conf = config.get('session');
+    const Constructor = InitSessions.getConstructor(conf);
+    await new Constructor().run({master, config, options, conf});
   }
 
 };

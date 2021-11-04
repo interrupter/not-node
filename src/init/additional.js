@@ -1,12 +1,4 @@
-const notPath = require('not-path');
-
-function isFunc(func){
-  return typeof func === 'function';
-}
-
-function isAsync(func){
-  return func.constructor.name === 'AsyncFunction';
-}
+const {executeObjectFunction} = require('../common');
 
 let ADDITIONAL = {};
 
@@ -16,23 +8,6 @@ module.exports.init = (val)=>{
   }
 };
 
-function select(stepPath){
-  const res = notPath.get(':' + stepPath, ADDITIONAL);
-  if(typeof res === 'object'){
-    return res;
-  }else{
-    return {};
-  }
-}
-
-module.exports.run = async (path, params)=>{
-  if(!ADDITIONAL){return;}
-  const proc = select(path);
-  if(isFunc(proc)){
-    if(isAsync(proc)){
-      return await proc(params);
-    }else{
-      return proc(params);
-    }
-  }
+module.exports.run = (path, params)=>{
+  return executeObjectFunction(ADDITIONAL, path, [params]);
 };

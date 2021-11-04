@@ -5,20 +5,10 @@ const log = logger(module, 'not-node:Init');
 //
 const ADDS = require('./additional');
 //
-const initEnv = require('./env');
-const initDB = require('./db');
-const initServer = require('./server');
-const initSessions = require('./sessions');
-const initTemplate = require('./template');
-const initCORS = require('./cors');
-const initMiddleware = require('./middleware');
-const initRoutes = require('./routes');
-const initModules = require('./modules');
-const initInformer = require('./informer');
-const initHTTP = require('./http');
-const initMonitoring = require('./monitoring');
+const InitSequence = require('./sequence.js');
+const STANDART_INIT_SEQUENCE = require('./sequence.standart.js');
 
-class Init {
+class Init{
   static options = false;
   static manifest = false;
   static config = false;
@@ -34,55 +24,59 @@ class Init {
   }
 
   static setManifest(manifest) {
-    this.manifest = manifest;
+    Init.manifest = manifest;
   }
 
   static setMongoose(val) {
-    this.mongoose = val;
+    Init.mongoose = val;
   }
 
   static getMongoose() {
-    return this.mongoose;
+    return Init.mongoose;
   }
 
   static setServer(val){
-    this.server = val;
-    return this;
+    Init.server = val;
+    return Init;
   }
 
   static getServer(){
-    return this.server;
+    return Init.server;
   }
 
   static setHTTPServer(val){
-    this.httpServer = val;
-    return this;
+    Init.httpServer = val;
+    return Init;
   }
 
   static getHTTPServer(){
-    return this.httpServer;
+    return Init.httpServer;
   }
 
   static getApp(){
-    return this.notApp;
+    return Init.notApp;
   }
 
   static setApp(val){
-    this.notApp = val;
-    return this;
+    Init.notApp = val;
+    return Init;
   }
 
   static initConfig(config = false) {
     if (!config) {
-      this.config = require('not-config').createReader();
+      Init.config = require('not-config').createReader();
     } else {
-      this.config = config;
+      Init.config = config;
     }
+  }
+
+  static getConfig() {
+    return Init.config;
   }
 
   static printOutManifest = () => {
     log.debug('Manifest:');
-    log.debug(JSON.stringify(this.notApp.getManifest(), null, 4));
+    log.debug(JSON.stringify(Init.notApp.getManifest(), null, 4));
   }
 
   /**
@@ -104,47 +98,31 @@ class Init {
     try {
       log.info('Kick start app...');
       ADDS.init(additional);
+      const initSequence = new InitSequence(STANDART_INIT_SEQUENCE);
       await ADDS.run('pre', {
         config,
         options,
         manifest,
-        additional
+        additional,
+        initSequence //giving a chance to change init sequence
       });
       //setting basic resources
-      this.options = options; // pathToApp, pathToNPM
-      this.setManifest(manifest);
+      Init.options = options; // pathToApp, pathToNPM
+      Init.setManifest(manifest);
       //adopting provided config store or initializing own
-      this.initConfig(config);
+      Init.initConfig(config);
       //creating context for other init runners
       const context = {
-        config: this.getConfig(), //access to config
+        config: Init.getConfig(), //access to config
         options, //options
         master: Init //this class
       };
-      //creating set of variables derived from basic ones, such as various paths, server names and URIs
-      await initEnv.run({ ...context});
-      //DB access
-      await initDB.run({ ...context});
-      //https server
-      await initServer.run({ ...context});
-      //user sessions
-      await initSessions.run({ ...context});
-      //template engine
-      await initTemplate.run({ ...context});
-      //CORS rules
-      await initCORS.run({...context});
-      //various not-* middleware from all sources
-      await initMiddleware.run({ ...context});
-      await initRoutes.run({ ...context});
-      await initModules.run({ ...context});
-      //messaging platform
-      await initInformer.run({ ...context});
-      await initHTTP.run({ ...context});
-      await initMonitoring.run({ ...context});
+      //running all prepared initalizers with current context
+      await initSequence.run(context);
+      log.info('Application initalization finished');
     } catch (e) {
-      this.throwError(e.message, 1);
+      Init.throwError(e.message, 1);
     }
-
   }
 
   static throwError(errMsg = 'Fatal error', errCode = 1) {

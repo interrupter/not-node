@@ -49,6 +49,7 @@
     "helmet": "^4.6.0",
     "lower-case": "*",
     "method-override": "^3.0.0",
+    "mock-require": "^3.0.3",
     "mongoose": "*",
     "mongoose-validator": "*",
     "nconf": "*",

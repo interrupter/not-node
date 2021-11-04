@@ -10,10 +10,12 @@ const {
 const emit = require('./additional').run;
 
 module.exports = class InitApp{
+  static AppConstructor = notAppConstructor;
+  static ReporterConstructor = notErrorReporter
 
   static async createApp({config, options, master}){
     await emit('app.create.pre', {config, options, master});
-    master.setApp(new notAppConstructor({mongoose: master.getMongoose()}));
+    master.setApp(new InitApp.AppConstructor({mongoose: master.getMongoose()}));
     await emit('app.create.post', {config, options, master});
   }
 
@@ -41,10 +43,9 @@ module.exports = class InitApp{
     await emit('app.importModules.post', {config, options, master});
   }
 
-
   static async createReporter({config,/* options,*/ master}){
     try {
-      master.getApp().reporter = new notErrorReporter({
+      master.getApp().reporter = new InitApp.ReporterConstructor({
         origin:{
           server: config.get('host')
         },
@@ -55,7 +56,7 @@ module.exports = class InitApp{
     }
   }
 
-  static async run({config, options, master}) {
+  async run({config, options, master}) {
     try{
       log.info('Init not-app...');
       await emit('app.pre', {config, options, master});
@@ -63,10 +64,10 @@ module.exports = class InitApp{
       await InitApp.setAppEnvs({config, options, master});
       await InitApp.importModules({config, options, master});
       await InitApp.createReporter({config, options, master});
+      await emit('app.post', {config, options, master});
     }catch(e){
       master.throwError(e.message, 1);
     }
-
   }
 
 };

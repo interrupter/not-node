@@ -77,6 +77,12 @@ describe('Common', function() {
 			const res = await Common.executeObjectFunction(obj, name, params);
 			expect(res).to.be.equal('apple 1.2.3.true');
 		});
+
+		it('!obj', async ()=>{
+			const obj = null, name = 'method', params = [1,2,3,true];
+			const res = await Common.executeObjectFunction(obj, name, params);
+			expect(res).to.be.undefined;
+		});
 	});
 
 

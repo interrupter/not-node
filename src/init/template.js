@@ -12,10 +12,10 @@ module.exports = class InitTemplate{
     return val || DEFAULT;
   }
 
-  static async run({ config, options, master }) {
+  async run({ config, options, master }) {
     const input = InitTemplate.loadConfig({config});
     log.info('Setting up template (' + input.engine + ') engine...');
-    await ADDS.run('template.pre', { config, options, master });
+    await ADDS.run('template.pre', { config, options, master, input });
     master.getServer().set('views', master.getAbsolutePath(input.views));
     master.getServer().set('view engine', input.engine);
     await ADDS.run('template.post', { config, options, master });

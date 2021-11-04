@@ -2,11 +2,12 @@ const log = require('not-log')(module, 'not-node//init');
 const ADDS = require('./additional');
 
 module.exports = class InitENV{
-  static getProxyPort(config){
+
+  getProxyPort(config){
     return parseInt(config.get('proxy:port') || config.get('port'));
   }
 
-  static getFullServerName(config){
+  getFullServerName(config){
     let name = '';
     if (config.get('proxy:secure') === true){
       name='https://';
@@ -14,7 +15,7 @@ module.exports = class InitENV{
       name='http://';
     }
     name+=config.get('host');
-    let proxyPort = this.getProxyPort();
+    let proxyPort = this.getProxyPort(config);
     if(proxyPort !== 80){
       name+= (':'+proxyPort);
     }
@@ -22,7 +23,7 @@ module.exports = class InitENV{
   }
 
 
-  static async run({config, options, master}) {
+  async run({config, options, master}) {
     log.info('Setting up server environment variables...');
     await ADDS.run('env.pre', {config, options, master});
     if (config) {
