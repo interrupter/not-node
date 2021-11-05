@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const {tryFile, objHas} = require('../../common');
-const Fields = require('../../fields.js');
+const Fields = require('../../fields');
 
 module.exports = class notModuleRegistratorFields{
 

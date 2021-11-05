@@ -1,0 +1,41 @@
+{
+  "field_active_label": "Active",
+  "field_codeName_label": "Code name",
+  "field_codeName_placeholder": "Code name",
+  "field_createdAt_label": "Created At",
+  "field_createdAt_placeholder": "Date and time of creation",
+  "field_default_label": "Default",
+
+  "field_title_label": "Title",
+  "field_title_placeholder": "Title of item",
+  "field_description_label": "Description",
+  "field_description_placeholder": "Short description of item",
+  "field_enabled_label": "Enabled",
+  "field_expiredAt_label": "Expired At",
+  "field_expiredAt_placeholder": "Date and time of expiration",
+  "field_updatedAt_label": "Updated At",
+  "field_updatedAt_placeholder": "Date and time of last update",
+  "field_height_label": "Height",
+  "field_height_placeholder": "Height",
+  "field_width_label": "Width",
+  "field_width_placeholder": "Width",
+  "field_size_label": "Size",
+  "field_size_placeholder": "Size",
+
+  "field_ID_label": "ID",
+  "field_ID_placeholder": "ID",
+
+  "field_IP_label": "IP",
+  "field_IP_placeholder": "IP",
+
+  "field_price_label": "Price",
+  "field_price_placeholder": "Price",
+
+  "field_session_label": "Session",
+  "field_session_placeholder": "Session",
+  "field_userId_label": "UserId",
+  "field_userId_placeholder": "UserId",
+
+  "field_UUID_label": "UUID",
+  "field_UUID_placeholder": "UUID"
+}

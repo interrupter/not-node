@@ -1,8 +1,14 @@
+const InitCore = require('../src/init/core');
+
 const expect = require('chai').expect,
   Fields = require('../src/fields');
 
 
 describe('Fields', function() {
+  before(()=>{
+    Fields.importFromDir(InitCore.paths.fields);
+  });
+
   describe('registerField', function() {
 
     it('name not exists, value, options is not provided', function() {
@@ -113,13 +119,13 @@ describe('Fields', function() {
       expect(Fields.initFields(['title', 'uuid'])).to.be.deep.equal({
         title: {
           component: 'UITextfield',
-          placeholder: 'Будет показываться пользователю',
-          label: 'Название'
+          placeholder: 'core:field_title_placeholder',
+          label: 'core:field_title_label'
         },
         uuid: {
           component: 'UITextfield',
-          placeholder: 'UUID',
-          label: 'UUID',
+          placeholder: 'core:field_UUID_placeholder',
+          label: 'core:field_UUID_label',
           readonly: true
         }
       });
@@ -135,16 +141,16 @@ describe('Fields', function() {
     it('field, resultOnly not provided, type not provided', () => {
       expect(Fields.initField('title')).to.be.deep.equal({
         component: 'UITextfield',
-        placeholder: 'Будет показываться пользователю',
-        label: 'Название'
+        placeholder: 'core:field_title_placeholder',
+        label: 'core:field_title_label'
       });
     });
 
     it('field, resultOnly - false, type not provided', () => {
       expect(Fields.initField('title', false)).to.be.deep.equal(['title', {
         component: 'UITextfield',
-        placeholder: 'Будет показываться пользователю',
-        label: 'Название'
+        placeholder: 'core:field_title_placeholder',
+        label: 'core:field_title_label'
       }]);
     });
 
@@ -239,13 +245,13 @@ describe('Fields', function() {
       expect(Fields.fromSchema(schema)).to.be.deep.equal({
         title:{
           component: 'UITextfield',
-          placeholder: 'Будет показываться пользователю',
-          label: 'Название'
+          placeholder: 'core:field_title_placeholder',
+          label: 'core:field_title_label'
         },
         uuid:{
           component: 'UITextfield',
-          placeholder: 'UUID',
-          label: 'UUID',
+          placeholder: 'core:field_UUID_placeholder',
+          label: 'core:field_UUID_label',
           readonly: true
         }
       });
@@ -268,13 +274,13 @@ describe('Fields', function() {
       expect(Fields.fromSchema(schema,mutations)).to.be.deep.equal({
         title:{
           component: 'UITextfield',
-          placeholder: 'Будет показываться пользователю',
+          placeholder: 'core:field_title_placeholder',
           label: 'Naming'
         },
         uuid:{
           component: 'UITextfield',
-          placeholder: 'UUID',
-          label: 'UUID',
+          placeholder: 'core:field_UUID_placeholder',
+          label: 'core:field_UUID_label',
           readonly: true
         }
       });

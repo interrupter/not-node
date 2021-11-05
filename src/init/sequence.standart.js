@@ -11,6 +11,7 @@ const initNotApp = require('./app');
 const initSessions = require('./sessions');
 const initTemplate = require('./template');
 const initCORS = require('./cors');
+const initCore = require('./core');
 const initMiddleware = require('./middleware');
 const initStatic = require('./static');
 const initRoutes = require('./routes');
@@ -23,6 +24,8 @@ module.exports = [
   //creating set of variables derived from basic ones,
   //such as various paths, server names and URIs
   initEnv,
+  //init various resources like common object fields descriptions and locales
+  initCore,
   //DB access
   initDB,
   //http(s) server

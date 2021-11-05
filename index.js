@@ -9,25 +9,25 @@ module.exports.Error = require('./src/error.js');
 /** Authentication module */
 module.exports.Auth = require('./src/auth');
 /** Manifest infrastructure */
-module.exports.Manifest = require('./src/manifest/manifest.js');
+module.exports.Manifest = require('./src/manifest/manifest');
 /** Web Application */
-module.exports.notApp = require('./src/app.js');
+module.exports.notApp = require('./src/app');
 /** General Application */
-module.exports.notDomain = require('./src/domain.js');
+module.exports.notDomain = require('./src/domain');
 /** Mongoose Documents versioning */
-module.exports.Versioning = require('./src/model/versioning.js');
+module.exports.Versioning = require('./src/model/versioning');
 /** Mongoose Model autoincrement field */
-module.exports.Increment = require('./src/model/increment.js');
+module.exports.Increment = require('./src/model/increment');
 /** Mongoose Model prototype */
-module.exports.Proto = require('./src/model/proto.js');
+module.exports.Proto = require('./src/model/proto');
 /** Mongoose Model additional features enricher */
-module.exports.Enrich = require('./src/model/enrich.js');
+module.exports.Enrich = require('./src/model/enrich');
 /** Mongoose Documents routine operation*/
-module.exports.Routine = require('./src/model/routine.js');
+module.exports.Routine = require('./src/model/routine');
 /** Common functions */
-module.exports.Common = require('./src/common.js');
+module.exports.Common = require('./src/common');
 /** Fields library manager */
-module.exports.Fields = require('./src/fields.js');
+module.exports.Fields = require('./src/fields');
 /** Application initialization procedures */
 module.exports.Init = require('./src/init').Init;
 /** Application object */
