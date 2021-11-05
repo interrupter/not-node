@@ -51,7 +51,75 @@ module.exports = ({expect})=>{
         const address = InitEnv.getFullServerName(config);
         expect(address).to.be.equal('https://hostname:8080');
       });
-      
+
+      it('proxy:secure - false, proxy:port - 80', ()=>{
+        const vals = {
+          'proxy:secure': false,
+          'proxy:port': 80,
+          'host': 'hostname'
+        };
+
+        const config = {
+          get(path){
+            return getFromLib(vals, path, null);
+          }
+        };
+        const address = InitEnv.getFullServerName(config);
+        expect(address).to.be.equal('http://hostname');
+      });
+    });
+
+    describe('run', ()=>{
+      it('path:ws - empty', async ()=>{
+        const vals = {
+          'proxy:secure': true,
+          'proxy:port': 8080,
+          'host': 'hostname',
+          'path:ws': undefined
+        };
+        const master = {
+          getAbsolutePath(str){
+            return str+'_fake_absolute';
+          }
+        };
+        const options = {
+          pathToApp: 'pathToApp__fake',
+          pathToNPM: 'pathToNPM__fake',
+        };
+        const config = {
+          get(path){
+            return getFromLib(vals, path, null);
+          },
+          set(){}
+        };
+        await new InitEnv().run({master, options, config});
+      });
+
+      it('path:ws - not empty', async ()=>{
+        const vals = {
+          'proxy:secure': true,
+          'proxy:port': 8080,
+          'host': 'hostname',
+          'path:ws': 'some_path'
+        };
+        const master = {
+          getAbsolutePath(str){
+            return str+'_fake_absolute';
+          }
+        };
+        const options = {
+          pathToApp: 'pathToApp__fake',
+          pathToNPM: 'pathToNPM__fake',
+        };
+        const config = {
+          get(path){
+            return getFromLib(vals, path, null);
+          },
+          set(){}
+        };
+        await new InitEnv().run({master, options, config});
+      });
+
     });
 
   });

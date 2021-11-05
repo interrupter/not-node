@@ -211,6 +211,7 @@ describe('initialization', function() {
   });
 
   require('./init/app')({expect});
+  require('./init/env')({expect});
   require('./init/express')({expect});
   require('./init/compression')({expect});
   require('./init/methodoverride')({expect});
@@ -218,11 +219,15 @@ describe('initialization', function() {
   require('./init/security')({expect});
   require('./init/sessions')({expect});
   require('./init/monitoring')({expect});
+  require('./init/db')({expect});
+  require('./init/cors')({expect});
   require('./init/http')({expect});
   require('./init/bodyparser')({expect});
   require('./init/fileupload')({expect});
   require('./init/modules')({expect});
+  require('./init/routes')({expect});
   require('./init/informer')({expect});
+  require('./init/static')({expect});
   require('./init/template')({expect});
   require('./init/additional')({expect});
   require('./init/sequence')({expect});

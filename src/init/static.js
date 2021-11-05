@@ -1,11 +1,13 @@
 
 const path = require('path');
-const serveStatic = require('serve-static');
+
 const ADDS = require('./additional');
 
 const DEFAULT_ROLES = ['root', 'admin', 'client', 'user', 'guest'];
 
 module.exports = class InitStatic{
+
+  static serveStatic = require('serve-static');
 
   static getUserRole(req){
     if(req.user && req.user.role){
@@ -32,14 +34,14 @@ module.exports = class InitStatic{
       try{
         const frontApp = InitStatic.selectVersion(config, req, ext);
         let pathTo = path.resolve(options.pathToApp, frontApp);
-        return serveStatic(pathTo)(req, res, next);
+        return InitStatic.serveStatic(pathTo)(req, res, next);
       }catch(e){
         next(e);
       }
     };
   }
 
-  static async run({config, options, master}) {
+  async run({config, options, master}) {
     await ADDS.run('static.pre', { config, options, master });
     master.getServer().use('/front/(:role).js', InitStatic.createStaticFrontServer('js', {config, options, master}));
     master.getServer().use('/front/(:role).css', InitStatic.createStaticFrontServer('css', {config, options, master}));

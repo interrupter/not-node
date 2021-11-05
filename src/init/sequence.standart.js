@@ -12,6 +12,7 @@ const initSessions = require('./sessions');
 const initTemplate = require('./template');
 const initCORS = require('./cors');
 const initMiddleware = require('./middleware');
+const initStatic = require('./static');
 const initRoutes = require('./routes');
 const initModules = require('./modules');
 const initInformer = require('./informer');
@@ -43,6 +44,7 @@ module.exports = [
   initCORS,
   //various not-* middleware from all sources
   initMiddleware,
+  initStatic,
   initRoutes,
   initModules,
   //messaging platform

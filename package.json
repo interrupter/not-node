@@ -54,7 +54,7 @@
     "mongoose-validator": "*",
     "nconf": "*",
     "not-config": "^0.1.3",
-    "not-error": "*",
+    "not-error": "^0.2.0",
     "not-filter": "*",
     "not-inform": "^0.0.27",
     "not-locale": "*",
