@@ -61,6 +61,7 @@
     "not-log": "^0.0.20",
     "not-monitor": "^0.0.13",
     "not-path": "*",
+    "rate-limiter-flexible": "^2.3.3",
     "redis": "^3.1.2",
     "rmdir": "^1.2.0",
     "serve-static": "*",

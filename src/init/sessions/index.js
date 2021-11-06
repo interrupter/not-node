@@ -10,8 +10,8 @@ module.exports = class InitSessions{
   static getConstructor(conf){
     switch(conf.driver){
     case 'redis': return require('./redis.js');
-    case 'mongo': return require('./mongo.js');
-    default:      return require('./mongo.js');
+    case 'mongoose': return require('./mongoose.js');
+    default:      return require('./mongoose.js');
     }
   }
 

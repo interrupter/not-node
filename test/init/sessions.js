@@ -79,7 +79,7 @@ module.exports = ({
     require('./sessions/redis')({
       expect
     });
-    require('./sessions/mongo')({
+    require('./sessions/mongoose')({
       expect
     });
   });

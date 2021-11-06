@@ -1,4 +1,4 @@
-const InitSessionsMongo = require('../../../src/init/sessions/mongo');
+const InitSessionsMongo = require('../../../src/init/sessions/mongoose');
 const mock = require('mock-require');
 
 

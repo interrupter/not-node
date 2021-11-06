@@ -23,7 +23,7 @@ module.exports = class InitSessionsMongo{
 
   async run({config, options, master}) {
     const expressSession = require('express-session');
-    log.info('Setting up user sessions handler(mongo)...');
+    log.info('Setting up user sessions handler(mongoose)...');
     await ADDS.run('sessions.pre', {config, options, master});
     master.getServer().use(expressSession({
       secret: config.get('session:secret'),

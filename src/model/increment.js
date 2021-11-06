@@ -73,7 +73,7 @@ function newGetNext() {
   * @param  {string}  modelName
   * @param  {Array.string}  filterFields    list of fild names, which is used for grouping
   * @param  {Object}  data                  item data
-  * @return
+  * @return {Promise.Number}
   **/
   return async function(modelName, filterFields, data) {
     let thisModel = this;

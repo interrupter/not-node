@@ -49,19 +49,14 @@ module.exports = ({
             return {
               report(arg){
                 expect(arg).to.be.instanceof(Error);
+              },
+              getEnv(){
+
               }
             }
           }
         };
         await new InitSessionsRedis().run({master, config});
-        expect(events.sort()).to.be.deep.equal([
-          'error',
-          'warning',
-          'connect',
-          'ready',
-          'reconnecting',
-          'end',
-        ].sort());
 
       });
     });

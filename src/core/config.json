@@ -1,0 +1,97 @@
+{
+  "port": 3000,
+  "proxy": {
+    "port": 80,
+    "secure": true
+  },
+  "host": "localhost",
+  "cors": [],
+  "template": {
+    "engine": "pug",
+    "views": "views",
+    "partialsDir": "partials",
+    "partials": {}
+  },
+  "path": {
+    "static": "../static",
+    "app": "/client",
+    "dbDumps": "../../../db.dumps",
+    "front": "../front/build",
+    "ws": "./ws"
+  },
+  "defaultUserRole": "user",
+  "ssl": {
+    "enabled": false,
+    "keys": {
+      "private": "",
+      "fullchain": "",
+      "chain": ""
+    }
+  },
+  "session": {
+    "secret": "---INPUT---",
+    "cookie": {
+      "maxAge": 2628000000
+    },
+    "key": "SessionID"
+  },
+  "db": {
+    "mongoose": {
+      "uri": "mongodb://localhost/test?authSource=test",
+      "options": {
+        "useNewUrlParser": true,
+        "useFindAndModify": false,
+        "useUnifiedTopology": true,
+        "db": "test",
+        "host": "localhost",
+        "user": "",
+        "pass": "",
+        "autoIndex": false,
+        "poolSize": 10,
+        "bufferMaxEntries": 0
+      }
+    }
+  },
+  "lang": {},
+  "modules": {
+    "options": {},
+    "informer": {},
+    "filter": {
+      "size": 15,
+      "default": {
+        "filter": {},
+        "sorter": {
+          "_id": 1
+        },
+        "pager": {
+          "size": 15,
+          "skip": 0,
+          "page": 0
+        },
+        "search": ""
+      }
+    }
+  },
+  "middleware": {
+    "not-user": {},
+    "not-locale": {},
+    "not-options": {}
+  },
+  "importModulesFromNPM": [
+    "not-user",
+    "not-notification",
+    "not-inform",
+    "not-locale",
+    "not-inform-rule-tag",
+    "not-inform-sink-email",
+    "not-inform-sink-notification",
+    "not-inform-sink-ws",
+    "not-dbdump",
+    "not-ws",
+    "not-options",
+    "not-filter",
+    "not-one-time-code",
+    "not-error",
+    "not-key"
+  ]
+}

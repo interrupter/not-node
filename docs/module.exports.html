@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Documentation Module: Model/Default</title>
+	<title>Documentation Class: exports</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -79,10 +79,18 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Module: Model/Default</h1>
+	<h1 class="page-title">Class: exports</h1>
 <section>
 
 <header>
+    
+        <h2>
+        exports
+        </h2>
+        
+            <div class="class-description">Initialization sequence manipulations
+Holds list of initalizers and manages em adds/removes</div>
+        
     
 </header>
 
@@ -91,8 +99,24 @@
     <div class="container-overview">
     
         
+<hr>
+<dt>
+    <h4 class="name" id="exports"><span class="type-signature"></span>new exports()</h4>
+    
+    
+</dt>
+<dd>
 
-        
+    
+
+    
+
+    
+
+    
+    
+
+    
 <dl class="details">
     
 
@@ -132,7 +156,21 @@
 </dl>
 
 
-        
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
     
     </div>
 
@@ -155,7 +193,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".add"><span class="type-signature">&lt;static> </span>add(data)</h4>
+    <h4 class="name" id="clearActionFromRules"><span class="type-signature"></span>clearActionFromRules(action, ruleSet)</h4>
     
     
 </dt>
@@ -163,7 +201,7 @@
 
     
     <div class="description">
-        Starts add routine
+        Clear action definition from rules of access
     </div>
     
 
@@ -188,6 +226,8 @@
         
 
         
+        <th>Default</th>
+        
 
         <th class="last">Description</th>
     </tr>
@@ -198,7 +238,7 @@
 
         <tr>
             
-                <td class="name"><code>data</code></td>
+                <td class="name"><code>action</code></td>
             
 
             <td class="type">
@@ -214,152 +254,25 @@
             
 
             
+                <td class="default">
+                
+                </td>
+            
 
-            <td class="description last">data</td>
+            <td class="description last">action data</td>
         </tr>
 
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Promise
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".countWithFilter"><span class="type-signature">&lt;static> </span>countWithFilter(filter)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Counts record method
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
     
 
         <tr>
             
-                <td class="name"><code>filter</code></td>
+                <td class="name"><code>ruleSet</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">object</span>
-|
-
-<span class="param-type">array</span>
 
 
 
@@ -369,8 +282,14 @@
             
 
             
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
 
-            <td class="description last">filter rules</td>
+            <td class="description last">specific set of rules for this action</td>
         </tr>
 
     
@@ -434,7 +353,7 @@
     
             
 <div class="param-desc">
-    Promise
+    clean action data
 </div>
 
 
@@ -445,7 +364,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Promise</span>
+<span class="param-type">object</span>
 
 
 
@@ -462,7 +381,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".getOne"><span class="type-signature">&lt;static> </span>getOne(id, population)</h4>
+    <h4 class="name" id="clearFromDirtyFields"><span class="type-signature"></span>clearFromDirtyFields(action)</h4>
     
     
 </dt>
@@ -470,8 +389,7 @@
 
     
     <div class="description">
-        Retrieves one record by primary key
-	If versioning ON, it retrieves __latest and not __closed
+        Deletes fields listed in DIRTY_FIELDS constant from object
     </div>
     
 
@@ -506,536 +424,7 @@
 
         <tr>
             
-                <td class="name"><code>id</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">primary key</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>population</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">optional if needed population of some fields</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Promise
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".getOneByID"><span class="type-signature">&lt;static> </span>getOneByID(ID)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Retrieves one record by unique numeric ID
-	If versioning ON, it retrieves __latest and not __closed
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>ID</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">some unique numeric identificator</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Promise of document, if increment is OFF - then Promise.resolve(null)
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".getOneRaw"><span class="type-signature">&lt;static> </span>getOneRaw(id)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Retrieves one record by primary key, without any restriction
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>id</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">primary key</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Promise
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".list"><span class="type-signature">&lt;static> </span>list(skip, size, sorter, filter)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        List record method
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>skip</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">number of skiped records</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>size</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">length of return list</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>sorter</code></td>
+                <td class="name"><code>action</code></td>
             
 
             <td class="type">
@@ -1052,34 +441,7 @@
 
             
 
-            <td class="description last">sorter rules</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>filter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-|
-
-<span class="param-type">Array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">filter rules</td>
+            <td class="description last">action object</td>
         </tr>
 
     
@@ -1139,30 +501,6 @@
     
 
     
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Promise
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
 
     
 </dd>
@@ -1171,7 +509,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".listAll"><span class="type-signature">&lt;static> </span>listAll()</h4>
+    <h4 class="name" id="filter"><span class="type-signature"></span>filter(manifest, auth, role, root)</h4>
     
     
 </dt>
@@ -1179,113 +517,8 @@
 
     
     <div class="description">
-        List all records from collection
-	If Versioning is ON restricts to __latest and not __closed
-	By default sorts by _id in DESC
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Promise
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".listAllAndPopulate"><span class="type-signature">&lt;static> </span>listAllAndPopulate(populate)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        List all record in collection and populates
-	If Versioning is ON restricts to __latest and not __closed
-	By default sorts by _id in DESC
+        Filters manifest for current user auth, role, root.
+ Removes all actions that can not be performed
     </div>
     
 
@@ -1320,16 +553,13 @@
 
         <tr>
             
-                <td class="name"><code>populate</code></td>
+                <td class="name"><code>manifest</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">object</span>
-|
-
-<span class="param-type">array</span>
 
 
 
@@ -1340,7 +570,79 @@
 
             
 
-            <td class="description last">populate rules</td>
+            <td class="description last">full raw manifest</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>auth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">user auth status</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>role</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">user role status</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>root</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">user root status</td>
         </tr>
 
     
@@ -1404,7 +706,7 @@
     
             
 <div class="param-desc">
-    Promise
+    filtered manifest
 </div>
 
 
@@ -1415,7 +717,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Promise</span>
+<span class="param-type">object</span>
 
 
 
@@ -1432,7 +734,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".listAndCount"><span class="type-signature">&lt;async, static> </span>listAndCount(skip, size, sorter, filter, search, populate)</h4>
+    <h4 class="name" id="filterRoute"><span class="type-signature"></span>filterRoute(route, auth, role, root)</h4>
     
     
 </dt>
@@ -1440,8 +742,8 @@
 
     
     <div class="description">
-        List record in collection and populates, with count of total founded records
-	By default sorts by _id in DESC
+        Clear route from action variants that not permited for user according to
+ his auth, role, root status
     </div>
     
 
@@ -1476,55 +778,7 @@
 
         <tr>
             
-                <td class="name"><code>skip</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">number of skiped records</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>size</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">length of return list</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>sorter</code></td>
+                <td class="name"><code>route</code></td>
             
 
             <td class="type">
@@ -1541,23 +795,20 @@
 
             
 
-            <td class="description last">sorter rules</td>
+            <td class="description last">route object</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>filter</code></td>
+                <td class="name"><code>auth</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">object</span>
-|
-
-<span class="param-type">array</span>
+<span class="param-type">boolean</span>
 
 
 
@@ -1568,23 +819,20 @@
 
             
 
-            <td class="description last">filter rules</td>
+            <td class="description last">user auth status</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>search</code></td>
+                <td class="name"><code>role</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">object</span>
-|
-
-<span class="param-type">array</span>
+<span class="param-type">boolean</span>
 
 
 
@@ -1595,20 +843,20 @@
 
             
 
-            <td class="description last">search rules</td>
+            <td class="description last">user role status</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>populate</code></td>
+                <td class="name"><code>root</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type">boolean</span>
 
 
 
@@ -1619,7 +867,7 @@
 
             
 
-            <td class="description last">populate rules</td>
+            <td class="description last">user root status</td>
         </tr>
 
     
@@ -1683,7 +931,7 @@
     
             
 <div class="param-desc">
-    {list, count, pages}
+    Return router with only actions user can access with current states of auth, role, root. With removed definitions of what rules of access are.
 </div>
 
 
@@ -1694,7 +942,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Promise</span>
+<span class="param-type">object</span>
 
 
 
@@ -1711,172 +959,19 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".listAndPopulate"><span class="type-signature">&lt;static> </span>listAndPopulate(skip, size, sorter, filter, populate)</h4>
+    <h4 class="name" id="filterRouteAction"><span class="type-signature"></span>filterRouteAction()</h4>
     
     
 </dt>
 <dd>
 
     
-    <div class="description">
-        List record and populate method
-    </div>
-    
 
     
 
     
 
     
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>skip</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">number of skiped records</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>size</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">length of return list</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>sorter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">sorter rules</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>filter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-|
-
-<span class="param-type">array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">filter rules</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>populate</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">populate rules</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
     
 
     
@@ -1930,30 +1025,6 @@
     
 
     
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Promise
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
 
     
 </dd>
@@ -1962,7 +1033,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".listByField"><span class="type-signature">&lt;static> </span>listByField(field, list, filter, populate)</h4>
+    <h4 class="name" id="findAll"><span class="type-signature"></span>findAll(input)</h4>
     
     
 </dt>
@@ -1970,413 +1041,7 @@
 
     
     <div class="description">
-        Returns list of items with specific values in specific field, optionaly filtered
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>field</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">name of the field to search in</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>list</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">list of 'id' field values</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>filter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-|
-
-<span class="param-type">array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">filter rules</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>populate</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">populate rules</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Promise
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".makeQuery"><span class="type-signature">&lt;static> </span>makeQuery(method, filter)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Common query with filtering constructor for generic method
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>method</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">name of the method</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>filter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-|
-
-<span class="param-type">array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">filtering rules object</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    mongoose query object
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Query</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".sanitizeInput"><span class="type-signature">&lt;static> </span>sanitizeInput(input)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Sanitize input
+        Searching fields in directory
     </div>
     
 
@@ -2417,7 +1082,7 @@
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type">Object</span>
 
 
 
@@ -2428,7 +1093,81 @@
 
             
 
-            <td class="description last">data</td>
+            <td class="description last">
+                <h6 class="method-params-label method-subparams-label">Properties</h6>
+                
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>notModule</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="notModule.html">notModule</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>srcDir</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -2488,30 +1227,6 @@
     
 
     
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    data;
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">object</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
 
     
 </dd>
@@ -2520,7 +1235,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".update"><span class="type-signature">&lt;static> </span>update(filter, data, many)</h4>
+    <h4 class="name" id="findAll"><span class="type-signature"></span>findAll(input)</h4>
     
     
 </dt>
@@ -2528,7 +1243,7 @@
 
     
     <div class="description">
-        Starts update routine
+        Searching fields in directory
     </div>
     
 
@@ -2553,7 +1268,48 @@
         
 
         
-        <th>Default</th>
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>input</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6 class="method-params-label method-subparams-label">Properties</h6>
+                
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
         
 
         <th class="last">Description</th>
@@ -2565,13 +1321,13 @@
 
         <tr>
             
-                <td class="name"><code>filter</code></td>
+                <td class="name"><code>notModule</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type"><a href="notModule.html">notModule</a></span>
 
 
 
@@ -2581,25 +1337,21 @@
             
 
             
-                <td class="default">
-                
-                </td>
-            
 
-            <td class="description last">search criteria</td>
+            <td class="description last"></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>data</code></td>
+                <td class="name"><code>srcDir</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type">string</span>
 
 
 
@@ -2609,25 +1361,199 @@
             
 
             
-                <td class="default">
-                
-                </td>
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="findAll"><span class="type-signature"></span>findAll(input)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Searching fields in directory
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>input</code></td>
             
 
-            <td class="description last">data</td>
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6 class="method-params-label method-subparams-label">Properties</h6>
+                
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>notModule</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="notModule.html">notModule</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>many</code></td>
+                <td class="name"><code>srcDir</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">boolean</span>
+<span class="param-type">string</span>
 
 
 
@@ -2637,14 +1563,395 @@
             
 
             
-                <td class="default">
-                
-                    false
-                
-                </td>
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="findAll"><span class="type-signature"></span>findAll(input)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Searching fields in directory
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>input</code></td>
             
 
-            <td class="description last">if true will affect all records according to filter</td>
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6 class="method-params-label method-subparams-label">Properties</h6>
+                
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>notModule</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="notModule.html">notModule</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>srcDir</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="getConstructor"><span class="type-signature"></span>getConstructor(conf)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Returns constructor of Session driver
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>conf</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">configuration os session from application config
+                <h6 class="method-params-label method-subparams-label">Properties</h6>
+                
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>driver</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">name of session storage engine</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -2708,7 +2015,7 @@
     
             
 <div class="param-desc">
-    Promise
+    class constructor or undefined
 </div>
 
 
@@ -2719,7 +2026,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Promise</span>
+<span class="param-type">Object</span>
 
 
 
@@ -2736,7 +2043,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="~close"><span class="type-signature">&lt;inner> </span>close()</h4>
+    <h4 class="name" id="insert"><span class="type-signature"></span>insert(what, where)</h4>
     
     
 </dt>
@@ -2744,8 +2051,7 @@
 
     
     <div class="description">
-        Closes document and saves it
-	This is replaces remove when Versioning is ON
+        Insert initalizator after and before specified modules or at the end
     </div>
     
 
@@ -2754,6 +2060,689 @@
     
 
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>what</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">initializator class constructor</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>where</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">specification where to insert
+                <h6 class="method-params-label method-subparams-label">Properties</h6>
+                
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>after</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">list of constructor names of
+                      initalizators after which item should be inserted</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>before</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">list of constructor names of
+                      initalizators before which item should be inserted</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="remove"><span class="type-signature"></span>remove(rem, add)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Removing item and optionally adding few on place of removed
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>rem</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">name of class of initalizator to remove</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>add</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.Constructor</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">list of class constructors</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="replace"><span class="type-signature"></span>replace(whatRemove, whatInsert, where)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Replacing existing item or if item is not exists in list
+then inserting items accroding to where instruction
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>whatRemove</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">name of class of initalizator to remove</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>whatInsert</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.Constructor</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">list of class constructors</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>where</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">specification where to insert
+                <h6 class="method-params-label method-subparams-label">Properties</h6>
+                
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>after</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">list of constructor names of
+                      initalizators after which item should be inserted</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>before</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">list of constructor names of
+                      initalizators before which item should be inserted</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="ruleSetHasFieldsDirective"><span class="type-signature"></span>ruleSetHasFieldsDirective(ruleSet)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Return true if ruleSet object has not empty list of fields
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>ruleSet</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">specific set of rules for action</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
     
 
     
@@ -2811,7 +2800,7 @@
     
             
 <div class="param-desc">
-    ID
+    if rule set has not empty fields list
 </div>
 
 
@@ -2822,109 +2811,7 @@
     </dt>
     <dd>
         
-<span class="param-type">numeric</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="~getID"><span class="type-signature">&lt;inner> </span>getID()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Returns incremental ID for this doc
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    ID
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">numeric</span>
+<span class="param-type">boolean</span>
 
 
 

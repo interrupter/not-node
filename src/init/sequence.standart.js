@@ -15,6 +15,7 @@ const initCore = require('./core');
 const initMiddleware = require('./middleware');
 const initStatic = require('./static');
 const initRoutes = require('./routes');
+const initRateLimiter = require('./rateLimiter');
 const initModules = require('./modules');
 const initInformer = require('./informer');
 const initHTTP = require('./http');
@@ -26,10 +27,11 @@ module.exports = [
   initEnv,
   //init various resources like common object fields descriptions and locales
   initCore,
-  //DB access
+  //DB access drivers
   initDB,
   //http(s) server
   initExpress,
+  initRateLimiter,
   //CSP security directives
   initSecurity,
   //gzip compression

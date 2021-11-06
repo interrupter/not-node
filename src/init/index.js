@@ -8,6 +8,21 @@ const ADDS = require('./additional');
 const InitSequence = require('./sequence.js');
 const STANDART_INIT_SEQUENCE = require('./sequence.standart.js');
 
+/**
+*	@example <caption>Application initialization</caption>
+*	let App = new notApp({
+*		mongoose: mongooseLink
+*		modulesCollectionPaths: [__dirname + '/modules'], //each path to folder with modules
+*		modulesPaths: [],	//each path to module
+*		modules: {
+*			filestore: require('not-filestore') //each npm not-* module with custom overriden name as key
+*		}
+*	})
+*		.importModuleFrom(__dirname+'/anotherModule', 'anotherCustomModuleName')	//import module from path
+*		.importModulesFrom(__dirname+'/directoryOfUsefullessModules')
+*		.importModule(require('notModule'), 'notModule')
+*		.expose(ExpressApp);
+**/
 class Init{
   static options = false;
   static manifest = false;
