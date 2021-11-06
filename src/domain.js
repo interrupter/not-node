@@ -4,7 +4,7 @@
  *
  */
 const EventEmitter = require('events');
-const {executeObjectFunction, objHas, firstLetterToUpper} = require('./common');
+const {isFunc,isAsync, objHas, firstLetterToUpper} = require('./common');
 
 const Env = require('./env');
 const
@@ -251,7 +251,13 @@ class notDomain extends EventEmitter {
   async execInModules(methodName) {
     for (let mod of Object.values(this.modules)) {
       try{
-        await executeObjectFunction(mod, 'exec', [methodName]);
+        if(isFunc(mod.exec)){
+          if(isAsync(mod.exec)){
+            await mod.exec(methodName);
+          }else{
+            mod.exec(methodName);
+          }
+        }
       }catch(e){
         this.report(e);
       }

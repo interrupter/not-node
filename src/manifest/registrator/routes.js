@@ -167,7 +167,7 @@ module.exports = class notModuleRegistratorRoutes{
     });
   }
 
-  static registerManifest({nModule, manifest, routeName}) {
-    nModule.setManifest(routeName, manifest);
+  static registerManifest({nModule, routeManifest, routeName}) {
+    nModule.setManifest(routeName, routeManifest);
   }
 };

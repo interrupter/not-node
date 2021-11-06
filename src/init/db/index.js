@@ -6,6 +6,7 @@ module.exports = class InitDB{
   static default = path.resolve(__dirname, './mongoose.js');
 
   static drivers = {
+    'ioredis':        path.resolve(__dirname, './ioredis.js'),
     'redis':        path.resolve(__dirname, './redis.js'),
     'mongoose':     path.resolve(__dirname, './mongoose.js')
   };
@@ -40,7 +41,7 @@ module.exports = class InitDB{
         master,
         config,
         options,
-        conf,
+        conf: conf[driver],
         alias: driver
       });
     }

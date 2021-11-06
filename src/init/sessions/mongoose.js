@@ -5,7 +5,7 @@ const ADDS = require('../additional');
 module.exports = class InitSessionsMongo{
   static createStore({config, master, expressSession}){
     const MongoDBStore = require('connect-mongodb-session')(expressSession);
-    const mongooseOptions = config.get('mongoose.options');
+    const mongooseOptions = config.get('db.mongoose.options');
     let store = new MongoDBStore({
       uri: `mongodb://${mongooseOptions.user}:${mongooseOptions.pass}@${mongooseOptions.host}/${mongooseOptions.db}`,
       databaseName: mongooseOptions.db,

@@ -54,10 +54,9 @@ module.exports = class ModelFabricate{
     if (targetModule.thisStatics) {
       Object.assign(schema.statics, targetModule.thisStatics);
     }
-    this.extendSchemaFrom(targetModule.thisVirtuals, schema.virtual);
-    this.extendSchemaFrom(targetModule.thisPre, schema.pre);
-    this.extendSchemaFrom(targetModule.thisPost, schema.post);
-
+    this.extendSchemaFrom(targetModule.thisVirtuals, schema.virtual.bind(schema));
+    this.extendSchemaFrom(targetModule.thisPre, schema.pre.bind(schema));
+    this.extendSchemaFrom(targetModule.thisPost, schema.post.bind(schema));
   }
 
   static enrichByFields(targetModule){
