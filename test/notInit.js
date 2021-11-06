@@ -7,9 +7,10 @@ describe('initialization', function() {
   describe('notInit', ()=>{
     describe('getAbsolutePath', ()=>{
       it('all set', ()=>{
-        const res = Init.getAbsolutePath('../src/index', {
+        Init.options = {
           pathToApp: '/home/admin/server/test'
-        });
+        };
+        const res = Init.getAbsolutePath('../src/index', );
         expect(res).to.be.equal('/home/admin/server/src/index');
       });
     });

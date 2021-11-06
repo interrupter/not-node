@@ -164,7 +164,6 @@ class notModule {
     }
   }
 
-
   getModelSchema(modelName) {
     let modelFile = this.getModelFile(modelName);
     if (modelFile && objHas(modelFile, modelName) && modelFile.thisSchema) {
@@ -283,6 +282,10 @@ class notModule {
 
   setRoute(key, val){
     this.routes[key] = val;
+  }
+
+  setLogic(key, val){
+    this.logics[key] = val;
   }
 
   getRoute(routeName) {
