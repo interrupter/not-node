@@ -106,6 +106,9 @@ module.exports = ({expect})=>{
           },
           getManifest(){
             return fakeManifest;
+          },
+          setEnv(){
+
           }
         };
 
@@ -332,7 +335,6 @@ module.exports = ({expect})=>{
          };
         const options = {fake: 'options'};
         const fakeApp = {
-
           setEnv(){},
           importModulesFrom(modsPath){
             expect(modsPath).to.be.equal('modulesPath_fake');
@@ -342,6 +344,7 @@ module.exports = ({expect})=>{
           }
         };
         const master = {
+          setEnv(){},
           setApp(app){expect(app).to.be.instanceof(FakeApp);},
           throwError(e){
             throw new Error(e)

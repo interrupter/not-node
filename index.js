@@ -2,6 +2,7 @@
 * @module not-node
 */
 
+module.exports.Env = require('./src/env.js');
 /** Error module
  * @type {not-node/Error}
  */

@@ -27,7 +27,7 @@ module.exports = class InitRateLimiter{
   static createRateLimiter({master}){
     const {RateLimiterRedis} = require('rate-limiter-flexible');
     return new RateLimiterRedis({
-      storeClient:  master.getApp().getEnv('db.redis'),
+      storeClient:  master.getEnv('db.redis'),
       keyPrefix:    'middleware',
       points:       10,     // 10 requests
       duration:     1,    // per 1 second by IP

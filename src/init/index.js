@@ -2,6 +2,8 @@
 const path = require('path');
 const logger = require('not-log');
 const log = logger(module, 'not-node:Init');
+
+const Env = require('../env');
 //
 const ADDS = require('./additional');
 //
@@ -9,21 +11,21 @@ const InitSequence = require('./sequence.js');
 const STANDART_INIT_SEQUENCE = require('./sequence.standart.js');
 
 /**
-*	@example <caption>Application initialization</caption>
-*	let App = new notApp({
-*		mongoose: mongooseLink
-*		modulesCollectionPaths: [__dirname + '/modules'], //each path to folder with modules
-*		modulesPaths: [],	//each path to module
-*		modules: {
-*			filestore: require('not-filestore') //each npm not-* module with custom overriden name as key
-*		}
-*	})
-*		.importModuleFrom(__dirname+'/anotherModule', 'anotherCustomModuleName')	//import module from path
-*		.importModulesFrom(__dirname+'/directoryOfUsefullessModules')
-*		.importModule(require('notModule'), 'notModule')
-*		.expose(ExpressApp);
-**/
-class Init{
+ *	@example <caption>Application initialization</caption>
+ *	let App = new notApp({
+ *		mongoose: mongooseLink
+ *		modulesCollectionPaths: [__dirname + '/modules'], //each path to folder with modules
+ *		modulesPaths: [],	//each path to module
+ *		modules: {
+ *			filestore: require('not-filestore') //each npm not-* module with custom overriden name as key
+ *		}
+ *	})
+ *		.importModuleFrom(__dirname+'/anotherModule', 'anotherCustomModuleName')	//import module from path
+ *		.importModulesFrom(__dirname+'/directoryOfUsefullessModules')
+ *		.importModule(require('notModule'), 'notModule')
+ *		.expose(ExpressApp);
+ **/
+class Init {
   static options = false;
   static manifest = false;
   static config = false;
@@ -34,12 +36,17 @@ class Init{
   static WSServer = false;
   static WSClient = false;
 
-  static getAbsolutePath(subPath, options){
-    return path.resolve(options.pathToApp, subPath);
+
+  static getAbsolutePath(subPath) {
+    return path.resolve(Init.options.pathToApp, subPath);
   }
 
   static setManifest(manifest) {
     Init.manifest = manifest;
+  }
+
+  static getManifest() {
+    return Init.manifest;
   }
 
   static setMongoose(val) {
@@ -50,29 +57,37 @@ class Init{
     return Init.mongoose;
   }
 
-  static setServer(val){
+  static setServer(val) {
     Init.server = val;
     return Init;
   }
 
-  static getServer(){
+  static getServer() {
     return Init.server;
   }
 
-  static setHTTPServer(val){
+  static setHTTPServer(val) {
     Init.httpServer = val;
     return Init;
   }
 
-  static getHTTPServer(){
+  static getHTTPServer() {
     return Init.httpServer;
   }
 
-  static getApp(){
+  static setEnv(key, val) {
+    Env.setEnv(key, val);
+  }
+
+  static getEnv(key) {
+    return Env.setEnv(key);
+  }
+
+  static getApp() {
     return Init.notApp;
   }
 
-  static setApp(val){
+  static setApp(val) {
     Init.notApp = val;
     return Init;
   }

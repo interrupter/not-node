@@ -28,9 +28,9 @@ module.exports = class InitDB{
   *  [db_driver_name_1]: options,
   *  [db_driver_name_2]: options,
   * }
-  * to get driver require('not-node').Application.getEnv(db_driver_name_2)
-  * require('not-node').Application.getEnv('mongoose')
-  * require('not-node').Application.getEnv('redis')
+  * to get driver require('not-node').getEnv(db_driver_name_2)
+  * require('not-node').getEnv('mongoose')
+  * require('not-node').getEnv('redis')
   **/
   async run({master, config, options}) {
     const conf = config.get('db');

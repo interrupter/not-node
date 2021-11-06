@@ -9,7 +9,7 @@ module.exports = class InitDBRedis{
     const redis = require('redis');
     const redisClient = redis.createClient(conf);
     InitDBRedis.bindClientEvents({master, redisClient});
-    master.getApp().setEnv(`db.${alias}`, redisClient);
+    master.setEnv(`db.${alias}`, redisClient);
   }
 
   async run({config, options, master, conf, alias}){

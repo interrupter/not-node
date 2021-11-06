@@ -24,7 +24,7 @@ module.exports = class InitDBMongoose{
       Increment.init(mongoose);
     }
     master.setMongoose(mongoose);
-    master.getApp().setEnv(`db.${alias}`, mongoose);
+    master.setEnv(`db.${alias}`, mongoose);
   }
 
   async run({config, options, master, conf, alias}){

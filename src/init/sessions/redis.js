@@ -6,7 +6,7 @@ module.exports = class InitSessionsRedis{
     log.info('Setting up user sessions handler(redis)...');
     await ADDS.run('sessions.pre', {config, options, master});
     const expressSession = require('express-session');
-    const redisClient = master.getApp().getEnv('db.redis');
+    const redisClient = master.getEnv('db.redis');
     const redisStore = require('connect-redis')(expressSession);
     master.getServer().use(expressSession({
       secret:             config.get('session:secret'),

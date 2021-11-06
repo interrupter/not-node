@@ -6,6 +6,7 @@
 const EventEmitter = require('events');
 const {executeObjectFunction, objHas, firstLetterToUpper} = require('./common');
 
+const Env = require('./env');
 const
   notModule = require('./manifest/module'),
   path = require('path'),
@@ -268,30 +269,6 @@ class notDomain extends EventEmitter {
   }
 
   /**
-   *  Returns application environment variable
-   *  @param   {string}      key  name of var
-   *  @return {object|undefined}    value or undefined
-   */
-  getEnv(key) {
-    if (objHas(this.envs,key)) {
-      return this.envs[key];
-    } else {
-      return undefined;
-    }
-  }
-
-  /**
-   *  Setting application environment variable
-   *  @param   {string}      key  name of var
-   *  @param   {object}      val  value
-   *  @return {notDomain}      chainable
-   */
-  setEnv(key, val) {
-    this.envs[key] = val;
-    return this;
-  }
-
-  /**
    *  logger
    */
   set logger(logger) {
@@ -441,6 +418,21 @@ class notDomain extends EventEmitter {
       }
     }
     return stats;
+  }
+
+  getEnv(key) {
+    return Env.getEnv(key);
+  }
+
+  /**
+   *  Setting application environment variable
+   *  @param   {string}      key  name of var
+   *  @param   {object}      val  value
+   *  @return {notDomain}      chainable
+   */
+  static setEnv(key, val) {
+    Env.setEnv(key, val);
+    return this;
   }
 
 }

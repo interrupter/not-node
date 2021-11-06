@@ -507,36 +507,7 @@ describe('notDomain', function() {
   });
 
 
-  describe('getEnv', function() {
-    it('key exists', function() {
-      const ctx = {
-        envs:{
-          key: 'happy'
-        }
-      };
-      const res = notDomain.prototype.getEnv.call(ctx, 'key');
-      expect(res).to.be.equal('happy');
-    });
-    it('key not exists', function() {
-      const ctx = {
-        envs:{
-        }
-      };
-      const res = notDomain.prototype.getEnv.call(ctx, 'key');
-      expect(res).to.be.undefined;
-    });
-  });
 
-  describe('setEnv', function() {
-    it('set', function() {
-      const ctx = {
-        envs:{}
-      };
-      const res = notDomain.prototype.setEnv.call(ctx, 'key', 'happy');
-      expect(res).to.be.deep.equal(ctx);
-      expect(res.envs.key).to.be.deep.equal('happy');
-    });
-  });
 
 
   describe('logger', function() {

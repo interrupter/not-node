@@ -38,6 +38,9 @@ module.exports = ({
         };
 
         const master = {
+          getEnv(){
+
+          },
           getServer(){
             return {
               use(arg){

@@ -21,13 +21,13 @@ module.exports = class InitApp{
 
   static async setAppEnvs({config, options, master}){
     await emit('app.setEnv.pre', {config, options, master});
-    master.getApp().setEnv('hostname', config.get('hostname'));
-    master.getApp().setEnv('server', `https://` + config.get('host'));
-    master.getApp().setEnv('appPath', config.get('appPath'));
-    master.getApp().setEnv('name', master.getManifest().name);
-    master.getApp().setEnv('fullServerName', config.get('fullServerName'));
-    master.getApp().setEnv('dbDumpsPath', config.get('dbDumpsPath'));
-    master.getApp().setEnv('rolesPriority', master.getManifest().targets.server.roles);
+    master.setEnv('hostname', config.get('hostname'));
+    master.setEnv('server', `https://` + config.get('host'));
+    master.setEnv('appPath', config.get('appPath'));
+    master.setEnv('name', master.getManifest().name);
+    master.setEnv('fullServerName', config.get('fullServerName'));
+    master.setEnv('dbDumpsPath', config.get('dbDumpsPath'));
+    master.setEnv('rolesPriority', master.getManifest().targets.server.roles);
     master.getApp().ENV = ENV;
     await emit('app.setEnv.post', {config, options, master});
   }
