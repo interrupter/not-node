@@ -133,11 +133,41 @@ class notRoute{
     );
   }
 
+  extractReturn(notRouteData){
+    if(objHas(notRouteData.rule, 'return')){
+      return [...notRouteData.rule.return];
+    }else if(objHas(notRouteData.actionData, 'return')){
+      return [...notRouteData.actionData.return];
+    }else{
+      return undefined;
+    }
+  }
+
+  /**
+  * Removes fields from result object acctoding to actionData.return array
+  * if presented
+  * @param {ExpressRequest} req request object
+  * @param {object} result result returned by main action processor
+  **/
+  filterResultByReturnRule(req, result){
+    const returnList = this.extractReturn(req.notRouteData);
+    if(result && (typeof result === 'object') && returnList && Array.isArray(returnList)){
+      let presented = Object.keys(result);
+      presented.forEach(fieldName => {
+        if(!returnList.includes(fieldName)){
+          delete result[fieldName];
+        }
+      });
+    }
+  }
+
   async executeRoute(modRoute, actionName, {req, res, next}){
     //waiting preparation
     let prepared = await this.executeFunction(modRoute, CONST_BEFORE_ACTION, [req, res, next]);
     //waiting results
     let result = await this.executeFunction(modRoute, actionName, [req, res, next, prepared]);
+    //filter result IF actionData.return specified
+    this.filterResultByReturnRule(req, result);
     //run after with results, continue without waiting when it finished
     return this.executeFunction(modRoute, CONST_AFTER_ACTION, [req, res, next, result]);
   }

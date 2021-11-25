@@ -4,6 +4,7 @@ const serveStatic = require('serve-static');
 const log = require('not-log')(module, 'not-node//init');
 const {
   notError,
+  notValidationError,
   notRequestError
 } = require('not-error');
 
@@ -12,27 +13,39 @@ module.exports = class InitRoutes {
   static finalError({
     master
   }) {
-    return (err, req, res) => {
+    // eslint-disable-next-line no-unused-vars
+    return (err, req, res, next) => {
+      //reportable errors from known cases
       if (err instanceof notError) {
         master.getApp().report(err);
+        //if request params - ok, but result is not
         if (err instanceof notRequestError) {
           if (err.getRedirect()) {
-            res.redirect(err.getRedirect());
+            return res.redirect(err.getRedirect());
           } else {
-
-            res.status(err.getCode()).json({
+            return res.status(err.getCode()).json({
               status: 'error',
-              error: err.getResult().message,
+              message: err.getResult().message,
               errors: err.getResult().errors
             });
           }
+          //bad request params
+        }else if (err instanceof notValidationError){
+          return res.status(400).json({
+            status: 'error',
+            message:  err.message,
+            errors: err.getFieldsErrors()
+          });
         }
-      } else if (err instanceof Error && (res && res.status && res.json)) {
+      }
+      //other cases
+      if (err instanceof Error && (res && res.status && res.json)) {
         res.status(err.statusCode || 500);
+        //reporting as unknown
         master.getApp().report(new notError(`Internal error(${res.statusCode}): %${req.url} - %${err.message}`, {}, err));
         res.json({
           status: 'error',
-          error: err.message
+          message: err.message
         });
       } else {
         log.error('Unknown error:', err);

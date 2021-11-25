@@ -17,7 +17,7 @@ module.exports = ({expect})=>{
           json(dat){
             expect(dat).to.be.deep.equal({
               status: 'error',
-              error: 'Serious generic error'
+              message: 'Serious generic error'
             });
             done();
           }
@@ -120,7 +120,7 @@ module.exports = ({expect})=>{
           json(dat){
             expect(dat).to.be.deep.equal({
               status: 'error',
-              error:  'Serious not error request',
+              message:  'Serious not error request',
               errors:  {field: ['name']},
             });
             done();
@@ -142,8 +142,10 @@ module.exports = ({expect})=>{
 
 
     describe('run', ()=>{
-      it('', async ()=>{
-        const fakeServer = { sarver: true};
+      it('run', async ()=>{
+        const fakeServer = { sarver: true, use(fn){
+          expect(typeof fn).to.be.equal('function');
+        }};
         const fakeApp = {
           report(){},
           use(fn){

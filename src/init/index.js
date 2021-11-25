@@ -78,7 +78,7 @@ class Init {
   static setEnv(key, val) {
     Env.setEnv(key, val);
   }
-  
+
   static getEnv(key) {
     return Env.getEnv(key);
   }
@@ -149,6 +149,11 @@ class Init {
       };
       //running all prepared initalizers with current context
       await initSequence.run(context);
+      await ADDS.run('post', {
+        config,
+        options,
+        manifest
+      });
       log.info('Application initalization finished');
     } catch (e) {
       Init.throwError(e.message, 1);

@@ -18,7 +18,9 @@ module.exports = class InitMiddleware{
         } else {
           proc = require(warePath);
         }
-        master.getServer().use(proc);
+        if(typeof proc === 'function'){
+          master.getServer().use(proc);
+        }
       }
     }
     await ADDS.run('middleware.post', {config, options, master});
