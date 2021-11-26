@@ -134,6 +134,17 @@ class notDomain extends EventEmitter {
   }
 
   /**
+   *  Returns form
+   *  @param   {string}  name   'formName' or 'moduleName//formName'
+   *                  ('login', 'not-user//login')
+   *  @return {object}        form
+   **/
+  getForm(name) {
+    const type = 'form';
+    return this.getByPath(name, type);
+  }
+
+  /**
    *  Returns model
    *  @param   {string}  name   'modelName' or 'moduleName//modelName'
    *                  ('User', 'moduleName//User')
@@ -141,11 +152,7 @@ class notDomain extends EventEmitter {
    **/
   getModel(name) {
     const type = 'model';
-    if (name.indexOf('//') > 0) {
-      return this.getByFullPath(name, type);
-    } else {
-      return this.getByShortPath(name, type);
-    }
+    return this.getByPath(name, type);
   }
 
   getByFullPath(name, type){
@@ -169,31 +176,23 @@ class notDomain extends EventEmitter {
 
   /**
    *  Returns file with model declarations
-   *  @param {string}   modelName  'modelName' or 'moduleName//modelName'
+   *  @param {string}   name  'modelName' or 'moduleName//modelName'
    *  @return  {object}        CommonJS module object
    **/
-  getModelFile(modelName) {
+  getModelFile(name) {
     const type = 'modelFile';
-    if (modelName.indexOf('//') > 0) {
-      return this.getByFullPath(modelName, type);
-    } else {
-      return this.getByShortPath(modelName, type);
-    }
+    return this.getByPath(name, type);
   }
 
   /**
    *  Returns specified by name or 'moduleName//modelName' model Schema
-   *  @param {string} modelName  'modelName' or 'moduleName//modelName'
+   *  @param {string} name  'modelName' or 'moduleName//modelName'
    *  @return {object}       model schema
    **/
 
-  getModelSchema(modelName) {
+  getModelSchema(name) {
     const type = 'modelSchema';
-    if (modelName.indexOf('//') > 0) {
-      return this.getByFullPath(modelName, type);
-    } else {
-      return this.getByShortPath(modelName, type);
-    }
+    return this.getByPath(name, type);
   }
 
   /**
@@ -204,25 +203,25 @@ class notDomain extends EventEmitter {
    **/
   getLogic(name) {
     const type = 'logic';
-    if (name.indexOf('//') > 0) {
-      return this.getByFullPath(name, type);
-    } else {
-      return this.getByShortPath(name, type);
-    }
+    return this.getByPath(name, type);
   }
 
 
   /**
    *  Returns file with logic declarations
-   *  @param {string}   logicName  'logicName' or 'moduleName//logicName'
+   *  @param {string}   name  'logicName' or 'moduleName//logicName'
    *  @return  {object}        CommonJS module object
    **/
-  getLogicFile(logicName) {
+  getLogicFile(name) {
     const type = 'logicFile';
-    if (logicName.indexOf('//') > 0) {
-      return this.getByFullPath(logicName, type);
+    return this.getByPath(name, type);
+  }
+
+  getByPath(name, type){
+    if (name.indexOf('//') > 0) {
+      return this.getByFullPath(name, type);
     } else {
-      return this.getByShortPath(logicName, type);
+      return this.getByShortPath(name, type);
     }
   }
 
@@ -403,6 +402,10 @@ class notDomain extends EventEmitter {
         count: 0,
         list: []
       },
+      forms: {
+        count: 0,
+        list: []
+      },
       actions: {
         count: 0,
         list: []
@@ -418,8 +421,9 @@ class notDomain extends EventEmitter {
       stats.modules.content[modName] = modStatus;
       stats.routes.count += modStatus.routes.count;
       stats.models.count += modStatus.models.count;
+      stats.forms.count += modStatus.forms.count;
       stats.actions.count += modStatus.actions.count;
-      for (let t of ['routes', 'models', 'actions']) {
+      for (let t of ['routes', 'models', 'actions', 'forms']) {
         stats[t].list.push(...(modStatus[t].list.map(itmName => `${modName}//${itmName}`)));
       }
     }

@@ -47,6 +47,7 @@ class notModule {
     };
     this.models = {};
     this.logics = {};
+    this.forms = {};
     this.manifests = {};
     this.faulty = false;
     this.paths = {
@@ -220,10 +221,15 @@ class notModule {
   }
 
   getStatus() {
+    const formsList = Object.keys(this.forms);
     const modelsList = Object.keys(this.models);
     const routesList = Object.keys(this.routes);
     const actionsList = this.getActionsList();
     return {
+      forms: {
+        count: formsList.length,
+        list: formsList
+      },
       models: {
         count: modelsList.length,
         list: modelsList,
@@ -271,9 +277,16 @@ class notModule {
     return content;
   }
 
-
   setManifest(key, val){
     this.manifests[key] = val;
+  }
+
+  getForm(key) {
+    return this.forms[key];
+  }
+
+  setForm(key, val) {
+    this.forms[key] = val;
   }
 
   setModel(key, val){

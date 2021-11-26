@@ -1,3 +1,4 @@
+const {notError} = require('not-error');
 const log = require('not-log')(module, 'not-node//init');
 const ADDS = require('../additional');
 

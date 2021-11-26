@@ -28,6 +28,7 @@ module.exports = class InitDBMongoose{
   }
 
   async run({config, options, master, conf, alias}){
+    log.info(`db.${alias}.pre`);
     await ADDS.run(`db.${alias}.pre`, {config, options, master, conf, alias});
     await InitDBMongoose.initMongoose({conf, master, alias});
     await ADDS.run(`db.${alias}.post`, {config, options, master, conf, alias});

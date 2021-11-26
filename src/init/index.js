@@ -1,4 +1,5 @@
 //
+const os = require('os');
 const path = require('path');
 const logger = require('not-log');
 const log = logger(module, 'not-node:Init');
@@ -126,7 +127,7 @@ class Init {
     additional
   }) {
     try {
-      log.info('Kick start app...');
+      log.info('Kick start app...'+ os.platform()+os.arch());
       ADDS.init(additional);
       const initSequence = new InitSequence(STANDART_INIT_SEQUENCE);
       await ADDS.run('pre', {

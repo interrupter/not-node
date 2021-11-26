@@ -29,7 +29,7 @@ module.exports = class InitRateLimiter{
     return new RateLimiterRedis({
       storeClient:  master.getEnv('db.redis'),
       keyPrefix:    'middleware',
-      points:       10,     // 10 requests
+      points:       100,     // 10 requests
       duration:     1,    // per 1 second by IP
     });
   }

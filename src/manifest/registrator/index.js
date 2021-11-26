@@ -5,6 +5,7 @@
 
 const
   notModuleRegistratorFields = require('./fields'),
+  notModuleRegistratorForms = require('./forms'),
   notModuleRegistratorModels = require('./models'),
   notModuleRegistratorLogics = require('./logics'),
   notModuleRegistratorRoutes = require('./routes'),
@@ -13,6 +14,7 @@ const
 
 const DEFAULT_REGISTRATORS = [
   notModuleRegistratorFields,
+  notModuleRegistratorForms,
   notModuleRegistratorModels,
   notModuleRegistratorLogics,
   notModuleRegistratorRoutes,

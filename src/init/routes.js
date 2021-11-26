@@ -13,7 +13,6 @@ module.exports = class InitRoutes {
   static finalError({
     master
   }) {
-    // eslint-disable-next-line no-unused-vars
     return (err, req, res, next) => {
       //reportable errors from known cases
       if (err instanceof notError) {

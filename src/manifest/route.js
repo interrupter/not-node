@@ -148,7 +148,7 @@ class notRoute{
   * if presented
   * @param {ExpressRequest} req request object
   * @param {object} result result returned by main action processor
-  **/
+  */
   filterResultByReturnRule(req, result){
     const returnList = this.extractReturn(req.notRouteData);
     if(result && (typeof result === 'object') && returnList && Array.isArray(returnList)){

@@ -29,6 +29,8 @@ module.exports.Routine = require('./src/model/routine');
 module.exports.Common = require('./src/common');
 /** Fields library manager */
 module.exports.Fields = require('./src/fields');
+/** Form validation template **/
+module.exports.Form = require('./src/form');
 /** Application initialization procedures */
 module.exports.Init = require('./src/init').Init;
 /** Application object */
