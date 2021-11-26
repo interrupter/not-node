@@ -184,7 +184,7 @@ describe('notDomain', function() {
     it('model name short', function() {
       const route = 'Jungle';
       const ctx = {
-        getByShortPath(){return null;}
+        getByPath(){return null;}
       };
       const res = notDomain.prototype.getModel.call(ctx, route);
       expect(res).to.be.null;
@@ -194,7 +194,7 @@ describe('notDomain', function() {
       const id = Math.random();
       const route = 'module//Jungle';
       const ctx = {
-        getByFullPath(){return id;}
+        getByPath(){return id;}
       };
       const res = notDomain.prototype.getModel.call(ctx, route);
       expect(res).to.be.equal(id);
@@ -206,7 +206,7 @@ describe('notDomain', function() {
       const id = Math.random();
       const route = 'Jungle';
       const ctx = {
-        getByShortPath(){return id;}
+        getByPath(){return id;}
       };
       const res = notDomain.prototype.getModelFile.call(ctx, route);
       expect(res).to.be.equal(id);
@@ -216,7 +216,7 @@ describe('notDomain', function() {
       const id = Math.random();
       const route = 'module//Jungle';
       const ctx = {
-        getByFullPath(){return id;}
+        getByPath(){return id;}
       };
       const res = notDomain.prototype.getModelFile.call(ctx, route);
       expect(res).to.be.equal(id);
@@ -229,7 +229,7 @@ describe('notDomain', function() {
       const id = Math.random();
       const route = 'Jungle';
       const ctx = {
-        getByShortPath(){return id;}
+        getByPath(){return id;}
       };
       const res = notDomain.prototype.getModelSchema.call(ctx, route);
       expect(res).to.be.equal(id);
@@ -239,7 +239,7 @@ describe('notDomain', function() {
       const id = Math.random();
       const route = 'module//Jungle';
       const ctx = {
-        getByFullPath(){return id;}
+        getByPath(){return id;}
       };
       const res = notDomain.prototype.getModelSchema.call(ctx, route);
       expect(res).to.be.equal(id);
@@ -252,7 +252,7 @@ describe('notDomain', function() {
       const id = Math.random();
       const route = 'Jungle';
       const ctx = {
-        getByShortPath(){return id;}
+        getByPath(){return id;}
       };
       const res = notDomain.prototype.getLogic.call(ctx, route);
       expect(res).to.be.equal(id);
@@ -262,7 +262,7 @@ describe('notDomain', function() {
       const id = Math.random();
       const route = 'module//Jungle';
       const ctx = {
-        getByFullPath(){return id;}
+        getByPath(){return id;}
       };
       const res = notDomain.prototype.getLogic.call(ctx, route);
       expect(res).to.be.equal(id);
@@ -274,7 +274,7 @@ describe('notDomain', function() {
       const id = Math.random();
       const route = 'Jungle';
       const ctx = {
-        getByShortPath(){return id;}
+        getByPath(){return id;}
       };
       const res = notDomain.prototype.getLogicFile.call(ctx, route);
       expect(res).to.be.equal(id);
@@ -284,7 +284,7 @@ describe('notDomain', function() {
       const id = Math.random();
       const route = 'module//Jungle';
       const ctx = {
-        getByFullPath(){return id;}
+        getByPath(){return id;}
       };
       const res = notDomain.prototype.getLogicFile.call(ctx, route);
       expect(res).to.be.equal(id);
@@ -711,6 +711,10 @@ describe('notDomain', function() {
                 actions: {
                   count: 2,
                   list: ['user//list', 'role//list']
+                },
+                forms: {
+                  count: 3,
+                  list: ['user//listAll', 'user//list', 'role//list']
                 }
               };
             }
@@ -737,9 +741,17 @@ describe('notDomain', function() {
               actions: {
                 count: 2,
                 list: ['user//list', 'role//list']
+              },
+              forms: {
+                count: 3,
+                list: ['user//listAll', 'user//list', 'role//list']
               }
             }
           }
+        },
+        forms: {
+          count: 3,
+          list: ['not-user//user//listAll', 'not-user//user//list', 'not-user//role//list']
         },
         routes: {
           count: 2,

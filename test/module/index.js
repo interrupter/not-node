@@ -22,7 +22,7 @@ module.exports = (input)=>{
       notModuleRegistrator.setRegistrators(regs);
       expect(notModuleRegistrator.registrators.length).to.be.equal(0);
       notModuleRegistrator.resetRegistrators();
-      expect(notModuleRegistrator.registrators.length).to.be.equal(5);
+      expect(notModuleRegistrator.registrators.length).to.be.equal(6);
     });
 
     it('with paths', ()=>{

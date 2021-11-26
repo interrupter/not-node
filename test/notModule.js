@@ -468,6 +468,9 @@ describe('notModule', function() {
         routes: {
           userRoute: {}
         },
+        forms: {
+          'route//action':{}
+        },
         getModelsStatuses() {
           return {
             user: {
@@ -503,6 +506,10 @@ describe('notModule', function() {
           }
         },
         actions: {
+          count: 1,
+          list: ['route//action']
+        },
+        forms: {
           count: 1,
           list: ['route//action']
         }
