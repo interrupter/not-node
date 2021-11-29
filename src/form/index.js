@@ -22,7 +22,7 @@ module.exports = class Form {
     this.FORM_NAME = FORM_NAME;
     this.FIELDS = FIELDS;
     this.SCHEMA = byFieldsValidators(initFields(FIELDS, 'model'));
-    if (mongoose.modelNames().indexOf(targetModule.thisModelName)===-1){
+    if (mongoose.modelNames().indexOf(FORM_NAME)===-1){
       this.MODEL = mongoose.model(FORM_NAME, Schema(this.SCHEMA));
     }else{
       this.MODEL = mongoose.connection.model(FORM_NAME);
