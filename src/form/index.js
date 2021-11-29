@@ -22,7 +22,7 @@ module.exports = class Form {
     this.FORM_NAME = FORM_NAME;
     this.FIELDS = FIELDS;
     this.SCHEMA = byFieldsValidators(initFields(FIELDS, 'model'));
-    this.MODEL = mongoose.model(FORM_NAME, Schema(this.SCHEMA));
+    this.MODEL = mongoose.model(FORM_NAME + '_' + Math.random().toString(), Schema(this.SCHEMA));
   }
 
   /**
