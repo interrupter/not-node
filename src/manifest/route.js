@@ -162,14 +162,18 @@ class notRoute{
   }
 
   async executeRoute(modRoute, actionName, {req, res, next}){
-    //waiting preparation
-    let prepared = await this.executeFunction(modRoute, CONST_BEFORE_ACTION, [req, res, next]);
-    //waiting results
-    let result = await this.executeFunction(modRoute, actionName, [req, res, next, prepared]);
-    //filter result IF actionData.return specified
-    this.filterResultByReturnRule(req, result);
-    //run after with results, continue without waiting when it finished
-    return this.executeFunction(modRoute, CONST_AFTER_ACTION, [req, res, next, result]);
+    try{
+      //waiting preparation
+      let prepared = await this.executeFunction(modRoute, CONST_BEFORE_ACTION, [req, res, next]);
+      //waiting results
+      let result = await this.executeFunction(modRoute, actionName, [req, res, next, prepared]);
+      //filter result IF actionData.return specified
+      this.filterResultByReturnRule(req, result);
+      //run after with results, continue without waiting when it finished
+      return this.executeFunction(modRoute, CONST_AFTER_ACTION, [req, res, next, result]);
+    }catch(e){
+      next(e);
+    }
   }
 
   async executeFunction(obj, name, params) {
