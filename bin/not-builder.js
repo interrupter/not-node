@@ -16,7 +16,7 @@ var argv = require('yargs').argv,
 	path = require('path'),
 	child_process = require('child_process'),
 	deepMerge = require('deepmerge'),
-	
+
 	lib = require('../src/lib.js');
 
 const TEMPLATES_EXT = '.html';
@@ -31,6 +31,7 @@ let opts = {
 		'to': argv.to || false,
 		'config': argv.config || './project.manifest.json',
 		'rollup': argv.rollup || path.join(process.cwd(),'./node_modules/.bin/rollup'),
+		'role': argv.role || null
 	},
 	configName = path.join(process.cwd(), opts.config),
 	config = {};
@@ -493,7 +494,10 @@ async function build_Server(pathToRoot, roles, targetName, targetManifest){
 	console.log('List:', list);
 	////forming index.js and rollup.js
 	for(let i = 0; i < roles.length; i++){
-		let role = roles[i];
+		const role = roles[i];
+		if((opts.role !== null) && opts.role !== role){
+			continue;
+		}
 		try{
 			let indexFile = path.join(pathToRoot, targetManifest.src, 'index.' + role + '.js');
 			let rollupFile = path.join(pathToRoot, targetManifest.root, 'rollup.' + role + '.js');
