@@ -1,11 +1,14 @@
 const emit = require('./additional').run;
 const log = require('not-log')(module, 'RateLimiter');
+const {partCopyObj} = require('../common');
 
 const DEFAULT_OPTIONS = {
   keyPrefix: 'rateLimiterMiddleware',
   points: 20,
   duration: 1
 };
+
+const DEFAULT_CLIENT = 'ioredis';
 
 module.exports = class InitRateLimiter{
 
@@ -30,16 +33,18 @@ module.exports = class InitRateLimiter{
 
 
   static getOptions({config}){
+    const opts = partCopyObj(config.get('modules.rateLimiter', {}), Object.keys(DEFAULT_OPTIONS));
     return {
       ...DEFAULT_OPTIONS,
-      ...config.get('modules.rateLimiter', {})
+      ...opts
     };
   }
 
   static createRateLimiter({master, config}){
     const {RateLimiterRedis} = require('rate-limiter-flexible');
+    const storeClient = config.get('modules.rateLimiter.client', DEFAULT_CLIENT);
     return new RateLimiterRedis({
-      storeClient:  master.getEnv('db.redis'),
+      storeClient:  master.getEnv(`db.${storeClient}`),
       ...InitRateLimiter.getOptions({master, config})
     });
   }
