@@ -30,7 +30,9 @@ module.exports.Common = require('./src/common');
 /** Fields library manager */
 module.exports.Fields = require('./src/fields');
 /** Form validation template **/
-module.exports.Form = require('./src/form');
+module.exports.Form = require('./src/form').Form;
+/** Form validation template fabric **/
+module.exports.FormFabric = require('./src/form').FormFabric;
 /** Application initialization procedures */
 module.exports.Init = require('./src/init').Init;
 /** Application object */
