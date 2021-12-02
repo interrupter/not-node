@@ -5,7 +5,7 @@ module.exports = class FormFabric {
     FIELDS,
     MODULE_NAME,
     FORM_NAME,
-    exractor
+    extractor
   }) {
     return class extends Form {
       constructor() {
@@ -21,7 +21,7 @@ module.exports = class FormFabric {
        * @return {Object}        forma data
        **/
       extract(req) {
-        return exractor(req);
+        return extractor(req);
       }
     };
   }

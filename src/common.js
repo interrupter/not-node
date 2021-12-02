@@ -92,6 +92,21 @@ module.exports.copyObj = (obj) => {
   return JSON.parse(JSON.stringify(obj));
 };
 
+/**
+* Copies object to secure it from changes
+* @param {object}   obj     original object
+* @return {object}          copy of object
+**/
+module.exports.partCopyObj = (obj, list) => {
+  let partObj =  Object.keys(obj).reduce((prev, curr)=>{
+    if(list.includes(curr)){
+      prev[curr] = obj[curr];
+    }
+    return prev;
+  }, {});
+  return JSON.parse(JSON.stringify(partObj));
+};
+
 
 /**
 * Test argument type to be 'function'
