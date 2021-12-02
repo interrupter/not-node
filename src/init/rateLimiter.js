@@ -29,7 +29,7 @@ module.exports = class InitRateLimiter{
   }
 
 
-  getOptions({config}){
+  static getOptions({config}){
     return {
       ...DEFAULT_OPTIONS,
       ...config.get('modules.rateLimiter', {})
@@ -40,7 +40,7 @@ module.exports = class InitRateLimiter{
     const {RateLimiterRedis} = require('rate-limiter-flexible');
     return new RateLimiterRedis({
       storeClient:  master.getEnv('db.redis'),
-      ...this.getOptions({master, config})
+      ...InitRateLimiter.getOptions({master, config})
     });
   }
 };
