@@ -1,14 +1,18 @@
 const emit = require('./additional').run;
 const log = require('not-log')(module, 'RateLimiter');
 
+const DEFAULT_OPTIONS = {
+  keyPrefix: 'rateLimiterMiddleware',
+  points: 20,
+  duration: 1
+};
+
 module.exports = class InitRateLimiter{
 
   static createMiddleware({rateLimiter}){
     return (req, res, next) => {
       rateLimiter.consume(req.ip)
-        .then(() => {
-          next();
-        })
+        .then(() =>  next())
         .catch(() => {
           log.error('Too many requests by ' + req.ip);
           res.status(429).send('Too Many Requests');
@@ -24,13 +28,19 @@ module.exports = class InitRateLimiter{
     await emit('rateLimiter.post', { config, master});
   }
 
-  static createRateLimiter({master}){
+
+  getOptions({config}){
+    return {
+      ...DEFAULT_OPTIONS,
+      ...config.get('modules.rateLimiter', {})
+    };
+  }
+
+  static createRateLimiter({master, config}){
     const {RateLimiterRedis} = require('rate-limiter-flexible');
     return new RateLimiterRedis({
       storeClient:  master.getEnv('db.redis'),
-      keyPrefix:    'middleware',
-      points:       100,     // 10 requests
-      duration:     1,    // per 1 second by IP
+      ...this.getOptions({master, config})
     });
   }
 };

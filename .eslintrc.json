@@ -18,7 +18,8 @@
   "extends": [
     "eslint:recommended",
     "plugin:node/recommended",
-		"plugin:sonarjs/recommended"
+		"plugin:sonarjs/recommended",
+    "plugin:promise/recommended"
   ],
 	"plugins": ["promise"],
   "rules": {
