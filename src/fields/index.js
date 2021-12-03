@@ -1,3 +1,4 @@
+const clone = require('rfdc')();
 const fs = require('fs');
 const path = require('path');
 const {objHas, tryFile} = require('../common');
@@ -82,7 +83,7 @@ module.exports.initField = (field, resultOnly = true, type = 'ui') => {
     destName = srcName = field;
   }
   let proto = (objHas(FIELDS, srcName) && objHas(FIELDS[srcName], type)) ? FIELDS[srcName][type]:{};
-  let result = Object.assign({}, proto, mutation);
+  let result = Object.assign({}, clone(proto), mutation);
   if (resultOnly) {
     return result;
   } else {

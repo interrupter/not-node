@@ -1,7 +1,7 @@
 /** @module Model/Enrich */
 
 const Schema = require('mongoose').Schema,
-  firstLetterToLower = require('../common').firstLetterToLower,
+  {firstLetterToLower,isFunc} = require('../common'),
   buildValidator = require('./buildValidator');
 
 class ModelEnricher{
@@ -49,7 +49,7 @@ class ModelEnricher{
     mongooseSchema.statics.__incModel = modelName;
     if(options && options.filter){
       mongooseSchema.statics.__incFilter = options.filter;
-    }    
+    }
     return mongooseSchema;
   }
 
@@ -61,7 +61,7 @@ class ModelEnricher{
   static byFieldsValidators (mongooseSchema) {
     if (mongooseSchema) {
       for (let fieldName in mongooseSchema) {
-        if (Object.prototype.hasOwnProperty.call(mongooseSchema[fieldName], 'validate')) {
+        if (Object.prototype.hasOwnProperty.call(mongooseSchema[fieldName], 'validate') && mongooseSchema[fieldName].validate.length && !isFunc(mongooseSchema[fieldName].validate[0])) {
           mongooseSchema[fieldName].validate = buildValidator(mongooseSchema[fieldName].validate);
         }
       }

@@ -25,13 +25,18 @@ class Form {
     FORM_NAME
   }) {
     this.FORM_NAME = FORM_NAME;
-    this.FIELDS = FIELDS;
-    this.SCHEMA = byFieldsValidators(initFields(FIELDS, 'model'));
+    this.PROTO_FIELDS = FIELDS;
     if (mongoose.modelNames().indexOf(FORM_NAME)===-1){
+      this.SCHEMA = byFieldsValidators(initFields(this.PROTO_FIELDS, 'model'));
       this.MODEL = mongoose.model(FORM_NAME, Schema(this.SCHEMA));
     }else{
       this.MODEL = mongoose.connection.model(FORM_NAME);
+      this.SCHEMA = this.MODEL.schema;
     }
+  }
+
+  getFields(){
+    return Object.keys(this.SCHEMA);
   }
 
   /**
@@ -43,7 +48,7 @@ class Form {
    **/
   async run(req) {
     let data = await this.extract(req);
-    await this.validate(data);
+    await this._validate(data);
     return data;
   }
 
@@ -62,9 +67,9 @@ class Form {
    * @return {Object}
    * @throws {notValidationError}
    **/
-  async validate(data) {
+  async _validate(data) {
     try {
-      await this.MODEL.validate(data, this.FIELDS);
+      await this.validate(data);
     } catch (e) {
       let fields = {};
       if (e instanceof mongoose.Error.ValidationError) {
@@ -72,17 +77,24 @@ class Form {
           fields[name] = [e.errors[name].message];
         });
         throw new notValidationError(e.message, fields, e, data);
-      } else {
+      } else if (e instanceof notValidationError){
+        throw e;
+      }else {
         throw new notError(
           'core:form_validation_error', {
             FORM_NAME: this.FORM_NAME,
-            FIELDS: this.FIELDS,
+            PROTO_FIELDS: this.PROTO_FIELDS,
+            FORM_FIELDS: this.getFields(),
             data
           },
           e
         );
       }
     }
+  }
+
+  async validate(data){
+    await this.MODEL.validate(data, this.getFields());
   }
 
   static fabric(){
