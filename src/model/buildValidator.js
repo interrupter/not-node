@@ -12,7 +12,11 @@ function extractValidationEnvGetter(options){
 }
 
 function extendObsolete(rule){
-  return validate(rule);
+  const result = {...rule};
+  if(objHas(result, 'arguments') && !Array.isArray(result.arguments)){
+    result.arguments = Object.values(result.arguments);
+  }
+  return validate(result);
 }
 
 function extendModern(rule, options){
