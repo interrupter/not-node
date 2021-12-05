@@ -59,10 +59,10 @@ module.exports = class ModelFabricate{
     this.extendSchemaFrom(targetModule.thisPost, schema.post.bind(schema));
   }
 
-  static enrichByFields(targetModule){
+  static enrichByFields(targetModule, options){
     if (targetModule.enrich) {
       if (targetModule.enrich.validators) {
-        targetModule.thisSchema = enrich.byFieldsValidators(targetModule.thisSchema, targetModule.thisModelName);
+        targetModule.thisSchema = enrich.byFieldsValidators(targetModule.thisSchema, options);
       }
       if (targetModule.enrich.versioning) {
         targetModule.thisSchema = enrich.byFieldsForVersioning(targetModule.thisSchema, targetModule.thisModelName);
@@ -125,7 +125,7 @@ module.exports = class ModelFabricate{
     if (ModelFabricate.isNotExtendable(targetModule)) {
       return new Schema(targetModule.thisSchema, options.schemaOptions);
     } else {
-      ModelFabricate.enrichByFields(targetModule);
+      ModelFabricate.enrichByFields(targetModule, options);
       //collecting information of unique fields, removing unique flag from schema
       let fieldsForIndexes = ModelFabricate.collectFieldsForIndexes(targetModule);
       //creating schema for model

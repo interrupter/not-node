@@ -56,17 +56,11 @@ class notModule {
     };
     this.fieldsImportRules = (objHas(options, 'fields') && options.fields) ? options.fields : {};
 
-    log.info(`Creating module: ${this.getModuleName()}`);
+    log.info(`Creating module: ${this.getName()}`);
     this.init();
     return this;
   }
 
-  getModuleName() {
-    if(this.module && this.module.name){
-      return this.module.name;
-    }
-    return this.path;
-  }
 
   init() {
     if (this.path) {
@@ -174,7 +168,7 @@ class notModule {
   }
 
   fabricateModel(model) {
-    protoModel.fabricate(model, {}, this.mongoose);
+    protoModel.fabricate(model, this.getOptions(), this.mongoose);
   }
 
   fabricateModels() {
@@ -318,7 +312,14 @@ class notModule {
   }
 
   getName(){
-    return this.module.name;
+    if(this.module && this.module.name){
+      return this.module.name;
+    }
+    return this.path;
+  }
+
+  getOptions(){
+    return (this.module && this.module.options)?this.module.options:{};
   }
 
   setRouteWS({

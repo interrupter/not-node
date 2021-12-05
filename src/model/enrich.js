@@ -58,11 +58,11 @@ class ModelEnricher{
     return mongooseSchema;
   }
 
-  static byFieldsValidators (mongooseSchema) {
+  static byFieldsValidators (mongooseSchema, options) {
     if (mongooseSchema) {
       for (let fieldName in mongooseSchema) {
         if (Object.prototype.hasOwnProperty.call(mongooseSchema[fieldName], 'validate') && mongooseSchema[fieldName].validate.length && !isFunc(mongooseSchema[fieldName].validate[0])) {
-          mongooseSchema[fieldName].validate = buildValidator(mongooseSchema[fieldName].validate);
+          mongooseSchema[fieldName].validate = buildValidator(mongooseSchema[fieldName].validate, options);
         }
       }
     }

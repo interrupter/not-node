@@ -81,11 +81,13 @@ class Form {
         throw e;
       }else {
         throw new notError(
-          'core:form_validation_error', {
+          'core:form_validation_error',
+          {
             FORM_NAME: this.FORM_NAME,
             PROTO_FIELDS: this.PROTO_FIELDS,
             FORM_FIELDS: this.getFields(),
-            data
+            data,
+            message: e.message
           },
           e
         );

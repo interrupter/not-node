@@ -144,14 +144,14 @@ describe('notModule', function() {
           name: 'fake my name'
         }
       }
-      expect(notModule.prototype.getModuleName.call(ctx)).to.be.equal('fake my name');
+      expect(notModule.prototype.getName.call(ctx)).to.be.equal('fake my name');
     });
 
     it('no module.name, no path', function() {
       const ctx = {
         module: {}
       }
-      expect(notModule.prototype.getModuleName.call(ctx)).to.be.undefined;
+      expect(notModule.prototype.getName.call(ctx)).to.be.undefined;
     });
   });
 

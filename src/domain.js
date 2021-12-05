@@ -100,7 +100,7 @@ class notDomain extends EventEmitter {
       notApp: this,
       fields: this.options.fields
     });
-    this.importModule(mod, moduleName || mod.getModuleName());
+    this.importModule(mod, moduleName || mod.getName());
     return this;
   }
 
@@ -235,7 +235,7 @@ class notDomain extends EventEmitter {
       return this.modules[moduleName];
     } else {
       for (let t in this.modules) {
-        if (this.modules[t].getModuleName() === moduleName) {
+        if (this.modules[t].getName() === moduleName) {
           return this.modules[t];
         }
       }

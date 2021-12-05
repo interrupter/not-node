@@ -390,12 +390,12 @@ describe('notDomain', function() {
     it('exists, but with custom name', function() {
       const route = 'Jungle';
       const targetMod = {
-        getModuleName(){ return 'Jungle'; }
+        getName(){ return 'Jungle'; }
       };
       const ctx = {
         modules:{
           loop:{
-            getModuleName(){return 'loop'; }
+            getName(){return 'loop'; }
           },
           trees: targetMod
         }
@@ -408,12 +408,12 @@ describe('notDomain', function() {
     it('not exists', function() {
       const route = 'Jungle';
       const targetMod = {
-        getModuleName(){ return 'Jungle1'; }
+        getName(){ return 'Jungle1'; }
       };
       const ctx = {
         modules:{
           loop:{
-            getModuleName(){return 'loop'; }
+            getName(){return 'loop'; }
           },
           trees: targetMod
         }
