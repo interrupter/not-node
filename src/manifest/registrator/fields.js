@@ -36,14 +36,30 @@ module.exports = class notModuleRegistratorFields{
     );
   }
 
-  registerField({name, field, fieldsImportRules}){
+  registerField({name, field, fieldsImportRules, fromPath}){
+    this.extendByFrontValidators({name, field, fromPath});
     notModuleRegistratorFields.fieldsManager.registerField(
-      name, //field name
-      field,       //field description
+      name,             //field name
+      field,            //field description
       fieldsImportRules //global import rules
     );
   }
 
+  /**
+  *
+  **/
+  extendByFrontValidators({name, field, fromPath}){
+    if(!(field && objHas(field, 'model'))){ return; }
+    //load validators
+    const validatorName = path.join(fromPath, 'validators', name + '.js');
+    if(!tryFile(validatorName)){return;}
+    const validators = notModuleRegistratorFields.openFile(validatorName);
+    //inject into field.model
+    if(!objHas(field.model, 'validate')){
+      field.model.validate = [];
+    }
+    field.model.validate.push(...validators);
+  }
 
 
   /**
@@ -72,11 +88,10 @@ module.exports = class notModuleRegistratorFields{
       this.registerField({
         name: parts.name, //fields name
         field: fields,       //field description
-        fieldsImportRules: nModule.fieldsImportRules //global import rules
+        fieldsImportRules: nModule.fieldsImportRules, //global import rules
+        fromPath
       });
     }
   }
-
-
 
 };
