@@ -24,7 +24,8 @@ module.exports = ({
     describe('run', function() {
       it('path to fields is not defined', function() {
         const ctx = {
-          findAll() {}
+          findAll() {},
+          extendByFrontValidators(){}
         };
         const param = {
           nModule: {
@@ -39,7 +40,8 @@ module.exports = ({
 
       it('paths to fields is defined', function() {
         const ctx = {
-          findAll() {}
+          findAll() {},
+          extendByFrontValidators(){}
         };
         const param = {
           nModule: {
@@ -149,7 +151,9 @@ module.exports = ({
 
     describe('registerField', function() {
       it('file is a single field', () => {
-        const ctx = {};
+        const ctx = {
+          extendByFrontValidators(){}
+      };
         const param = {
           name: 'single',
           field: require(path.resolve(__dirname, '../testies/module/fields/single.js')),
