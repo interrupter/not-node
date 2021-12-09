@@ -183,11 +183,11 @@ module.exports.tryFile = (filePath) => {
  * Generates paths object for module/index.js files based on content and relative
  * path
  * @param {Array<string>}  content  list of module components ['models', 'logics', 'routes',...]
- * @param {string}         relative  relative path to parent folder of components
+ * @param {string}         relative  path to parent folder of components
  * @param {Object}         paths object for module/index.js
  **/
 module.exports.generatePaths = (content = [], relative = 'src') => {
-  const toPath = (name) => path.join(__dirname, relative, name);
+  const toPath = (name) => path.join(relative, name);
   return content.reduce((prev, cur) => {
     prev[cur] = toPath(cur);
     return prev;

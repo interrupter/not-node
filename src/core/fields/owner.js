@@ -5,7 +5,7 @@ module.exports = {
     refPath: 'ownerModel',
     required: false,
     safe: {
-      update: ['@owner', 'root', 'admin'],
+      update: ['root', 'admin'],
       read: ['@owner', 'root', 'admin']
     }
   }
