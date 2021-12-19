@@ -5,7 +5,7 @@ const {tryFile} = require('../../common');
 module.exports = class notModuleRegistratorForms{
 
   static openFile = require;
-  
+
   constructor({nModule}){
     this.run({nModule});
   }
@@ -42,7 +42,7 @@ module.exports = class notModuleRegistratorForms{
   register({nModule, fromPath}){
     const Form = notModuleRegistratorForms.openFile(fromPath);
     const parts = path.parse(fromPath);
-    nModule.setForm(parts.name, new Form());
+    nModule.setFormConstructor(parts.name, Form);
   }
 
 };

@@ -146,7 +146,6 @@ module.exports = class ModelFabricate{
     }
   }
 
-
   static initMongooseModel(targetModule, schema, mongoose){
     if (mongoose.modelNames().indexOf(targetModule.thisModelName)===-1){
       targetModule[targetModule.thisModelName] = mongoose.model(targetModule.thisModelName, schema);

@@ -11,7 +11,7 @@ const emit = require('./additional').run;
 
 module.exports = class InitApp{
   static AppConstructor = notAppConstructor;
-  static ReporterConstructor = notErrorReporter
+  static ReporterConstructor = notErrorReporter;
 
   static async createApp({config, options, master}){
     await emit('app.create.pre', {config, options, master});
@@ -30,6 +30,12 @@ module.exports = class InitApp{
     master.setEnv('rolesPriority', master.getManifest().targets.server.roles);
     master.getApp().ENV = ENV;
     await emit('app.setEnv.post', {config, options, master});
+  }
+
+  static async initCore({config, options, master}){
+    await emit('app.initCore.pre', {config, options, master});
+    master.getApp().importModuleFrom(path.join(__dirname, '../core'));
+    await emit('app.initCore.post', {config, options, master});
   }
 
   static async importModules({config, options, master}){
@@ -62,6 +68,7 @@ module.exports = class InitApp{
       await emit('app.pre', {config, options, master});
       await InitApp.createApp({config, options, master});
       await InitApp.setAppEnvs({config, options, master});
+      await InitApp.initCore({config, options, master});
       await InitApp.importModules({config, options, master});
       await InitApp.createReporter({config, options, master});
       await emit('app.post', {config, options, master});

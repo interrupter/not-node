@@ -1,14 +1,17 @@
-//DB related validation tools
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-//not-node
-const initFields = require('../fields').initFields;
-
 const FormFabric = require('./fabric');
+
+const {
+  createSchemaFromFields
+} = require('../fields');
 
 const {
   byFieldsValidators
 } = require('../model/enrich');
+
+const {objHas} = require('../common');
+
+const ValidatorsBuilder = require('../validation/builder');
+const FormValidationSession = require('../validation/session');
 
 const {
   notValidationError,
@@ -20,23 +23,29 @@ const {
  * Generic form validation class
  **/
 class Form {
+  /**
+  * @prop {SCHEMA} validation schema
+  **/
+  #SCHEMA = {
+    fields: {},
+    form: []
+  };
+  /**
+  * @prop {string} name of form
+  **/
+  #FORM_NAME;
+  #PROTO_FIELDS;
+  #VALIDATOR;
+
   constructor({
     FIELDS,
-    FORM_NAME
+    FORM_NAME,
+    app
   }) {
-    this.FORM_NAME = FORM_NAME;
-    this.PROTO_FIELDS = FIELDS;
-    if (mongoose.modelNames().indexOf(FORM_NAME)===-1){
-      this.SCHEMA = byFieldsValidators(initFields(this.PROTO_FIELDS, 'model'));
-      this.MODEL = mongoose.model(FORM_NAME, Schema(this.SCHEMA));
-    }else{
-      this.MODEL = mongoose.connection.model(FORM_NAME);
-      this.SCHEMA = this.MODEL.schema;
-    }
-  }
-
-  getFields(){
-    return Object.keys(this.SCHEMA);
+    this.#FORM_NAME = FORM_NAME;
+    this.#PROTO_FIELDS = FIELDS;
+    this.#createValidationSchema(app);
+    this.#augmentValidationSchema();
   }
 
   /**
@@ -48,7 +57,7 @@ class Form {
    **/
   async run(req) {
     let data = await this.extract(req);
-    await this._validate(data);
+    await this.#_validate(data);
     return data;
   }
 
@@ -62,22 +71,117 @@ class Form {
   }
 
   /**
+  * Runs all validation rules against data
+  * Collects all errors to an object
+  * if validation failes - returns error object with detail per field description
+  * of errors
+  * @param {object} data input data for validation
+  * @returns {Promise<void>} resolves or throwing notValidationError or notError if reason is unknown
+  **/
+  async validate(data){
+    try{
+      const result = await (new FormValidationSession(this.#SCHEMA, data));
+      if(!result.clear){
+        throw new notValidationError('not-core:form_validation_error', result, null, data);
+      }
+    }catch(e){
+      if (e instanceof notValidationError){
+        throw e;
+      }else {
+        throw new notError('not-core:form_validation_unknown_error', {
+          FORM_NAME: this.#FORM_NAME,
+          PROTO_FIELDS: this.#PROTO_FIELDS,
+          FORM_FIELDS: this.getFields(),
+          message: e.message
+        }, e);
+      }
+    }
+  }
+
+  //should be overriden
+  /**
+  * Returns form specified rules of validation
+  **/
+  getFormValidationRules(){
+    return [];
+  }
+
+  /**
+  * Returns function that works as a getter for additional environment variables for
+  * validators.
+  * validationFunction(value, additionalEnvVars = {}){}
+  **/
+  getValidatorEnvGetter(){
+    return ()=>{};
+  }
+
+  /**
+  * Sets validation rules for field
+  * @param {string} fieldName field name
+  * @param {Array<Object>} validators  validation objects {validator: string|function, message: string}
+  **/
+  setValidatorsForField(fieldName, validators){
+    this.#SCHEMA.fields[fieldName] = validators;
+  }
+
+  /**
+  * Returns array of validators
+  * @return {Arrays<Object>}
+  **/
+  getValidatorsForField(fieldName){
+    return this.#SCHEMA.fields[fieldName];
+  }
+
+  /**
+  * Returns list of field names
+  * @return {Array<string>}
+  **/
+  getFields(){
+    return Object.keys(this.#SCHEMA.fields);
+  }
+
+
+  #createValidationSchema(app){
+    //creating full model schema
+    const modelSchema = this.#createModelSchema(app);
+    //extract fields validation rules
+    this.#extractValidationSchemaFromModelSchema(modelSchema);
+    //now form fields and form validation rules is formed in raw form
+  }
+
+  #createModelSchema(app){
+    return byFieldsValidators(
+      createSchemaFromFields(app, this.#PROTO_FIELDS, 'model')
+    );
+  }
+
+
+  #extractValidationSchemaFromModelSchema(modelSchema){
+    for(let t in modelSchema){
+      if (objHas(modelSchema[t], 'validate')){
+        this.setValidatorsForField(t, modelSchema[t].validate);
+      }
+    }
+    this.#SCHEMA.form = this.getFormValidationRules();
+  }
+
+  #augmentValidationSchema(app){
+    const builder = new ValidatorsBuilder(app, this.getValidatorEnvGetter());
+    builder.augmentValidators(this.#SCHEMA);
+  }
+
+
+  /**
    * Validates form data or throws
    * @param {Object} data    form data
    * @return {Object}
    * @throws {notValidationError}
    **/
-  async _validate(data) {
+  async #_validate(data) {
     try {
       await this.validate(data);
     } catch (e) {
-      let fields = {};
-      if (e instanceof mongoose.Error.ValidationError) {
-        Object.keys(e.errors).forEach(name => {
-          fields[name] = [e.errors[name].message];
-        });
-        throw new notValidationError(e.message, fields, e, data);
-      } else if (e instanceof notValidationError){
+      if ((e instanceof notError) || (e instanceof notValidationError)){
         throw e;
       }else {
         throw new notError(
@@ -93,10 +197,6 @@ class Form {
         );
       }
     }
-  }
-
-  async validate(data){
-    await this.MODEL.validate(data, this.getFields());
   }
 
   static fabric(){

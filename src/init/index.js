@@ -108,7 +108,7 @@ class Init {
   static printOutManifest = () => {
     log.debug('Manifest:');
     log.debug(JSON.stringify(Init.notApp.getManifest(), null, 4));
-  }
+  };
 
   /**
    * Initalization of Application

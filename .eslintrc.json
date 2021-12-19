@@ -1,5 +1,4 @@
 {
-  "parser": "@babel/eslint-parser",
   "parserOptions": {
     "requireConfigFile": false,
     "sourceType": "module",
@@ -7,7 +6,7 @@
     "ecmaFeatures": {
       "globalReturn": false
     },
-    "ecmaVersion": 2020
+    "ecmaVersion": "latest"
   },
   "env": {
     "es6": true,
@@ -18,10 +17,8 @@
   "extends": [
     "eslint:recommended",
     "plugin:node/recommended",
-		"plugin:sonarjs/recommended",
-    "plugin:promise/recommended"
+		"plugin:sonarjs/recommended"
   ],
-	"plugins": ["promise"],
   "rules": {
     "node/exports-style": ["error", "module.exports"],
     "node/file-extension-in-import": ["error", "always"],
@@ -30,8 +27,6 @@
     "node/prefer-global/process": ["error", "always"],
     "node/prefer-global/url-search-params": ["error", "always"],
     "node/prefer-global/url": ["error", "always"],
-    "node/prefer-promises/dns": "error",
-    "node/prefer-promises/fs": "error",
     "node/no-unpublished-require": "warn",
     "indent": ["error", 2],
     "linebreak-style": [

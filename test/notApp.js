@@ -13,10 +13,10 @@ describe('noApp', function() {
       let app = new notApp({
         someOption: true
       });
-      expect(app.options).to.deep.equal({
+      expect(app.getOptions()).to.deep.equal({
         someOption: true
       });
-      expect(app.modules).to.deep.equal({});
+      expect(app.getModulesNames()).to.deep.equal([]);
     });
   });
 

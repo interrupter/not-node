@@ -61,8 +61,8 @@ class notApp extends notDomain {
    **/
   collectManifest(creds){
     let manifest = {};
-    for (let modName of Object.keys(this.modules)) {
-      manifest = merge(manifest, this.modules[modName].getManifest(creds));
+    for (let modName of this.getModulesNames()) {
+      manifest = merge(manifest, this.getModule(modName).getManifest(creds));
     }
     return manifest;
   }

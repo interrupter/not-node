@@ -1,78 +1,68 @@
 const clone = require('rfdc')();
-const fs = require('fs');
-const path = require('path');
-const {objHas, tryFile} = require('../common');
+const notPath = require('not-path');
 
-const DEFAULT_FIELD_REGISTRATION_RULES = {
-  overwrite: false,
-  compose: true
-};
+const {notError} = require('not-error');
 
-const FIELDS = {};
+const {
+  objHas,
+} = require('../common');
 
+const DEFAULT_TYPE = 'ui';
+const DEFAULT_FROM = ':FIELDS';
+const DEFAULT_TO = ':thisSchema';
 
-module.exports.importFromDir = (srcDir, {overwrite = false, compose = true} = DEFAULT_FIELD_REGISTRATION_RULES)=>{
-  fs.readdirSync(srcDir).forEach((file) => {
-    let fromPath = path.join(srcDir, file);
-    if (!tryFile(fromPath)) { return; }
-    const parts = path.parse(fromPath);
-    registerField(parts.name, require(fromPath), {overwrite, compose});
-  });
-};
-
-const registerField = module.exports.registerField = (name, value, {overwrite = false, compose = true} = DEFAULT_FIELD_REGISTRATION_RULES)=>{
-  if(objHas(FIELDS, name)){
-    if(overwrite){
-      FIELDS[name] = value;
-    }else if(compose){
-      Object.assign(FIELDS[name], value);
-    }
-  }else{
-    FIELDS[name] = value;
-  }
-};
-
-module.exports.registerFields = (fields, {overwrite = false, compose = true})=>{
-  for(let t in fields){
-    module.exports.registerField(t, fields[t], {overwrite, compose});
+module.exports.initFileSchemaFromFields = ({app, mod, type = DEFAULT_TYPE, from = DEFAULT_FROM, to = DEFAULT_TO})=>{
+  const FIELDS = notPath.get(from, mod);
+  if(FIELDS && Array.isArray(FIELDS)){
+    const schema = module.exports.createSchemaFromFields(app, FIELDS, type);
+    notPath.set(to, mod, schema);
   }
 };
 
 /**
-list = [
+fields = [
   'title', //for standart only name
   ['titleNonStandart', {component: 'UITextforBlind'}] //arrays of [name, mutation]
   ['someID', {}, 'ID'],  //copy of standart ID field under name as someID
 ]
-*/
-module.exports.initFields = (list, type = 'ui') => {
-  let fields = {};
-  list.forEach((field) => {
-    let res = module.exports.initField(field, false, type);
-    fields[res[0]] = res[1];
+**/
+module.exports.createSchemaFromFields = (app, fields, type = 'ui') => {
+  let schema = {};
+  fields.forEach((field) => {
+    let [schemaFieldName, schemaFieldValue] = module.exports.initSchemaField(app, field, false, type);
+    schema[schemaFieldName] = schemaFieldValue;
   });
-  return fields;
+  return schema;
 };
 
 
-/**
-* Retrieves field information
-* there are few signatures of this function
-* (field:string, resultOnly:boolean = true, type:string = 'ui')=> Object | [string, Object]
-* (field:Array<string, Object>, resultOnly:boolean = true, type:string = 'ui')=> Object | [string, Object]
-* @param {(string|Array)} field   field to retrieve from store and init
-                                  field: string - just name of the field
-                                  field: Array - [destinationField:string, mutation: Object, sourceField:string]
-                                  field: Array - [sourceField:string, mutation: Object]
-                                                sourceField - standart field to extend
-                                                mutation - to extend by
-                                                destinationField - name of resulting field,
-                                                if no dest then src will be used
-* @param {boolean}  resultOnly    return only result, if false then returns [name, value]
-* @param {string}   type          type of field information
-**/
-module.exports.initField = (field, resultOnly = true, type = 'ui') => {
-  let srcName, destName, mutation = {};
+module.exports.initSchemaField = (app, field, resultOnly = true, type = 'ui') => {
+  let {
+    srcName,
+    destName,
+    mutation
+  } = parseFieldDescription(field);
+  let proto = findFieldPrototype(app, srcName, type);
+  if(!proto){
+    throw new notError(
+      'not-core:field_prototype_is_not_found',
+      {
+        field, resultOnly, type
+      }
+    );
+  }
+  let schemaFieldValue = Object.assign({}, clone(proto), mutation);
+  if (resultOnly) {
+    return schemaFieldValue;
+  } else {
+    return [destName, schemaFieldValue];
+  }
+};
+
+const parseFieldDescription = (field) => {
+  let srcName,
+    destName,
+    mutation = {};
   if (Array.isArray(field)) {
     destName = srcName = field[0];
     mutation = field[1];
@@ -82,12 +72,42 @@ module.exports.initField = (field, resultOnly = true, type = 'ui') => {
   } else {
     destName = srcName = field;
   }
-  let proto = (objHas(FIELDS, srcName) && objHas(FIELDS[srcName], type)) ? FIELDS[srcName][type]:{};
-  let result = Object.assign({}, clone(proto), mutation);
-  if (resultOnly) {
-    return result;
-  } else {
-    return [destName, result];
+  return {
+    srcName,
+    destName,
+    mutation
+  };
+};
+
+const findFieldPrototype = (app, name, type) => {
+  const fieldPrototype = app.getField(name);
+  if(fieldPrototype && objHas(fieldPrototype, type)){
+    return fieldPrototype[type];
+  }else{
+    return null;
+  }
+};
+
+module.exports.initManifestFields = (app, schema, rawMutationsList = []) => {
+  let
+    //shallow copy of array
+    mutationsList = [...rawMutationsList],
+    list = [];
+  if (schema && Object.keys(schema).length > 0) {
+    let rawKeys = Object.keys(schema);
+    rawKeys.forEach((key) => {
+      let mutation = getMutationForField(key, mutationsList);
+      if (mutation) {
+        list.push(mutation);
+        mutationsList.splice(mutationsList.indexOf(mutation), 1);
+      } else {
+        list.push(key);
+      }
+    });
+    list.push(...mutationsList);
+    return module.exports.createSchemaFromFields(app, list, 'ui');
+  }else{
+    return {};
   }
 };
 
@@ -106,37 +126,3 @@ function getMutationForField(name, list) {
   return false;
 }
 module.exports.getMutationForField = getMutationForField;
-
-/**
-* Takes in mongoose model schema, scans for fields names nad creates list of
-* field's names to initialize from LIB, if in supplied rawMutationsList, exists
-* mutation for a field in list, field name in list will be replaced by a
-* mutation description
-* @param {Object} schema            mongoose model schema
-* @param {Array}  rawMutationsList  list of mutations [src, mutation]/[dst,mutation,src]
-* @returns {Object}                 initialized ui descriptions of fields for schema
-**/
-module.exports.fromSchema = (schema, rawMutationsList = []) => {
-  let
-    //shallow copy of array
-    mutationsList = [...rawMutationsList],
-    list = [];
-  if (schema && Object.keys(schema).length > 0) {
-    let rawKeys = Object.keys(schema);
-    rawKeys.forEach((key) => {
-      let mutation = getMutationForField(key, mutationsList);
-      if (mutation) {
-        list.push(mutation);
-        mutationsList.splice(mutationsList.indexOf(mutation), 1);
-      } else {
-        list.push(key);
-      }
-    });
-    list.push(...mutationsList);
-    return module.exports.initFields(list);
-  }else{
-    return {};
-  }
-};
-
-module.exports.LIB = FIELDS;

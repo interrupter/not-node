@@ -1,12 +1,13 @@
 //importing modules
-const protoModel = require('../model/proto.js'),
+const
   fs = require('fs'),
   Auth = require('../auth'),
   logger = require('not-log'),
   log = logger(module, 'notModule'),
   notManifest = require('./manifest.js'),
   notModuleRegistrator = require('./registrator'),
-  {objHas, mapBind} = require('../common');
+  notModuleInitializator = require('./initializator'),
+  {objHas, mapBind, isAsync, isFunc} = require('../common');
 
 
 /**
@@ -48,6 +49,8 @@ class notModule {
     this.models = {};
     this.logics = {};
     this.forms = {};
+    this.formsConstructors = {};
+    this.fields = {};
     this.manifests = {};
     this.faulty = false;
     this.paths = {
@@ -81,7 +84,7 @@ class notModule {
     try {
       if (fs.lstatSync(modulePath).isDirectory()) {
         this.module = require(modulePath);
-        notModuleRegistrator.registerContent({nModule: this});
+        this.registerContent();
       }else{
         return false;
       }
@@ -93,11 +96,15 @@ class notModule {
 
   initFromModule() {
     try {
-      notModuleRegistrator.registerContent({nModule: this});
+      this.registerContent();
     } catch (e) {
       this.faulty = true;
       log.error(e);
     }
+  }
+
+  registerContent(){
+    notModuleRegistrator.exec({nModule: this});
   }
 
   getEndPoints() {
@@ -120,11 +127,15 @@ class notModule {
       root
     );
   }
-  /*
-  getActionManifest({auth, role, root}){
 
+  getRouteManifest(name){
+    return this.manifests[name];
   }
-  */
+
+  getRoutesManifests(){
+    return this.manifests;
+  }
+
   getModelFile(modelName) {
     if (this.models && objHas(this.models, modelName)) {
       return this.models[modelName];
@@ -140,6 +151,10 @@ class notModule {
     } else {
       return null;
     }
+  }
+
+  getModels(){
+    return this.models;
   }
 
   getLogicFile(logicName) {
@@ -167,27 +182,16 @@ class notModule {
     return null;
   }
 
-  fabricateModel(model) {
-    protoModel.fabricate(model, this.getOptions(), this.mongoose);
-  }
-
-  fabricateModels() {
-    for (let modelName in this.models) {
-      log.info(`Fabricating model: ${modelName}`);
-      this.fabricateModel(this.models[modelName]);
-    }
-  }
-
-  expose(app, moduleName) {
-    if (this.manifests && app) {
-      this.fabricateModels();
-      this.initManifest(app, moduleName);
+  expose(expressApp, moduleName) {
+    if (this.manifests && expressApp) {
+      notModuleInitializator.exec({nModule: this});
+      this.initManifest(expressApp, moduleName);
       this.manifest.registerRoutes(this.manifests);
     }
   }
 
-  initManifest(app, moduleName){
-    this.manifest = new notManifest(app, this.notApp, moduleName);
+  initManifest(expressApp, moduleName){
+    this.manifest = new notManifest(expressApp, this.notApp, moduleName);
   }
 
   async exec(methodName) {
@@ -195,11 +199,9 @@ class notModule {
       log.error(`Cant exec ${methodName} in module ${this.path}, module not loaded`);
       return false;
     }
-    if ((objHas(this.module, methodName)) &&
-      (typeof this.module[methodName] === 'function')
-    ) {
+    if ((objHas(this.module, methodName)) && (isFunc(this.module[methodName]))) {
       try {
-        if (this.module[methodName].constructor.name === 'AsyncFunction') {
+        if (isAsync(this.module[methodName])) {
           await this.module[methodName](this.notApp);
         } else {
           this.module[methodName](this.notApp);
@@ -283,6 +285,26 @@ class notModule {
     this.forms[key] = val;
   }
 
+  getFormConstructor(key) {
+    return this.formsConstructors[key];
+  }
+
+  setFormConstructor(key, val) {
+    this.formsConstructors[key] = val;
+  }
+
+  getFormsConstructors(){
+    return this.formsConstructors;
+  }
+
+  getField(key) {
+    return this.fields[key];
+  }
+
+  setField(key, val) {
+    this.fields[key] = val;
+  }
+
   setModel(key, val){
     this.models[key] = val;
   }
@@ -301,6 +323,10 @@ class notModule {
     } else {
       return null;
     }
+  }
+
+  getRoutes(){
+    return this.routes;
   }
 
   appIsSet(){

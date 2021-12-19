@@ -28,21 +28,20 @@ module.exports = class notModuleRegistratorFields{
     return nModule.module.paths.fields;
   }
 
-
-  registerFields({lib, fieldsImportRules}){
-    notModuleRegistratorFields.fieldsManager.registerFields(
-      lib,  //fields dictionary
-      fieldsImportRules //global import rules
-    );
+  registerFields({ nModule, lib, fromPath}){
+    for(let t in lib){
+      this.registerField({
+        nModule,
+        name: t,
+        field: lib[t],
+        fromPath
+      });
+    }
   }
 
-  registerField({name, field, fieldsImportRules, fromPath}){
+  registerField({nModule, name, field, fromPath}){
     this.extendByFrontValidators({name, field, fromPath});
-    notModuleRegistratorFields.fieldsManager.registerField(
-      name,             //field name
-      field,            //field description
-      fieldsImportRules //global import rules
-    );
+    nModule.setField(name, field);
   }
 
   /**
@@ -52,7 +51,7 @@ module.exports = class notModuleRegistratorFields{
     if(!(field && objHas(field, 'model'))){ return; }
     //load validators
     const validatorName = path.join(fromPath, 'validators', name + '.js');
-    if(!tryFile(validatorName)){return;}
+    if(!tryFile(validatorName)){ return; }
     const validators = notModuleRegistratorFields.openFile(validatorName);
     //inject into field.model
     if(!objHas(field.model, 'validate')){
@@ -60,7 +59,6 @@ module.exports = class notModuleRegistratorFields{
     }
     field.model.validate.push(...validators);
   }
-
 
   /**
   * Searching fields in directory
@@ -80,15 +78,16 @@ module.exports = class notModuleRegistratorFields{
     let fields = notModuleRegistratorFields.openFile(fromPath);
     if (fields && objHas(fields, 'FIELDS')) {//collection
       this.registerFields({
+        nModule,
         lib: fields.FIELDS,  //fields dictionary
-        fieldsImportRules: nModule.fieldsImportRules //global import rules
+        fromPath
       });
     } else {//single file fieldname.js
       const parts = path.parse(fromPath);
       this.registerField({
+        nModule,
         name: parts.name, //fields name
         field: fields,       //field description
-        fieldsImportRules: nModule.fieldsImportRules, //global import rules
         fromPath
       });
     }
