@@ -1,4 +1,4 @@
 module.exports = [{
   validator: 'isMongoId',
-  message: 'owner_is_not_valid'
+  message: 'not-node:owner_is_not_valid'
 }];

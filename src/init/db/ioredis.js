@@ -10,7 +10,6 @@ module.exports = class InitDBRedisIO{
     redisClient.on('error', log.error);
     master.setEnv(`db.${alias}`, redisClient);
     log.log('redis client');
-    log.log(Object.keys(redisClient));
   }
 
   async run({config, options, master, conf, alias}){

@@ -18,13 +18,19 @@ module.exports = class notModuleInitializatorManifests{
           const rawMutationsList = [...mod.fields];
           const ModelName = firstLetterToUpper(mod.model);
           const schema = nModule.getModelSchema(ModelName);
+          let privateFields = [];
+          if (mod.privateFields){
+            privateFields = Array.isArray(mod.privateFields)?[...mod.privateFields]:[];
+            delete mod.privateFields;
+          }
           mod.fields = initManifestFields(
             nModule.getApp(),
             schema,
-            rawMutationsList
+            rawMutationsList,
+            privateFields,
+            moduleName,
           );
         }
-        log(`${moduleName}//${routeName}`);
       }catch(e){
         error(`Error while initialization of route: ${moduleName}//${routeName}`);
         if(e instanceof notError){

@@ -1,7 +1,7 @@
 module.exports = {
   ui:{
     component: 'UISwitch',
-    label: 'core:field_enabled_label'
+    label: 'not-node:field_enabled_label'
   },
   model:{
     type: Boolean,

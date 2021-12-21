@@ -60,7 +60,7 @@ module.exports = class notModuleRegistratorLogics{
     const logicName = notModuleRegistratorLogics.getName({logic, file});
     this.extend({nModule, logic, logicName, fromPath});
     nModule.setLogic(logicName, logic);
-    log.info(`${logicName}`);
+    //log.info(`${logicName}`);
   }
 
   extend({nModule, logic, logicName, fromPath}) {

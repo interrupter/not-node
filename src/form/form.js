@@ -155,7 +155,7 @@ class Form {
 
   #createModelSchema(app){
     return byFieldsValidators(
-      createSchemaFromFields(app, this.#PROTO_FIELDS, 'model')
+      createSchemaFromFields(app, this.#PROTO_FIELDS, 'model', this.#FORM_NAME)
     );
   }
 
@@ -190,8 +190,8 @@ class Form {
         throw new notError(
           'core:form_validation_error',
           {
-            FORM_NAME: this.FORM_NAME,
-            PROTO_FIELDS: this.PROTO_FIELDS,
+            FORM_NAME: this.#FORM_NAME,
+            PROTO_FIELDS: this.#PROTO_FIELDS,
             FORM_FIELDS: this.getFields(),
             data,
             message: e.message

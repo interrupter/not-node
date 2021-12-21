@@ -15,13 +15,14 @@ module.exports = class notModuleInitializatorModels{
       try{
         initFileSchemaFromFields({
           app,
+          moduleName: nModule.getName(),
           mod: nModule.getModelFile(modelName),
           type: 'model',
           from: ':FIELDS',
           to:   ':thisSchema',
         });
         protoModel.fabricate(nModule.getModelFile(modelName), nModule.getOptions(), nModule.mongoose);
-        log(`${moduleName}//${modelName}`);
+        //log(`${moduleName}//${modelName}`);
       }catch(e){
         error(`Error while initialization of model: ${moduleName}//${modelName}`);
         if(e instanceof notError){

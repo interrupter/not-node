@@ -1,8 +1,8 @@
 module.exports = {
   ui:{
     component: 'UITextfield',
-    label: 'core:field_height_label',
-    placeholder: 'core:field_height_placeholder'
+    label: 'not-node:field_height_label',
+    placeholder: 'not-node:field_height_placeholder'
   },
   model:{
     type: Number,

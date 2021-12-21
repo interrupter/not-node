@@ -43,7 +43,7 @@ module.exports = class notModuleRegistratorFields{
   registerField({nModule, name, field, fromPath}){
     this.extendByFrontValidators({name, field, fromPath});
     nModule.setField(name, field);
-    log(`${nModule.getName()}//${name}`);
+    //log(`${nModule.getName()}//${name}`);
   }
 
   /**

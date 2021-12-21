@@ -1,8 +1,8 @@
 module.exports = {
   ui: {
     component: 'UITextfield',
-    label: 'core:field_title_label',
-    placeholder: 'core:field_title_placeholder',
+    label: 'not-node:field_title_label',
+    placeholder: 'not-node:field_title_placeholder',
   },
   model: {
     type: String,

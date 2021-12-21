@@ -1,8 +1,8 @@
 module.exports = {
   ui: {
     component: 'UITextfield',
-    placeholder: 'core:field_ID_placeholder',
-    label: 'core:field_ID_label',
+    placeholder: 'not-node:field_ID_placeholder',
+    label: 'not-node:field_ID_label',
     readonly: true
   }
 };

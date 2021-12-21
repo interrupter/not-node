@@ -1,8 +1,8 @@
 module.exports = {
   ui:{
     component: 'UITextfield',
-    label: 'core:field_updatedAt_label',
-    placeholder: 'core:field_updatedAt_placeholder',
+    label: 'not-node:field_updatedAt_label',
+    placeholder: 'not-node:field_updatedAt_placeholder',
     readonly: true
   },
   model: {

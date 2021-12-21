@@ -15,7 +15,7 @@ module.exports = class notModuleInitializatorForms{
       try{
         const formConstructor = nModule.getFormConstructor(formName);
         nModule.setForm(formName, new formConstructor({app}));
-        log(`${moduleName}//${formName}`);
+        //log(`${moduleName}//${formName}`);
       }catch(e){
         error(`Error while initialization of form: ${moduleName}//${formName}`);
         if(e instanceof notError){

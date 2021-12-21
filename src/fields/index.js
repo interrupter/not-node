@@ -1,6 +1,6 @@
 const clone = require('rfdc')();
 const notPath = require('not-path');
-
+const {error} = require('not-log')(module, 'init//fields');
 const {notError} = require('not-error');
 
 const {
@@ -11,10 +11,10 @@ const DEFAULT_TYPE = 'ui';
 const DEFAULT_FROM = ':FIELDS';
 const DEFAULT_TO = ':thisSchema';
 
-module.exports.initFileSchemaFromFields = ({app, mod, type = DEFAULT_TYPE, from = DEFAULT_FROM, to = DEFAULT_TO})=>{
+module.exports.initFileSchemaFromFields = ({app, mod, type = DEFAULT_TYPE, from = DEFAULT_FROM, to = DEFAULT_TO, moduleName = ''})=>{
   const FIELDS = notPath.get(from, mod);
   if(FIELDS && Array.isArray(FIELDS)){
-    const schema = module.exports.createSchemaFromFields(app, FIELDS, type);
+    const schema = module.exports.createSchemaFromFields(app, FIELDS, type, moduleName);
     notPath.set(to, mod, schema);
   }
 };
@@ -26,17 +26,18 @@ fields = [
   ['someID', {}, 'ID'],  //copy of standart ID field under name as someID
 ]
 **/
-module.exports.createSchemaFromFields = (app, fields, type = 'ui') => {
+module.exports.createSchemaFromFields = (app, fields, type = 'ui', moduleName) => {
   let schema = {};
   fields.forEach((field) => {
-    let [schemaFieldName, schemaFieldValue] = module.exports.initSchemaField(app, field, false, type);
+    let [schemaFieldName, schemaFieldValue] = module.exports.initSchemaField(app, field, false, type, moduleName);
     schema[schemaFieldName] = schemaFieldValue;
   });
   return schema;
 };
 
 
-module.exports.initSchemaField = (app, field, resultOnly = true, type = 'ui') => {
+module.exports.initSchemaField = (app, field, resultOnly = true, type = 'ui', moduleName) => {
+  //log(field);
   let {
     srcName,
     destName,
@@ -44,12 +45,7 @@ module.exports.initSchemaField = (app, field, resultOnly = true, type = 'ui') =>
   } = parseFieldDescription(field);
   let proto = findFieldPrototype(app, srcName, type);
   if(!proto){
-    throw new notError(
-      'not-core:field_prototype_is_not_found',
-      {
-        field, resultOnly, type
-      }
-    );
+    error(`field ${moduleName}//${destName} prototype ${srcName} of ${type} type is not found`);
   }
   let schemaFieldValue = Object.assign({}, clone(proto), mutation);
   if (resultOnly) {
@@ -59,18 +55,31 @@ module.exports.initSchemaField = (app, field, resultOnly = true, type = 'ui') =>
   }
 };
 
+/**
+* field form
+* 'destFieldNameSameAsSourceFieldName' - form 1
+* ['destFieldName', {full: true, field: 'content'}] - form 2
+* ['destFieldName', 'srcFieldName'] //field alias, form 3
+* ['destFieldName', {mutation: 'content'}, 'srcFieldName']// - form 4
+**/
 const parseFieldDescription = (field) => {
   let srcName,
     destName,
     mutation = {};
   if (Array.isArray(field)) {
     destName = srcName = field[0];
-    mutation = field[1];
-    if (field.length === 3) {
+    if(field.length === 2){
+      if(typeof field[1] === 'string'){
+        srcName = field[1]; //form 3
+      }else{
+        mutation = field[1]; //form 2
+      }
+    }else if (field.length === 3) { //form 4
+      mutation = field[1];
       srcName = field[2];
     }
   } else {
-    destName = srcName = field;
+    destName = srcName = field; //form 1
   }
   return {
     srcName,
@@ -88,14 +97,33 @@ const findFieldPrototype = (app, name, type) => {
   }
 };
 
-module.exports.initManifestFields = (app, schema, rawMutationsList = []) => {
+/**
+* Creates fields UI representation schema from list of fields in DB model
+* and library of fields
+* @param {object} app     notApplication instance
+* @param {object} schema  model db schema
+* @param {Array<string|Array>} rawMutationsList     fields mutations, for little tuning
+* @param {Array<string>} privateFields     fields to omit from result
+* @param {string} moduleName     for detailed reports on issues, in which module and what field is faulty
+* @returns {object}       resulting UI rendering schema for fields
+**/
+
+module.exports.initManifestFields = (
+  app,                    //notApplication
+  schema,                 //schema of model
+  rawMutationsList = [],  //fields mutations
+  privateFields = [],     //fields to omit
+  moduleName              //module name for reporting
+) => {
   let
     //shallow copy of array
     mutationsList = [...rawMutationsList],
     list = [];
   if (schema && Object.keys(schema).length > 0) {
     let rawKeys = Object.keys(schema);
-    rawKeys.forEach((key) => {
+    rawKeys
+      .filter((key) => !privateFields.includes(key))
+      .forEach((key) => {
       let mutation = getMutationForField(key, mutationsList);
       if (mutation) {
         list.push(mutation);
@@ -105,7 +133,7 @@ module.exports.initManifestFields = (app, schema, rawMutationsList = []) => {
       }
     });
     list.push(...mutationsList);
-    return module.exports.createSchemaFromFields(app, list, 'ui');
+    return module.exports.createSchemaFromFields(app, list, 'ui', moduleName);
   }else{
     return {};
   }

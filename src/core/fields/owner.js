@@ -8,5 +8,8 @@ module.exports = {
       update: ['root', 'admin'],
       read: ['@owner', 'root', 'admin']
     }
+  },
+  ui:{
+    component: 'UIHidden'
   }
 };

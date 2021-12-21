@@ -57,7 +57,7 @@ module.exports = class notModuleRegistratorModels{
     const modelName = notModuleRegistratorModels.getName({model, file});
     this.extend({nModule, model, modelName, fromPath});
     nModule.setModel(modelName, model);
-    log.info(`${modelName}`);
+    //log.info(`${modelName}`);
   }
 
   extend({nModule, model, modelName, fromPath}) {

@@ -1,8 +1,8 @@
 module.exports = {
   ui:{
     component: 'UITextfield',
-    label: 'core:field_IP_label',
-    placeholder: 'core:field_IP_placeholder'
+    label: 'not-node:field_IP_label',
+    placeholder: 'not-node:field_IP_placeholder'
   },
   model:{
     type: String,
