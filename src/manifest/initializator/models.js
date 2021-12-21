@@ -1,6 +1,8 @@
-const log = require('not-log')(module, 'notModule');
+const {log, error} = require('not-log')(module, 'initializator');
 const protoModel = require('../../model/proto.js');
 const {initFileSchemaFromFields} = require('../../fields');
+const {notError} = require('not-error');
+
 module.exports = class notModuleInitializatorModels{
   static openFile = require;
   constructor({nModule}){
@@ -8,17 +10,27 @@ module.exports = class notModuleInitializatorModels{
   }
 
   run({app, nModule}) {
+    const moduleName = nModule.getName();
     for(let modelName in nModule.getModels()) {
-      log.info(`Fabricating model schema: ${modelName}`);
-      initFileSchemaFromFields({
-        app,
-        mod: this.getModelFile(modelName),
-        type: 'model',
-        from: ':FIELDS',
-        to:   ':thisSchema',
-      });
-      log.info(`Fabricating model: ${modelName}`);
-      protoModel.fabricate(nModule.getModelFile(modelName), nModule.getOptions(), nModule.mongoose);
+      try{
+        initFileSchemaFromFields({
+          app,
+          mod: nModule.getModelFile(modelName),
+          type: 'model',
+          from: ':FIELDS',
+          to:   ':thisSchema',
+        });
+        protoModel.fabricate(nModule.getModelFile(modelName), nModule.getOptions(), nModule.mongoose);
+        log(`${moduleName}//${modelName}`);
+      }catch(e){
+        error(`Error while initialization of model: ${moduleName}//${modelName}`);
+        if(e instanceof notError){
+          error(`name: ${e.options.field}, type: ${e.options.type}`);
+        }else{
+          error(e);
+        }
+      }
+
     }
   }
 

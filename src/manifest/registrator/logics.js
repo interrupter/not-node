@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const logger = require('not-log');
-const log = logger(module, 'notModule');
+const log = logger(module, 'registrator');
 
 const {tryFile, mapBind} = require('../../common');
 /**
@@ -49,7 +49,7 @@ module.exports = class notModuleRegistratorLogics{
   findAll({nModule,srcDir}){
     fs.readdirSync(srcDir).forEach((file) => {
       let fromPath = path.join(srcDir, file);
-      log.info(`Checking logic in ${fromPath}`);
+      //log.info(`Checking logic in ${fromPath}`);
       if (!tryFile(fromPath)) { return; }
       this.register({nModule, fromPath, file});
     });
@@ -60,7 +60,7 @@ module.exports = class notModuleRegistratorLogics{
     const logicName = notModuleRegistratorLogics.getName({logic, file});
     this.extend({nModule, logic, logicName, fromPath});
     nModule.setLogic(logicName, logic);
-    log.info(`Logic registered: ${logicName}`);
+    log.info(`${logicName}`);
   }
 
   extend({nModule, logic, logicName, fromPath}) {

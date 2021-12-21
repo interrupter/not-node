@@ -10,8 +10,8 @@ const {
 
 const {objHas} = require('../common');
 
-const ValidatorsBuilder = require('../validation/builder');
-const FormValidationSession = require('../validation/session');
+const ValidationBuilder = require('not-validation').Builder;
+const ValidationSession = require('not-validation').Session;
 
 const {
   notValidationError,
@@ -80,9 +80,9 @@ class Form {
   **/
   async validate(data){
     try{
-      const result = await (new FormValidationSession(this.#SCHEMA, data));
-      if(!result.clear){
-        throw new notValidationError('not-core:form_validation_error', result, null, data);
+      const validationResult = await ValidationSession(this.#SCHEMA, data);
+      if(!validationResult.clean){
+        throw new notValidationError('not-core:form_validation_error', validationResult.getReport(), null, data);
       }
     }catch(e){
       if (e instanceof notValidationError){
@@ -112,7 +112,11 @@ class Form {
   * validationFunction(value, additionalEnvVars = {}){}
   **/
   getValidatorEnvGetter(){
-    return ()=>{};
+    return ()=>{ //should be sync function
+      return {
+        env: true //some env variables for validators
+      };
+    };
   }
 
   /**
@@ -166,8 +170,7 @@ class Form {
   }
 
   #augmentValidationSchema(app){
-    const builder = new ValidatorsBuilder(app, this.getValidatorEnvGetter());
-    builder.augmentValidators(this.#SCHEMA);
+    ValidationBuilder(this.#SCHEMA, this.getValidatorEnvGetter());
   }
 
 

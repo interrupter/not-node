@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const {tryFile, objHas} = require('../../common');
 const Fields = require('../../fields');
+const {log} = require('not-log')(module, 'registrator');
 
 module.exports = class notModuleRegistratorFields{
 
@@ -42,6 +43,7 @@ module.exports = class notModuleRegistratorFields{
   registerField({nModule, name, field, fromPath}){
     this.extendByFrontValidators({name, field, fromPath});
     nModule.setField(name, field);
+    log(`${nModule.getName()}//${name}`);
   }
 
   /**

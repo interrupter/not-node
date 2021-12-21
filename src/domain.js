@@ -5,7 +5,7 @@
  */
 const EventEmitter = require('events');
 const {isFunc,isAsync, objHas, firstLetterToUpper} = require('./common');
-
+const {error} = require('not-log')(module, 'domain');
 const Env = require('./env');
 const
   notModule = require('./manifest/module'),
@@ -177,6 +177,7 @@ class notDomain extends EventEmitter {
     if (this.#modules && objHas(this.#modules, moduleName)) {
       return this.#modules[moduleName][`get${firstLetterToUpper(type)}`](resourceName);
     } else {
+      error(`resource not found ${type}:${name}`);
       return null;
     }
   }
@@ -188,6 +189,7 @@ class notDomain extends EventEmitter {
         return res;
       }
     }
+    error(`resource not found ${type}:${resourceName}`);
     return null;
   }
 

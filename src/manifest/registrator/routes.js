@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const logger = require('not-log');
-const log = logger(module, 'notModule');
+const log = logger(module, 'registrator');
 
 const {tryFile, mapBind} = require('../../common');
 

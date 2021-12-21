@@ -1,4 +1,5 @@
-const {log} = require('not-log')(module, 'notModule');
+const {notError} = require('not-error');
+const {log, error} = require('not-log')(module, 'initializator');
 
 module.exports = class notModuleInitializatorForms{
 
@@ -9,10 +10,20 @@ module.exports = class notModuleInitializatorForms{
   }
 
   run({app, nModule}){
+    const moduleName = nModule.getName();
     for (let formName in nModule.getFormsConstructors()) {
-      log.info(`Fabricating form: ${formName}`);
-      const formConstructor = nModule.getFormConstructor(formName);
-      this.setForm(formName, new formConstructor({app}));
+      try{
+        const formConstructor = nModule.getFormConstructor(formName);
+        nModule.setForm(formName, new formConstructor({app}));
+        log(`${moduleName}//${formName}`);
+      }catch(e){
+        error(`Error while initialization of form: ${moduleName}//${formName}`);
+        if(e instanceof notError){
+          error(`name: ${e.options.field}, type: ${e.options.type}`);
+        }else{
+          error(e);
+        }
+      }
     }
   }
 

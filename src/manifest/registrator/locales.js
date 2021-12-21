@@ -1,4 +1,4 @@
-const log = require('not-log')(module, 'notModule');
+const log = require('not-log')(module, 'registrator');
 const notLocale = require('not-locale');
 
 module.exports = class notModuleRegistratorLocales{
