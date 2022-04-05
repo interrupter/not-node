@@ -124,14 +124,14 @@ module.exports.initManifestFields = (
     rawKeys
       .filter((key) => !privateFields.includes(key))
       .forEach((key) => {
-      let mutation = getMutationForField(key, mutationsList);
-      if (mutation) {
-        list.push(mutation);
-        mutationsList.splice(mutationsList.indexOf(mutation), 1);
-      } else {
-        list.push(key);
-      }
-    });
+        let mutation = getMutationForField(key, mutationsList);
+        if (mutation) {
+          list.push(mutation);
+          mutationsList.splice(mutationsList.indexOf(mutation), 1);
+        } else {
+          list.push(key);
+        }
+      });
     list.push(...mutationsList);
     return module.exports.createSchemaFromFields(app, list, 'ui', moduleName);
   }else{

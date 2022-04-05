@@ -80,7 +80,11 @@ module.exports.getTodayDate = () => {
  *  @param  {string}    name  field name
  *  @return {boolean}          if object contains field with name
  **/
-const objHas = (obj, name) => Object.prototype.hasOwnProperty.call(obj, name);
+const objHas = (obj, name) => {
+  if(typeof obj === 'undefined') return false;
+  if(obj === null) return false;
+  return Object.prototype.hasOwnProperty.call(obj, name);
+};
 module.exports.objHas = objHas;
 
 

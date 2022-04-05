@@ -127,7 +127,7 @@ class Init {
     additional
   }) {
     try {
-      log.info('Kick start app...'+ os.platform()+os.arch());
+      log.info('Kick start app...'+ os.platform()+' '+os.arch());
       ADDS.init(additional);
       const initSequence = new InitSequence(STANDART_INIT_SEQUENCE);
       await ADDS.run('pre', {
@@ -153,7 +153,8 @@ class Init {
       await ADDS.run('post', {
         config,
         options,
-        manifest
+        manifest,
+        master: Init
       });
       log.info('Application initalization finished');
     } catch (e) {

@@ -59,7 +59,7 @@ class notModule {
     };
     this.fieldsImportRules = (objHas(options, 'fields') && options.fields) ? options.fields : {};
 
-  //  log.info(`Creating module: ${this.getName()}`);
+    //  log.info(`Creating module: ${this.getName()}`);
     this.init();
     return this;
   }
