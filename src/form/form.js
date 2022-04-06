@@ -170,7 +170,7 @@ class Form {
   }
 
   #augmentValidationSchema(app){
-    ValidationBuilder(this.#SCHEMA, this.getValidatorEnvGetter());
+    this.#SCHEMA = ValidationBuilder(this.#SCHEMA, this.getValidatorEnvGetter());
   }
 
 
