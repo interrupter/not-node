@@ -31,7 +31,8 @@ let opts = {
 		'to': argv.to || false,
 		'config': argv.config || './project.manifest.json',
 		'rollup': argv.rollup || path.join(process.cwd(),'./node_modules/.bin/rollup'),
-		'role': argv.role || null
+		'role': argv.role || null,
+		'verbose': argv.verbose || false
 	},
 	configName = path.join(process.cwd(), opts.config),
 	config = {};
@@ -258,7 +259,7 @@ async function loadNPMModule(){
 					list.push(...commons);
 					result[role].templates.push(...list);
 				}
-				console.log('result', result);
+				opts.verbose && console.log('result', result);
 			}else{
 				console.info('...no templates');
 			}
@@ -275,7 +276,7 @@ async function loadNPMModule(){
 					list.push(...commons);
 					result[role].styles.push(...list);
 				}
-				console.log('result', result);
+				opts.verbose && console.log('result', result);
 			}else{
 				console.info('...no styles');
 			}
@@ -491,7 +492,7 @@ async function build_Server(pathToRoot, roles, targetName, targetManifest){
 	}else{
 		console.info('no modules in manifest');
 	}
-	console.log('List:', list);
+	opts.verbose && console.log('List:', list);
 	////forming index.js and rollup.js
 	for(let i = 0; i < roles.length; i++){
 		const role = roles[i];
