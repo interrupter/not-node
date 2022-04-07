@@ -1,6 +1,6 @@
 /** @module Model/Validator */
 const validate = require('mongoose-validator');
-const {objHas, executeObjectFunction, isFunc} = require('../common');
+const {objHas, executeObjectFunction, isFunc, isAsync} = require('../common');
 
 function extractValidationEnvGetter(options){
   if(options && objHas(options, 'getValidationEnv') && isFunc(options.getValidationEnv)){
@@ -23,9 +23,15 @@ function extendModern(rule, options){
   const result = {...rule};
   delete result.validator;
   const validationEnv = extractValidationEnvGetter(options)();
-  result.validator = async (val) => {
-    return await executeObjectFunction(rule, 'validator', [val, validationEnv]);
-  };
+  if(isAsync(rule.validator)){
+    result.validator = async (val) => {
+      return await executeObjectFunction(rule, 'validator', [val, validationEnv]);
+    };
+  }else{
+    result.validator = (val) => {
+      return executeObjectFunction(rule, 'validator', [val, validationEnv]);
+    };
+  }
   return result;
 }
 

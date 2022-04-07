@@ -503,8 +503,8 @@ async function build_Server(pathToRoot, roles, targetName, targetManifest){
 			let indexFile = path.join(pathToRoot, targetManifest.src, 'index.' + role + '.js');
 			let rollupFile = path.join(pathToRoot, targetManifest.root, 'rollup.' + role + '.js');
 			let bundleFile = path.join(pathToRoot, targetManifest.build, role + '.js');
-			let templateFile = path.join(pathToRoot, targetManifest.build, role + '.html');
-			await lib.renderScript(path.join(pathToRoot,targetManifest.index), {
+			//let templateFile = path.join(pathToRoot, targetManifest.build, role + '.html');
+			await lib.renderScript(path.join(pathToRoot, targetManifest.index), {
 				mods:list[role].controllers,
 				scss: list[role].styles,
 				env: opts.environment,
@@ -522,7 +522,7 @@ async function build_Server(pathToRoot, roles, targetName, targetManifest){
 					NODE_ENV: opts.environment
 				}
 			});
-			await lib.joinToFile(templateFile, list[role].templates);
+			//await lib.joinToFile(templateFile, list[role].templates);
 		}catch(e){
 			console.error(e);
 		}
