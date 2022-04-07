@@ -7,7 +7,7 @@ function extractValidationEnvGetter(options){
     return options.getValidationEnv;
   }else{
     //should return at least empty object
-    return ()=>{return {};};
+    return ()=>{return {validate};};
   }
 }
 

@@ -4,10 +4,6 @@ const {
   createSchemaFromFields
 } = require('../fields');
 
-const {
-  byFieldsValidators
-} = require('../model/enrich');
-
 const {objHas} = require('../common');
 
 const ValidationBuilder = require('not-validation').Builder;
@@ -154,9 +150,7 @@ class Form {
   }
 
   #createModelSchema(app){
-    return byFieldsValidators(
-      createSchemaFromFields(app, this.#PROTO_FIELDS, 'model', this.#FORM_NAME)
-    );
+    return createSchemaFromFields(app, this.#PROTO_FIELDS, 'model', this.#FORM_NAME);
   }
 
 
@@ -172,7 +166,6 @@ class Form {
   #augmentValidationSchema(app){
     this.#SCHEMA = ValidationBuilder(this.#SCHEMA, this.getValidatorEnvGetter());
   }
-
 
   /**
    * Validates form data or throws
