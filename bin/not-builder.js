@@ -172,7 +172,7 @@ async function loadTemplatesForFront(dir, role, commonDir = COMMON_TEMPLATES, te
 	try{
 		listDirs = await listDir(dir);
 	}catch(e){
-		console.log(e);
+		console.error(e);
 	}
 	//console.log('listDirs:', listDirs);
 	try{
@@ -204,7 +204,7 @@ async function loadTemplatesForFront(dir, role, commonDir = COMMON_TEMPLATES, te
 			}
 		}
 	}else{
-		console.log('Directory is not exists: ',roleDir);
+		console.error('Directory is not exists: ',roleDir);
 	}
 	return result;
 }
@@ -261,7 +261,7 @@ async function loadNPMModule(){
 				}
 				opts.verbose && console.log('result', result);
 			}else{
-				console.info('...no templates');
+				ops.verbose && console.info('...no templates');
 			}
 			if(mod.paths.styles){
 				let commons;
@@ -278,13 +278,13 @@ async function loadNPMModule(){
 				}
 				opts.verbose && console.log('result', result);
 			}else{
-				console.info('...no styles');
+				ops.verbose && console.info('...no styles');
 			}
 		}
 	}catch(e){
 		console.error(e);
 	}
-	console.log('npm module content ',result);
+	opts.verbose && console.log('npm module content ',result);
 	return result;
 }
 
@@ -314,7 +314,7 @@ async function loadServerModule(){
 					}
 				}
 			}else{
-				console.info('...no controllers');
+				ops.verbose && console.info('...no controllers');
 			}
 			if(mod.paths.templates){
 				let commons;
@@ -339,7 +339,7 @@ async function loadServerModule(){
 
 				}
 			}else{
-				console.info('...no templates');
+				ops.verbose && console.info('...no templates');
 			}
 			if(mod.paths.styles){
 				let commons;
@@ -364,7 +364,7 @@ async function loadServerModule(){
 
 				}
 			}else{
-				console.info('...no styles');
+				ops.verbose && console.info('...no styles');
 			}
 		}
 	}catch(e){
