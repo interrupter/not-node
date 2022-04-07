@@ -261,7 +261,7 @@ async function loadNPMModule(){
 				}
 				opts.verbose && console.log('result', result);
 			}else{
-				ops.verbose && console.info('...no templates');
+				opts.verbose && console.info('...no templates');
 			}
 			if(mod.paths.styles){
 				let commons;
@@ -278,7 +278,7 @@ async function loadNPMModule(){
 				}
 				opts.verbose && console.log('result', result);
 			}else{
-				ops.verbose && console.info('...no styles');
+				opts.verbose && console.info('...no styles');
 			}
 		}
 	}catch(e){
@@ -314,7 +314,7 @@ async function loadServerModule(){
 					}
 				}
 			}else{
-				ops.verbose && console.info('...no controllers');
+				opts.verbose && console.info('...no controllers');
 			}
 			if(mod.paths.templates){
 				let commons;
@@ -339,7 +339,7 @@ async function loadServerModule(){
 
 				}
 			}else{
-				ops.verbose && console.info('...no templates');
+				opts.verbose && console.info('...no templates');
 			}
 			if(mod.paths.styles){
 				let commons;
@@ -364,7 +364,7 @@ async function loadServerModule(){
 
 				}
 			}else{
-				ops.verbose && console.info('...no styles');
+				opts.verbose && console.info('...no styles');
 			}
 		}
 	}catch(e){
