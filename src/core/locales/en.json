@@ -1,4 +1,5 @@
 {
+  "form_validation_error": "Form validation error",
   "field_active_label": "Active",
   "field_codeName_label": "Code name",
   "field_codeName_placeholder": "Code name",
