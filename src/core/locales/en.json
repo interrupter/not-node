@@ -1,6 +1,6 @@
 {
-  "booleans_false": "True",
-  "booleans_true": "False",
+  "booleans_false": "False",
+  "booleans_true": "True",
   "form_validation_error": "Form validation error",
   "field_active_label": "Active",
   "field_codeName_label": "Code name",
