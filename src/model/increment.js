@@ -62,6 +62,19 @@ function secureUpdate(thisModel, which, cmd, opts){
 
 module.exports.secureUpdate = secureUpdate;
 
+function updateResponseSuccess(res){
+  if(res){
+    const responseList = Object.keys(res);
+    if(responseList.includes('ok')){
+      return (res.ok === 1 && res.n === 1);
+    }else{
+      return (res.matchedCount === 1 && res.modifiedCount === 1);
+    }
+  }else{
+    return false;
+  }
+}
+
 /**
 * Generate new ID for current model and filterFields
 **/
@@ -99,8 +112,8 @@ function newGetNext() {
         new: true,
         upsert: true
       };
-    let res = await secureUpdate(thisModel, which, cmd, opts);
-    if(res.ok === 1 && res.n === 1){
+    const res = await secureUpdate(thisModel, which, cmd, opts);
+    if(updateResponseSuccess(res)){
       const doc = await thisModel.findOne({id});
       return doc.seq;
     }else{
@@ -133,7 +146,7 @@ function newRebase(){
       };
     //updating
     let res = await secureUpdate(thisModel, which, cmd, opts);
-    if(res.ok === 1 && res.n === 1){
+    if(updateResponseSuccess(res)){
       return ID;
     }else{
       throw new Error('ID generator rebase failed');

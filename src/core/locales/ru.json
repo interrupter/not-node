@@ -1,4 +1,6 @@
 {
+  "booleans_false": "Да",
+  "booleans_true": "Нет",
   "form_validation_error": "Форма заполнена с ошибками",
   "field_active_label": "Активна",
   "field_codeName_label": "Псевдоним",
