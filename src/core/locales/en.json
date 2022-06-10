@@ -46,5 +46,12 @@
   "field_userId_placeholder": "UserId",
 
   "field_UUID_label": "UUID",
-  "field_UUID_placeholder": "UUID"
+  "field_UUID_placeholder": "UUID",
+
+  "crud_create_action_waiting": "Creating record...",
+  "crud_read_action_waiting": "Reading record...",
+  "crud_update_action_waiting": "Updating record...",
+  "crud_delete_action_waiting": "Deleting record...",
+  "add_label": "Add",
+  "select_from_list_label": "Select from list..."
 }

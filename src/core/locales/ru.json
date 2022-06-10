@@ -46,5 +46,13 @@
   "field_userId_placeholder": "",
 
   "field_UUID_label": "UUID",
-  "field_UUID_placeholder": "UUID"
+  "field_UUID_placeholder": "UUID",
+
+  "crud_create_action_waiting": "Создание записи...",
+  "crud_read_action_waiting": "Чтение записи...",
+  "crud_update_action_waiting": "Обновление записи...",
+  "crud_delete_action_waiting": "Удаление записи...",
+  "add_label": "Добавить",
+  "select_from_list_label": "Выберите из списка..."
+
 }
