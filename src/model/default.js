@@ -74,13 +74,15 @@ function sanitizeInput(input) {
 *	@static
 *	@param 	{string}	id 	primary key
 *	@param 	{Array}		population 	optional if needed population of some fields
+*	@param 	{Object}	condition 	optional if needed additional condition
 *	@return {Promise}	Promise
 **/
-function getOne(id, population = []) {
+function getOne(id, population = [], condition = {}) {
   let query;
   if (this.schema.statics.__versioning) {
     query = this.findOne({
       _id: id,
+      ...condition,
       __latest: true,
       __closed: false
     });
@@ -91,7 +93,8 @@ function getOne(id, population = []) {
     }
   } else {
     query = this.findOne({
-      _id: id
+      _id: id,
+      ...condition
     });
   }
   populateQuery(query, population, this.schema.statics.__versioning);
