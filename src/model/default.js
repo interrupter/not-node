@@ -106,14 +106,18 @@ function getOne(id, population = [], condition = {}) {
 *	If versioning ON, it retrieves __latest and not __closed
 *	@static
 *	@param 	{number}	ID		some unique numeric identificator
+*	@param 	{Object}	condition 	optional if needed additional condition
 *	@return {Promise}	      Promise of document, if increment is OFF - then Promise.resolve(null)
 **/
-function getOneByID(ID) {
+function getOneByID(ID, condition = {}) {
   if (this.schema.statics.__incField) {
     let by = (this.schema.statics.__versioning ? {
+        ...condition,
         __latest: true,
-        __closed: false
-      } : {}),
+        __closed: false,
+      } : {
+        ...condition
+      }),
       query;
     by[this.schema.statics.__incField] = ID;
     query = this.findOne(by);
@@ -128,11 +132,13 @@ function getOneByID(ID) {
 *	Retrieves one record by primary key, without any restriction
 *	@static
 *	@param 	{string}	id 	primary key
+*	@param 	{Object}	condition 	optional if needed additional condition
 *	@return {Promise}	Promise
 **/
-function getOneRaw(id) {
+function getOneRaw(id, condition = {}) {
   let query = this.findOne({
-    _id: id
+    _id: id,
+    ...condition
   });
   return query.exec();
 }
