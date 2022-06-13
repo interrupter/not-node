@@ -1,6 +1,6 @@
 module.exports = {
   ui:{
-    component: 'UITextfield',
+    component: 'UIDate',
     label: 'not-node:field_updatedAt_label',
     placeholder: 'not-node:field_updatedAt_placeholder',
     readonly: true
