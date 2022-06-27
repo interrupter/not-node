@@ -1,6 +1,9 @@
 {
   "booleans_false": "Нет",
   "booleans_true": "Да",
+  "empty_list_placeholder": "Список пуст",
+  "list_navigation_prev_button_label": "Назад",
+  "list_navigation_next_button_label": "Дальше",
   "form_validation_error": "Форма заполнена с ошибками",
   "field_active_label": "Активна",
   "field_codeName_label": "Псевдоним",
@@ -8,7 +11,6 @@
   "field_createdAt_label": "Создано",
   "field_createdAt_placeholder": "Дата и время создания",
   "field_default_label": "По умолчанию",
-
   "field_title_label": "Название",
   "field_title_placeholder": "Название объекта",
   "field_description_label": "Описание",

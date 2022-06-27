@@ -1,6 +1,9 @@
 {
   "booleans_false": "False",
   "booleans_true": "True",
+  "empty_list_placeholder": "List is empty",
+  "list_navigation_prev_button_label": "Prev",
+  "list_navigation_next_button_label": "Next",
   "form_validation_error": "Form validation error",
   "field_active_label": "Active",
   "field_codeName_label": "Code name",
