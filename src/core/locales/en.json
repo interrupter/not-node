@@ -4,6 +4,8 @@
   "empty_list_placeholder": "List is empty",
   "list_navigation_prev_button_label": "Prev",
   "list_navigation_next_button_label": "Next",
+  "button_cancel_label": "Cancel",
+  "button_apply_label": "Apply",
   "field_select_label": "Select",
   "field_search_placeholder": "Search...",
   "field_owner_label": "Owner",

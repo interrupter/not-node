@@ -7,6 +7,8 @@
   "field_select_label": "Выбрать",
   "field_search_placeholder": "Искать...",
   "field_owner_label": "Владелец",
+  "button_cancel_label": "Отмена",
+  "button_apply_label": "Применить",
   "form_validation_error": "Форма заполнена с ошибками",
   "field_active_label": "Активна",
   "field_codeName_label": "Псевдоним",
