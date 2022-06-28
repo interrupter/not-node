@@ -7,6 +7,8 @@
   "button_cancel_label": "Cancel",
   "button_apply_label": "Apply",
   "field_select_label": "Select",
+  "field_value_is_empty_placeholder": "Empty",
+  "loading_label": "Loading...",
   "field_search_placeholder": "Search...",
   "field_owner_label": "Owner",
   "form_validation_error": "Form validation error",
