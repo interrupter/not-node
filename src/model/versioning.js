@@ -36,10 +36,16 @@ class ModelVersioning{
     return a;
   }
 
+  static jsonCopy(a){
+    return JSON.parse(JSON.stringify(a));
+  }
+
   static isThisDocsDifferent(a, b) {
     a = ModelVersioning.stripTechData(a);
     b = ModelVersioning.stripTechData(b);
-    let diffLog = diff(a, b);
+    const plainA = ModelVersioning.jsonCopy(a);
+    const plainB = ModelVersioning.jsonCopy(b);
+    const diffLog = diff(plainA, plainB);
     return (typeof diffLog !== 'undefined');
   }
 
