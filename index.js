@@ -37,3 +37,5 @@ module.exports.FormFabric = require('./src/form').FormFabric;
 module.exports.Init = require('./src/init').Init;
 /** Application object */
 module.exports.Application = null;
+/** Application bootstrap helpers */
+module.exports.Bootstrap = require('./src/bootstrap');
