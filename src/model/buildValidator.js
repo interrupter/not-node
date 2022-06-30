@@ -1,49 +1,60 @@
 /** @module Model/Validator */
-const validate = require('mongoose-validator');
-const {objHas, executeObjectFunction, isFunc, isAsync} = require('../common');
+const validate = require("mongoose-validator");
+const { objHas, executeObjectFunction, isFunc, isAsync } = require("../common");
 
-function extractValidationEnvGetter(options){
-  if(options && objHas(options, 'getValidationEnv') && isFunc(options.getValidationEnv)){
-    return options.getValidationEnv;
-  }else{
-    //should return at least empty object
-    return ()=>{return {validate};};
-  }
+function extractValidationEnvGetter(options) {
+    if (
+        options &&
+        objHas(options, "getValidationEnv") &&
+        isFunc(options.getValidationEnv)
+    ) {
+        return options.getValidationEnv;
+    } else {
+        //should return at least empty object
+        return () => {
+            return { validate };
+        };
+    }
 }
 
-function extendObsolete(rule){
-  const result = {...rule};
-  if(objHas(result, 'arguments') && !Array.isArray(result.arguments)){
-    result.arguments = Object.values(result.arguments);
-  }
-  return validate(result);
+function extendObsolete(rule) {
+    const result = { ...rule };
+    if (objHas(result, "arguments") && !Array.isArray(result.arguments)) {
+        result.arguments = Object.values(result.arguments);
+    }
+    return validate(result);
 }
 
-function extendModern(rule, options){
-  const result = {...rule};
-  delete result.validator;
-  const validationEnv = extractValidationEnvGetter(options)();
-  if(isAsync(rule.validator)){
-    result.validator = async (val) => {
-      return await executeObjectFunction(rule, 'validator', [val, validationEnv]);
-    };
-  }else{
-    result.validator = (val) => {
-      return executeObjectFunction(rule, 'validator', [val, validationEnv]);
-    };
-  }
-  return result;
+function extendModern(rule, options) {
+    const result = { ...rule };
+    delete result.validator;
+    const validationEnv = extractValidationEnvGetter(options)();
+    if (isAsync(rule.validator)) {
+        result.validator = async (val) => {
+            return await executeObjectFunction(rule, "validator", [
+                val,
+                validationEnv,
+            ]);
+        };
+    } else {
+        result.validator = (val) => {
+            return executeObjectFunction(rule, "validator", [
+                val,
+                validationEnv,
+            ]);
+        };
+    }
+    return result;
 }
 
-
-function extendValidation(rule, options){
-  if(typeof rule.validator === 'string'){
-    //will extend from text description to validatejs lib validation function
-    return extendObsolete(rule);
-  }else{
-    //more complex validation
-    return extendModern(rule, options);
-  }
+function extendValidation(rule, options) {
+    if (typeof rule.validator === "string") {
+        //will extend from text description to validatejs lib validation function
+        return extendObsolete(rule);
+    } else {
+        //more complex validation
+        return extendModern(rule, options);
+    }
 }
 
 /**
@@ -52,8 +63,8 @@ function extendValidation(rule, options){
  *  then return it
  **/
 
-module.exports = function(validators, options) {
-  let result = null;
-  result = validators.map(rule => extendValidation(rule, options));
-  return result;
+module.exports = function (validators, options) {
+    let result = null;
+    result = validators.map((rule) => extendValidation(rule, options));
+    return result;
 };

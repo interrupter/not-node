@@ -1,6 +1,6 @@
-const log = require('not-log')(module, 'Auth');
-const CONST = require('./const');
-const ROLES = require('./roles');
+const log = require("not-log")(module, "Auth");
+const CONST = require("./const");
+const ROLES = require("./roles");
 
 /**
  *	Checks if user is authenticated, by searching req.session.user
@@ -9,12 +9,12 @@ const ROLES = require('./roles');
  **/
 
 function isUser(req) {
-  return (req && req.session && req.session.user) ? true : false;
+    return req && req.session && req.session.user ? true : false;
 }
 
 function ifUser(req) {
-  log.error('ifUser is obsolete, use new version as isUser');
-  return isUser(req);
+    log.error("ifUser is obsolete, use new version as isUser");
+    return isUser(req);
 }
 
 /**
@@ -23,7 +23,9 @@ function ifUser(req) {
  *	@return user role
  **/
 function getRole(req) {
-  return (req && req.session && req.session.role) ? req.session.role : undefined;
+    return req && req.session && req.session.role
+        ? req.session.role
+        : undefined;
 }
 
 /**
@@ -32,15 +34,15 @@ function getRole(req) {
  *	@param	{Array<string>}	role 	array of roles
  **/
 function setRole(req, role) {
-  if (req && req.session) {
-    req.session.role = role;
-  }
+    if (req && req.session) {
+        req.session.role = role;
+    }
 }
 
 function setId(req, _id) {
-  log.error('setId is obsolete, use new version as setUserId');
-  log.error(req.originalUrl);
-  return setUserId(req, _id);
+    log.error("setId is obsolete, use new version as setUserId");
+    log.error(req.originalUrl);
+    return setUserId(req, _id);
 }
 
 /**
@@ -49,11 +51,10 @@ function setId(req, _id) {
  *	@param	{string}	_id 	user id
  **/
 function setUserId(req, _id) {
-  if (req && req.session) {
-    req.session.user = _id;
-  }
+    if (req && req.session) {
+        req.session.user = _id;
+    }
 }
-
 
 /**
  *	Returns true if user is admin
@@ -61,28 +62,28 @@ function setUserId(req, _id) {
  *	@return {boolean}	true - admin, false - not admin
  **/
 function ifAdmin(req) {
-  log.error('ifAdmin is obsolete, use new version as isRoot');
-  log.error(req.originalUrl);
-  return isRoot(req);
+    log.error("ifAdmin is obsolete, use new version as isRoot");
+    log.error(req.originalUrl);
+    return isRoot(req);
 }
 
 function isRoot(req) {
-  return isUser(req) && ROLES.compareRoles(getRole(req), CONST.DEFAULT_USER_ROLE_FOR_ADMIN);
+    return (
+        isUser(req) &&
+        ROLES.compareRoles(getRole(req), CONST.DEFAULT_USER_ROLE_FOR_ADMIN)
+    );
 }
-
-
-
 
 /**
  *	Get user id for active session
  *	@param	{object}	req 	Express Request
  **/
 function getUserId(req) {
-  if(req && req.session){
-    return req.session.user;
-  }else{
-    return undefined;
-  }
+    if (req && req.session) {
+        return req.session.user;
+    } else {
+        return undefined;
+    }
 }
 
 /**
@@ -90,13 +91,12 @@ function getUserId(req) {
  *	@param	{object}	req 	Express Request
  **/
 function getSessionId(req) {
-  if(req && req.session && req.session.id){
-    return req.session.id.toString();
-  }else{
-    return undefined;
-  }
+    if (req && req.session && req.session.id) {
+        return req.session.id.toString();
+    } else {
+        return undefined;
+    }
 }
-
 
 /**
  *	Set auth data in session, user id and role
@@ -105,21 +105,20 @@ function getSessionId(req) {
  *	@param	{string}	role 	user role
  **/
 function setAuth(req, id, role) {
-  setUserId(req, id);
-  setRole(req, role);
+    setUserId(req, id);
+    setRole(req, role);
 }
-
 
 /**
  *	Set auth data in session to Guest
  *	@param	{object}	req 	Express Request
  **/
 function setGuest(req) {
-  if (req && req.session) {
-    req.user = null;
-    req.session.user = null;
-    setRole(req, [CONST.DEFAULT_USER_ROLE_FOR_GUEST]);
-  }
+    if (req && req.session) {
+        req.user = null;
+        req.session.user = null;
+        setRole(req, [CONST.DEFAULT_USER_ROLE_FOR_GUEST]);
+    }
 }
 
 /**
@@ -127,27 +126,26 @@ function setGuest(req) {
  *	@param	{object}	req 	Express Request
  **/
 function cleanse(req) {
-  if (req && req.session) {
-    setGuest(req);
-    if (req.session.destroy) {
-      req.session.destroy();
+    if (req && req.session) {
+        setGuest(req);
+        if (req.session.destroy) {
+            req.session.destroy();
+        }
     }
-  }
 }
 
-
 module.exports = {
-  isUser,
-  ifUser,
-  ifAdmin,
-  isRoot,
-  getRole,
-  setRole,
-  setId,
-  getUserId,
-  setUserId,
-  getSessionId,
-  setAuth,
-  setGuest,
-  cleanse
+    isUser,
+    ifUser,
+    ifAdmin,
+    isRoot,
+    getRole,
+    setRole,
+    setId,
+    getUserId,
+    setUserId,
+    getSessionId,
+    setAuth,
+    setGuest,
+    cleanse,
 };

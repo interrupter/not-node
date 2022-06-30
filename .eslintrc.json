@@ -28,7 +28,7 @@
     "node/prefer-global/url-search-params": ["error", "always"],
     "node/prefer-global/url": ["error", "always"],
     "node/no-unpublished-require": "warn",
-    "indent": ["error", 2],
+    "indent": ["error", 4],
     "linebreak-style": [
       "error",
       "unix"

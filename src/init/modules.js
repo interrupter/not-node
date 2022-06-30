@@ -1,5 +1,5 @@
-module.exports = class InitModules{
-  async run({master}) {
-    master.getApp().execInModules('initialize');
-  }
+module.exports = class InitModules {
+    async run({ master }) {
+        master.getApp().execInModules("initialize");
+    }
 };

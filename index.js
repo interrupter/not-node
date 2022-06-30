@@ -1,41 +1,43 @@
 /**
-* @module not-node
-*/
+ * @module not-node
+ */
 
-module.exports.Env = require('./src/env.js');
+module.exports.Env = require("./src/env.js");
 /** Error module
  * @type {not-node/Error}
  */
-module.exports.Error = require('./src/error.js');
+module.exports.Error = require("./src/error.js");
 /** Authentication module */
-module.exports.Auth = require('./src/auth');
+module.exports.Auth = require("./src/auth");
 /** Manifest infrastructure */
-module.exports.Manifest = require('./src/manifest/manifest');
+module.exports.Manifest = require("./src/manifest/manifest");
 /** Web Application */
-module.exports.notApp = require('./src/app');
+module.exports.notApp = require("./src/app");
 /** General Application */
-module.exports.notDomain = require('./src/domain');
+module.exports.notDomain = require("./src/domain");
 /** Mongoose Documents versioning */
-module.exports.Versioning = require('./src/model/versioning');
+module.exports.Versioning = require("./src/model/versioning");
 /** Mongoose Model autoincrement field */
-module.exports.Increment = require('./src/model/increment');
+module.exports.Increment = require("./src/model/increment");
 /** Mongoose Model prototype */
-module.exports.Proto = require('./src/model/proto');
+module.exports.Proto = require("./src/model/proto");
 /** Mongoose Model additional features enricher */
-module.exports.Enrich = require('./src/model/enrich');
+module.exports.Enrich = require("./src/model/enrich");
 /** Mongoose Documents routine operation*/
-module.exports.Routine = require('./src/model/routine');
+module.exports.Routine = require("./src/model/routine");
 /** Common functions */
-module.exports.Common = require('./src/common');
+module.exports.Common = require("./src/common");
 /** Fields library manager */
-module.exports.Fields = require('./src/fields');
+module.exports.Fields = require("./src/fields");
 /** Form validation template **/
-module.exports.Form = require('./src/form').Form;
+module.exports.Form = require("./src/form").Form;
 /** Form validation template fabric **/
-module.exports.FormFabric = require('./src/form').FormFabric;
+module.exports.FormFabric = require("./src/form").FormFabric;
 /** Application initialization procedures */
-module.exports.Init = require('./src/init').Init;
+module.exports.Init = require("./src/init").Init;
 /** Application object */
 module.exports.Application = null;
 /** Application bootstrap helpers */
-module.exports.Bootstrap = require('./src/bootstrap');
+module.exports.Bootstrap = require("./src/bootstrap");
+/** Application generic helpers */
+module.exports.Generic = require("./src/generic/index.js");

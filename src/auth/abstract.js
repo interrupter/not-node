@@ -1,8 +1,7 @@
+const CONST = require("./const");
 
-const CONST = require('./const');
-
-function isObjectString(val){
-  return Object.prototype.toString.call(val) === CONST.OBJECT_STRING;
+function isObjectString(val) {
+    return Object.prototype.toString.call(val) === CONST.OBJECT_STRING;
 }
 
 /**
@@ -13,23 +12,22 @@ function isObjectString(val){
  **/
 
 function intersect_safe(a, b) {
-  let result = [];
-  if (Array.isArray(a) && Array.isArray(b)) {
-    if (b.length > a.length) {
-      // indexOf to loop over shorter
-      let t = b;
-      b = a;
-      a = t;
+    let result = [];
+    if (Array.isArray(a) && Array.isArray(b)) {
+        if (b.length > a.length) {
+            // indexOf to loop over shorter
+            let t = b;
+            b = a;
+            a = t;
+        }
+        result = a.filter((e) => {
+            if (b.indexOf(e) !== -1) return true;
+        });
     }
-    result = a.filter((e) => {
-      if (b.indexOf(e) !== -1) return true;
-    });
-  }
-  return result;
+    return result;
 }
 
-
 module.exports = {
-  isObjectString,
-  intersect_safe
+    isObjectString,
+    intersect_safe,
 };

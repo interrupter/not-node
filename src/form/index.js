@@ -1,4 +1,4 @@
 module.exports = {
-  Form: require('./form'),
-  FormFabric: require('./fabric'),
+    Form: require("./form"),
+    FormFabric: require("./fabric"),
 };

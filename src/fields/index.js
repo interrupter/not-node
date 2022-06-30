@@ -9,23 +9,23 @@ const DEFAULT_FROM = ":FIELDS";
 const DEFAULT_TO = ":thisSchema";
 
 module.exports.initFileSchemaFromFields = ({
-  app,
-  mod,
-  type = DEFAULT_TYPE,
-  from = DEFAULT_FROM,
-  to = DEFAULT_TO,
-  moduleName = "",
+    app,
+    mod,
+    type = DEFAULT_TYPE,
+    from = DEFAULT_FROM,
+    to = DEFAULT_TO,
+    moduleName = "",
 }) => {
-  const FIELDS = notPath.get(from, mod);
-  if (FIELDS && Array.isArray(FIELDS)) {
-    const schema = module.exports.createSchemaFromFields(
-      app,
-      FIELDS,
-      type,
-      moduleName
-    );
-    notPath.set(to, mod, schema);
-  }
+    const FIELDS = notPath.get(from, mod);
+    if (FIELDS && Array.isArray(FIELDS)) {
+        const schema = module.exports.createSchemaFromFields(
+            app,
+            FIELDS,
+            type,
+            moduleName
+        );
+        notPath.set(to, mod, schema);
+    }
 };
 
 /**
@@ -36,46 +36,41 @@ fields = [
 ]
 **/
 module.exports.createSchemaFromFields = (
-  app,
-  fields,
-  type = "ui",
-  moduleName
+    app,
+    fields,
+    type = "ui",
+    moduleName
 ) => {
-  let schema = {};
-  fields.forEach((field) => {
-    let [schemaFieldName, schemaFieldValue] = module.exports.initSchemaField(
-      app,
-      field,
-      false,
-      type,
-      moduleName
-    );
-    schema[schemaFieldName] = schemaFieldValue;
-  });
-  return schema;
+    let schema = {};
+    fields.forEach((field) => {
+        let [schemaFieldName, schemaFieldValue] =
+            module.exports.initSchemaField(app, field, false, type, moduleName);
+        schema[schemaFieldName] = schemaFieldValue;
+    });
+    return schema;
 };
 
 module.exports.initSchemaField = (
-  app,
-  field,
-  resultOnly = true,
-  type = "ui",
-  moduleName
+    app,
+    field,
+    resultOnly = true,
+    type = "ui",
+    moduleName
 ) => {
-  //log(field);
-  let { srcName, destName, mutation } = parseFieldDescription(field);
-  let proto = findFieldPrototype(app, srcName, type);
-  if (!proto) {
-    error(
-      `field ${moduleName}//${destName} prototype ${srcName} of ${type} type is not found`
-    );
-  }
-  let schemaFieldValue = Object.assign({}, clone(proto), mutation);
-  if (resultOnly) {
-    return schemaFieldValue;
-  } else {
-    return [destName, schemaFieldValue];
-  }
+    //log(field);
+    let { srcName, destName, mutation } = parseFieldDescription(field);
+    let proto = findFieldPrototype(app, srcName, type);
+    if (!proto) {
+        error(
+            `field ${moduleName}//${destName} prototype ${srcName} of ${type} type is not found`
+        );
+    }
+    let schemaFieldValue = Object.assign({}, clone(proto), mutation);
+    if (resultOnly) {
+        return schemaFieldValue;
+    } else {
+        return [destName, schemaFieldValue];
+    }
 };
 
 /**
@@ -86,39 +81,39 @@ module.exports.initSchemaField = (
  * ['destFieldName', {mutation: 'content'}, 'srcFieldName']// - form 4
  **/
 const parseFieldDescription = (field) => {
-  let srcName,
-    destName,
-    mutation = {};
-  if (Array.isArray(field)) {
-    destName = srcName = field[0];
-    if (field.length === 2) {
-      if (typeof field[1] === "string") {
-        srcName = field[1]; //form 3
-      } else {
-        mutation = field[1]; //form 2
-      }
-    } else if (field.length === 3) {
-      //form 4
-      mutation = field[1];
-      srcName = field[2];
+    let srcName,
+        destName,
+        mutation = {};
+    if (Array.isArray(field)) {
+        destName = srcName = field[0];
+        if (field.length === 2) {
+            if (typeof field[1] === "string") {
+                srcName = field[1]; //form 3
+            } else {
+                mutation = field[1]; //form 2
+            }
+        } else if (field.length === 3) {
+            //form 4
+            mutation = field[1];
+            srcName = field[2];
+        }
+    } else {
+        destName = srcName = field; //form 1
     }
-  } else {
-    destName = srcName = field; //form 1
-  }
-  return {
-    srcName,
-    destName,
-    mutation,
-  };
+    return {
+        srcName,
+        destName,
+        mutation,
+    };
 };
 
 const findFieldPrototype = (app, name, type) => {
-  const fieldPrototype = app.getField(name);
-  if (fieldPrototype && objHas(fieldPrototype, type)) {
-    return fieldPrototype[type];
-  } else {
-    return null;
-  }
+    const fieldPrototype = app.getField(name);
+    if (fieldPrototype && objHas(fieldPrototype, type)) {
+        return fieldPrototype[type];
+    } else {
+        return null;
+    }
 };
 
 /**
@@ -133,33 +128,33 @@ const findFieldPrototype = (app, name, type) => {
  **/
 
 module.exports.initManifestFields = (
-  app, //notApplication
-  schema, //schema of model
-  rawMutationsList = [], //fields mutations
-  privateFields = [], //fields to omit
-  moduleName //module name for reporting
+    app, //notApplication
+    schema, //schema of model
+    rawMutationsList = [], //fields mutations
+    privateFields = [], //fields to omit
+    moduleName //module name for reporting
 ) => {
-  let //shallow copy of array
-    mutationsList = [...rawMutationsList],
-    list = [];
-  if (schema && Object.keys(schema).length > 0) {
-    let rawKeys = Object.keys(schema);
-    rawKeys
-      .filter((key) => !privateFields.includes(key))
-      .forEach((key) => {
-        let mutation = getMutationForField(key, mutationsList);
-        if (mutation) {
-          list.push(mutation);
-          mutationsList.splice(mutationsList.indexOf(mutation), 1);
-        } else {
-          list.push(key);
-        }
-      });
-    list.push(...mutationsList);
-  } else {
-    list = mutationsList;
-  }
-  return module.exports.createSchemaFromFields(app, list, "ui", moduleName);
+    let //shallow copy of array
+        mutationsList = [...rawMutationsList],
+        list = [];
+    if (schema && Object.keys(schema).length > 0) {
+        let rawKeys = Object.keys(schema);
+        rawKeys
+            .filter((key) => !privateFields.includes(key))
+            .forEach((key) => {
+                let mutation = getMutationForField(key, mutationsList);
+                if (mutation) {
+                    list.push(mutation);
+                    mutationsList.splice(mutationsList.indexOf(mutation), 1);
+                } else {
+                    list.push(key);
+                }
+            });
+        list.push(...mutationsList);
+    } else {
+        list = mutationsList;
+    }
+    return module.exports.createSchemaFromFields(app, list, "ui", moduleName);
 };
 
 /**
@@ -169,11 +164,11 @@ module.exports.initManifestFields = (
  * @return {boolean|item}
  */
 function getMutationForField(name, list) {
-  for (let item of list) {
-    if (Array.isArray(item) && item[0] === name) {
-      return item;
+    for (let item of list) {
+        if (Array.isArray(item) && item[0] === name) {
+            return item;
+        }
     }
-  }
-  return false;
+    return false;
 }
 module.exports.getMutationForField = getMutationForField;

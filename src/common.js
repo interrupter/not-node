@@ -1,6 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const notPath = require('not-path');
+const fs = require("fs");
+const path = require("path");
+const notPath = require("not-path");
 
 /** @module Common */
 /**
@@ -9,8 +9,8 @@ const notPath = require('not-path');
  * @return {string}        result
  */
 
-module.exports.firstLetterToLower = function(string) {
-  return string.charAt(0).toLowerCase() + string.slice(1);
+module.exports.firstLetterToLower = function (string) {
+    return string.charAt(0).toLowerCase() + string.slice(1);
 };
 
 /**
@@ -19,8 +19,8 @@ module.exports.firstLetterToLower = function(string) {
  * @return {string}        result
  */
 
-module.exports.firstLetterToUpper = function(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+module.exports.firstLetterToUpper = function (string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
 /**
@@ -29,11 +29,11 @@ module.exports.firstLetterToUpper = function(string) {
  *  @return {booelean}  true if check is not failed
  */
 module.exports.validateObjectId = (id) => {
-  try {
-    return id.match(/^[0-9a-fA-F]{24}$/) ? true : false;
-  } catch (e) {
-    return false;
-  }
+    try {
+        return id.match(/^[0-9a-fA-F]{24}$/) ? true : false;
+    } catch (e) {
+        return false;
+    }
 };
 
 /**
@@ -43,25 +43,25 @@ module.exports.validateObjectId = (id) => {
  *  @return {booelean}        true if equal
  */
 module.exports.compareObjectIds = (firstId, secondId) => {
-  try {
-    let a = firstId,
-      b = secondId;
-    if (typeof firstId !== 'string') {
-      a = a.toString();
+    try {
+        let a = firstId,
+            b = secondId;
+        if (typeof firstId !== "string") {
+            a = a.toString();
+        }
+        if (typeof secondId !== "string") {
+            b = b.toString();
+        }
+        if (
+            !module.exports.validateObjectId(a) ||
+            !module.exports.validateObjectId(b)
+        ) {
+            return false;
+        }
+        return a === b;
+    } catch (e) {
+        return false;
     }
-    if (typeof secondId !== 'string') {
-      b = b.toString();
-    }
-    if (
-      !module.exports.validateObjectId(a) ||
-      !module.exports.validateObjectId(b)
-    ) {
-      return false;
-    }
-    return a === b;
-  } catch (e) {
-    return false;
-  }
 };
 
 /**
@@ -69,10 +69,9 @@ module.exports.compareObjectIds = (firstId, secondId) => {
  *  @return {number}  current date with 00:00:00 in ms of unix time
  */
 module.exports.getTodayDate = () => {
-  let t = new Date();
-  return (new Date(t.getFullYear(), t.getMonth(), t.getDate())).getTime();
+    let t = new Date();
+    return new Date(t.getFullYear(), t.getMonth(), t.getDate()).getTime();
 };
-
 
 /**
  *  Returns true if object has field of name
@@ -81,12 +80,11 @@ module.exports.getTodayDate = () => {
  *  @return {boolean}          if object contains field with name
  **/
 const objHas = (obj, name) => {
-  if(typeof obj === 'undefined') return false;
-  if(obj === null) return false;
-  return Object.prototype.hasOwnProperty.call(obj, name);
+    if (typeof obj === "undefined") return false;
+    if (obj === null) return false;
+    return Object.prototype.hasOwnProperty.call(obj, name);
 };
 module.exports.objHas = objHas;
-
 
 /**
  * Copies object to secure it from changes
@@ -94,7 +92,7 @@ module.exports.objHas = objHas;
  * @return {object}          copy of object
  **/
 module.exports.copyObj = (obj) => {
-  return JSON.parse(JSON.stringify(obj));
+    return JSON.parse(JSON.stringify(obj));
 };
 
 /**
@@ -103,34 +101,51 @@ module.exports.copyObj = (obj) => {
  * @return {object}          copy of object
  **/
 module.exports.partCopyObj = (obj, list) => {
-  let partObj = Object.keys(obj).reduce((prev, curr) => {
-    if (list.includes(curr)) {
-      prev[curr] = obj[curr];
-    }
-    return prev;
-  }, {});
-  return JSON.parse(JSON.stringify(partObj));
+    let partObj = Object.keys(obj).reduce((prev, curr) => {
+        if (list.includes(curr)) {
+            prev[curr] = obj[curr];
+        }
+        return prev;
+    }, {});
+    return JSON.parse(JSON.stringify(partObj));
 };
-
 
 /**
  * Test argument type to be 'function'
  * @param {any}  func    possible function
  * @return {boolean}     if this is a function
  **/
-const isFunc = module.exports.isFunc = (func) => {
-  return typeof func === 'function';
-};
+const isFunc = (module.exports.isFunc = (func) => {
+    return typeof func === "function";
+});
 
 /**
  * Returns true if argument is Async function
  * @param {function} func  to test
  * @return {boolean}       if this function is constructed as AsyncFunction
  **/
-const isAsync = module.exports.isAsync = (func) => {
-  return func.constructor.name === 'AsyncFunction';
+const isAsync = (module.exports.isAsync = (func) => {
+    return func.constructor.name === "AsyncFunction";
+});
+
+/**
+ *  Executes method in appropriate way inside Promise
+ * @param {function}   proc    function to execute
+ * @param {Array}     params  array of params
+ * @return {Promise}          results of method execution
+ **/
+const executeFunctionAsAsync = async (proc, params) => {
+    if (isFunc(proc)) {
+        if (isAsync(proc)) {
+            return await proc(...params);
+        } else {
+            return proc(...params);
+        }
+    }
+    throw new Error("Could not execute `proc` is not a function");
 };
 
+module.exports.executeFunctionAsAsync = executeFunctionAsAsync;
 
 /**
  *  Executes method of object in appropriate way inside Promise
@@ -140,18 +155,11 @@ const isAsync = module.exports.isAsync = (func) => {
  * @return {Promise}          results of method execution
  **/
 module.exports.executeObjectFunction = async (obj, name, params) => {
-  if (obj) {
-    const proc = notPath.get(':' + name, obj);
-    if (isFunc(proc)) {
-      if (isAsync(proc)) {
-        return await proc(...params);
-      } else {
-        return proc(...params);
-      }
+    if (obj) {
+        const proc = notPath.get(":" + name, obj);
+        return await executeFunctionAsAsync(proc, params);
     }
-  }
 };
-
 
 /**
  *  Executes method of object in apropriate way inside Promise
@@ -161,13 +169,12 @@ module.exports.executeObjectFunction = async (obj, name, params) => {
  * @return {Promise}          results of method execution
  **/
 module.exports.mapBind = (from, to, list) => {
-  list.forEach((item) => {
-    if (typeof from[item] === 'function') {
-      to[item] = from[item].bind(from);
-    }
-  });
+    list.forEach((item) => {
+        if (typeof from[item] === "function") {
+            to[item] = from[item].bind(from);
+        }
+    });
 };
-
 
 /**
  *  Synchronously check file existence and if it's really a file
@@ -175,12 +182,12 @@ module.exports.mapBind = (from, to, list) => {
  * @return {boolean}            true if path exists and it's a file
  **/
 module.exports.tryFile = (filePath) => {
-  try {
-    const stat = fs.lstatSync(filePath);
-    return stat && stat.isFile();
-  } catch (e) {
-    return false;
-  }
+    try {
+        const stat = fs.lstatSync(filePath);
+        return stat && stat.isFile();
+    } catch (e) {
+        return false;
+    }
 };
 
 /**
@@ -190,10 +197,10 @@ module.exports.tryFile = (filePath) => {
  * @param {string}         relative  path to parent folder of components
  * @param {Object}         paths object for module/index.js
  **/
-module.exports.generatePaths = (content = [], relative = 'src') => {
-  const toPath = (name) => path.join(relative, name);
-  return content.reduce((prev, cur) => {
-    prev[cur] = toPath(cur);
-    return prev;
-  }, {});
+module.exports.generatePaths = (content = [], relative = "src") => {
+    const toPath = (name) => path.join(relative, name);
+    return content.reduce((prev, cur) => {
+        prev[cur] = toPath(cur);
+        return prev;
+    }, {});
 };

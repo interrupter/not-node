@@ -1,8 +1,8 @@
 module.exports = {
-  ui: {
-    component: 'UIHidden',
-    placeholder: '_id',
-    label: '_id',
-    readonly: true
-  }
+    ui: {
+        component: "UIHidden",
+        placeholder: "_id",
+        label: "_id",
+        readonly: true,
+    },
 };

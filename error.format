@@ -1,0 +1,11 @@
+server returns errors with http codes
+and additional info in form of JSON
+{
+    status: 'error', //<- main marker
+    message: 'short description', //<- could be empty if server is dont want to disclose any information on cause
+    //optional
+    errors: {
+        field_name: ['error1'],
+        field_name2: ['err','fake']
+    }
+}

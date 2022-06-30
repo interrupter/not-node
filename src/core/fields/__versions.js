@@ -1,5 +1,5 @@
 module.exports = {
-  ui:{
-    component: 'UIHidden'
-  }
+    ui: {
+        component: "UIHidden",
+    },
 };

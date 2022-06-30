@@ -1,4 +1,4 @@
-const {objHas} = require('./common');
+const { objHas } = require("./common");
 
 /** @module Parser */
 
@@ -11,18 +11,20 @@ const {objHas} = require('./common');
  *        record[fieldName]   -   is for client side mostly, shows what model field walue should be placed there. Samples ':record[_id]', ':record[authorId]'
  *  @return {string}        resolved line
  */
-module.exports.parseLine = function(line, modelName, actionName) {
-  var recStart = ':record[',
-    recEnd = ']';
-  //remove client-side markers and replace them with name of field. :record[_id] turns into :_id
-  while(line.indexOf(recStart) > -1) {
-    line = line.replace(recStart, ':');
-    line = line.replace(recEnd, '');
-  }
-  //place server-side markers
-  if(typeof modelName !== 'undefined') line = line.replace(':modelName', modelName);
-  if(typeof actionName !== 'undefined') line = line.replace(':actionName', actionName);
-  return line;
+module.exports.parseLine = function (line, modelName, actionName) {
+    var recStart = ":record[",
+        recEnd = "]";
+    //remove client-side markers and replace them with name of field. :record[_id] turns into :_id
+    while (line.indexOf(recStart) > -1) {
+        line = line.replace(recStart, ":");
+        line = line.replace(recEnd, "");
+    }
+    //place server-side markers
+    if (typeof modelName !== "undefined")
+        line = line.replace(":modelName", modelName);
+    if (typeof actionName !== "undefined")
+        line = line.replace(":actionName", actionName);
+    return line;
 };
 
 /**
@@ -34,13 +36,18 @@ module.exports.parseLine = function(line, modelName, actionName) {
  *  @param  {object}  actionData  data from manifest for this action
  *  @return  {string}        resolved router line
  */
-module.exports.getRouteLine = function(url, modelName, actionName, actionData) {
-  let part1 = this.parseLine(url, modelName, actionName),
-    part2 = '';
-  if(objHas(actionData,'postFix')){
-    part2 =  this.parseLine(actionData.postFix, modelName, actionName);
-  }else{
-    part2 = '';
-  }
-  return part1 + part2;
+module.exports.getRouteLine = function (
+    url,
+    modelName,
+    actionName,
+    actionData
+) {
+    let part1 = this.parseLine(url, modelName, actionName),
+        part2 = "";
+    if (objHas(actionData, "postFix")) {
+        part2 = this.parseLine(actionData.postFix, modelName, actionName);
+    } else {
+        part2 = "";
+    }
+    return part1 + part2;
 };
