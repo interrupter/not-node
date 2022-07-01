@@ -125,7 +125,7 @@ module.exports = ({
             });
         }
 
-        async _updateOne({
+        static async _updateOne({
             targetId,
             data,
             activeUser,
@@ -222,7 +222,7 @@ module.exports = ({
          * @param {boolean}  prepared.shouldOwn     if user should be owner of target
          * @returns {Promise<Object>}               requested document
          **/
-        async _getOne({
+        static async _getOne({
             targetId,
             action,
             ip,
@@ -312,7 +312,7 @@ module.exports = ({
          * @param {boolean}  prepared.shouldOwn     if user should be owner of target
          * @returns {Promise<Object>}               requested document
          **/
-        async _getOneRaw({
+        static async _getOneRaw({
             targetId,
             activeUser,
             ip,
