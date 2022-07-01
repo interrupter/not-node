@@ -146,7 +146,7 @@ module.exports = ({
             if (shouldOwn) {
                 query[ownerFieldName] = activeUser._id;
             }
-            const result = await getModel().update(query, data).exec();
+            const result = await getModel().update(query, data);
             LogAction(
                 {
                     action,
