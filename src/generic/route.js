@@ -1,4 +1,4 @@
-module.exports = ({ getLogic }) => {
+module.exports = ({ getLogic, before, after }) => {
     class notGenericRoute {
         static before() {
             return before(...arguments);
