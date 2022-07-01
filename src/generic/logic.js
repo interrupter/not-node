@@ -331,7 +331,7 @@ module.exports = ({
                 query[ownerFieldName] = activeUser._id;
             }
             const result = await getModel().getOneRaw(targetId, query);
-            Log.Action(
+            LogAction(
                 {
                     action,
                     by: activeUser._id,
@@ -444,7 +444,7 @@ module.exports = ({
                     });
                 }
             }
-            Log.Action(
+            LogAction(
                 {
                     action,
                     by: activeUser._id,
@@ -517,7 +517,7 @@ module.exports = ({
                 };
             }
             const result = await getModel().listAll(filter);
-            Log.Action({
+            LogAction({
                 action,
                 by: activeUser._id,
                 role: activeUser.role,
@@ -559,7 +559,7 @@ module.exports = ({
                 search,
                 populate
             );
-            Log.Action({
+            LogAction({
                 action,
                 by: activeUser._id,
                 role: activeUser.role,
