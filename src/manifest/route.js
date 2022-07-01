@@ -165,7 +165,7 @@ class notRoute {
     routeIsRunnable(modRoute, actionName) {
         return (
             modRoute &&
-            objHas(modRoute, actionName) &&
+            //objHas(modRoute, actionName) && // -- not working on static classes methods
             typeof modRoute[actionName] === "function"
         );
     }
