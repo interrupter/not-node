@@ -142,7 +142,7 @@ const executeFunctionAsAsync = async (proc, params) => {
             return proc(...params);
         }
     }
-    throw new Error("Could not execute `proc` is not a function");
+    //throw new Error("Could not execute `proc` is not a function");
 };
 
 module.exports.executeFunctionAsAsync = executeFunctionAsAsync;
