@@ -1,4 +1,9 @@
 const ABSTRACT = require("./abstract");
+const {
+    RolesExceptionRoleSetIsNotValid,
+    RolesExceptionNoRolesSupremacyOrder,
+    RolesExceptionSupremacyOrderElementIsNotAString,
+} = require("./exceptions.js");
 
 function compareRolesArrayAgainstArray(userRoles, actionRoles, strict) {
     if (strict) {
@@ -48,7 +53,7 @@ function compareRoles(userRoles, actionRoles, strict = true) {
 
 function sanitizeAndValidateRoleSet(roleSet, name) {
     if (!Array.isArray(roleSet) && !ABSTRACT.isObjectString(roleSet)) {
-        throw new Error(`${name} role set is not valid`);
+        throw new RolesExceptionRoleSetIsNotValid(name);
     } else {
         if (!Array.isArray(roleSet)) {
             roleSet = [roleSet];
@@ -70,14 +75,14 @@ function checkSupremacy(base, against, roles) {
     against = sanitizeAndValidateRoleSet(against, "Against");
 
     if (!Array.isArray(roles)) {
-        throw new Error("No roles supremacy order!");
+        throw new RolesExceptionNoRolesSupremacyOrder();
     }
 
     let baseIndex = -1;
     let againstIndex = -1;
     roles.forEach((role, index) => {
         if (!ABSTRACT.isObjectString(role)) {
-            throw new Error("Supremacy order element is not a string");
+            throw new RolesExceptionSupremacyOrderElementIsNotAString();
         }
         if (baseIndex === -1 && base.indexOf(role) > -1) {
             baseIndex = index;

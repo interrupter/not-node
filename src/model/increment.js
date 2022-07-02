@@ -1,6 +1,11 @@
 /** @module Model/Increment */
 
 const { updateResponseSuccess } = require("./utils.js");
+const {
+    IncrementExceptionIDGeneratorRebaseFailed,
+    IncrementExceptionIDGenerationFailed,
+    IncrementExceptionFieldsNotExistInDataObject,
+} = require("./exceptions.js");
 
 const thisSchema = {
     id: {
@@ -84,9 +89,7 @@ function newGetNext() {
             if (miss.length === 0) {
                 id = formId(modelName, filterFields, data);
             } else {
-                throw new Error(
-                    "Fields not exist in data object: " + miss.join(", ")
-                );
+                throw new IncrementExceptionFieldsNotExistInDataObject(miss);
             }
         }
         let which = {
@@ -106,7 +109,7 @@ function newGetNext() {
             const doc = await thisModel.findOne({ id });
             return doc.seq;
         } else {
-            throw new Error("ID generation failed");
+            throw new IncrementExceptionIDGenerationFailed();
         }
     };
 }
@@ -136,7 +139,7 @@ function newRebase() {
         if (updateResponseSuccess(res)) {
             return ID;
         } else {
-            throw new Error("ID generator rebase failed");
+            throw new IncrementExceptionIDGeneratorRebaseFailed();
         }
     };
 }

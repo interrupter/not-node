@@ -11,8 +11,10 @@ const TECH_FIELDS = [
     "__closed",
 ];
 
-const ERR_NO_PREVIOUS_VERSIONS = "No previous version!";
-const ERR_SAME_OLD_DATA = "Same old data";
+const {
+    VersioningExceptioNoPpreviousVersions,
+    VersioningExceptionSameOldData,
+} = require("./exceptions.js");
 
 class ModelVersioning {
     static versionsHistoryExists(data) {
@@ -72,7 +74,7 @@ class ModelVersioning {
                 previous.toObject()
             );
         } else {
-            throw new Error(ERR_NO_PREVIOUS_VERSIONS);
+            throw new VersioningExceptioNoPpreviousVersions();
         }
     }
 
@@ -103,7 +105,7 @@ class ModelVersioning {
                 versionDoc
             );
         }
-        throw new Error(ERR_SAME_OLD_DATA);
+        throw new VersioningExceptionSameOldData();
     }
 
     /**
@@ -161,8 +163,5 @@ class ModelVersioning {
             .then(ModelVersioning.saveDiff.bind(this));
     }
 }
-
-ModelVersioning.ERR_NO_PREVIOUS_VERSIONS = ERR_NO_PREVIOUS_VERSIONS;
-ModelVersioning.ERR_SAME_OLD_DATA = ERR_SAME_OLD_DATA;
 
 module.exports = ModelVersioning;
