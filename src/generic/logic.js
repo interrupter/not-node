@@ -7,7 +7,7 @@ const {
 } = require("../exceptions/http");
 const isOwnerImported = require("../auth/fields.js").isOwner;
 const { DOCUMENT_OWNER_FIELD_NAME } = require("../auth/const.js");
-const notFilter = require("not-filter").filter;
+const notFilter = require("not-filter");
 
 module.exports = ({
     MODEL_NAME,
@@ -547,7 +547,7 @@ module.exports = ({
                 ip,
             });
             if (shouldOwn) {
-                notFilter.fitler.modifyRules(filter, {
+                notFilter.filter.modifyRules(filter, {
                     [ownerFieldName]: activeUser._id,
                 });
             }
