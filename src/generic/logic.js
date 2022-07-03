@@ -52,6 +52,8 @@ module.exports = ({
         static getModelSchema = getModelSchema;
         static getLogic = getLogic;
         static getModelUser = getModelUser;
+        static isOwner = isOwner;
+        static ownerFieldName = ownerFieldName;
 
         static async _create({
             action,

@@ -29,6 +29,7 @@ module.exports.Routine = require("./src/model/routine");
 module.exports.Common = require("./src/common");
 /** Fields library manager */
 module.exports.Fields = require("./src/fields");
+module.exports.Forms = require("./src/form");
 /** Form validation template **/
 module.exports.Form = require("./src/form").Form;
 /** Form validation template fabric **/
