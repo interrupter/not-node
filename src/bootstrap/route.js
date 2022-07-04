@@ -79,12 +79,20 @@ module.exports = ({
         }
     };
 
+    const getForm = (actionName) => {
+        const form = getApp().getForm(
+            [MODULE_NAME, `${MODEL_NAME}.${actionName}`].join("//")
+        );
+        if (form) {
+            return form;
+        }
+        return getApp().getForm([MODULE_NAME, actionName].join("//"));
+    };
+
     const beforeDecorator = async (req, res, next) => {
         const actionName = req.notRouteData.actionName;
         const trimmedActionName = actionName.replace("_", "");
-        const FormValidator = getApp().getForm(
-            [MODULE_NAME, trimmedActionName].join("//")
-        );
+        const FormValidator = getForm(trimmedActionName);
         if (FormValidator) {
             const prepared = await FormValidator.run(req, res, next);
             checkAccessRules(trimmedActionName, prepared);
