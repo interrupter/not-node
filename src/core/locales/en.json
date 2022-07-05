@@ -63,5 +63,6 @@
   "crud_update_action_waiting": "Updating record...",
   "crud_delete_action_waiting": "Deleting record...",
   "add_label": "Add",
-  "select_from_list_label": "Select from list..."
+  "select_from_list_label": "Select from list...",
+  "field_actions_label": "Actions"
 }

@@ -62,6 +62,8 @@
   "crud_update_action_waiting": "Обновление записи...",
   "crud_delete_action_waiting": "Удаление записи...",
   "add_label": "Добавить",
-  "select_from_list_label": "Выберите из списка..."
+  "select_from_list_label": "Выберите из списка...",
+  "field_actions_label": "Действия"
+
 
 }
