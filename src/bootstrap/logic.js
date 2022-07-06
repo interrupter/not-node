@@ -34,6 +34,9 @@ module.exports = ({
         say,
         phrase,
         config,
+        MODULE_NAME,
+        MODEL_NAME,
+        USER_MODEL_NAME,
         getModel() {
             return getApp().getModel(`${MODULE_NAME}//${MODEL_NAME}`);
         },
