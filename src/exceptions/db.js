@@ -21,3 +21,10 @@ class DBExceptionDocumentIsNotOwnerByActiveUser extends notRequestError {
 }
 module.exports.DBExceptionDocumentIsNotOwnerByActiveUser =
     DBExceptionDocumentIsNotOwnerByActiveUser;
+
+class DBExceptionDocumentIsNotFound extends notRequestError {
+    constructor({ params = {}, cause = null } = {}) {
+        super("DB document is not found", { code: 404, ...params }, cause);
+    }
+}
+module.exports.DBExceptionDocumentIsNotFound = DBExceptionDocumentIsNotFound;

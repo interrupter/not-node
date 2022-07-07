@@ -1,7 +1,10 @@
 const { objHas, isFunc, executeFunctionAsAsync } = require("../common");
 const ModelRoutine = require("../model/routine");
 const { deleteResponseSuccess } = require("../model/utils.js");
-const { DBExceptionDeleteWasNotSuccessful } = require("../exceptions/db.js");
+const {
+    DBExceptionDocumentIsNotFound,
+    DBExceptionDeleteWasNotSuccessful,
+} = require("../exceptions/db.js");
 const {
     DBExceptionDocumentIsNotOwnerByActiveUser,
 } = require("../exceptions/http");
@@ -416,6 +419,9 @@ module.exports = ({
             const versioning = ModelRoutine.versioning(model);
             if (versioning) {
                 let itm = await model.getOneRaw(targetId);
+                if (!itm) {
+                    throw new DBExceptionDocumentIsNotFound();
+                }
                 if (shouldOwn && !isOwner(itm, activeUser)) {
                     throw new DBExceptionDocumentIsNotOwnerByActiveUser({
                         params: {
