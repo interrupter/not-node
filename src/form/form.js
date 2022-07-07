@@ -9,9 +9,11 @@ const ValidationSession = require("not-validation").Session;
 
 const { notValidationError, notError } = require("not-error");
 
-const fromBody = require("./extractors/fromBody.js");
-const fromQuery = require("./extractors/fromQuery.js");
-const fromParams = require("./extractors/fromParams.js");
+const {
+    FormExceptionExtractorForFieldIsUndefined,
+} = require("../exceptions/form.js");
+
+const DEFAULT_EXTRACTORS = require("./extractors");
 
 /**
  * Generic form validation class
@@ -31,9 +33,7 @@ class Form {
     #PROTO_FIELDS;
     #VALIDATOR;
     #EXTRACTORS = {
-        fromQuery,
-        fromBody,
-        fromParams,
+        ...DEFAULT_EXTRACTORS,
     };
 
     constructor({ FIELDS, FORM_NAME, app, EXTRACTORS = {} }) {
@@ -226,11 +226,19 @@ class Form {
 
     extractByInstructions(req, instructions) {
         const results = {};
-        for (let fieldName of instructions) {
+        for (let fieldName in instructions) {
             const instruction = instructions[fieldName];
-            const extractor = this.#EXTRACTORS[instruction];
-            if (isFunc(extractor)) {
-                results[fieldName] = extractor(req, fieldName);
+            if (isFunc(instruction)) {
+                results[fieldName] = instruction(req, fieldName);
+            } else if (typeof instruction == "string") {
+                const extractor = this.#EXTRACTORS[instruction];
+                if (isFunc(extractor)) {
+                    results[fieldName] = extractor(req, fieldName);
+                } else {
+                    throw new FormExceptionExtractorForFieldIsUndefined(
+                        fieldName
+                    );
+                }
             }
         }
         return results;

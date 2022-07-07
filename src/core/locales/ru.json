@@ -63,7 +63,8 @@
   "crud_delete_action_waiting": "Удаление записи...",
   "add_label": "Добавить",
   "select_from_list_label": "Выберите из списка...",
-  "field_actions_label": "Действия"
+  "field_actions_label": "Действия",
+  "form_exception_field_extractor_is_undefined": "Экстрактор для поля входных данных отсутствует"
 
 
 }

@@ -64,5 +64,6 @@
   "crud_delete_action_waiting": "Deleting record...",
   "add_label": "Add",
   "select_from_list_label": "Select from list...",
-  "field_actions_label": "Actions"
+  "field_actions_label": "Actions",
+  "form_exception_field_extractor_is_undefined": "Field extractor is undefined"
 }
