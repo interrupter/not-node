@@ -9,6 +9,10 @@ const ValidationSession = require("not-validation").Session;
 
 const { notValidationError, notError } = require("not-error");
 
+const fromBody = require("./extractors/fromBody.js");
+const fromQuery = require("./extractors/fromQuery.js");
+const fromParams = require("./extractors/fromParams.js");
+
 /**
  * Generic form validation class
  **/
@@ -26,12 +30,18 @@ class Form {
     #FORM_NAME;
     #PROTO_FIELDS;
     #VALIDATOR;
+    #EXTRACTORS = {
+        fromQuery,
+        fromBody,
+        fromParams,
+    };
 
-    constructor({ FIELDS, FORM_NAME, app }) {
+    constructor({ FIELDS, FORM_NAME, app, EXTRACTORS = [] }) {
         this.#FORM_NAME = FORM_NAME;
         this.#PROTO_FIELDS = FIELDS;
         this.#createValidationSchema(app);
         this.#augmentValidationSchema();
+        this.#addExtractors(EXTRACTORS);
     }
 
     /**
@@ -206,6 +216,19 @@ class Form {
 
     static fabric() {
         return FormFabric;
+    }
+
+    #addExtractors(extractors) {
+        this.#EXTRACTORS = { ...this.#EXTRACTORS, ...extractors };
+    }
+
+    extractByInstructions(req, instructions) {
+        const results = {};
+        for (let fieldName of instructions) {
+            const instruction = instructions[fieldName];
+            results[fieldName] = instruction(req, fieldName);
+        }
+        return results;
     }
 }
 
