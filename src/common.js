@@ -156,7 +156,8 @@ module.exports.executeFunctionAsAsync = executeFunctionAsAsync;
  **/
 module.exports.executeObjectFunction = async (obj, name, params) => {
     if (obj) {
-        const proc = notPath.get(":" + name, obj);
+        const proc =
+            typeof obj == "object" ? notPath.get(":" + name, obj) : obj[name];
         return await executeFunctionAsAsync(proc, params);
     }
 };
