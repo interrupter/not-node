@@ -422,7 +422,7 @@ module.exports = ({
                 if (!itm) {
                     throw new DBExceptionDocumentIsNotFound();
                 }
-                if (shouldOwn && !isOwner(itm, activeUser)) {
+                if (shouldOwn && !isOwner(itm, activeUser._id)) {
                     throw new DBExceptionDocumentIsNotOwnerByActiveUser({
                         params: {
                             targetId,
