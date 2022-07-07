@@ -13,7 +13,6 @@ function getOwnerId(data, ownerFieldName = CONST.DOCUMENT_OWNER_FIELD_NAME) {
         return undefined;
     }
     if (
-        objHas(data, ownerFieldName) &&
         data[ownerFieldName] &&
         COMMON.validateObjectId(data[ownerFieldName].toString())
     ) {
