@@ -2,7 +2,7 @@ const FormFabric = require("./fabric");
 
 const { createSchemaFromFields } = require("../fields");
 
-const { objHas } = require("../common");
+const { objHas, isFunc } = require("../common");
 
 const ValidationBuilder = require("not-validation").Builder;
 const ValidationSession = require("not-validation").Session;
@@ -36,7 +36,7 @@ class Form {
         fromParams,
     };
 
-    constructor({ FIELDS, FORM_NAME, app, EXTRACTORS = [] }) {
+    constructor({ FIELDS, FORM_NAME, app, EXTRACTORS = {} }) {
         this.#FORM_NAME = FORM_NAME;
         this.#PROTO_FIELDS = FIELDS;
         this.#createValidationSchema(app);
@@ -218,15 +218,19 @@ class Form {
         return FormFabric;
     }
 
-    #addExtractors(extractors) {
-        this.#EXTRACTORS = { ...this.#EXTRACTORS, ...extractors };
+    #addExtractors(extractors = {}) {
+        if (extractors) {
+            this.#EXTRACTORS = { ...this.#EXTRACTORS, ...extractors };
+        }
     }
 
     extractByInstructions(req, instructions) {
         const results = {};
         for (let fieldName of instructions) {
             const instruction = instructions[fieldName];
-            results[fieldName] = instruction(req, fieldName);
+            if (isFunc(instruction)) {
+                results[fieldName] = instruction(req, fieldName);
+            }
         }
         return results;
     }
