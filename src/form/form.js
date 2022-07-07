@@ -228,8 +228,9 @@ class Form {
         const results = {};
         for (let fieldName of instructions) {
             const instruction = instructions[fieldName];
-            if (isFunc(instruction)) {
-                results[fieldName] = instruction(req, fieldName);
+            const extractor = this.#EXTRACTORS[instruction];
+            if (isFunc(extractor)) {
+                results[fieldName] = extractor(req, fieldName);
             }
         }
         return results;
