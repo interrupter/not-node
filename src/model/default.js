@@ -383,7 +383,12 @@ function close() {
     return this.save();
 }
 
+function saveNewVersion() {
+    return routine.update(this, { _id: this._id }, this.toObject());
+}
+
 module.exports.thisMethods = {
     getID,
     close,
+    saveNewVersion,
 };

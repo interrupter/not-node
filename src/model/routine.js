@@ -64,7 +64,7 @@ class ModelRoutine {
         filter.__latest = true;
         filter.__closed = false;
         const item = await model
-            .findOneAndUpdate(filter, data, { returnOriginal: false })
+            .updateOne(filter, data, { returnOriginal: false })
             .exec();
         return model.saveVersion(item._id);
     }
