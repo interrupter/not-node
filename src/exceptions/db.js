@@ -28,3 +28,15 @@ class DBExceptionDocumentIsNotFound extends notRequestError {
     }
 }
 module.exports.DBExceptionDocumentIsNotFound = DBExceptionDocumentIsNotFound;
+
+class DBExceptionUpdateOneWasNotSuccessful extends notRequestError {
+    constructor({ params = {}, cause = null } = {}) {
+        super(
+            "DB Update One Was Not Successful",
+            { code: 505, ...params },
+            cause
+        );
+    }
+}
+module.exports.DBExceptionUpdateOneWasNotSuccessful =
+    DBExceptionUpdateOneWasNotSuccessful;
