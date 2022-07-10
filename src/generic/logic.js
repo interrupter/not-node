@@ -536,6 +536,26 @@ module.exports = ({
             return result;
         }
 
+        static async listAll({ activeUser, ip, root }) {
+            return await this._listAll({
+                activeUser,
+                ip,
+                root,
+                action: "listAll",
+                shouldOwn: false,
+            });
+        }
+
+        static async listAllOwn({ activeUser, ip, root }) {
+            return await this._listAll({
+                activeUser,
+                ip,
+                root,
+                action: "listAllOwn",
+                shouldOwn: true,
+            });
+        }
+
         static async _listAndCount({
             query,
             activeUser,
