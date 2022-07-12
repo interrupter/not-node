@@ -77,6 +77,7 @@ class notRoute {
     setRequestRouteData(req, actionName, rule) {
         req.notRouteData = {
             actionName,
+            modelName: this.routeName,
             rule: copyObj(rule),
             actionData: copyObj(this.actionData),
         };

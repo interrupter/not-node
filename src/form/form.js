@@ -1,8 +1,8 @@
 const FormFabric = require("./fabric");
-const getIP = require("../auth").getIP;
+
 const { createSchemaFromFields } = require("../fields");
 
-const { objHas, isFunc } = require("../common");
+const { objHas, isFunc, firstLetterToUpper } = require("../common");
 
 const ValidationBuilder = require("not-validation").Builder;
 const ValidationSession = require("not-validation").Session;
@@ -14,7 +14,7 @@ const {
 } = require("../exceptions/form.js");
 
 const DEFAULT_EXTRACTORS = require("./extractors");
-const DEFAULT_ID_EXTRACTORS = require("./id_extractors");
+const DEFAULT_ID_EXTRACTORS = require("./env_extractors");
 
 /**
  * Generic form validation class
@@ -38,7 +38,7 @@ class Form {
         ...DEFAULT_EXTRACTORS,
     };
 
-    #ID_EXTRACTORS = {
+    #ENV_EXTRACTORS = {
         ...DEFAULT_ID_EXTRACTORS,
     };
 
@@ -48,7 +48,7 @@ class Form {
         MODEL_NAME,
         app,
         EXTRACTORS = {},
-        ID_EXTRACTORS = {},
+        ENV_EXTRACTORS = {},
     }) {
         this.#FORM_NAME = FORM_NAME;
         this.#MODEL_NAME = MODEL_NAME;
@@ -56,11 +56,16 @@ class Form {
         this.#createValidationSchema(app);
         this.#augmentValidationSchema();
         this.#addExtractors(EXTRACTORS);
-        this.#addIdExtractors(ID_EXTRACTORS);
+        this.#addEnvExtractors(ENV_EXTRACTORS);
     }
 
-    getModelName() {
-        return this.#MODEL_NAME;
+    getModelName(req) {
+        if (this.#MODEL_NAME) {
+            return this.#MODEL_NAME;
+        } else if (req) {
+            return firstLetterToUpper(req.notRouteData.modelName);
+        }
+        return undefined;
     }
 
     /**
@@ -83,22 +88,20 @@ class Form {
      **/
     async extract(req) {
         return {
-            ...this.extractRequestIds(req),
-            activeUser: req.user,
-            ip: getIP(req),
+            ...this.extractRequestEnvs(req),
             data: this.extractByInstructionsFromRouteActionFields(req),
         };
     }
 
-    #addIdExtractors(extractors = {}) {
+    #addEnvExtractors(extractors = {}) {
         if (extractors) {
-            this.#ID_EXTRACTORS = { ...this.#ID_EXTRACTORS, ...extractors };
+            this.#ENV_EXTRACTORS = { ...this.#ENV_EXTRACTORS, ...extractors };
         }
     }
 
-    extractRequestIds(req) {
+    extractRequestEnvs(req) {
         const result = {};
-        Array.values(this.#ID_EXTRACTORS).forEach((extractor) => {
+        Array.values(this.#ENV_EXTRACTORS).forEach((extractor) => {
             const extracted = extractor(this, req);
             if (
                 extracted &&
