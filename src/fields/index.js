@@ -7,6 +7,7 @@ const { objHas } = require("../common");
 const DEFAULT_TYPE = "ui";
 const DEFAULT_FROM = ":FIELDS";
 const DEFAULT_TO = ":thisSchema";
+const DEFAULT_SPLITER = "//";
 
 module.exports.initFileSchemaFromFields = ({
     app,
@@ -79,6 +80,7 @@ module.exports.initSchemaField = (
  * ['destFieldName', {full: true, field: 'content'}] - form 2
  * ['destFieldName', 'srcFieldName'] //field alias, form 3
  * ['destFieldName', {mutation: 'content'}, 'srcFieldName']// - form 4
+ * 'module-name//field-name' - form 5, equal to ['field-name', 'module-name//field-name']
  **/
 const parseFieldDescription = (field) => {
     let srcName,
@@ -98,7 +100,13 @@ const parseFieldDescription = (field) => {
             srcName = field[2];
         }
     } else {
-        destName = srcName = field; //form 1
+        if (field.includes(DEFAULT_SPLITER)) {
+            //form 5
+            destName = field.split(DEFAULT_SPLITER)[0];
+            srcName = field;
+        } else {
+            destName = srcName = field; //form 1
+        }
     }
     return {
         srcName,
