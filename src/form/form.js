@@ -32,6 +32,7 @@ class Form {
      **/
     #FORM_NAME;
     #MODEL_NAME;
+    #MODULE_NAME;
     #PROTO_FIELDS;
     #VALIDATOR;
     #EXTRACTORS = {
@@ -46,12 +47,14 @@ class Form {
         FIELDS,
         FORM_NAME,
         MODEL_NAME,
+        MODULE_NAME,
         app,
         EXTRACTORS = {},
         ENV_EXTRACTORS = {},
     }) {
         this.#FORM_NAME = FORM_NAME;
         this.#MODEL_NAME = MODEL_NAME;
+        this.#MODULE_NAME = MODULE_NAME;
         this.#PROTO_FIELDS = FIELDS;
         this.#createValidationSchema(app);
         this.#augmentValidationSchema();
@@ -66,6 +69,10 @@ class Form {
             return firstLetterToUpper(req.notRouteData.modelName);
         }
         return undefined;
+    }
+
+    getModuleName() {
+        return this.#MODULE_NAME;
     }
 
     /**
