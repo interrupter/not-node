@@ -1,5 +1,5 @@
 const FormFabric = require("./fabric");
-
+const getIP = require("../auth").getIP;
 const { createSchemaFromFields } = require("../fields");
 
 const { objHas, isFunc } = require("../common");
@@ -14,6 +14,7 @@ const {
 } = require("../exceptions/form.js");
 
 const DEFAULT_EXTRACTORS = require("./extractors");
+const DEFAULT_ID_EXTRACTORS = require("./id_extractors");
 
 /**
  * Generic form validation class
@@ -30,18 +31,36 @@ class Form {
      * @prop {string} name of form
      **/
     #FORM_NAME;
+    #MODEL_NAME;
     #PROTO_FIELDS;
     #VALIDATOR;
     #EXTRACTORS = {
         ...DEFAULT_EXTRACTORS,
     };
 
-    constructor({ FIELDS, FORM_NAME, app, EXTRACTORS = {} }) {
+    #ID_EXTRACTORS = {
+        ...DEFAULT_ID_EXTRACTORS,
+    };
+
+    constructor({
+        FIELDS,
+        FORM_NAME,
+        MODEL_NAME,
+        app,
+        EXTRACTORS = {},
+        ID_EXTRACTORS = {},
+    }) {
         this.#FORM_NAME = FORM_NAME;
+        this.#MODEL_NAME = MODEL_NAME;
         this.#PROTO_FIELDS = FIELDS;
         this.#createValidationSchema(app);
         this.#augmentValidationSchema();
         this.#addExtractors(EXTRACTORS);
+        this.#addIdExtractors(ID_EXTRACTORS);
+    }
+
+    getModelName() {
+        return this.#MODEL_NAME;
     }
 
     /**
@@ -62,8 +81,34 @@ class Form {
      * @param {ExpressRequest} req expressjs request object
      * @return {Object}        forma data
      **/
-    async extract(/*req*/) {
-        return {};
+    async extract(req) {
+        return {
+            ...this.extractRequestIds(req),
+            activeUser: req.user,
+            ip: getIP(req),
+            data: this.extractByInstructionsFromRouteActionFields(req),
+        };
+    }
+
+    #addIdExtractors(extractors = {}) {
+        if (extractors) {
+            this.#ID_EXTRACTORS = { ...this.#ID_EXTRACTORS, ...extractors };
+        }
+    }
+
+    extractRequestIds(req) {
+        const result = {};
+        Array.values(this.#ID_EXTRACTORS).forEach((extractor) => {
+            const extracted = extractor(this, req);
+            if (
+                extracted &&
+                typeof extracted.value !== "undefined" &&
+                extracted.name
+            ) {
+                result[extracted.name] = extracted.value;
+            }
+        });
+        return result;
     }
 
     /**
