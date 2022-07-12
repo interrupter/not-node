@@ -26,6 +26,15 @@ module.exports = ({ getLogic, before, after }) => {
             return await getLogic().getOwn(prepared);
         }
 
+        static async _getByID(req, res, next, prepared) {
+            prepared.root = true;
+            return await getLogic().getByID(prepared);
+        }
+
+        static async getByID(req, res, next, prepared) {
+            return await getLogic().getByIDOwn(prepared);
+        }
+
         static async _getRaw(req, res, next, prepared) {
             prepared.root = true;
             return await getLogic().getRaw(prepared);

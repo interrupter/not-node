@@ -111,9 +111,10 @@ function getOne(id, population = [], condition = {}) {
  *	@static
  *	@param 	{number}	ID		some unique numeric identificator
  *	@param 	{Object}	condition 	optional if needed additional condition
+ *	@param 	{Array}		population 	optional if needed population of some fields
  *	@return {Promise}	      Promise of document, if increment is OFF - then Promise.resolve(null)
  **/
-function getOneByID(ID, condition = {}) {
+function getOneByID(ID, condition = {}, population = []) {
     if (this.schema.statics.__incField) {
         let by, query;
         if (this.schema.statics.__versioning) {
@@ -129,6 +130,7 @@ function getOneByID(ID, condition = {}) {
         }
         by[this.schema.statics.__incField] = ID;
         query = this.findOne(by);
+        populateQuery(query, population, this.schema.statics.__versioning);
         return query.exec();
     } else {
         return Promise.resolve(null);

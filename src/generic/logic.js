@@ -308,6 +308,100 @@ module.exports = ({
         }
 
         /**
+         * get item with populated sub-documents
+         * @param {Object}  prepared
+         * @param {Object}  prepared.targetID       target item ID
+         * @param {Object}  prepared.activeUser     current user info
+         * @param {string}  prepared.ip             current user ip
+         * @param {boolean}  prepared.root          current user is root
+         * @param {boolean}  prepared.shouldOwn     if user should be owner of target
+         * @returns {Promise<Object>}               requested document
+         **/
+        static async _getOneByID({
+            targetID,
+            action,
+            ip,
+            root,
+            activeUser,
+            shouldOwn = true,
+        }) {
+            Log.debug(
+                `${MODULE_NAME}//Logic//${MODEL_NAME}//${action}`,
+                targetID,
+                ip,
+                root
+            );
+            let query = {};
+            if (shouldOwn) {
+                query[ownerFieldName] = activeUser._id;
+            }
+            let populate = getPopulate(action, {
+                targetID,
+                activeUser,
+                ip,
+                root,
+            });
+            const result = await getModel().getOneByID(
+                targetID,
+                query,
+                populate
+            );
+            LogAction(
+                {
+                    action,
+                    by: activeUser._id,
+                    role: activeUser.role,
+                    ip,
+                },
+                {
+                    targetID,
+                    version: result.__version,
+                }
+            );
+            return result;
+        }
+
+        /**
+         * get item with populated sub-documents
+         * @param {Object}  prepared
+         * @param {Object}  prepared.targetID       target item ID
+         * @param {Object}  prepared.activeUser     current user info
+         * @param {string}  prepared.ip             current user ip
+         * @param {boolean}  prepared.root          current user is root
+         * @returns {Promise<Object>}               requested document
+         **/
+        static async getByID({ targetID, activeUser, ip, root = false }) {
+            return await this._getOneByID({
+                targetID,
+                action: "getByID",
+                activeUser,
+                ip,
+                root,
+                shouldOwn: false,
+            });
+        }
+
+        /**
+         * get activeUser own item with populated sub-documents
+         * @param {Object}  prepared
+         * @param {Object}  prepared.targetID       target item ID
+         * @param {Object}  prepared.activeUser     current user info
+         * @param {string}  prepared.ip             current user ip
+         * @param {boolean}  prepared.root          current user is root
+         * @returns {Promise<Object>}               requested document
+         **/
+        static async getByIDOwn({ targetID, activeUser, ip, root = false }) {
+            return await this._getOneByID({
+                targetID,
+                action: "getByIDOwn",
+                activeUser,
+                ip,
+                root,
+                shouldOwn: true,
+            });
+        }
+
+        /**
          * get item without populated sub-documents
          * @param {Object}  prepared
          * @param {Object}  prepared.targetId       target item _id
