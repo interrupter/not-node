@@ -7,7 +7,7 @@ function updateResponseSuccess(res, count = 1) {
         if (responseList.includes("ok")) {
             return res.ok === 1 && res.n === count;
         } else {
-            return res.matchedCount === count && res.modifiedCount === count;
+            return res.matchedCount === count && res.acknowledged;
         }
     } else {
         return false;

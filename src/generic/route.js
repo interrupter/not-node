@@ -62,6 +62,24 @@ module.exports = ({ getLogic, before, after }) => {
             return await getLogic().listAndCountOwn(prepared);
         }
 
+        static async _list(req, res, next, prepared) {
+            prepared.root = true;
+            return await getLogic().list(prepared);
+        }
+
+        static async list(req, res, next, prepared) {
+            return await getLogic().listOwn(prepared);
+        }
+
+        static async _count(req, res, next, prepared) {
+            prepared.root = true;
+            return await getLogic().count(prepared);
+        }
+
+        static async count(req, res, next, prepared) {
+            return await getLogic().countOwn(prepared);
+        }
+
         static async _delete(req, res, next, prepared) {
             prepared.root = true;
             return await getLogic().delete(prepared);

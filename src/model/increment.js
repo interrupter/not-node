@@ -59,9 +59,9 @@ module.exports.formId = formId;
  **/
 function secureUpdate(thisModel, which, cmd, opts) {
     if (typeof thisModel.updateOne === "function") {
-        return thisModel.updateOne(which, cmd, opts).exec();
+        return thisModel.updateOne(which, cmd, opts);
     } else {
-        return thisModel.update(which, cmd, opts).exec();
+        return thisModel.update(which, cmd, opts);
     }
 }
 

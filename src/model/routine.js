@@ -45,6 +45,7 @@ class ModelRoutine {
     }
 
     static async update(model, filter, data) {
+        if ("_id" in data) delete data._id;
         if (ModelRoutine.versioning(model)) {
             return ModelRoutine.updateWithVersion(model, filter, data);
         } else {
@@ -64,9 +65,9 @@ class ModelRoutine {
     static async updateWithVersion(model, filter, data) {
         filter.__latest = true;
         filter.__closed = false;
-        const result = await model
-            .updateOne(filter, data, { returnOriginal: false })
-            .exec();
+        const result = await model.updateOne(filter, data, {
+            returnOriginal: false,
+        });
         if (updateResponseSuccess(result, 1)) {
             return model.saveVersion(filter._id);
         } else {
@@ -75,6 +76,7 @@ class ModelRoutine {
     }
 
     static async updateMany(model, filter, data) {
+        if ("_id" in data) delete data._id;
         if (ModelRoutine.versioning(model)) {
             return ModelRoutine.updateManyWithVersion(model, filter, data);
         } else {
@@ -87,13 +89,11 @@ class ModelRoutine {
     }
 
     static async updateManyWithVersion(model, filter, data) {
-        const list = await model
-            .find({
-                __closed: false,
-                __latest: true,
-                ...filter,
-            })
-            .exec();
+        const list = await model.find({
+            __closed: false,
+            __latest: true,
+            ...filter,
+        });
         return await Promise.allSettled(
             list.map((item) => {
                 return ModelRoutine.updateWithVersion(

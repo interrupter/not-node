@@ -619,5 +619,124 @@ module.exports = ({
                 shouldOwn: true,
             });
         }
+
+        static async _list({
+            query,
+            activeUser,
+            ip,
+            action,
+            root,
+            shouldOwn = false,
+        }) {
+            Log.debug(
+                `${MODULE_NAME}//Logic//${MODEL_NAME}//${action}`,
+                ip,
+                root
+            );
+            const { skip, size, sorter, filter } = query;
+            let populate = getPopulate(action, {
+                activeUser,
+                ip,
+            });
+            if (shouldOwn) {
+                notFilter.filter.modifyRules(filter, {
+                    [ownerFieldName]: activeUser._id,
+                });
+            }
+            const result = await getModel().listAndPopulate(
+                skip,
+                size,
+                sorter,
+                filter,
+                populate
+            );
+            LogAction({
+                action,
+                by: activeUser._id,
+                role: activeUser.role,
+                ip,
+                root,
+                shouldOwn,
+            });
+            return result;
+        }
+
+        static async list({ query, activeUser, ip, root }) {
+            return await this._list({
+                query,
+                activeUser,
+                ip,
+                root,
+                action: "list",
+                shouldOwn: false,
+            });
+        }
+
+        static async listOwn({ query, activeUser, ip, root }) {
+            return await this._list({
+                query,
+                activeUser,
+                ip,
+                root,
+                action: "listOwn",
+                shouldOwn: true,
+            });
+        }
+
+        static async _count({
+            query,
+            activeUser,
+            ip,
+            action,
+            root,
+            shouldOwn = false,
+        }) {
+            Log.debug(
+                `${MODULE_NAME}//Logic//${MODEL_NAME}//${action}`,
+                ip,
+                root
+            );
+            const { filter, search } = query;
+            if (shouldOwn) {
+                notFilter.filter.modifyRules(filter, {
+                    [ownerFieldName]: activeUser._id,
+                });
+            }
+            if (search) {
+                notFilter.filter.modifyRules(search, filter);
+            }
+            const result = await getModel().countWithFilter(search || filter);
+            LogAction({
+                action,
+                by: activeUser._id,
+                role: activeUser.role,
+                ip,
+                root,
+                shouldOwn,
+            });
+            return result;
+        }
+
+        static async count({ query, activeUser, ip, root }) {
+            return await this._count({
+                query,
+                activeUser,
+                ip,
+                root,
+                action: "count",
+                shouldOwn: false,
+            });
+        }
+
+        static async countOwn({ query, activeUser, ip, root }) {
+            return await this._count({
+                query,
+                activeUser,
+                ip,
+                root,
+                action: "countOwn",
+                shouldOwn: true,
+            });
+        }
     };
 };
