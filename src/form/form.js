@@ -243,6 +243,41 @@ class Form {
         }
         return results;
     }
+
+    createInstructionFromRouteActionFields(
+        req,
+        mainInstruction = "fromBody",
+        exceptions = {}
+    ) {
+        const result = {};
+        if (
+            req?.notRouteData?.actionData?.fields &&
+            Array.isArray(req.notRouteData.actionData.fields)
+        ) {
+            const fields = req.notRouteData.actionData.fields.flat(2);
+            fields.forEach((fieldName) => {
+                if (objHas(exceptions, fieldName)) {
+                    result[fieldName] = exceptions[fieldName];
+                } else {
+                    result[fieldName] = mainInstruction;
+                }
+            });
+        }
+        return result;
+    }
+
+    extractByInstructionsFromRouteActionFields(
+        req,
+        mainInstruction = "fromBody",
+        exceptions = {}
+    ) {
+        const instructions = this.createInstructionFromRouteActionFields(
+            req,
+            mainInstruction,
+            exceptions
+        );
+        return this.extractByInstructions(req, instructions);
+    }
 }
 
 module.exports = Form;
