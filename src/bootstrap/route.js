@@ -1,8 +1,14 @@
 const getApp = require("../getApp.js"),
+    Form = require("../form").Form,
     HttpExceptions = require("../exceptions/http"),
     configInit = require("not-config"),
     { sayForModule } = require("not-locale"),
-    { objHas, isFunc, executeFunctionAsAsync } = require("../common"),
+    {
+        objHas,
+        isFunc,
+        executeFunctionAsAsync,
+        firstLetterToUpper,
+    } = require("../common"),
     LogInit = require("not-log");
 
 module.exports = ({
@@ -79,6 +85,23 @@ module.exports = ({
         }
     };
 
+    const createDefaultForm = function ({ actionName }) {
+        const FIELDS = [
+            ["activeUser", "not-node//requiredObject"],
+            ["data", `${MODULE_NAME}//_data`],
+            ["ip", "not-node//ip"],
+        ];
+        const FORM_NAME = `${MODULE_NAME}:${firstLetterToUpper(
+            actionName
+        )}Form`;
+        const cls = class extends Form {
+            constructor({ app }) {
+                super({ FIELDS, FORM_NAME, app, MODULE_NAME });
+            }
+        };
+        return new cls({ app: getApp() });
+    };
+
     const getForm = (actionName) => {
         const form = getApp().getForm(
             [MODULE_NAME, `${MODEL_NAME}.${actionName}`].join("//")
@@ -86,7 +109,11 @@ module.exports = ({
         if (form) {
             return form;
         }
-        return getApp().getForm([MODULE_NAME, actionName].join("//"));
+        const form2 = getApp().getForm([MODULE_NAME, actionName].join("//"));
+        if (form2) {
+            return form2;
+        }
+        return createDefaultForm({ actionName, MODULE_NAME });
     };
 
     const beforeDecorator = async (req, res, next) => {
