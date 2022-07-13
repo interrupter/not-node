@@ -2,7 +2,7 @@
 
 const incrementNext = require("./increment");
 const { DBExceptionUpdateOneWasNotSuccessful } = require("../exceptions/db");
-const { updateResponseSuccess } = require("./utils");
+//const { updateResponseSuccess } = require("./utils");
 class ModelRoutine {
     static incremental(model) {
         return model.schema.statics.__incField;
@@ -57,6 +57,7 @@ class ModelRoutine {
         return model
             .findOneAndUpdate(filter, data, {
                 returnOriginal: false,
+                returnDocument: "fater",
                 new: true,
             })
             .exec();
@@ -65,11 +66,15 @@ class ModelRoutine {
     static async updateWithVersion(model, filter, data) {
         filter.__latest = true;
         filter.__closed = false;
-        const result = await model.updateOne(filter, data, {
-            returnOriginal: false,
-        });
-        if (updateResponseSuccess(result, 1)) {
-            return model.saveVersion(filter._id);
+        const result = await model
+            .findOneAndUpdate(filter, data, {
+                returnOriginal: false,
+                returnDocument: "fater",
+                new: true,
+            })
+            .exec();
+        if (result) {
+            return model.saveVersion(result._id);
         } else {
             throw new DBExceptionUpdateOneWasNotSuccessful();
         }

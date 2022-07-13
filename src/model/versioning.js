@@ -12,7 +12,7 @@ const TECH_FIELDS = [
 ];
 
 const {
-    VersioningExceptioNoPpreviousVersions,
+    VersioningExceptioNoPreviousVersions,
     VersioningExceptionSameOldData,
 } = require("./exceptions.js");
 
@@ -74,7 +74,7 @@ class ModelVersioning {
                 previous.toObject()
             );
         } else {
-            throw new VersioningExceptioNoPpreviousVersions();
+            throw new VersioningExceptioNoPreviousVersions();
         }
     }
 
