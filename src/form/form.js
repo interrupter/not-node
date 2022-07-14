@@ -108,7 +108,7 @@ class Form {
 
     extractRequestEnvs(req) {
         const result = {};
-        Array.values(this.#ENV_EXTRACTORS).forEach((extractor) => {
+        Object.values(this.#ENV_EXTRACTORS).forEach((extractor) => {
             const extracted = extractor(this, req);
             if (
                 extracted &&
