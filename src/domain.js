@@ -105,7 +105,7 @@ class notDomain extends EventEmitter {
             notApp: this,
             fields: this.#options.fields,
         });
-        this.importModule(mod, moduleName || mod.getName());
+        this.importModule(mod, mod.getName() || moduleName);
         return this;
     }
 
