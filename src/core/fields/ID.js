@@ -5,4 +5,8 @@ module.exports = {
         label: "not-node:field_ID_label",
         readonly: true,
     },
+    model: {
+        type: Number,
+        required: true,
+    },
 };

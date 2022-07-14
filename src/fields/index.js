@@ -63,7 +63,7 @@ module.exports.initSchemaField = (
     let proto = findFieldPrototype(app, srcName, type);
     if (!proto) {
         error(
-            `field ${moduleName}//${destName} prototype ${srcName} of ${type} type is not found`
+            `${type} field ${moduleName}//${destName} prototype ${srcName}  is not found`
         );
     }
     let schemaFieldValue = Object.assign({}, clone(proto), mutation);
@@ -102,7 +102,7 @@ const parseFieldDescription = (field) => {
     } else {
         if (field.includes(DEFAULT_SPLITER)) {
             //form 5
-            destName = field.split(DEFAULT_SPLITER)[0];
+            destName = field.split(DEFAULT_SPLITER)[1];
             srcName = field;
         } else {
             destName = srcName = field; //form 1

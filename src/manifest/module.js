@@ -208,11 +208,16 @@ class notModule {
     }
 
     getStatus() {
+        const fieldsList = Object.keys(this.fields);
         const formsList = Object.keys(this.forms);
         const modelsList = Object.keys(this.models);
         const routesList = Object.keys(this.routes);
         const actionsList = this.getActionsList();
         return {
+            fields: {
+                count: fieldsList.length,
+                list: fieldsList,
+            },
             forms: {
                 count: formsList.length,
                 list: formsList,
@@ -372,6 +377,19 @@ class notModule {
         ) {
             this.routesWS[collectionType][collectionName][endPointType] = {};
         }
+    }
+
+    printOutModuleContent() {
+        const status = this.getStatus();
+        Object.keys(status).forEach((contentType) => {
+            if (status[contentType].count) {
+                log.log(
+                    `${this.getName()} ${contentType}(${
+                        status[contentType].count
+                    }): ${status[contentType].list.join(", ")}`
+                );
+            }
+        });
     }
 }
 
