@@ -112,7 +112,6 @@ class ModelRoutine {
                 );
                 if (updateResult) {
                     result = await ModelConstructor.saveVersion(
-                        ModelConstructor,
                         updateResult._id
                     );
                 } else {
