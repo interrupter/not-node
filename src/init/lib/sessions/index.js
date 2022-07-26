@@ -16,9 +16,9 @@ module.exports = class InitSessions {
         }
     }
 
-    async run({ master, config, options }) {
+    async run({ master, config, options, emit }) {
         const conf = config.get("session");
         const Constructor = InitSessions.getConstructor(conf);
-        await new Constructor().run({ master, config, options, conf });
+        await new Constructor().run({ master, config, options, conf, emit });
     }
 };

@@ -1,4 +1,4 @@
-const log = require("not-log")(module, "not-node//init");
+const log = require("not-log")(module, "not-node//init//informer");
 
 module.exports = class InitInformer {
     async run({ master }) {

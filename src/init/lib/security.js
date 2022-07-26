@@ -1,4 +1,4 @@
-const Log = require("not-log")(module, "not-node//init");
+const Log = require("not-log")(module, "not-node//init//security");
 
 module.exports = class InitSecurity {
     getCSPDirectives({ config }) {

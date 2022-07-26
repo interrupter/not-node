@@ -1,6 +1,5 @@
-const emit = require("./additional").run;
 const log = require("not-log")(module, "RateLimiter");
-const { partCopyObj } = require("../common");
+const { partCopyObj } = require("../../common");
 
 const DEFAULT_OPTIONS = {
     keyPrefix: "rateLimiterMiddleware",
@@ -23,7 +22,7 @@ module.exports = class InitRateLimiter {
         };
     }
 
-    async run({ config, master }) {
+    async run({ config, master, emit }) {
         await emit("rateLimiter.pre", { config, master });
         const rateLimiter = InitRateLimiter.createRateLimiter({
             config,

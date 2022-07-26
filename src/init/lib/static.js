@@ -1,7 +1,5 @@
 const path = require("path");
 
-const ADDS = require("./additional");
-
 const DEFAULT_ROLES = ["root", "admin", "client", "user", "guest"];
 
 module.exports = class InitStatic {
@@ -40,8 +38,8 @@ module.exports = class InitStatic {
         };
     }
 
-    async run({ config, options, master }) {
-        await ADDS.run("static.pre", { config, options, master });
+    async run({ config, options, master, emit }) {
+        await emit("static.pre", { config, options, master });
         master.getServer().use(
             "/front/(:role).js",
             InitStatic.createStaticFrontServer("js", {
@@ -58,6 +56,6 @@ module.exports = class InitStatic {
                 master,
             })
         );
-        await ADDS.run("static.post", { config, options, master });
+        await emit("static.post", { config, options, master });
     }
 };

@@ -141,6 +141,7 @@ class Init {
                 config: Init.getConfig(), //access to config
                 options, //options
                 master: Init, //this class
+                emit: ADDS.run.bind(ADDS),
             };
             //running all prepared initalizers with current context
             await initSequence.run(context);

@@ -1,5 +1,5 @@
 const path = require("path");
-const { objHas } = require("../../common");
+const { objHas } = require("../../../common");
 
 module.exports = class InitDB {
     static default = path.resolve(__dirname, "./mongoose.js");
@@ -32,7 +32,7 @@ module.exports = class InitDB {
      * require('not-node').getEnv('mongoose')
      * require('not-node').getEnv('redis')
      **/
-    async run({ master, config, options }) {
+    async run({ master, config, options, emit }) {
         const conf = config.get("db");
         for (let driver in conf) {
             const Constructor = InitDB.getConstructor(driver);
@@ -42,6 +42,7 @@ module.exports = class InitDB {
                 options,
                 conf: conf[driver],
                 alias: driver,
+                emit,
             });
         }
     }

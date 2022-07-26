@@ -1,6 +1,5 @@
-const log = require("not-log")(module, "not-node//init");
+const log = require("not-log")(module, "not-node//init//http");
 const fs = require("fs");
-const ADDS = require("./additional");
 
 module.exports = class InitHTTP {
     listenPromise({ config, master }) {
@@ -61,13 +60,13 @@ module.exports = class InitHTTP {
         return config.get("ssl:enabled") === true;
     }
 
-    async run({ options, config, master }) {
-        await ADDS.run("http.pre", { options, config, master });
+    async run({ options, config, master, emit }) {
+        await emit("http.pre", { options, config, master });
         if (InitHTTP.isSecure({ config })) {
             await this.runHTTPS({ options, config, master });
         } else {
             await this.runHTTP({ options, config, master });
         }
-        await ADDS.run("http.post", { options, config, master });
+        await emit("http.post", { options, config, master });
     }
 };

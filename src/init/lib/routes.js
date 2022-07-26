@@ -1,7 +1,7 @@
 "use strict";
 
 const serveStatic = require("serve-static");
-const log = require("not-log")(module, "not-node//init");
+const log = require("not-log")(module, "not-node//init//routes");
 const { notError, notValidationError, notRequestError } = require("not-error");
 
 module.exports = class InitRoutes {

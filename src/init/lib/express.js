@@ -1,5 +1,4 @@
-const emit = require("./additional").run;
-const Log = require("not-log")(module, "not-node//init");
+const Log = require("not-log")(module, "not-node//init//express");
 
 module.exports = class InitExpress {
     static requestLogging({ /*config, options, */ master }) {
@@ -9,7 +8,7 @@ module.exports = class InitExpress {
         });
     }
 
-    async run({ options, config, master }) {
+    async run({ options, config, master, emit }) {
         Log.info("Init express app...");
         await emit("express.pre", { options, config, master });
         //express

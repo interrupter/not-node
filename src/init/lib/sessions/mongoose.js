@@ -1,6 +1,5 @@
 const { notError } = require("not-error");
-const log = require("not-log")(module, "not-node//init");
-const ADDS = require("../additional");
+const log = require("not-log")(module, "not-node//init//sessions//mongoose");
 
 module.exports = class InitSessionsMongo {
     static createStore({ config, master, expressSession }) {
@@ -29,10 +28,10 @@ module.exports = class InitSessionsMongo {
         return store;
     }
 
-    async run({ config, options, master }) {
+    async run({ config, options, master, emit }) {
         const expressSession = require("express-session");
         log.info("Setting up user sessions handler(mongoose)...");
-        await ADDS.run("sessions.pre", { config, options, master });
+        await emit("sessions.pre", { config, options, master });
         master.getServer().use(
             expressSession({
                 secret: config.get("session:secret"),
@@ -47,6 +46,6 @@ module.exports = class InitSessionsMongo {
                 }),
             })
         );
-        await ADDS.run("sessions.post", { config, options, master });
+        await emit("sessions.post", { config, options, master });
     }
 };

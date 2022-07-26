@@ -1,5 +1,4 @@
-const log = require("not-log")(module, "not-node//init");
-const ADDS = require("./additional");
+const log = require("not-log")(module, "not-node//init//env");
 
 module.exports = class InitENV {
     static getProxyPort(config) {
@@ -21,9 +20,9 @@ module.exports = class InitENV {
         return name;
     }
 
-    async run({ config, options, master }) {
+    async run({ config, options, master, emit }) {
         log.info("Setting up server environment variables...");
-        await ADDS.run("env.pre", { config, options, master });
+        await emit("env.pre", { config, options, master });
         config.set(
             "staticPath",
             master.getAbsolutePath(config.get("path:static") || "static")
@@ -45,6 +44,6 @@ module.exports = class InitENV {
             log.log("wsPath", master.getAbsolutePath(config.get("path:ws")));
             config.set("wsPath", master.getAbsolutePath(config.get("path:ws")));
         }
-        await ADDS.run("env.post", { config, options, master });
+        await emit("env.post", { config, options, master });
     }
 };

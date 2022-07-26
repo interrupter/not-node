@@ -11,8 +11,12 @@ const TECH_FIELDS = [
     "__closed",
 ];
 
+function toObject(obj) {
+    return obj.toObject ? obj.toObject() : obj;
+}
+
 const {
-    VersioningExceptioNoPreviousVersions,
+    VersioningExceptioNoPpreviousVersions,
     VersioningExceptionSameOldData,
 } = require("./exceptions.js");
 
@@ -36,7 +40,7 @@ class ModelVersioning {
             doc.__versions = [];
         }
         doc.__versions.unshift(version._id); //первая в массиве последняя [3,2,1,0]
-        return doc.save();
+        doc.markModified("__versions");
     }
 
     static stripTechData(a) {
@@ -47,7 +51,7 @@ class ModelVersioning {
     }
 
     static jsonCopy(a) {
-        return JSON.parse(JSON.stringify(a));
+        return JSON.parse(JSON.stringify(toObject(a)));
     }
 
     static isThisDocsDifferent(a, b) {
@@ -61,20 +65,20 @@ class ModelVersioning {
 
     /**
      * Compares latest version in __versions list in data with data
-     * @param {MongooseModel}  thisModel   model of data
+     * @param {MongooseModel}  ModelConstructor   model of data
      * @param {Object}         data        data to save
      * @return {boolean}                   if data differs from latest version
      */
-    static async isNew(thisModel, data) {
+    static async isNew(ModelConstructor, data) {
         let latestId = ModelVersioning.getLatestVersionId(data);
-        let previous = await thisModel.findById(latestId);
+        let previous = await ModelConstructor.findOne({ _id: latestId });
         if (typeof previous !== "undefined" && previous !== null) {
             return ModelVersioning.isThisDocsDifferent(
                 data,
-                previous.toObject()
+                toObject(previous)
             );
         } else {
-            throw new VersioningExceptioNoPreviousVersions();
+            throw new VersioningExceptioNoPpreviousVersions();
         }
     }
 
@@ -82,28 +86,26 @@ class ModelVersioning {
      * Saves current version to versions archive, updates current version versioning tags
      * @param {ObjectId}      id             current version _id (just saved version)
      * @param {Object}      data             data to save
-     * @param {MongooseModel} thisModel      model to use
+     * @param {MongooseModel} ModelConstructor      model to use
      * @return {Promise<MongooseDocument>}   current version with updated versioning tags
      */
-    static async saveVersion(id, data, model) {
+    static async saveVersion(id, data, ModelConstructor) {
         let preservedVersionNumber = ModelVersioning.extractVersionNumber(data),
             preservedVersionsList = [...data.__versions]; //making copy
-        let different = await ModelVersioning.isNew(model, data);
+        let different = await ModelVersioning.isNew(ModelConstructor, data);
         if (different) {
             //it's not latest version, it's archived copy
             delete data.__latest;
             //saves to archive with preserved data
-            let versionDoc = new model(data);
+            let versionDoc = new ModelConstructor(data);
             versionDoc.__version = preservedVersionNumber;
             versionDoc.__versions = preservedVersionsList;
             await versionDoc.save();
             //updating history
-            let originalDoc = await model.findById(id).exec();
+            let originalDoc = await ModelConstructor.findOne({ _id: id });
             originalDoc.__version = preservedVersionNumber + 1;
-            return await ModelVersioning.addVersionToHistory(
-                originalDoc,
-                versionDoc
-            );
+            ModelVersioning.addVersionToHistory(originalDoc, versionDoc);
+            return await originalDoc.save();
         }
         throw new VersioningExceptionSameOldData();
     }
@@ -112,24 +114,24 @@ class ModelVersioning {
      * Saves first version. Run AFTER doing .save() on document.
      * @param {ObjectId}      id             current version _id (just saved version)
      * @param {Object}      data             data to save
-     * @param {MongooseModel} thisModel      model to use
+     * @param {MongooseModel} ModelConstructor      model to use
      * @return {Promise<MongooseDocument>}   current version with updated versions tags
      */
-    static async saveFirstVersion(id, data, thisModel) {
+    static async saveFirstVersion(id, data, ModelConstructor) {
         //it's not latest version, it's archived copy
         delete data.__latest;
         //saves to archive
-        let versionDoc = new thisModel(data);
+        let versionDoc = new ModelConstructor(data);
         await versionDoc.save();
         //retrieving original
-        let originalDoc = await thisModel.findById(id).exec();
+
+        //const findById = getFunc(thisModel,'findById');
+        let originalDoc = await ModelConstructor.findOne({ _id: id });
         //first version
         originalDoc.__version = 1;
         //adding to history
-        return await ModelVersioning.addVersionToHistory(
-            originalDoc,
-            versionDoc
-        );
+        ModelVersioning.addVersionToHistory(originalDoc, versionDoc);
+        return await originalDoc.save();
     }
 
     /**
@@ -139,14 +141,14 @@ class ModelVersioning {
      * @param {MongooseModel} doc document to save
      * @return {Promise<MongooseDocument>}   current version with updated versions tags
      */
-    static saveDiff(doc) {
-        let data = doc.toObject(),
+    static saveDiff(ModelConstructor, doc) {
+        let data = toObject(doc),
             id = data._id;
         delete data._id;
         if (ModelVersioning.versionsHistoryExists(data)) {
-            return ModelVersioning.saveVersion(id, data, this);
+            return ModelVersioning.saveVersion(id, data, ModelConstructor);
         } else {
-            return ModelVersioning.saveFirstVersion(id, data, this);
+            return ModelVersioning.saveFirstVersion(id, data, ModelConstructor);
         }
     }
 
@@ -157,10 +159,10 @@ class ModelVersioning {
      * add _id of copy to list of document.__versions
      * and increment __version number
      **/
-    static version(id) {
-        return this.findById(id)
-            .exec()
-            .then(ModelVersioning.saveDiff.bind(this));
+    static async version(id) {
+        const ModelConstructor = this;
+        const original = await ModelConstructor.findOne({ _id: id });
+        return await ModelVersioning.saveDiff(ModelConstructor, original);
     }
 }
 

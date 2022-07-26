@@ -1,12 +1,11 @@
-const log = require("not-log")(module, "not-node//init");
-const ADDS = require("../additional");
+const log = require("not-log")(module, "not-node//init//sessions//ioredis");
 
 const DEFAULT_CLIENT = "ioredis";
 
 module.exports = class InitSessionsRedis {
-    async run({ config, options, master }) {
+    async run({ config, options, master, emit }) {
         log.info("Setting up user sessions handler(redis)...");
-        await ADDS.run("sessions.pre", { config, options, master });
+        await emit("sessions.pre", { config, options, master });
         const expressSession = require("express-session");
         const storeClient = config.get("session.client", DEFAULT_CLIENT);
         const redisClient = master.getEnv(`db.${storeClient}`);
@@ -26,6 +25,6 @@ module.exports = class InitSessionsRedis {
                 }),
             })
         );
-        await ADDS.run("sessions.post", { config, options, master });
+        await emit("sessions.post", { config, options, master });
     }
 };

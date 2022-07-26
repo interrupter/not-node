@@ -1,10 +1,9 @@
-const log = require("not-log")(module, "not-node//init");
-const ADDS = require("./additional");
+const log = require("not-log")(module, "not-node//init//middleware");
 
 module.exports = class InitMiddleware {
-    async run({ config, options, master }) {
+    async run({ config, options, master, emit }) {
         log.info("Setting up middlewares...");
-        await ADDS.run("middleware.pre", { config, options, master });
+        await emit("middleware.pre", { config, options, master });
         const input = config.get("middleware");
         if (input) {
             for (let ware in input) {
@@ -22,6 +21,6 @@ module.exports = class InitMiddleware {
                 }
             }
         }
-        await ADDS.run("middleware.post", { config, options, master });
+        await emit("middleware.post", { config, options, master });
     }
 };

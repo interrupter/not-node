@@ -386,7 +386,7 @@ function close() {
 }
 
 function saveNewVersion() {
-    return routine.update(this, { _id: this._id }, this.toObject());
+    return routine.update(this.constructor, { _id: this._id }, this.toObject());
 }
 
 module.exports.thisMethods = {

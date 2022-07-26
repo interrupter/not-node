@@ -1,24 +1,25 @@
-const initEnv = require("./env");
-const initDB = require("./db");
-const initExpress = require("./express");
-const initCompression = require("./compression");
-const initSecurity = require("./security");
-const initBodyparser = require("./bodyparser");
-const initMethodOverride = require("./methodoverride");
-const initFileupload = require("./fileupload");
-const initNotApp = require("./app");
-const initSessions = require("./sessions");
-const initTemplate = require("./template");
-const initCORS = require("./cors");
+const initEnv = require("./lib/env");
+const initDB = require("./lib/db");
+const InitDBRedlock = require("./lib/redlock");
+const initExpress = require("./lib/express");
+const initCompression = require("./lib/compression");
+const initSecurity = require("./lib/security");
+const initBodyparser = require("./lib/bodyparser");
+const initMethodOverride = require("./lib/methodoverride");
+const initFileupload = require("./lib/fileupload");
+const initNotApp = require("./lib/app");
+const initSessions = require("./lib/sessions");
+const initTemplate = require("./lib/template");
+const initCORS = require("./lib/cors");
 //const initCore = require('./core');
-const initMiddleware = require("./middleware");
-const initStatic = require("./static");
-const initRoutes = require("./routes");
-const initRateLimiter = require("./rateLimiter");
-const initModules = require("./modules");
-const initInformer = require("./informer");
-const initHTTP = require("./http");
-const initMonitoring = require("./monitoring");
+const initMiddleware = require("./lib/middleware");
+const initStatic = require("./lib/static");
+const initRoutes = require("./lib/routes");
+const initRateLimiter = require("./lib/rateLimiter");
+const initModules = require("./lib/modules");
+const initInformer = require("./lib/informer");
+const initHTTP = require("./lib/http");
+const initMonitoring = require("./lib/monitoring");
 
 module.exports = [
     //creating set of variables derived from basic ones,
@@ -26,6 +27,8 @@ module.exports = [
     initEnv,
     //DB access drivers
     initDB,
+    //locking mech based upon ioredis
+    InitDBRedlock,
     //http(s) server
     initExpress,
     initRateLimiter,

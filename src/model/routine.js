@@ -2,99 +2,153 @@
 
 const incrementNext = require("./increment");
 const { DBExceptionUpdateOneWasNotSuccessful } = require("../exceptions/db");
+
 //const { updateResponseSuccess } = require("./utils");
 class ModelRoutine {
-    static incremental(model) {
-        return model.schema.statics.__incField;
+    static incremental(ModelConstructor) {
+        return ModelConstructor.schema.statics.__incField;
     }
 
-    static versioning(model) {
-        return model.schema.statics.__versioning;
+    static versioning(ModelConstructor) {
+        return ModelConstructor.schema.statics.__versioning;
     }
 
-    static addWithoutVersion(model, data) {
-        return new model(data).save();
+    static addWithoutVersion(ModelConstructor, data) {
+        return new ModelConstructor(data).save();
     }
 
-    static async addWithVersion(model, data) {
+    static async addWithVersion(ModelConstructor, data) {
         data.__latest = true;
-        const item = await new model(data).save();
-        return await model.saveVersion(item._id);
+        const item = await new ModelConstructor(data).save();
+        return await ModelConstructor.saveVersion(item._id);
     }
 
-    static async add(model, data) {
-        if (ModelRoutine.incremental(model)) {
+    static async add(ModelConstructor, data) {
+        if (ModelRoutine.incremental(ModelConstructor)) {
             const modelID = await incrementNext.next(
-                model.__incModel,
-                model.__incFilter,
+                ModelConstructor.__incModel,
+                ModelConstructor.__incFilter,
                 data
             );
-            data[model.__incField] = modelID;
-            if (ModelRoutine.versioning(model)) {
-                return await ModelRoutine.addWithVersion(model, data);
+            data[ModelConstructor.__incField] = modelID;
+            if (ModelRoutine.versioning(ModelConstructor)) {
+                return await ModelRoutine.addWithVersion(
+                    ModelConstructor,
+                    data
+                );
             } else {
-                return await ModelRoutine.addWithoutVersion(model, data);
+                return await ModelRoutine.addWithoutVersion(
+                    ModelConstructor,
+                    data
+                );
             }
         } else {
-            if (ModelRoutine.versioning(model)) {
-                return await ModelRoutine.addWithVersion(model, data);
+            if (ModelRoutine.versioning(ModelConstructor)) {
+                return await ModelRoutine.addWithVersion(
+                    ModelConstructor,
+                    data
+                );
             } else {
-                return await ModelRoutine.addWithoutVersion(model, data);
+                return await ModelRoutine.addWithoutVersion(
+                    ModelConstructor,
+                    data
+                );
             }
         }
     }
 
-    static async update(model, filter, data) {
-        if ("_id" in data) delete data._id;
-        if (ModelRoutine.versioning(model)) {
-            return ModelRoutine.updateWithVersion(model, filter, data);
+    static async update(ModelConstructor, filter, data) {
+        if (data && "_id" in data) delete data._id;
+        if (ModelRoutine.versioning(ModelConstructor)) {
+            return ModelRoutine.updateWithVersion(
+                ModelConstructor,
+                filter,
+                data
+            );
         } else {
-            return ModelRoutine.updateWithoutVersion(model, filter, data);
+            return ModelRoutine.updateWithoutVersion(
+                ModelConstructor,
+                filter,
+                data
+            );
         }
     }
 
-    static updateWithoutVersion(model, filter, data) {
-        return model
-            .findOneAndUpdate(filter, data, {
+    static updateWithoutVersion(ModelConstructor, filter, data) {
+        return ModelConstructor.findOneAndUpdate(
+            filter,
+            { $set: data },
+            {
                 returnOriginal: false,
-                returnDocument: "fater",
+                returnDocument: "after",
                 new: true,
-            })
-            .exec();
+            }
+        )
+            .exec()
+            .then((result) => {
+                if (result) {
+                    return result;
+                } else {
+                    throw new Error("updateWithoutVersion FAILED");
+                }
+            });
     }
 
-    static async updateWithVersion(model, filter, data) {
-        filter.__latest = true;
-        filter.__closed = false;
-        const result = await model
-            .findOneAndUpdate(filter, data, {
-                returnOriginal: false,
-                returnDocument: "fater",
-                new: true,
-            })
-            .exec();
-        if (result) {
-            return model.saveVersion(result._id);
-        } else {
-            throw new DBExceptionUpdateOneWasNotSuccessful();
-        }
+    static async updateWithVersion(ModelConstructor, filter, data) {
+        let result;
+        const session = await ModelConstructor.startSession();
+        await session.withTransaction(async () => {
+            filter.__latest = true;
+            filter.__closed = false;
+            if (ModelConstructor.findOneAndUpdate) {
+                const updateResult = await ModelConstructor.findOneAndUpdate(
+                    filter,
+                    { $set: data },
+                    {
+                        returnOriginal: false,
+                        returnDocument: "after",
+                        new: true,
+                    }
+                );
+                if (updateResult) {
+                    result = await ModelConstructor.saveVersion(
+                        ModelConstructor,
+                        updateResult._id
+                    );
+                } else {
+                    throw new DBExceptionUpdateOneWasNotSuccessful();
+                }
+            } else {
+                throw new DBExceptionUpdateOneWasNotSuccessful();
+            }
+        });
+        session.endSession();
+        return result;
     }
 
-    static async updateMany(model, filter, data) {
+    static async updateMany(ModelConstructor, filter, data) {
         if ("_id" in data) delete data._id;
-        if (ModelRoutine.versioning(model)) {
-            return ModelRoutine.updateManyWithVersion(model, filter, data);
+        if (ModelRoutine.versioning(ModelConstructor)) {
+            return ModelRoutine.updateManyWithVersion(
+                ModelConstructor,
+                filter,
+                data
+            );
         } else {
-            return ModelRoutine.updateManyWithoutVersion(model, filter, data);
+            return ModelRoutine.updateManyWithoutVersion(
+                ModelConstructor,
+                filter,
+                data
+            );
         }
     }
 
-    static updateManyWithoutVersion(model, filter, data) {
-        return model.updateMany(filter, data);
+    static updateManyWithoutVersion(ModelConstructor, filter, data) {
+        return ModelConstructor.updateMany(filter, data);
     }
 
-    static async updateManyWithVersion(model, filter, data) {
-        const list = await model.find({
+    static async updateManyWithVersion(ModelConstructor, filter, data) {
+        const list = await ModelConstructor.find({
             __closed: false,
             __latest: true,
             ...filter,
@@ -102,7 +156,7 @@ class ModelRoutine {
         return await Promise.allSettled(
             list.map((item) => {
                 return ModelRoutine.updateWithVersion(
-                    model,
+                    ModelConstructor,
                     { _id: item._id },
                     data
                 );

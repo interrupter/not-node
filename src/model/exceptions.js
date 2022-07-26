@@ -7,13 +7,13 @@ class VersioningExceptionSameOldData extends notError {
 }
 module.exports.VersioningExceptionSameOldData = VersioningExceptionSameOldData;
 
-class VersioningExceptioNoPreviousVersions extends notError {
+class VersioningExceptionNoPpreviousVersions extends notError {
     constructor() {
         super("not-node:versioning_error_no_previous_versions");
     }
 }
-module.exports.VersioningExceptioNoPreviousVersions =
-    VersioningExceptioNoPreviousVersions;
+module.exports.VersioningExceptionNoPpreviousVersions =
+    VersioningExceptionNoPpreviousVersions;
 
 class IncrementExceptionIDGeneratorRebaseFailed extends notError {
     constructor() {

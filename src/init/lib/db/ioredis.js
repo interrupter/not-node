@@ -1,5 +1,4 @@
-const log = require("not-log")(module, "not-node//init");
-const ADDS = require("../additional");
+const log = require("not-log")(module, "not-node//init//db//ioredis");
 
 module.exports = class InitDBRedisIO {
     static async initRedis({ conf, master, alias }) {
@@ -11,8 +10,8 @@ module.exports = class InitDBRedisIO {
         log.log("redis client");
     }
 
-    async run({ config, options, master, conf, alias }) {
-        await ADDS.run(`db.${alias}.pre`, {
+    async run({ config, options, master, conf, alias, emit }) {
+        await emit(`db.${alias}.pre`, {
             config,
             options,
             master,
@@ -20,7 +19,7 @@ module.exports = class InitDBRedisIO {
             alias,
         });
         await InitDBRedisIO.initRedis({ conf, master, alias });
-        await ADDS.run(`db.${alias}.post`, {
+        await emit(`db.${alias}.post`, {
             config,
             options,
             master,

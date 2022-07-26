@@ -1,5 +1,5 @@
 const path = require("path");
-const Fields = require("../fields");
+const Fields = require("../../fields");
 const notLocale = require("not-locale");
 
 module.exports = class InitCore {

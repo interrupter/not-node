@@ -1,17 +1,15 @@
-const notAppConstructor = require("../app.js");
+const notAppConstructor = require("../../app.js");
 const ENV = process.env.NODE_ENV || "development";
 const path = require("path");
 const logger = require("not-log");
-const log = logger(module, "not-node//init");
+const log = logger(module, "not-node//init//app");
 const { notErrorReporter } = require("not-error");
-
-const emit = require("./additional").run;
 
 module.exports = class InitApp {
     static AppConstructor = notAppConstructor;
     static ReporterConstructor = notErrorReporter;
 
-    static async createApp({ config, options, master }) {
+    static async createApp({ config, options, master, emit }) {
         await emit("app.create.pre", { config, options, master });
         master.setApp(
             new InitApp.AppConstructor({ mongoose: master.getMongoose() })
@@ -19,7 +17,7 @@ module.exports = class InitApp {
         await emit("app.create.post", { config, options, master });
     }
 
-    static async setAppEnvs({ config, options, master }) {
+    static async setAppEnvs({ config, options, master, emit }) {
         await emit("app.setEnv.pre", { config, options, master });
         master.setEnv("hostname", config.get("hostname"));
         master.setEnv("server", `https://` + config.get("host"));
@@ -35,13 +33,13 @@ module.exports = class InitApp {
         await emit("app.setEnv.post", { config, options, master });
     }
 
-    static async initCore({ config, options, master }) {
+    static async initCore({ config, options, master, emit }) {
         await emit("app.initCore.pre", { config, options, master });
         master.getApp().importModuleFrom(path.join(__dirname, "../core"));
         await emit("app.initCore.post", { config, options, master });
     }
 
-    static async importModules({ config, options, master }) {
+    static async importModules({ config, options, master, emit }) {
         await emit("app.importModules.pre", { config, options, master });
         master.getApp().importModulesFrom(config.get("modulesPath"));
         if (Array.isArray(config.get("importModulesFromNPM"))) {
@@ -70,15 +68,15 @@ module.exports = class InitApp {
         }
     }
 
-    async run({ config, options, master }) {
+    async run({ config, options, master, emit }) {
         try {
             log.info("Init not-app...");
             await emit("app.pre", { config, options, master });
-            await InitApp.createApp({ config, options, master });
-            await InitApp.setAppEnvs({ config, options, master });
-            await InitApp.initCore({ config, options, master });
-            await InitApp.importModules({ config, options, master });
-            await InitApp.createReporter({ config, options, master });
+            await InitApp.createApp({ config, options, master, emit });
+            await InitApp.setAppEnvs({ config, options, master, emit });
+            await InitApp.initCore({ config, options, master, emit });
+            await InitApp.importModules({ config, options, master, emit });
+            await InitApp.createReporter({ config, options, master, emit });
             await emit("app.post", { config, options, master });
         } catch (e) {
             master.throwError(e.message, 1);
