@@ -35,7 +35,7 @@ module.exports = class InitApp {
 
     static async initCore({ config, options, master, emit }) {
         await emit("app.initCore.pre", { config, options, master });
-        master.getApp().importModuleFrom(path.join(__dirname, "../core"));
+        master.getApp().importModuleFrom(path.join(__dirname, "../../core"));
         await emit("app.initCore.post", { config, options, master });
     }
 
