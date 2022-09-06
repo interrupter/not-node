@@ -11,6 +11,8 @@ module.exports.Error = require("./src/error.js");
 module.exports.Auth = require("./src/auth");
 /** Manifest infrastructure */
 module.exports.Manifest = require("./src/manifest/manifest");
+/** Request result properties filtering */
+module.exports.notManifestRouteResultFilter = require("./src/manifest/result.filter");
 /** Web Application */
 module.exports.notApp = require("./src/app");
 /** General Application */

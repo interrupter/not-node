@@ -2,10 +2,12 @@ const CONST_BEFORE_ACTION = "before";
 const CONST_AFTER_ACTION = "after";
 
 const obsoleteWarning = require("../obsolete");
+
 const Auth = require("../auth"),
     HttpError = require("../error").Http;
 
-const { objHas, copyObj, executeObjectFunction } = require("../common");
+const notManifestRouteResultFilter = require("./result.filter");
+const { copyObj, executeObjectFunction } = require("../common");
 
 /**
  *	Route representation
@@ -171,39 +173,6 @@ class notRoute {
         );
     }
 
-    extractReturn(notRouteData) {
-        if (objHas(notRouteData.rule, "return")) {
-            return [...notRouteData.rule.return];
-        } else if (objHas(notRouteData.actionData, "return")) {
-            return [...notRouteData.actionData.return];
-        } else {
-            return undefined;
-        }
-    }
-
-    /**
-     * Removes fields from result object acctoding to actionData.return array
-     * if presented
-     * @param {ExpressRequest} req request object
-     * @param {object} result result returned by main action processor
-     */
-    filterResultByReturnRule(req, result) {
-        const returnList = this.extractReturn(req.notRouteData);
-        if (
-            result &&
-            typeof result === "object" &&
-            returnList &&
-            Array.isArray(returnList)
-        ) {
-            let presented = Object.keys(result);
-            presented.forEach((fieldName) => {
-                if (!returnList.includes(fieldName)) {
-                    delete result[fieldName];
-                }
-            });
-        }
-    }
-
     async executeRoute(modRoute, actionName, { req, res, next }) {
         try {
             //waiting preparation
@@ -220,7 +189,7 @@ class notRoute {
                 prepared,
             ]);
             //filter result IF actionData.return specified
-            this.filterResultByReturnRule(req, result);
+            notManifestRouteResultFilter.filter(req.notRouteData, result);
             //run after with results, continue without waiting when it finished
             return this.executeFunction(modRoute, CONST_AFTER_ACTION, [
                 req,
