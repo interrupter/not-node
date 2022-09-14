@@ -1,15 +1,16 @@
 const ROLES = require("./roles");
 const postWarning = require("../obsolete");
+const { objHas } = require("../common");
 
 function ruleHasRootDirective(rule) {
     return (
-        (Object.prototype.hasOwnProperty.call(rule, "admin") && rule.admin) ||
-        (Object.prototype.hasOwnProperty.call(rule, "root") && rule.root)
+        (objHas(rule, "admin") && rule.admin) ||
+        (objHas(rule, "root") && rule.root)
     );
 }
 
 function compareWithRoot(rule, root) {
-    if (Object.prototype.hasOwnProperty.call(rule, "admin")) {
+    if (objHas(rule, "admin")) {
         return rule.admin && root;
     } else {
         return rule.root && root;
@@ -18,7 +19,7 @@ function compareWithRoot(rule, root) {
 
 function compareRuleRoles(rule, role, auth) {
     if (ROLES.compareRoles(rule.role, role)) {
-        if (Object.prototype.hasOwnProperty.call(rule, "auth")) {
+        if (objHas(rule, "auth")) {
             if (rule.auth && auth) {
                 return true;
             } else {
@@ -41,9 +42,9 @@ function roleRequireAuthState(requiredAuth, userAuth) {
 }
 
 function compareAuthStatus(rule, auth) {
-    if (Object.prototype.hasOwnProperty.call(rule, "auth")) {
+    if (objHas(rule, "auth")) {
         return roleRequireAuthState(rule.auth, auth);
-    } else if (Object.prototype.hasOwnProperty.call(rule, "user")) {
+    } else if (objHas(rule, "user")) {
         return roleRequireAuthState(rule.user, auth);
     } else {
         return true;
@@ -74,7 +75,7 @@ function checkCredentials(rule, auth, role, root) {
             return compareWithRoot(rule, root);
         } else {
             //if we have roles in rule, then using role based aproach
-            if (Object.prototype.hasOwnProperty.call(rule, "role")) {
+            if (objHas(rule, "role")) {
                 return compareRuleRoles(rule, role, auth);
             } else {
                 //if no then just

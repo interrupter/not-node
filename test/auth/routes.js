@@ -3,7 +3,7 @@ const {
     HttpExceptionForbidden,
 } = require("../../src/exceptions/http");
 
-module.exports = ({ Auth, HttpError, expect }) => {
+module.exports = ({ Auth, expect }) => {
     describe("Routes", () => {
         describe("getIP", () => {
             it("req.header[x-forwarded-for]", () => {

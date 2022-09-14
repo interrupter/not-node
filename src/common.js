@@ -205,3 +205,22 @@ module.exports.generatePaths = (content = [], relative = "src") => {
         return prev;
     }, {});
 };
+
+/**
+ *  Get request ip
+ *  @param  {object}  req   Express Request
+ **/
+module.exports.getIP = (req) => {
+    if (req) {
+        return (
+            (req.headers && req.headers["x-forwarded-for"]) ||
+            (req.connection && req.connection.remoteAddress) ||
+            (req.socket && req.socket.remoteAddress) ||
+            (req.connection &&
+                req.connection.socket &&
+                req.connection.socket.remoteAddress)
+        );
+    } else {
+        return undefined;
+    }
+};

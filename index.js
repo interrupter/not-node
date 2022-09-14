@@ -15,6 +15,10 @@ module.exports.Manifest = require("./src/manifest/manifest");
 module.exports.notManifestRouteResultFilter = require("./src/manifest/result.filter");
 /** Web Application */
 module.exports.notApp = require("./src/app");
+/** Application User Identity */
+module.exports.notAppIdentity = require("./src/identity");
+/** Application User Identity */
+module.exports.Identity = require("./src/identity/identity");
 /** General Application */
 module.exports.notDomain = require("./src/domain");
 /** Mongoose Documents versioning */

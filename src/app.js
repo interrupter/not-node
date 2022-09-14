@@ -1,4 +1,4 @@
-const Auth = require("./auth");
+const notAppIdentity = require("./identity");
 const notDomain = require("./domain");
 const merge = require("deepmerge");
 const parent = require("../index.js");
@@ -50,7 +50,7 @@ class notApp extends notDomain {
      *	@return 	{object}	manifest
      **/
     getManifest(req) {
-        const creds = Auth.extractAuthData(req);
+        const creds = notAppIdentity.extractAuthData(req);
         return this.collectManifest(creds);
     }
 

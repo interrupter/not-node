@@ -3,6 +3,7 @@ const CONST_AFTER_ACTION = "after";
 
 const obsoleteWarning = require("../obsolete");
 
+const notAppIdentity = require("../identity");
 const Auth = require("../auth"),
     HttpError = require("../error").Http;
 
@@ -69,7 +70,7 @@ class notRoute {
      *	@return	{object}	rule or null
      */
     selectRule(req) {
-        const user = Auth.extractAuthData(req);
+        const user = notAppIdentity.extractAuthData(req);
         if (this.actionData) {
             return notRoute.actionAvailableByRule(this.actionData, user);
         }

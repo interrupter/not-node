@@ -6,12 +6,10 @@ const FIELDS = require("./fields");
 const ROLES = require("./roles");
 const RULES = require("./rules");
 const ROUTES = require("./routes");
-const SESSION = require("./session");
 
 module.exports = {
     ...CONST,
     ...ABSTRACT,
-    ...SESSION,
     ...ROLES,
     ...RULES,
     ...ROUTES,

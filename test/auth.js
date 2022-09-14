@@ -267,20 +267,6 @@ describe("Auth", function () {
 
         it("Both undefined, order defined Array with wrong types of element", function () {
             let resultFunction = () => {
-                auth.checkSupremacy("undefined", "undefined", [12]);
-            };
-            expect(resultFunction).to.throw();
-        });
-
-        it("Both undefined, order defined Array with wrong types of element", function () {
-            let resultFunction = () => {
-                auth.checkSupremacy("undefined", "undefined", [null]);
-            };
-            expect(resultFunction).to.throw();
-        });
-
-        it("Both undefined, order defined Array with wrong types of element", function () {
-            let resultFunction = () => {
                 auth.checkSupremacy("undefined", "undefined", [null]);
             };
             expect(resultFunction).to.throw();
@@ -437,7 +423,6 @@ describe("Auth", function () {
     require("./auth/routes.js")({ Auth: auth, HttpError, expect });
     require("./auth/roles.js")({ Auth: auth, HttpError, expect });
     require("./auth/rules.js")({ Auth: auth, HttpError, expect });
-    require("./auth/session.js")({ Auth: auth, HttpError, expect });
     require("./auth/obsolete.js")({ Auth: auth, HttpError, expect });
     require("./auth/fields.js")({ Auth: auth, HttpError, expect });
 });
