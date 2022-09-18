@@ -7,3 +7,11 @@ class IdentityExceptionProviderAlreadySet extends notError {
 }
 module.exports.IdentityExceptionProviderAlreadySet =
     IdentityExceptionProviderAlreadySet;
+
+class IdentityExceptionProviderNotFound extends notError {
+    constructor() {
+        super("not-node:identity_provider_not_found");
+    }
+}
+module.exports.IdentityExceptionProviderNotFound =
+    IdentityExceptionProviderNotFound;

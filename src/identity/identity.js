@@ -1,13 +1,16 @@
 const { copyObj, objHas } = require("../common");
 const IdentityProviderSession = require("./providers/session");
 const IdentityProviderToken = require("./providers/token");
-const { IdentityExceptionProviderAlreadySet } = require("./exceptions");
+const {
+    IdentityExceptionProviderAlreadySet,
+    IdentityExceptionProviderNotFound,
+} = require("./exceptions");
 
 /**
  * Class to manage and access to user identity providers and their options
  */
 class Identity {
-    static #providersOptions = {};
+    static #priorities = ["token", "session"];
 
     static #providers = {
         session: IdentityProviderSession,
@@ -16,25 +19,30 @@ class Identity {
 
     static of(req) {
         const Provider = this.providerSelector(req);
-        return new Provider(req, this.#getProviderOptions(req) ?? {});
+        return new Provider(req);
     }
 
     static providerSelector(req) {
-        return this.#providers[this.getProviderName(req)];
+        return this.getProvider(this.getProviderName(req));
+    }
+
+    static getProvider(providerName) {
+        return this.#providers[providerName];
     }
 
     // override if needed
     static getProviderName(req) {
-        return req.session ? "session" : "token";
-    }
-
-    static #getProviderOptions(req) {
-        return copyObj(this.#providersOptions[this.getProviderName(req)] ?? {});
+        for (let providerName of this.#priorities) {
+            if (this.getProvider(providerName).test(req)) {
+                return providerName;
+            }
+        }
+        throw new IdentityExceptionProviderNotFound();
     }
 
     static setProviderOptions(providerName, options) {
         if (options && typeof options !== "undefined") {
-            this.#providersOptions[providerName] = copyObj(options);
+            this.#providers[providerName].setOptions(copyObj(options));
         }
     }
 
@@ -43,6 +51,10 @@ class Identity {
             throw new IdentityExceptionProviderAlreadySet(providerName);
         }
         this.#providers[providerName] = Provider;
+    }
+
+    static setProvidersPriorities(list = []) {
+        this.#priorities = [...list];
     }
 }
 

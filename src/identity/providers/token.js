@@ -1,22 +1,32 @@
-const { error } = require("not-log")(module, "Auth");
+const { error, log } = require("not-log")(module, "Identity//Token");
+const { notRequestError } = require("not-error");
 const CONST = require("../../auth/const");
 const ROLES = require("../../auth/roles");
+const { objHas } = require("../../common");
+const phrase = require("not-locale").modulePhrase("not-node");
 
 const JWT = require("jsonwebtoken");
 
 module.exports = class IdentityProviderToken {
-    #options = null;
     #tokenContent = null;
     #token = null;
 
-    constructor(req, options = { secret: "" }) {
+    static #options = {};
+
+    static setOptions(options = {}) {
         this.#options = options;
-        this.#extractToken(req);
-        this.#extractTokenContent();
+    }
+
+    static #getOptions() {
+        return this.#options;
+    }
+
+    constructor(req) {
+        this.req = req;
         return this;
     }
 
-    getTokenFromRequest(req) {
+    static getTokenFromRequest(req) {
         const auth = req.get("Authorization");
         if (auth && auth.length) {
             const [, token] = auth.split(" ");
@@ -68,10 +78,6 @@ module.exports = class IdentityProviderToken {
         this.#tokenContent = this.#decodeTokenContent(req);
     }
 
-    #getOptions() {
-        return this.#options;
-    }
-
     get tokenContent() {
         return this.#tokenContent;
     }
@@ -80,12 +86,86 @@ module.exports = class IdentityProviderToken {
         return this.#token;
     }
 
+    static #validateSecretForToken({ secret, context }) {
+        if (
+            !secret ||
+            typeof secret === "undefined" ||
+            secret === null ||
+            secret === ""
+        ) {
+            throw new notRequestError(phrase("user_token_secret_not_valid"), {
+                ...context,
+                code: 500,
+            });
+        }
+    }
+
+    static #validateTTLForToken(tokenTTL) {
+        if (tokenTTL <= 0 || isNaN(tokenTTL)) {
+            log(phrase("user_token_ttl_not_set"));
+            tokenTTL = CONST.TOKEN_TTL;
+        }
+        return tokenTTL;
+    }
+
+    static #composeUserTokenPayload({ user, additionalFields = [] }) {
+        const addons = {};
+        if (Array.isArray(additionalFields)) {
+            additionalFields.forEach((fieldName) => {
+                if (objHas(user, fieldName)) {
+                    addons[fieldName] = user[fieldName];
+                }
+            });
+        }
+        return {
+            _id: user._id,
+            role: user.role,
+            active: user.active,
+            username: user.username,
+            ...addons,
+        };
+    }
+
+    static #composeGuestTokenPayload() {
+        return {
+            _id: false,
+            role: CONST.DEFAULT_USER_ROLE_FOR_GUEST,
+            active: true,
+            username: phrase("user_role_guest"),
+        };
+    }
+
+    static createToken({
+        ip,
+        user,
+        additionalFields = ["emailConfirmed", "telephoneConfirmed"],
+    }) {
+        const context = { ip };
+        const secret = this.#getOptions().secret;
+        this.#validateSecretForToken({ secret, context });
+        let payload = {};
+        if (user) {
+            payload = this.#composeUserTokenPayload({ user, additionalFields });
+        } else {
+            payload = this.#composeGuestTokenPayload();
+        }
+        this.#setTokenExpiration(payload);
+        return JWT.sign(payload, secret);
+    }
+
+    static #setTokenExpiration(payload) {
+        const tokenTTL = this.#validateTTLForToken(this.#getOptions().ttl);
+        if (!objHas(payload, "exp")) {
+            payload.exp = Date.now() / 1000 + tokenTTL;
+        }
+    }
+
     /**
      *	Checks if user is authenticated
      *	@return {boolean}	true - authenticated, false - guest
      **/
     isUser() {
-        return !!this.tokenContent._id;
+        return !!this.tokenContent?._id;
     }
 
     /**
@@ -101,8 +181,10 @@ module.exports = class IdentityProviderToken {
      *	@param	{Array<string>}	role 	array of roles
      **/
     setRole(role) {
-        this.#tokenContent.role = [...role];
-        this.#updateToken();
+        if (this.tokenContent) {
+            this.#tokenContent.role = [...role];
+            this.#updateToken();
+        }
         return this;
     }
 
@@ -111,8 +193,10 @@ module.exports = class IdentityProviderToken {
      *	@param	{string}	_id 	user id
      **/
     setUserId(_id) {
-        this.#tokenContent._id = _id;
-        this.#updateToken();
+        if (this.tokenContent) {
+            this.#tokenContent._id = _id;
+            this.#updateToken();
+        }
         return this;
     }
 
@@ -163,5 +247,9 @@ module.exports = class IdentityProviderToken {
      **/
     cleanse() {
         this.setGuest();
+    }
+
+    static test(req) {
+        return !!this.getTokenFromRequest(req);
     }
 };

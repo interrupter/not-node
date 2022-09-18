@@ -2,6 +2,16 @@ const CONST = require("../../auth/const");
 const ROLES = require("../../auth/roles");
 
 module.exports = class IdentityProviderSession {
+    static #options = {};
+
+    static setOptions(options = {}) {
+        this.#options = options;
+    }
+
+    static #getOptions() {
+        return this.#options;
+    }
+
     constructor(req) {
         this.req = req;
         return this;
@@ -36,6 +46,7 @@ module.exports = class IdentityProviderSession {
         const req = this.req;
         if (req && req.session) {
             req.session.role = role;
+            req.session.save();
         }
     }
 
@@ -47,6 +58,7 @@ module.exports = class IdentityProviderSession {
         const req = this.req;
         if (req && req.session) {
             req.session.user = _id;
+            req.session.save();
         }
     }
 
@@ -117,5 +129,9 @@ module.exports = class IdentityProviderSession {
                 req.session.destroy();
             }
         }
+    }
+
+    static test(req) {
+        return typeof req.session !== "undefined" && req.session !== null;
     }
 };
