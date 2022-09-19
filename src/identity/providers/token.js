@@ -23,6 +23,8 @@ module.exports = class IdentityProviderToken {
 
     constructor(req) {
         this.req = req;
+        this.#extractToken(req);
+        this.#extractTokenContent();
         return this;
     }
 
@@ -30,13 +32,14 @@ module.exports = class IdentityProviderToken {
         const auth = req.get("Authorization");
         if (auth && auth.length) {
             const [, token] = auth.split(" ");
+            console.log("token found", token);
             return token;
         }
         return null;
     }
 
     #extractToken(req) {
-        const token = this.getTokenFromRequest(req);
+        const token = IdentityProviderToken.getTokenFromRequest(req);
         if (token) {
             this.#token = token;
         }
@@ -50,7 +53,7 @@ module.exports = class IdentityProviderToken {
     #decodeTokenContent() {
         try {
             if (this.#token) {
-                const secret = this.#getOptions().secret;
+                const secret = IdentityProviderToken.#getOptions().secret;
                 JWT.verify(this.#token, secret);
                 return JWT.decode(this.#token, secret);
             }
@@ -64,7 +67,7 @@ module.exports = class IdentityProviderToken {
     #encodeTokenContent() {
         try {
             if (this.#token) {
-                const secret = this.#getOptions().secret;
+                const secret = IdentityProviderToken.#getOptions().secret;
                 return JWT.sign(this.#tokenContent, secret);
             }
             return null;
