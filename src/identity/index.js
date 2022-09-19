@@ -30,6 +30,6 @@ module.exports = class notAppIdentity {
     }
 
     constructor(req) {
-        return this.#identity.of(req);
+        return notAppIdentity.identity.of(req);
     }
 };
