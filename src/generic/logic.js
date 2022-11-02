@@ -72,14 +72,14 @@ module.exports = ({
                 root
             );
             if (shouldOwn) {
-                data[ownerFieldName] = activeUser._id;
+                data[ownerFieldName] = activeUser?._id;
             }
             const res = await getModel().add(data);
             LogAction(
                 {
                     action,
-                    by: activeUser._id,
-                    role: activeUser.role,
+                    by: activeUser?._id,
+                    role: activeUser?.role,
                     ip,
                     root,
                 },
@@ -149,14 +149,14 @@ module.exports = ({
                 _id: targetId,
             };
             if (shouldOwn) {
-                query[ownerFieldName] = activeUser._id;
+                query[ownerFieldName] = activeUser?._id;
             }
             const result = await getModel().update(query, data);
             LogAction(
                 {
                     action,
-                    by: activeUser._id,
-                    role: activeUser.role,
+                    by: activeUser?._id,
+                    role: activeUser?.role,
                     ip,
                 },
                 {
@@ -243,7 +243,7 @@ module.exports = ({
             );
             let query = {};
             if (shouldOwn) {
-                query[ownerFieldName] = activeUser._id;
+                query[ownerFieldName] = activeUser?._id;
             }
             let populate = getPopulate(action, {
                 targetId,
@@ -255,8 +255,8 @@ module.exports = ({
             LogAction(
                 {
                     action,
-                    by: activeUser._id,
-                    role: activeUser.role,
+                    by: activeUser?._id,
+                    role: activeUser?.role,
                     ip,
                 },
                 {
@@ -333,7 +333,7 @@ module.exports = ({
             );
             let query = {};
             if (shouldOwn) {
-                query[ownerFieldName] = activeUser._id;
+                query[ownerFieldName] = activeUser?._id;
             }
             let populate = getPopulate(action, {
                 targetID,
@@ -349,8 +349,8 @@ module.exports = ({
             LogAction(
                 {
                     action,
-                    by: activeUser._id,
-                    role: activeUser.role,
+                    by: activeUser?._id,
+                    role: activeUser?.role,
                     ip,
                 },
                 {
@@ -427,14 +427,14 @@ module.exports = ({
             );
             let query = {};
             if (shouldOwn) {
-                query[ownerFieldName] = activeUser._id;
+                query[ownerFieldName] = activeUser?._id;
             }
             const result = await getModel().getOneRaw(targetId, query);
             LogAction(
                 {
                     action,
-                    by: activeUser._id,
-                    role: activeUser.role,
+                    by: activeUser?._id,
+                    role: activeUser?.role,
                     ip,
                     root,
                 },
@@ -516,12 +516,12 @@ module.exports = ({
                 if (!itm) {
                     throw new DBExceptionDocumentIsNotFound();
                 }
-                if (shouldOwn && !isOwner(itm, activeUser._id)) {
+                if (shouldOwn && !isOwner(itm, activeUser?._id)) {
                     throw new DBExceptionDocumentIsNotOwnerByActiveUser({
                         params: {
                             targetId,
-                            activeUserId: activeUser._id,
-                            role: activeUser.role,
+                            activeUserId: activeUser?._id,
+                            role: activeUser?.role,
                             versioning,
                         },
                     });
@@ -531,7 +531,7 @@ module.exports = ({
             } else {
                 let query = { _id: targetId };
                 if (shouldOwn) {
-                    query[ownerFieldName] = activeUser._id;
+                    query[ownerFieldName] = activeUser?._id;
                 }
                 const result = await model.findOneAndDelete(query).exec();
                 if (!deleteResponseSuccess(result)) {
@@ -539,8 +539,8 @@ module.exports = ({
                         params: {
                             result,
                             targetId,
-                            activeUserId: activeUser._id,
-                            role: activeUser.role,
+                            activeUserId: activeUser?._id,
+                            role: activeUser?.role,
                             versioning,
                         },
                     });
@@ -549,8 +549,8 @@ module.exports = ({
             LogAction(
                 {
                     action,
-                    by: activeUser._id,
-                    role: activeUser.role,
+                    by: activeUser?._id,
+                    role: activeUser?.role,
                     ip,
                     root,
                 },
@@ -615,14 +615,14 @@ module.exports = ({
             let filter;
             if (shouldOwn) {
                 filter = {
-                    [ownerFieldName]: activeUser._id,
+                    [ownerFieldName]: activeUser?._id,
                 };
             }
             const result = await getModel().listAll(filter);
             LogAction({
                 action,
-                by: activeUser._id,
-                role: activeUser.role,
+                by: activeUser?._id,
+                role: activeUser?.role,
                 ip,
                 root,
                 shouldOwn,
@@ -670,7 +670,7 @@ module.exports = ({
             });
             if (shouldOwn) {
                 notFilter.filter.modifyRules(filter, {
-                    [ownerFieldName]: activeUser._id,
+                    [ownerFieldName]: activeUser?._id,
                 });
             }
             const result = await getModel().listAndCount(
@@ -683,8 +683,8 @@ module.exports = ({
             );
             LogAction({
                 action,
-                by: activeUser._id,
-                role: activeUser.role,
+                by: activeUser?._id,
+                role: activeUser?.role,
                 ip,
                 root,
                 shouldOwn,
@@ -734,7 +734,7 @@ module.exports = ({
             });
             if (shouldOwn) {
                 notFilter.filter.modifyRules(filter, {
-                    [ownerFieldName]: activeUser._id,
+                    [ownerFieldName]: activeUser?._id,
                 });
             }
             const result = await getModel().listAndPopulate(
@@ -746,8 +746,8 @@ module.exports = ({
             );
             LogAction({
                 action,
-                by: activeUser._id,
-                role: activeUser.role,
+                by: activeUser?._id,
+                role: activeUser?.role,
                 ip,
                 root,
                 shouldOwn,
@@ -793,7 +793,7 @@ module.exports = ({
             const { filter, search } = query;
             if (shouldOwn) {
                 notFilter.filter.modifyRules(filter, {
-                    [ownerFieldName]: activeUser._id,
+                    [ownerFieldName]: activeUser?._id,
                 });
             }
             if (search) {
@@ -802,8 +802,8 @@ module.exports = ({
             const result = await getModel().countWithFilter(search || filter);
             LogAction({
                 action,
-                by: activeUser._id,
-                role: activeUser.role,
+                by: activeUser?._id,
+                role: activeUser?.role,
                 ip,
                 root,
                 shouldOwn,

@@ -22,8 +22,8 @@ module.exports = ({ MODULE_NAME, MODEL_NAME, actionName }) => {
             const incField = `${firstLetterToLower(MODEL_NAME)}ID`;
             return {
                 targetId: req.params[incField],
-                activeUser: req.user,
-                activeUserId: req.user._id,
+                activeUser: req?.user,
+                activeUserId: req?.user._id,
                 ip: getIP(req),
             };
         }

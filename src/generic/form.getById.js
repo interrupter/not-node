@@ -21,8 +21,8 @@ module.exports = ({ MODULE_NAME, actionName }) => {
         extract(req) {
             return {
                 targetId: req.params._id,
-                activeUser: req.user,
-                activeUserId: req.user._id,
+                activeUser: req?.user,
+                activeUserId: req?.user._id,
                 ip: getIP(req),
             };
         }
