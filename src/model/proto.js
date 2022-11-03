@@ -106,7 +106,7 @@ module.exports = class ModelFabricate {
     }
 
     static createIndexesForText(schema, targetModule) {
-        if (targetModule.enrich.textIndex) {
+        if (targetModule.enrich && targetModule.enrich.textIndex) {
             schema.index(targetModule.enrich.textIndex, {
                 name: Object.keys(targetModule.enrich.textIndex).join("__"),
             });
