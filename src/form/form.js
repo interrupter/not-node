@@ -11,10 +11,12 @@ const { notValidationError, notError } = require("not-error");
 
 const {
     FormExceptionExtractorForFieldIsUndefined,
+    FormExceptionTransformerForFieldIsUndefined,
 } = require("../exceptions/form.js");
 
 const DEFAULT_EXTRACTORS = require("./extractors");
 const DEFAULT_ID_EXTRACTORS = require("./env_extractors");
+const DEFAULT_TRANSFORMERS = require("./transformers");
 
 /**
  * Generic form validation class
@@ -43,6 +45,10 @@ class Form {
         ...DEFAULT_ID_EXTRACTORS,
     };
 
+    #TRANSFORMERS = {
+        ...DEFAULT_TRANSFORMERS,
+    };
+
     constructor({
         FIELDS,
         FORM_NAME,
@@ -51,6 +57,7 @@ class Form {
         app,
         EXTRACTORS = {},
         ENV_EXTRACTORS = {},
+        TRANSFORMERS = {},
     }) {
         this.#FORM_NAME = FORM_NAME;
         this.#MODEL_NAME = MODEL_NAME;
@@ -60,6 +67,7 @@ class Form {
         this.#augmentValidationSchema();
         this.#addExtractors(EXTRACTORS);
         this.#addEnvExtractors(ENV_EXTRACTORS);
+        this.#addTransformers(TRANSFORMERS);
     }
 
     getModelName(req) {
@@ -283,20 +291,72 @@ class Form {
         const results = {};
         for (let fieldName in instructions) {
             const instruction = instructions[fieldName];
-            if (isFunc(instruction)) {
-                results[fieldName] = instruction(req, fieldName);
-            } else if (typeof instruction == "string") {
-                const extractor = this.#EXTRACTORS[instruction];
-                if (isFunc(extractor)) {
-                    results[fieldName] = extractor(req, fieldName);
-                } else {
-                    throw new FormExceptionExtractorForFieldIsUndefined(
-                        fieldName
-                    );
-                }
+            if (Array.isArray(instruction)) {
+                this.#extractByInstructionPipe({
+                    results,
+                    instruction,
+                    fieldName,
+                    req,
+                });
+            } else {
+                this.#extractByInstruction({
+                    results,
+                    instructions: instruction,
+                    fieldName,
+                    req,
+                });
             }
         }
         return results;
+    }
+
+    #extractByInstruction({ results, instruction, fieldName, req }) {
+        if (isFunc(instruction)) {
+            results[fieldName] = instruction(req, fieldName);
+        } else if (typeof instruction == "string") {
+            const extractor = this.#EXTRACTORS[instruction];
+            if (isFunc(extractor)) {
+                results[fieldName] = extractor(req, fieldName);
+            } else {
+                throw new FormExceptionExtractorForFieldIsUndefined(fieldName);
+            }
+        }
+    }
+
+    #extractByInstructionPipe({ results, instructions, fieldName, req }) {
+        if (instructions.length === 0) {
+            throw new FormExceptionExtractorForFieldIsUndefined(fieldName);
+        }
+        this.#extractByInstruction({
+            results,
+            instruction: instructions[0],
+            fieldName,
+            req,
+        });
+        for (let t = 1; t < instructions.length; t++) {
+            const instruction = instructions[t];
+            this.#transformByInstruction({
+                results,
+                instruction,
+                fieldName,
+            });
+        }
+    }
+
+    #transformByInstruction({ results, instruction, fieldName }) {
+        if (isFunc(instruction)) {
+            results[fieldName] = instruction(results[fieldName]);
+        } else if (typeof instruction == "string") {
+            const transformer = this.#TRANSFORMERS[instruction];
+            if (isFunc(transformer)) {
+                results[fieldName] = transformer(results[fieldName]);
+            } else {
+                throw new FormExceptionTransformerForFieldIsUndefined(
+                    fieldName,
+                    instruction
+                );
+            }
+        }
     }
 
     createInstructionFromRouteActionFields(
@@ -332,6 +392,15 @@ class Form {
             exceptions
         );
         return this.extractByInstructions(req, instructions);
+    }
+
+    /**
+     * Value transformers
+     */
+    #addTransformers(transformers = {}) {
+        if (transformers) {
+            this.#TRANSFORMERS = { ...this.#TRANSFORMERS, ...transformers };
+        }
     }
 }
 

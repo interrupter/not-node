@@ -1,3 +1,6 @@
+/**
+ * Extracts values from different input sources
+ */
 module.exports = {
     activeUserId: require("./activeUserId.js"),
     activeUserModelName: require("./activeUserModelName.js"),

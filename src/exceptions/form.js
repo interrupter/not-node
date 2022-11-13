@@ -9,3 +9,15 @@ class FormExceptionExtractorForFieldIsUndefined extends notRequestError {
 
 module.exports.FormExceptionExtractorForFieldIsUndefined =
     FormExceptionExtractorForFieldIsUndefined;
+
+class FormExceptionTransformerForFieldIsUndefined extends notRequestError {
+    constructor(fieldName, instruction) {
+        super("not-node:form_exception_field_transformer_is_undefined", {
+            fieldName,
+            instruction,
+        });
+    }
+}
+
+module.exports.FormExceptionTransformerForFieldIsUndefined =
+    FormExceptionTransformerForFieldIsUndefined;
