@@ -294,14 +294,14 @@ class Form {
             if (Array.isArray(instruction)) {
                 this.#extractByInstructionPipe({
                     results,
-                    instruction,
+                    instructions: instruction,
                     fieldName,
                     req,
                 });
             } else {
                 this.#extractByInstruction({
                     results,
-                    instructions: instruction,
+                    instruction,
                     fieldName,
                     req,
                 });
