@@ -33,9 +33,14 @@ module.exports = class IdentityProviderSession {
      **/
     getRole() {
         const req = this.req;
-        return req && req.session && req.session.role
-            ? req.session.role
-            : undefined;
+        if (req && req.session) {
+            if (!req.session.role) {
+                this.setGuest();
+            }
+            return req.session.role;
+        } else {
+            return undefined;
+        }
     }
 
     /**
