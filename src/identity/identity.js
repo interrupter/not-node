@@ -34,7 +34,6 @@ class Identity {
     static getProviderName(req) {
         for (let providerName of this.#priorities) {
             if (this.getProvider(providerName).test(req)) {
-                console.log("identity provider type", providerName);
                 return providerName;
             }
         }
