@@ -1,0 +1,30 @@
+module.exports = {
+    <% if(ui){ %>
+    ui: {        
+        component: "<%- ui.component %>",
+        label: "<%- ui.label %>",
+        placeholder: "<%- ui.placeholder %>",
+        readonly: <%= ui.readonly %>,
+    },
+    <% } %>
+    <% if(model){ %>
+    model: {
+        type: <%= model.type %>,
+        <% if (model?.ref){ %>
+        ref: "<%= model.ref %>",
+        <% } %>
+        <% if (Object.hasOwn(model, 'required')){ %>
+        required: <%= model?.required ?? false %>,
+        <% } %>
+        <% if (Object.hasOwn(model, 'default')){ %>
+        default: <%= model.default %>,
+        <% } %>
+        searchable: <%= model?.searchable ?? true %>,
+        sortable: <%= model?.sortable ?? true %>,
+        safe: {
+            update: ["@owner", "root", "admin"],
+            read: ["@owner", "root", "admin"],
+        },
+    },
+    <% } %>
+};

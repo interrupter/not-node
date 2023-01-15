@@ -1,0 +1,131 @@
+{
+    "port": <%- port %>,    
+    "host": "<%- hostname.development %>",
+    "cors": [<%- cors.map(entry => `"${entry}"`).join(',') %>],
+    "template": {
+      "engine": "pug",
+      "views": "views",
+      "partialsDir": "partials",
+      "partials": {}
+    },
+    <% if (db) { %>
+    "db": {
+        <% if (db.mongoose) {%>
+      "mongoose": {
+        "uri": "mongodb://<%- db.mongoose.hostname %>/<%- db.mongoose.db %>?authSource=<%- db.mongoose.authSource %>",
+        "options": {
+          "useNewUrlParser": true,
+          "useUnifiedTopology": true,
+          "db": "<%- db.mongoose.db %>",
+          "host": "<%- db.mongoose.hostname %>",
+          "user": "<%- db.mongoose.user %>",
+          "pass": "<%- db.mongoose.pass %>",
+          "autoIndex": false
+        }
+      },
+      <% } %>
+      <% if (db.redis) { %>
+      "redis": {},
+      <% } %>
+      <% if (db.ioredis) { %>
+      "ioredis": {
+        "enableOfflineQueue": false
+      }
+      <% } %>
+    },
+    <% } %>    
+    <% if (session){ %>
+    "session": {
+      "driver": "<%- session.driver %>",
+      "secret": "<%- session.secret %>",
+      "cookie": {
+        "maxAge": <%- session.ttl %>
+      },
+      "key": "<%- session.key %>"
+    },
+    <% } %>
+    <% if (ssl) { %>
+    "ssl": {
+      "enabled": true,
+      "keys": {
+        "private": "<%- ssl.private %>",
+        "fullchain": "<%- ssl.fullchain %>",
+        "chain": "<%- ssl.chain %>"
+      }
+    },
+    <% } %>
+    "path": {
+      "static": "../static",
+      "app": "/client",
+      "dbDumps": "../../../db.dumps",
+      "front": "../front/build",      
+      "ws": "./ws"
+    },
+    "defaultUserRole": "user",    
+    "modules": {
+        <% if (modules.includes('not-ws') && ws) { %>
+      "ws": {
+        "servers": {
+          "main": {
+            "connection": {
+              "port": <%- ws.port %>,
+              "secure": <%= ws.secure %>,
+              "secret": "<%- secret %>"
+            }
+          }
+        }
+      },
+      <% } %>
+      <% if (modules.includes('not-user') && user){ %>
+      "user": {        
+        "errors":{
+          "noUserData": false,
+          "noUserWithId": false
+        },
+        "debug":{
+          "loaded": false
+        },
+        "tokenTTL": <%= user.tokenTTL %>,
+        "secret": "<%- secret %>",
+        "roles": {
+          "primary": [<%- roles.map(entry => `"${entry}"`).join(",") %>],
+          "secondary": [<%- rolesSecondary.map(entry => `"${entry}"`).join(",") %>]
+        },
+        "restrict": {
+          "registration": <%= user?.restrict?.registration ?? false %>
+        }
+      },
+      <% } %>      
+      <% if (modules.includes('not-filter') && filter){ %>
+      "filter": {
+        "size": <%= filter?.size ?? 15 %>,
+        "default": {
+          "filter": {},
+          "sorter": {
+              "_id": 1
+            },
+          "pager": {
+            "size": <%= filter?.pager?.size ?? 15 %>,
+            "skip": 0,
+            "page": 0
+          },
+          "search": ""
+        }
+      },     
+      <% } %> 
+      <% if (modules.includes('not-filter')){ %>
+      "rateLimiter": {
+        "keyPrefix": "rateLimiterMiddleware",
+        "points": 500,
+        "duration": 1
+      }
+      <% } %>      
+    },
+    "middleware": {
+        <%- modules.map(entry => `"${entry}": {}`).join(',') %>            
+    },
+    "importModulesFromNPM": [
+    <%- modules.map(entry => `"${entry}"`).join(',') %>    
+    ]
+  }
+  

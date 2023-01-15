@@ -1,0 +1,34 @@
+{
+    "hostname":"<%- hostname[__options__.ENV] %>",
+    "CSP": {
+      "connect": [
+        "'self'",
+        "*",
+        "wss:",
+        "https:",
+        "'unsafe-inline'"
+      ],
+      "default": [
+        "'self'",
+        "*",
+        "wss:",
+        "https:",
+        "'unsafe-inline'"
+      ],
+      "img": [
+        "'self'",
+        "data:"
+      ],
+      "script": [
+        "'self'",
+              "'unsafe-eval'",
+              "'unsafe-inline'"
+      ],
+      "style": [
+        "'self'",
+        "'unsafe-inline'",
+        "'unsafe-eval'"
+      ]
+    }
+  }
+  

@@ -1,0 +1,23 @@
+{
+	"apps": [{
+		"name": "<%- AppName %>",
+		"script": "./<%- AppDirName %>/app/server/index.js",
+		"node_args": [
+		<% nodeArgs.forEach(function(nodeArg, index){ %>
+			"<%- nodeArg %>"<%- (nodeArgs.length - 1 > index)?',':'' %>
+		<% }); %>
+		],
+		"watch": <%- watch?'true':'false' %>,
+		"ignore_watch": [
+			<% ignoreWatchList.forEach(function(ignorePath, index){ %>
+				"<%- ignorePath %>"<%- (ignoreWatchList.length - 1 > index)?',':'' %>
+			<% }); %>
+		],
+		"exec_mode": "fork",
+		"env": {
+			<% envs.forEach(function(env, index){ %>
+				"<%- env.name %>": "<%- env.value %>"<%- (envs.length - 1 > index)?',':'' %>
+			<% }); %>
+		}
+	}]
+}

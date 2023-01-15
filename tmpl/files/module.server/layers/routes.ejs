@@ -1,0 +1,50 @@
+const { MODULE_NAME } = require("../const");
+const MODEL_NAME = "<%- ModelName %>";
+const notNode = require("not-node");
+
+const {
+    //	say,
+    //	config,
+    //	Log,
+    before,
+    after,
+    getLogic,
+    //	getModel,
+    //	getModelSchema,
+} = notNode.Bootstrap.notBootstrapRoute({
+    target: module,
+    MODEL_NAME,
+    MODULE_NAME,
+    defaultAccessRule: true,
+});
+
+const <%- ModelName %>GenericRoute = notNode.Generic.GenericRoute({
+    before, //<-this prepares `prepared`
+    after,
+    getLogic,
+});
+
+class <%- ModelName %>Route extends <%- ModelName %>GenericRoute {
+    <% if(Object.keys(actions).length){ %>
+        <% for(let actionName in actions) { %>
+    static async <%- actionName %>(
+        req, res, next, //standart express routes objects
+        prepared //extracted by `before` if form class exists
+    ) {
+        <% if (layers.includes('forms') && layers.includes('logics')){ %>
+        return await getLogic().<%- actionName %>({ ...prepared });
+        <% } %>
+        
+        <% if (layers.includes('forms') && !layers.includes('logics')){ %>
+        return {...prepared};
+        <% } %>
+
+        <% if (!layers.includes('forms') && layers.includes('logics')){ %>
+        return await getLogic().<%- actionName %>();
+        <% } %>
+    }
+    <% } %>   
+    <% } %>   
+}
+
+module.exports = <%- ModelName %>Route;

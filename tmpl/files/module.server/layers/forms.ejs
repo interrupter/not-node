@@ -1,0 +1,49 @@
+const { MODULE_NAME } = require("../const");
+//DB related validation tools
+const Form = require("not-node").Form;
+//not-node
+const getIP = require("not-node").Auth.getIP;
+//form
+const FIELDS = [
+    ["activeUser", "not-node//requiredObject"],
+    ["data", `${MODULE_NAME}//_data`],
+    ["ip", "not-node//ip"],
+];
+
+const FORM_NAME = `${MODULE_NAME}:CreateForm`;
+const USER_MODEL_NAME = "User";
+/**
+ *
+ **/
+module.exports = class CreateForm extends Form {
+    constructor({ app }) {
+        super({ FIELDS, FORM_NAME, app });
+    }
+
+    /**
+     * Extracts data
+     * @param {ExpressRequest} req expressjs request object
+     * @return {Object}        forma data
+     **/
+    extract(req) {
+        const ip = getIP(req);
+        const instructions = {
+            title: "fromBody",
+            keys: "fromBody",
+            owner: "fromBody", //req.body.owner || req.user._id.toString(),
+            ownerModel: "fromBody", //req.body.ownerModel || USER_MODEL_NAME,
+        };
+        const data = this.extractByInstructions(req, instructions);
+
+        if (!req.user.isRoot() && !req.user.isAdmin()) {
+            data.owner = req.user._id.toString();
+            data.ownerModel = USER_MODEL_NAME;
+        }
+
+        return {
+            data,
+            activeUser: req.user,
+            ip,
+        };
+    }
+};

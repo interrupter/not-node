@@ -1,0 +1,32 @@
+const notNode = require("not-node");
+const { notValidationError } = require("not-error");
+
+module.exports = async (
+    /**
+    *   Values to validate in form
+    */
+    {owner, ownerModel, vals, to , validate }, 
+    /**
+    * special container to pass around global validation libs, CONSTs and inject other entities
+    */
+    validationEnvs
+    ) => {
+    //some preparations
+    if (
+        //vals checks
+    ) {
+        throw new notValidationError(
+            "<%- ModuleName %>:validation_error",
+            {
+                //vals: ["%- ModuleName %>:vals_should_be_valid"],
+            },
+            undefined, //no source error, its custom exception
+            {
+                //information
+                //vals,
+                //owner,
+                //ownerModel
+            }
+        );
+    }
+};

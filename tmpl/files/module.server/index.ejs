@@ -1,0 +1,8 @@
+const { generatePaths } = require("not-node").Common;
+
+const COMPONENTS = [<%- moduleLayers.map(entry => `"${entry}"`).join(',') %>];
+
+module.exports = {
+    name: require("./src/const").MODULE_NAME,
+    paths: generatePaths(COMPONENTS, __dirname + "/src"),
+};

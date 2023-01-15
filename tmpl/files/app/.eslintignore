@@ -1,0 +1,4 @@
+node_modules/**
+coverage/**
+app/static/**
+app/server/views/**

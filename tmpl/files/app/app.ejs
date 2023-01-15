@@ -1,0 +1,22 @@
+const notNode = require("not-node");
+
+const Init = require("not-node").Init,
+    path = require("path"),
+    manifest = require("./../../project.manifest.json");
+
+module.exports = () => {
+    const options = {
+        pathToApp: path.join(__dirname),
+        pathToNPM: path.join(__dirname, "../../node_modules"),
+        routesPath: path.join(__dirname, "./routes"),
+        indexRoute: require("./routes/site.js").index,
+    };
+
+    const additional = {
+        pre({ initSequence }) {
+            initSequence.remove("InitMonitoring");
+        },
+    };
+
+    Init.run({ options, manifest, additional });
+};

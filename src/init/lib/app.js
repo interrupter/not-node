@@ -5,6 +5,8 @@ const logger = require("not-log");
 const log = logger(module, "not-node//init//app");
 const { notErrorReporter } = require("not-error");
 
+const CONST_CORE_PATH = path.join(__dirname, "../../core");
+
 module.exports = class InitApp {
     static AppConstructor = notAppConstructor;
     static ReporterConstructor = notErrorReporter;
@@ -35,7 +37,7 @@ module.exports = class InitApp {
 
     static async initCore({ config, options, master, emit }) {
         await emit("app.initCore.pre", { config, options, master });
-        master.getApp().importModuleFrom(path.join(__dirname, "../../core"));
+        master.getApp().importModuleFrom(CONST_CORE_PATH);
         await emit("app.initCore.post", { config, options, master });
     }
 
@@ -44,12 +46,8 @@ module.exports = class InitApp {
         master.getApp().importModulesFrom(config.get("modulesPath"));
         if (Array.isArray(config.get("importModulesFromNPM"))) {
             config.get("importModulesFromNPM").forEach((modName) => {
-                master
-                    .getApp()
-                    .importModuleFrom(
-                        path.join(config.get("npmPath"), modName),
-                        modName
-                    );
+                const modPath = path.join(config.get("npmPath"), modName);
+                master.getApp().importModuleFrom(modPath, modName);
             });
         }
         await emit("app.importModules.post", { config, options, master });

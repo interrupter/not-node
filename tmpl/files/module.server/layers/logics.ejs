@@ -1,0 +1,73 @@
+const MODEL_NAME = "<%- ModelName %>";
+
+const { MODULE_NAME } = require("../const.js");
+const notNode = require("not-node");
+
+const {
+    Log,
+    LogAction,
+    say,
+    phrase,
+    config,
+    getModel,
+    getModelSchema,
+    getLogic,
+    getModelUser,
+} = notNode.Bootstrap.notBootstrapLogic({
+    target: module,
+    MODEL_NAME,
+    MODULE_NAME,
+});
+
+const populateBuilders = {};
+
+const <%- ModelName %>GenericLogic = notNode.Generic.GenericLogic({
+    MODEL_NAME,
+    MODULE_NAME,
+    Log,
+    LogAction,
+    say,
+    phrase,
+    config,
+    getModel,
+    getModelSchema,
+    getLogic,
+    getModelUser,
+    populateBuilders,
+});
+
+module.exports.thisLogicName = MODEL_NAME;
+
+class <%- ModelName %>Logic extends <%- ModelName %>GenericLogic {
+    <% if(Object.keys(actions).length){ %>
+    <% for(let actionName in actions) { %>
+        static async <%- actionName %>({ targetId, activeUser, ip, root, shouldOwn, data }) {
+            const action = "<%- actionName %>";
+            Log.debug(
+                `${MODULE_NAME}//Logic//${MODEL_NAME}//${action}`,
+                targetId,
+                ip,
+                root
+            );
+            
+            const results = await getModel().<%- actionName %>(
+                targetId,  
+                activeUser._id,              
+                data
+            );           
+
+            LogAction({
+                action,
+                by: activeUser._id,
+                role: activeUser.role,
+                ip,
+                root,
+                shouldOwn,
+            });
+            return results;
+        }
+    <% } %>
+    <% } %>
+}
+
+module.exports[MODEL_NAME] = <%- ModelName %>Logic;

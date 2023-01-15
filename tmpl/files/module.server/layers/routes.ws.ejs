@@ -1,0 +1,29 @@
+const notNode = require("not-node");
+const { MODULE_NAME } = require("../const");
+const MODEL_NAME = "<%- ModelName %>";
+
+const getLogic = () =>
+    notNode.Application.getLogic(`${MODULE_NAME}//${MODEL_NAME}`);
+
+
+async function someAction({ data, client }) {
+    return await getLogic().getData({
+        data,
+        activeUser: client.identity,
+        ip: client.getIP(),
+        root: false,
+    });
+}
+
+module.exports = {
+    servers: {
+        main: {
+            request: {
+                someAction
+            },
+            event:{
+
+            }
+        },
+    },
+};

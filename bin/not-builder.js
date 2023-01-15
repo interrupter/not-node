@@ -666,7 +666,8 @@ async function build_Server(pathToRoot, roles, targetName, targetManifest) {
                 },
                 rollupFile
             );
-            let result = child_process.execFileSync(
+            //let result =
+            child_process.execFileSync(
                 "node",
                 [opts.rollup, "-c", rollupFile],
                 {
@@ -685,13 +686,10 @@ async function build_Server(pathToRoot, roles, targetName, targetManifest) {
 }
 
 //loading manifest file
-try {
-    console.log("config path", configName);
-    config = lib.getConfReader(configName);
-} catch (e) {
-    console.error(e);
-    process.exit(1);
-}
+
+console.log("config path", configName);
+config = lib.getConfReader(configName);
+
 //searchig for targets
 if (config.get("targets") && Object.keys(config.get("targets")).length > 0) {
     //cycling through targets

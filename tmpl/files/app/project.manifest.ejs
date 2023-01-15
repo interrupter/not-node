@@ -1,0 +1,23 @@
+{
+	"name": "<%- AppName %>",
+	"targets": {
+		"server": {
+			"name": "<%- AppName %>",
+			"roles": [<% roles.forEach(function(role, index){ %>"<%- role %>"<%- (roles.length - 1 > index)?',':'' %><% }); %>],
+			"builder": "server",
+			"root": "app/front/",
+			"src": "app/front/",
+			"build": "app/front/build/",
+			"index": "app/front/index.!.js",
+			"rollup": "app/front/rollup.!.js",
+			"modules": {
+				"serverModulesDir": "app/server/modules",
+				"frontModulesDir": "app/front/src",
+				"npm": {
+                    <% modules.forEach(function(module, index){ %>"<%- module %>": {}<%- (modules.length - 1 > index)?',':'' %>
+                    <% }); %>					
+				}
+			}
+		}
+	}
+}
