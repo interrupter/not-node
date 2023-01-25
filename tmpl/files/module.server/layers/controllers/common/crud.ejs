@@ -1,0 +1,95 @@
+import Validators from "../common/validators.js";
+import { Frame } from "not-bulma";
+const { notCRUD } = Frame;
+
+const MODULE_NAME = "";
+const MODEL_NAME = "<%- ModelName %>";
+
+const LABELS = {
+    plural: "<%- `${ModuleName}:${modelName}_label_plural` %>",
+    single: "<%- `${ModuleName}:${modelName}_label_single` %>",
+};
+
+class nc<%- ModelName %>Common extends notCRUD {
+    static MODULE_NAME = MODULE_NAME;
+    static MODEL_NAME = MODEL_NAME;
+    constructor(app, params) {
+        super(app, `${MODULE_NAME}.${MODEL_NAME}`);
+        this.setModuleName(MODULE_NAME);
+        this.setModelName(MODEL_NAME);
+        this.setOptions("names", LABELS);
+        this.setOptions("Validators", Validators);
+        this.setOptions("params", params);
+        this.setOptions("list", {
+            interface: {
+                combined: true,
+                factory: this.make.<%- modelName %>,
+            },
+            endless: false,
+            preload: {},
+            sorter: {
+                id: -1,
+            },
+            showSearch: true,
+            idField: "_id",
+            fields: [
+                <% if (increment) { %>
+                {
+                    path: ":<%- modelName %>ID",
+                    title: "ID",
+                    searchable: true,
+                    sortable: true,
+                },
+                <% } %>
+                <% for (let fieldName of fields){ %>
+                {
+                    path: ":<%- fieldName %>",
+                    title: "<%- `${ModuleName}:${modelName}_field_${fieldName}_label` %>",
+                    searchable: true,
+                    sortable: true,
+                },
+                <% } %>
+                {
+                    path: ":_id",
+                    title: "Действия",
+                    type: "button",
+                    preprocessor: (value) => {
+                        return [
+                            {
+                                action: this.goDetails.bind(this, value),
+                                title: "Подробнее",
+                                size: "small",
+                            },
+                            {
+                                action: this.goUpdate.bind(this, value),
+                                title: "Изменить",
+                                size: "small",
+                            },
+                            {
+                                action: this.goDelete.bind(this, value),
+                                color: "danger",
+                                title: "Удалить",
+                                size: "small",
+                                style: "outlined",
+                            },
+                        ];
+                    },
+                },
+            ],
+        });
+
+        this.start();
+        return this;
+    }
+
+    createDefault() {        
+        let newRecord = this.make[this.getModelName()]({
+            _id: null,
+            <% for (let fieldName of fields){ %><%- fieldName %>: null,
+            <% } %>
+        });
+        return newRecord;
+    }
+}
+
+export default nc<%- ModelName %>Common;

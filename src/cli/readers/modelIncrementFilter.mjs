@@ -41,9 +41,9 @@ export default (inquirer, modelConfig) => {
         ])
         .then((answer) => {
             if (answer.enabled) {
-                return collectData(inquirer, modelConfig.fields);
-            } else {
                 return false;
+            } else {
+                return collectData(inquirer, modelConfig.fields);
             }
         });
 };

@@ -1,0 +1,60 @@
+const
+  notNode = require('not-node'),
+  Auth = require('not-node').Auth,
+  header = require('../libs/headers.js'),
+  siteRouter = require('./site');
+
+module.exports = function(app) {
+
+  //можно запросить манифест для клиент-серверного обмена
+  app.get('/api/manifest', function(req, res) {
+    header.setForFile(res);
+    console.log('manifest');
+    res.status(200).json(notNode.Application.getManifest(req));
+  });
+  //
+
+  app.get('/', (req, res, next) => {
+      if (Auth.isUser(req)) {
+        res.redirect('/dashboard');
+      }else{
+        next();
+      }
+    },
+    siteRouter.index
+  );
+
+  <% if (modules.includes('not-user')){ %>
+  app.get('/login', (req, res, next) => {
+      if (Auth.isUser(req)) {
+        res.redirect('/');
+      }else{
+        next();
+      }
+    },
+    siteRouter.login
+  );
+
+  app.get('/register', (req, res, next) => {
+      if (Auth.isUser(req)) {
+        res.redirect('/');
+      }else{
+        next();
+      }
+    },
+    siteRouter.register
+  );
+<% } %>
+
+  app.get('/dashboard*',
+    (req, res, next) => {
+      if (Auth.isUser(req)) {
+        next();
+      } else {
+        res.redirect('/login');
+      }
+    },
+    siteRouter.dashboard
+  );
+
+};

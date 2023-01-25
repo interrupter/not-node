@@ -5,10 +5,10 @@ const getIP = require("not-node").Auth.getIP;
 const FIELDS = [
     ["targetId", { required: true }, "not-node//objectId"],
     ["activeUser", "not-node//requiredObject"],
-    ["data", `${MODULE_NAME}//_data`],
+    ["data", `${ModuleName}//_${ModelName}_data`],  //sub forms validators should start with underscore
     ["ip", "not-node//ip"],
 ];
-const FORM_NAME = `${MODULE_NAME}:<%- ModelName %>UpdateForm`;
+const FORM_NAME = `${ModuleName}:<%- ModelName %>UpdateForm`;
 
 module.exports = class <%- ModelName %>UpdateForm extends Form {
     constructor({ app }) {

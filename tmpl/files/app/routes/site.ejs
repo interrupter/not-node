@@ -1,0 +1,151 @@
+const
+	notError = require('not-error').notError,
+	config = require('not-config').createReader(),
+	notNode = require('not-node'),
+	header = require('../libs/headers.js');
+
+function getRole(req){
+	if(notNode.Auth.isUser(req) && req.user){
+		return req.user.getPrimaryRole(notNode.Application.getEnv('rolesPriority'));
+	}else{
+		return notNode.Auth.DEFAULT_USER_ROLE_FOR_GUEST;
+	}
+}
+
+function getPageOptions(req, res){
+  const role = getRole(req);
+  return {
+    title: 			res?.options?.APP_TITLE ?? "<%- AppName %>",
+    desription: res?.options?.APP_DESCRIPTION ?? "<%- AppDescription %>",
+    rand: Math.random(),
+    host: config.get('fullServerName'),
+    role,
+		authenticated: role !== notNode.Auth.DEFAULT_USER_ROLE_FOR_GUEST
+  };
+}
+
+exports.index = function (req, res, next) {
+	notNode.Application.logger.debug('index '+ notNode.Auth.getIP(req) + ' : ' + req.originalUrl);
+  if (req.originalUrl.indexOf('/api/') == 0) {
+    return next();
+  }
+	header.setForFile(res);
+  let layout = 'site';  
+  try {
+    let opts = getPageOptions(req,res);
+    res.render(layout, opts, (err, html) => {
+      if (err) {
+        notNode.Application.logger.error(['rendering error', err]);
+        notNode.Application.report(new notError('rendering error', {
+          ...opts,
+          session: req.session.id
+        }, err));
+        res.status(500).end();
+      } else {
+        res.status(200).send(html).end();
+      }
+    });
+  } catch (e) {
+    let err = new notError('Index page generation error', {}, e);
+    notNode.Application.logger.error(err);
+    notNode.Application.report(err);
+		res.status(500).end();
+  }
+};
+
+<% if (modules.includes('not-user')) { %>
+exports.login = (req, res) => {
+  try {
+    notNode.Application.logger.debug(notNode.Auth.getIP(req) + ' : ' + req.originalUrl);
+    if (req.originalUrl.indexOf('/api/') == 0) {
+      return next();
+    }
+    if (req.user) {
+      return res.redirect('/');
+    } else {
+			header.setForFile(res);
+			let layout = 'login';	    
+      let opts = getPageOptions(req, res);
+      res.render(layout, opts, (err, html) => {
+        if (err) {
+          notNode.Application.logger.error(['rendering error', err]);
+          notNode.Application.report(new notError('rendering error', {
+            ...opts,
+            session: req.session.id
+          }, err));
+          res.status(500).end();
+        } else {
+          res.status(200).send(html).end();
+        }
+      });
+    }
+  } catch (e) {
+    let err = new notError('Login page generation error', {}, e);
+    notNode.Application.logger.error(err);
+    notNode.Application.report(err);
+		res.status(500).end();
+  }
+}
+
+exports.register = (req, res) => {
+  try {
+    notNode.Application.logger.debug(notNode.Auth.getIP(req) + ' : ' + req.originalUrl);
+    if (req.originalUrl.indexOf('/api/') == 0) {
+      return next();
+    }
+    if (req.user) {
+      return res.redirect('/');
+    } else {
+			header.setForFile(res);
+			let layout = 'register';
+      let opts = getPageOptions(req, res);
+      res.render(layout, opts, (err, html) => {
+        if (err) {
+          notNode.Application.logger.error(['rendering error', err]);
+          notNode.Application.report(new notError('rendering error', {
+            ...opts,
+            session: req.session.id
+          }, err));
+          res.status(500).end();
+        } else {
+          res.status(200).send(html).end();
+        }
+      });
+    }
+  } catch (e) {
+    let err = new notError('Login page generation error', {}, e);
+    notNode.Application.logger.error(err);
+    notNode.Application.report(err);
+		res.status(500).end();
+  }
+}
+<% } %>
+
+exports.dashboard = (req, res, next) => {
+  try {
+		notNode.Application.logger.debug(notNode.Auth.getIP(req), 'dashboard');
+			if (req.originalUrl.indexOf('/api/') == 0) {
+	      return next();
+	    }
+	    let layout = 'dashboard';
+	    let opts = getPageOptions(req, res);
+	    res.render(layout, opts, (err, html) => {
+	      if (err) {
+	        notNode.Application.logger.error(['rendering error', err]);
+	        notNode.Application.report(new notError('rendering error', {
+	          ...opts,
+	          session: req.session.id
+	        }, err));
+	        res.status(500).end();
+	      } else {
+	        res.status(200).send(html).end();
+	      }
+	    });
+
+  } catch (e) {
+    let err = new notError('Dashboard page generation error', {}, e);
+    notNode.Application.logger.error(err);
+    notNode.Application.report(err);
+		res.status(500).end();
+  }
+}

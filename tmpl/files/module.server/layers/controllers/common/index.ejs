@@ -1,0 +1,59 @@
+import main from "../common/ws.client.main.js";
+
+<% for (let {ModelName} of entities){ %>
+import nc<%- {ModelName} %> from "./nc<%- {ModelName} %>.js";
+<% } %>
+
+const wsc = {
+    main,
+};
+
+const uis = {};
+
+const services = {};
+
+let manifest = {
+    router: {
+        manifest: [
+            <% for (let {ModelName} of entities){ %>
+            nc<%- {ModelName} %>.getRoutes(),
+            <% } %>
+        ],
+    },
+    menu: {
+        top: {
+            items: [
+                /*
+                {
+                    id: "itemId",
+                    section: "sectionId",
+                    title: "Item title",
+                },
+                */
+            ],
+        },
+        side: {
+            sections: [
+                /*
+                {
+                    id: "sectionId",                
+                    title: "Section title",
+                },
+                */
+            ],
+            items: [
+                /*
+                {
+                    priority: 10, //higher goes on top
+                    id: "sectionId.item",
+                    section: "sectionId",
+                    title: "Item title",
+                    url: "/some/localUrl",
+                },
+                */                
+            ],
+        },
+    },
+};
+
+export { manifest, wsc, services, uis};

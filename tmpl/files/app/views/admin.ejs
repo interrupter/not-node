@@ -1,0 +1,19 @@
+doctype html
+html.no-js(lang="ru-RU")
+  head
+    title Админка
+    meta(name="keywords" content="")
+    meta(name="description" content="")
+    meta(name="author" content="")
+    include admin/head.pug
+  body
+    nav(class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0")
+      a(class="navbar-brand col-sm-3 col-md-2 mr-0" href="/dashboard") Reporter
+      ul(class="navbar-nav px-3")
+        li(class="nav-item text-nowrap")
+          a(class="nav-link" n-href="/logout") Выход
+    div.container-fluid
+      div.row
+        include admin/menu.pug
+        main(role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4 main-container")
+    include admin/foot.pug

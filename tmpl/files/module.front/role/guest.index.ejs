@@ -1,0 +1,45 @@
+import ncInit from "../../common/ncInit";
+
+let manifest = {
+    environment: "guest",
+    router: {
+        manifest: [],
+    },
+    crud: {
+        containerSelector: ".main-container",
+    },
+    modules: {
+        user: {
+            loginFormContainerSelector: ".main-container",
+            registerFormContainerSelector: ".main-container",
+        },
+    },
+    initController: ncInit,
+    menu: {
+        top: {
+            toggleSelector: ".navbar-burger",
+            sections: [],
+            items: [
+                {
+                    title: "Вход",
+                    url: "/login",
+                    priority: 10,
+                    showOnTouch: true,
+                    type: "button",
+                    place: "start",
+                } , {
+                    id: 'register',
+                    title: 'Регистрация',
+                    url: '/register',
+                    type:       'button',
+                    priority: 11,
+                    showOnTouch:true,
+				    place: 'start'
+                },
+            ],
+        },
+    },
+};
+
+ 
+export { ncInit, manifest };

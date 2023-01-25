@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 const TEMPLATE_OPTIONS = "__options__";
 
 const VAR_PREFIX = "__";
@@ -26,12 +25,15 @@ import * as Renderers from "../src/cli/renderers/index.mjs";
 //file system structure
 //directories
 //files and information how to render them from which template and with what args with readers names
-import ApplicationStructure from "../tmpl/dir_structures/app.mjs";
-import ApplicationServerStructure from "../tmpl/dir_structures/server.mjs";
-import ApplicationFrontStructure from "../tmpl/dir_structures/front.mjs";
-import ApplicationStaticStructure from "../tmpl/dir_structures/static.mjs";
+import ApplicationStructure from "../tmpl/dirs/app.mjs";
+import ApplicationServerStructure from "../tmpl/dirs/server.mjs";
+import ApplicationFrontStructure from "../tmpl/dirs/front.mjs";
+import ApplicationStaticStructure from "../tmpl/dirs/static.mjs";
 
-import ApplicationModuleServerStructure from "../tmpl/dir_structures/module.server.mjs";
+import ApplicationModuleServerStructure from "../tmpl/dirs/module.server.mjs";
+import ApplicationModuleServerControllersCommonStructure from "../tmpl/dirs/module.server.controllers.common.mjs";
+
+import ApplicationModuleFrontStructure from "../tmpl/dirs/module.front.mjs";
 
 import { firstLetterToLower } from "../src/common.js";
 
@@ -40,6 +42,9 @@ const ApplicationSubStructures = {
     front: ApplicationFrontStructure,
     static: ApplicationStaticStructure,
     "module.server": ApplicationModuleServerStructure,
+    "module.server.controllers.common":
+        ApplicationModuleServerControllersCommonStructure,
+    "module.front": ApplicationModuleFrontStructure,
 };
 //path to various templates
 const PATH_TMPL = resolve(__dirname, "../tmpl/files");
@@ -193,7 +198,7 @@ async function createServerModule(modules_dir, config) {
     const moduleDir = resolve(modules_dir, ModuleName);
     const moduleConfig = { ...config, moduleName, ModuleName };
     await createDir(moduleDir);
-    console.log(JSON.stringify(moduleConfig, null, 4));
+    //console.log(JSON.stringify(moduleConfig, null, 4));
     await createDirContent(
         moduleDir,
         ApplicationSubStructures["module.server"],
@@ -202,17 +207,33 @@ async function createServerModule(modules_dir, config) {
     const layersList = moduleConfig.moduleLayers;
     await createLayersDirs(modules_dir, layersList, ModuleName);
     //list of entities and its presence thru all selected layers
-
+    let entitiesList = [];
     if (entitiesInLayers(layersList)) {
+        //should collect all first, to have full list of items for index files imports
         while (await Readers.isUserNeedCreateEntity(inquirer)) {
             const entityData = await Readers.entityData(
                 inquirer,
                 config,
                 layersList
             );
+            entitiesList.push(entityData);
+        }
+        for (let entityData of entitiesList) {
             await renderEntityFiles(
                 resolve(moduleDir, "./src"),
                 entityData,
+                moduleConfig
+            );
+        }
+        if (layersList.includes("controllers")) {
+            await renderServerContollersIndexes(
+                resolve(moduleDir, "./src"),
+                entitiesList,
+                moduleConfig
+            );
+            await renderServerControllersCommons(
+                resolve(moduleDir, "./src/controllers"),
+                entitiesList,
                 moduleConfig
             );
         }
@@ -221,18 +242,87 @@ async function createServerModule(modules_dir, config) {
 
 async function renderEntityFiles(module_src_dir, data, config) {
     for (let layerName of data.layers) {
-        await Renderers[layerName](
-            resolve(module_src_dir, `./${layerName}`),
-            data,
+        if (Object.hasOwn(Renderers, layerName)) {
+            await Renderers[layerName](
+                resolve(module_src_dir, `./${layerName}`),
+                data,
+                config,
+                renderFile,
+                PATH_TMPL,
+                createDir
+            );
+        } else {
+            console.error("No renderer for layer: ", layerName);
+        }
+    }
+}
+
+async function renderServerContollersIndexes(
+    module_src_dir,
+    entitiesData,
+    config
+) {
+    const subDirList = [...config.roles];
+    for (let dirName of subDirList) {
+        await Renderers.controllersIndex(
+            resolve(module_src_dir, `./controllers/${dirName}`),
+            entitiesData,
             config,
             renderFile,
-            PATH_TMPL
+            PATH_TMPL,
+            createDir
         );
     }
 }
 
+async function renderServerControllersCommons(
+    module_src_dir,
+    entitiesData,
+    config
+) {
+    const dirPath = resolve(module_src_dir, `./common`);
+    await createDir(dirPath);
+    await createDirContent(
+        dirPath,
+        ApplicationModuleServerControllersCommonStructure,
+        {}
+    );
+    await Renderers.controllersCommons(
+        dirPath,
+        entitiesData,
+        config,
+        renderFile,
+        PATH_TMPL
+    );
+}
+
 async function createFrontModule(modules_dir, config) {
-    return;
+    await createDir(modules_dir);
+    await createDirContent(
+        modules_dir,
+        ApplicationSubStructures["module.front"],
+        config
+    );
+    for (let role of config.roles) {
+        await createDir(resolve(modules_dir, role));
+        const targetFrontModuleDir = resolve(modules_dir, role, "main");
+        await createDir(targetFrontModuleDir);
+        if (role !== "guest") {
+            await Renderers.frontModuleGuestMain(
+                targetFrontModuleDir,
+                config,
+                renderFile,
+                PATH_TMPL
+            );
+        } else {
+            await Renderers.frontModuleRoleMain(
+                targetFrontModuleDir,
+                config,
+                renderFile,
+                PATH_TMPL
+            );
+        }
+    }
 }
 
 program
@@ -242,11 +332,11 @@ program
     )
     .description("create application in target directory")
     .action(async (opts) => {
-        //        console.log(opts);
         //      console.log("create command called :" + opts.dir);
         if (!isAbsolute(opts.dir)) {
             opts.dir = resolve(CWD, opts.dir);
         }
+        console.log("creating application in", opts.dir);
         const AppConfig = {};
         //
         AppConfig.AppName = await Readers.AppName(inquirer, AppConfig);
@@ -270,7 +360,7 @@ program
         while (await Readers.isUserNeedCreateServerModule(inquirer)) {
             await createServerModule(PATH_MODULES_SERVER, AppConfig);
         }
-        while (await Readers.isUserNeedCreateFrontModule(inquirer)) {
+        if (await Readers.isUserNeedCreateFrontModule(inquirer)) {
             await createFrontModule(PATH_MODULES_FRONT, AppConfig);
         }
     });

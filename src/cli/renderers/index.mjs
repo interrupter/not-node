@@ -12,3 +12,18 @@ export { fields };
 
 import models from "./models.mjs";
 export { models };
+
+import controllers from "./controllers.mjs";
+export { controllers };
+
+import controllersIndex from "./controllersIndex.mjs";
+export { controllersIndex };
+
+import controllersCommons from "./controllersCommons.mjs";
+export { controllersCommons };
+
+import frontModuleRoleMain from "./frontModuleRoleMain.mjs";
+export { frontModuleRoleMain };
+
+import frontModuleGuestMain from "./frontModuleGuestMain.mjs";
+export { frontModuleGuestMain };

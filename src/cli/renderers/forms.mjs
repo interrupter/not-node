@@ -29,4 +29,15 @@ export default async (
             { ...config, ...data }
         );
     }
+    const TMPL_FILE_PATH_DATA = resolve(PATH_TMPL, TEMPLATES_DIR, `_data.ejs`);
+    const DEST_FILE_PATH_DATA = resolve(
+        module_layer_dir,
+        `_${data.modelName}_data.js`
+    );
+    await renderEntityActionForm(
+        createFileContent,
+        TMPL_FILE_PATH_DATA,
+        DEST_FILE_PATH_DATA,
+        { ...config, ...data }
+    );
 };

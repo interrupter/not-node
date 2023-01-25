@@ -1,0 +1,29 @@
+<% for (let {ModelName} of entities){ %>
+import nc<%- ModelName %> from "./nc<%- ModelName %>.js";
+<% } %>
+
+const wsc = {};
+const uis = {};
+const services = {};
+
+let manifest = {
+    router: {
+        manifest: [
+            <% for (let {ModelName} of entities){ %>
+            nc<%- ModelName %>.getRoutes(),
+            <% } %>
+        ],
+    },
+    menu: {
+        top: {
+            sections: [],
+            items: [],
+        },
+        side: {
+            sections: [],
+            items: [],
+        },
+    },
+};
+
+export { manifest, wsc, services, uis};

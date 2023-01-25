@@ -1,0 +1,20 @@
+doctype html
+html.no-js(lang="")
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="x-ua-compatible" content="ie=edge")
+    title= title
+    meta(name="description" content=description)
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    link(rel="apple-touch-icon" href="apple-touch-icon.png")
+    link(rel="stylesheet" href=host+"/assets/font-awasome-5.13.1-all.min.css")
+    link(rel="stylesheet" href=host+"/front/"+role+".css")
+  body
+    nav(id="top-menu" class="navbar is-success" role="navigation" aria-label="dropdown navigation")
+    aside(class="menu main-menu" id="side-menu")
+    main
+      section(class="section main-container")
+        footer(class="footer")
+          div(class="content has-text-centered")
+            p footer
+    script(src="/front/"+role+".js")

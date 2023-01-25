@@ -1,134 +1,135 @@
 {
-  "name": "not-node",
-  "version": "6.0.8",
-  "description": "node complimentary part for client side notFramework.",
-  "main": "index.js",
-  "scripts": {
-    "test": "./node_modules/.bin/mocha --require mocha-suppress-logs --reporter spec  --timeout 12000",
-    "lint": "./node_modules/.bin/eslint ./src --fix",
-    "pretest": "./node_modules/.bin/eslint ./src",
-    "docs": "./node_modules/.bin/jsdoc -c jsdoc.json",
-    "js-watch": "watch 'npm run cover' ./src ./test --interval=5",
-    "watch:build:cover:dev": "npm-run-all --parallel js-watch",
-    "cover": "nyc npm test"
-  },
-  "bin": {
-    "not-node": "./bin/not-node.js",
-    "not-cli": "./bin/not-cli.mjs",
-    "not-builder": "./bin/not-builder.js"
-  },
-  "engines": {
-    "node": ">14.9"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/interrupter/not-node.git"
-  },
-  "keywords": [
-    "notFramework",
-    "node"
-  ],
-  "author": "interrupter <levoe.milo@mail.ru> (http://github.com/interrupter)",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/interrupter/not-node/issues"
-  },
-  "dependencies": {
-    "body-parser": "^1.20.1",
-    "commander": "^9.5.0",
-    "compression": "^1.7.4",
-    "connect-mongodb-session": "^3.1.1",
-    "connect-redis": "^6.1.3",
-    "cors": "^2.8.5",
-    "deep-diff": "*",
-    "deepmerge": "^4.2.2",
-    "ejs": "^3.1.8",
-    "escape-string-regexp": "*",
-    "express": "^4.18.2",
-    "express-fileupload": "^1.4.0",
-    "express-session": "^1.17.3",
-    "fs-extra": "*",
-    "generate-password": "^1.7.0",
-    "helmet": "^6.0.1",
-    "inquirer": "^9.1.4",
-    "jsonwebtoken": "^9.0.0",
-    "lower-case": "*",
-    "method-override": "^3.0.0",
-    "mock-require": "^3.0.3",
-    "mongoose": "*",
-    "mongoose-validator": "*",
-    "nconf": "*",
-    "not-config": "^0.1.5",
-    "not-error": "^0.2.5",
-    "not-filter": "*",
-    "not-inform": "^0.0.28",
-    "not-locale": "*",
-    "not-log": "^0.0.20",
-    "not-monitor": "^0.0.13",
-    "not-path": "^1.0.4",
-    "not-validation": "^0.0.8",
-    "rate-limiter-flexible": "^2.4.1",
-    "redis": "^4.5.1",
-    "redlock": "^5.0.0-beta.2",
-    "rfdc": "^1.3.0",
-    "rmdir": "^1.2.0",
-    "serve-static": "*",
-    "simple-git": "*",
-    "validator": "*",
-    "yargs": "*"
-  },
-  "devDependencies": {
-    "babel-eslint": "^10.1.0",
-    "chai": "*",
-    "chai-as-promised": "*",
-    "eslint": "^8.31.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-sonarjs": "^0.17.0",
-    "ink-docstrap": "^1.3.2",
-    "ioredis": "^5.2.4",
-    "jsdoc": "^4.0.0",
-    "mocha": "*",
-    "mocha-suppress-logs": "^0.3.1",
-    "mongodb-memory-server": "^8.11.0",
-    "npm-run-all": "^4.1.5",
-    "nyc": "^15.1.0",
-    "retire": "^3.2.1"
-  },
-  "homepage": "https://github.com/interrupter/not-node#readme",
-  "nyc": {
-    "include": [
-      "index.js",
-      "src/**/**/**.js"
-    ],
-    "exclude": [
-      "tests/**/**/**/**.js"
-    ],
-    "reporter": [
-      "html"
-    ],
-    "check-coverage": false,
-    "per-file": true,
-    "lines": 95,
-    "statements": 95,
-    "functions": 95,
-    "branches": 95,
-    "watermarks": {
-      "lines": [
-        80,
-        95
-      ],
-      "functions": [
-        80,
-        95
-      ],
-      "branches": [
-        80,
-        95
-      ],
-      "statements": [
-        80,
-        95
-      ]
-    }
-  }
+	"name": "not-node",
+	"version": "6.0.8",
+	"description": "node complimentary part for client side notFramework.",
+	"main": "index.js",
+	"scripts": {
+		"test": "./node_modules/.bin/mocha --require mocha-suppress-logs --reporter spec  --timeout 12000",
+		"lint": "./node_modules/.bin/eslint ./src --fix",
+		"pretest": "./node_modules/.bin/eslint ./src",
+		"docs": "./node_modules/.bin/jsdoc -c jsdoc.json",
+		"js-watch": "watch 'npm run cover' ./src ./test --interval=5",
+		"watch:build:cover:dev": "npm-run-all --parallel js-watch",
+		"cover": "nyc npm test",
+		"clear:playground": "rm -rf ./playground"
+	},
+	"bin": {
+		"not-node": "./bin/not-node.js",
+		"not-cli": "./bin/not-cli.mjs",
+		"not-builder": "./bin/not-builder.js"
+	},
+	"engines": {
+		"node": ">14.9"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/interrupter/not-node.git"
+	},
+	"keywords": [
+		"notFramework",
+		"node"
+	],
+	"author": "interrupter <levoe.milo@mail.ru> (http://github.com/interrupter)",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/interrupter/not-node/issues"
+	},
+	"dependencies": {
+		"body-parser": "^1.20.1",
+		"commander": "^9.5.0",
+		"compression": "^1.7.4",
+		"connect-mongodb-session": "^3.1.1",
+		"connect-redis": "^6.1.3",
+		"cors": "^2.8.5",
+		"deep-diff": "*",
+		"deepmerge": "^4.2.2",
+		"ejs": "^3.1.8",
+		"escape-string-regexp": "*",
+		"express": "^4.18.2",
+		"express-fileupload": "^1.4.0",
+		"express-session": "^1.17.3",
+		"fs-extra": "*",
+		"generate-password": "^1.7.0",
+		"helmet": "^6.0.1",
+		"inquirer": "^9.1.4",
+		"jsonwebtoken": "^9.0.0",
+		"lower-case": "*",
+		"method-override": "^3.0.0",
+		"mock-require": "^3.0.3",
+		"mongoose": "*",
+		"mongoose-validator": "*",
+		"nconf": "*",
+		"not-config": "^0.1.5",
+		"not-error": "^0.2.5",
+		"not-filter": "*",
+		"not-inform": "^0.0.28",
+		"not-locale": "*",
+		"not-log": "^0.0.20",
+		"not-monitor": "^0.0.13",
+		"not-path": "^1.0.4",
+		"not-validation": "^0.0.8",
+		"rate-limiter-flexible": "^2.4.1",
+		"redis": "^4.5.1",
+		"redlock": "^5.0.0-beta.2",
+		"rfdc": "^1.3.0",
+		"rmdir": "^1.2.0",
+		"serve-static": "*",
+		"simple-git": "*",
+		"validator": "*",
+		"yargs": "*"
+	},
+	"devDependencies": {
+		"babel-eslint": "^10.1.0",
+		"chai": "*",
+		"chai-as-promised": "*",
+		"eslint": "^8.31.0",
+		"eslint-plugin-node": "^11.1.0",
+		"eslint-plugin-sonarjs": "^0.17.0",
+		"ink-docstrap": "^1.3.2",
+		"ioredis": "^5.2.4",
+		"jsdoc": "^4.0.0",
+		"mocha": "*",
+		"mocha-suppress-logs": "^0.3.1",
+		"mongodb-memory-server": "^8.11.0",
+		"npm-run-all": "^4.1.5",
+		"nyc": "^15.1.0",
+		"retire": "^3.2.1"
+	},
+	"homepage": "https://github.com/interrupter/not-node#readme",
+	"nyc": {
+		"include": [
+			"index.js",
+			"src/**/**/**.js"
+		],
+		"exclude": [
+			"tests/**/**/**/**.js"
+		],
+		"reporter": [
+			"html"
+		],
+		"check-coverage": false,
+		"per-file": true,
+		"lines": 95,
+		"statements": 95,
+		"functions": 95,
+		"branches": 95,
+		"watermarks": {
+			"lines": [
+				80,
+				95
+			],
+			"functions": [
+				80,
+				95
+			],
+			"branches": [
+				80,
+				95
+			],
+			"statements": [
+				80,
+				95
+			]
+		}
+	}
 }

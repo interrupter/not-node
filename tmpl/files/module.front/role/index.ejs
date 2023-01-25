@@ -1,0 +1,34 @@
+import ncInit from "../../common/ncInit";
+
+let manifest = {
+    environment: "client",
+    router: {
+        root: "/dashboard",
+        manifest: [],
+    },
+    crud: {
+        containerSelector: ".main-container",
+    },
+    modules: {
+        user: {},
+    },
+    brand: {
+        icon: {
+            src: "/img/icons/icon-w-64.png",
+            width: 48,
+            height: 28,
+        },
+        url: "/",
+    },
+    menu: {
+        side: {
+            sections: [],
+        },
+        top: {
+            sections: [],
+        },
+    },
+    initController: ncInit,
+};
+
+export { ncInit, manifest };

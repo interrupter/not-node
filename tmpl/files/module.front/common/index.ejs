@@ -1,0 +1,39 @@
+<% if(modules.includes('not-ws')){ %>
+import main from './ws.client.main.js';
+<% } %>
+
+let manifest = {
+  brand: {
+		icon: {
+			src: '/img/icons/icon-w-64.png',
+			width: 48,
+			height: 28
+		},
+    title: '<%- AppName %>',
+		url: 	'/'
+	},
+  modules:{
+    <% if(modules.includes('not-ws')){ %>
+    ws:{
+      clients:{
+        //options for ws client here
+        main: {
+          host: window.location.hostname,
+          path: 'websocket',
+          secure: true,
+          ssl: true
+        }
+      }
+    }
+    <% } %>
+  }
+};
+
+const wsc = {
+  main
+};
+
+export {
+  manifest,
+  wsc
+};

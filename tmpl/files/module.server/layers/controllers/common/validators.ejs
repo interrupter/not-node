@@ -1,0 +1,44 @@
+import notValidationError from 'not-error/src/validation.error.browser.js';
+/*
+import vVariableLength from '../../fields/validators/variableLength.js';
+const ERR_MSG_FORM_IS_DIRTY = '<%- ModuleName %>:form_is_dirty';
+const ERR_MSG_FORM_VARIABLE_SHOULD_BE_LONGER_THAN_TEN_CHARS = '<%- ModuleName %>:form_variable_should_be_longer_than_ten_chars';
+
+
+const actionName<%- ModelName %>Validation = async (data) => {
+  if (data.variable.length < 10) {
+    throw new notValidationError(ERR_MSG_FORM_VARIABLE_SHOULD_BE_LONGER_THAN_TEN_CHARS, {
+    //form wide status
+      form: [ERR_MSG_FORM_IS_DIRTY],
+      fields: {
+        //errors in fields
+        variable: [ERR_MSG_FORM_VARIABLE_SHOULD_BE_LONGER_THAN_TEN_CHARS]
+      }
+    });
+  }
+};
+
+*/
+
+const Validators = {
+  
+  //val - value of field
+  //env - resources (constants, config reader, third party libs) needed for validation and provided from module level
+  //(val:any, env: Object)=>Promise<Boolean>
+  fields: {
+    /*
+    variable: vVariableLength,
+    */
+  },
+  //form - object with form values
+  //env - resources needed for validation and provided from module level
+  //(form:Object, env: Object)=>Promise<Boolean>
+  forms: {
+    /*
+    create: [actionName<%- ModelName %>Validation],
+    update: [actionName<%- ModelName %>Validation]
+    */
+  }
+};
+
+export default Validators;

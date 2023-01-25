@@ -1,0 +1,25 @@
+import { notCommon } from "not-bulma";
+
+/*
+async function onEventHandler(payload) {
+    try {
+        //passing event through Application as a event bus
+        notCommon.getApp().emit("modelName//eventName", payload);
+    } catch (e) {
+        notCommon.error(e);
+    }
+}
+*/
+
+const main = {
+    router: {
+        routes: {
+            event: {
+                //"modelName//eventName": onEventHandler,
+
+            },
+        },
+    },
+};
+
+export default main;

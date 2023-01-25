@@ -4,7 +4,7 @@ export default (inquirer) => {
             {
                 type: "confirm",
                 name: "enabled",
-                message: "Add entity (model, logic, route)?",
+                message: "Add entity (model, logic, route, form)?",
                 default: false,
             },
         ])
