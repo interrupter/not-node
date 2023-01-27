@@ -6,7 +6,7 @@ const fs = require("fs"),
     notManifest = require("./manifest.js"),
     notModuleRegistrator = require("./registrator"),
     notModuleInitializator = require("./initializator"),
-    { objHas, mapBind, isAsync, isFunc } = require("../common");
+    { objHas, mapBind, executeObjectFunction } = require("../common");
 
 /**
  * Standart splitter of module resources paths
@@ -180,31 +180,17 @@ class notModule {
         this.manifest = new notManifest(expressApp, this.notApp, moduleName);
     }
 
-    async exec(methodName) {
+    async exec(methodName, params) {
         if (!this.module) {
             log.error(
                 `Cant exec ${methodName} in module ${this.path}, module not loaded`
             );
             return false;
         }
-        if (
-            objHas(this.module, methodName) &&
-            isFunc(this.module[methodName])
-        ) {
-            try {
-                if (isAsync(this.module[methodName])) {
-                    await this.module[methodName](this.notApp);
-                } else {
-                    this.module[methodName](this.notApp);
-                }
-                return true;
-            } catch (e) {
-                log.error(e);
-                return false;
-            }
-        } else {
-            return false;
-        }
+        await executeObjectFunction(this.module, methodName, [
+            this.notApp,
+            params,
+        ]);
     }
 
     getStatus() {

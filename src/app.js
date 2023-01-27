@@ -72,12 +72,12 @@ class notApp extends notDomain {
 
     /**
      *	Exposes routes to ExpressJS application
-     *	@param {object} 	app	ExpressJS application instance
+     *	@param {object} 	web	ExpressJS application instance
      **/
-    expose(app) {
+    expose(web) {
         this.forEachMod((modName, mod) => {
             if (typeof mod.expose === "function") {
-                mod.expose(app, modName);
+                mod.expose(web, modName);
             }
         });
     }

@@ -61,6 +61,7 @@ module.exports = class InitRoutes {
         log.info("Setting up routes...");
         master.getApp().expose(master.getServer());
         require(options.routesPath)(master.getServer(), master.getApp());
+
         master.getServer().use(serveStatic(config.get("staticPath")));
         master.getServer().use(options.indexRoute);
         master.getServer().use(

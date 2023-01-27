@@ -4,17 +4,17 @@ const
   header = require('../libs/headers.js'),
   siteRouter = require('./site');
 
-module.exports = function(app) {
+module.exports = function(web) {
 
   //можно запросить манифест для клиент-серверного обмена
-  app.get('/api/manifest', function(req, res) {
+  web.get('/api/manifest', function(req, res) {
     header.setForFile(res);
     console.log('manifest');
     res.status(200).json(notNode.Application.getManifest(req));
   });
   //
 
-  app.get('/', (req, res, next) => {
+  web.get('/', (req, res, next) => {
       if (Auth.isUser(req)) {
         res.redirect('/dashboard');
       }else{
@@ -24,29 +24,8 @@ module.exports = function(app) {
     siteRouter.index
   );
 
-  <% if (modules.includes('not-user')){ %>
-  app.get('/login', (req, res, next) => {
-      if (Auth.isUser(req)) {
-        res.redirect('/');
-      }else{
-        next();
-      }
-    },
-    siteRouter.login
-  );
 
-  app.get('/register', (req, res, next) => {
-      if (Auth.isUser(req)) {
-        res.redirect('/');
-      }else{
-        next();
-      }
-    },
-    siteRouter.register
-  );
-<% } %>
-
-  app.get('/dashboard*',
+  web.get('/dashboard*',
     (req, res, next) => {
       if (Auth.isUser(req)) {
         next();

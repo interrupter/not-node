@@ -98,6 +98,7 @@ class Init {
         } else {
             Init.config = config;
         }
+        Init.setEnv("config", config);
     }
 
     static getConfig() {

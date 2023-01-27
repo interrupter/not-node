@@ -48,3 +48,9 @@ module.exports.Application = null;
 module.exports.Bootstrap = require("./src/bootstrap");
 /** Application generic helpers */
 module.exports.Generic = require("./src/generic/index.js");
+
+/** Application stylers */
+//for page's meta information
+module.exports.notMetasStyler = require("./src/metas.js");
+//for http headers files, web pages, XHR etc
+module.exports.notHeadersStyler = require("./src/headers.js");

@@ -79,6 +79,15 @@ export default {
                     "menu.pug": {
                         tmpl: "app/views/parts/menu.ejs",
                     },
+                    "header.pug": {
+                        tmpl: "app/views/parts/header.ejs",
+                    },
+                    "header.ios.pug": {
+                        tmpl: "app/views/parts/header.ios.ejs",
+                    },
+                    "header.android.pug": {
+                        tmpl: "app/views/parts/header.android.ejs",
+                    },
                 },
             },
             "admin.pug": {
@@ -93,34 +102,6 @@ export default {
                 options: {
                     ENV: "production",
                 },
-            },
-            "login.pug": {
-                tmpl: "app/views/login.ejs",
-                args: ["hostname"],
-                options: {
-                    ENV: "production",
-                },
-            },
-            "register.pug": {
-                tmpl: "app/views/register.ejs",
-                args: ["hostname"],
-                options: {
-                    ENV: "production",
-                },
-            },
-            "site.pug": {
-                tmpl: "app/views/site.ejs",
-                args: ["hostname"],
-                options: {
-                    ENV: "production",
-                },
-            },
-        },
-    },
-    libs: {
-        content: {
-            "headers.js": {
-                tmpl: "app/libs/headers.ejs",
             },
         },
     },
