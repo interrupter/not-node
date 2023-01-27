@@ -1,18 +1,15 @@
 const
   notNode = require('not-node'),
   Auth = require('not-node').Auth,
-  header = require('../libs/headers.js'),
   siteRouter = require('./site');
 
-module.exports = function(web) {
+module.exports = (web) => {
 
-  //можно запросить манифест для клиент-серверного обмена
   web.get('/api/manifest', function(req, res) {
-    header.setForFile(res);
-    console.log('manifest');
+    notNode.notHeadersStyler.get()(req,res);    
     res.status(200).json(notNode.Application.getManifest(req));
   });
-  //
+
 
   web.get('/', (req, res, next) => {
       if (Auth.isUser(req)) {

@@ -1,43 +1,31 @@
 const
 	notError = require('not-error').notError,
-	config = require('not-config').createReader(),
-	notNode = require('not-node'),
-	header = require('../libs/headers.js');
+	notNode = require('not-node');
 
-function getRole(req){
-	if(notNode.Auth.isUser(req) && req.user){
-		return req.user.getPrimaryRole(notNode.Application.getEnv('rolesPriority'));
-	}else{
-		return notNode.Auth.DEFAULT_USER_ROLE_FOR_GUEST;
-	}
+const METAS_OVERRIDES = {
+    title: 			"<%- AppName %>",
+    desription: "<%- AppDescription %>",
+};
+
+function getMetas(req, res){
+  const styler = notNode.notMetasStyler.get();
+  return {...styler(req, res), ...METAS_OVERRIDES};
 }
 
-function getPageOptions(req, res){
-  const role = getRole(req);
-  return {
-    title: 			res?.options?.APP_TITLE ?? "<%- AppName %>",
-    desription: res?.options?.APP_DESCRIPTION ?? "<%- AppDescription %>",
-    rand: Math.random(),
-    host: config.get('fullServerName'),
-    role,
-		authenticated: role !== notNode.Auth.DEFAULT_USER_ROLE_FOR_GUEST
-  };
-}
-
-exports.index = function (req, res, next) {
+module.exports.index = function (req, res, next) {
 	notNode.Application.logger.debug('index '+ notNode.Auth.getIP(req) + ' : ' + req.originalUrl);
   if (req.originalUrl.indexOf('/api/') == 0) {
     return next();
-  }
-	header.setForFile(res);
-  let layout = 'site';  
+  }	
+  notNode.notHeadersStyler.get()(req, res)
+  const layout = 'index';  
   try {
-    let opts = getPageOptions(req,res);
-    res.render(layout, opts, (err, html) => {
+    const metas = getMetas(req, res);
+    res.render(layout, metas, (err, html) => {
       if (err) {
         notNode.Application.logger.error(['rendering error', err]);
         notNode.Application.report(new notError('rendering error', {
-          ...opts,
+          ...metas,
           session: req.session.id
         }, err));
         res.status(500).end();
@@ -53,19 +41,19 @@ exports.index = function (req, res, next) {
   }
 };
 
-exports.dashboard = (req, res, next) => {
+module.exports.dashboard = (req, res, next) => {
   try {
 		notNode.Application.logger.debug(notNode.Auth.getIP(req), 'dashboard');
 			if (req.originalUrl.indexOf('/api/') == 0) {
 	      return next();
 	    }
-	    let layout = 'dashboard';
-	    let opts = getPageOptions(req, res);
-	    res.render(layout, opts, (err, html) => {
+	    const layout = 'dashboard';
+	    const metas = getMetas(req, res);
+	    res.render(layout, metas, (err, html) => {
 	      if (err) {
 	        notNode.Application.logger.error(['rendering error', err]);
 	        notNode.Application.report(new notError('rendering error', {
-	          ...opts,
+	          ...metas,
 	          session: req.session.id
 	        }, err));
 	        res.status(500).end();

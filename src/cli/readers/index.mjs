@@ -31,8 +31,8 @@ export { init_root_user };
 import isUserNeedCreateEntity from "./isUserNeedCreateEntity.mjs";
 export { isUserNeedCreateEntity };
 
-import isUserNeedCreateFrontModule from "./isUserNeedCreateFrontModule.mjs";
-export { isUserNeedCreateFrontModule };
+import isUserNeedFrontModuleBootstrap from "./isUserNeedFrontModuleBootstrap.mjs";
+export { isUserNeedFrontModuleBootstrap };
 
 import isUserNeedCreateServerModule from "./isUserNeedCreateServerModule.mjs";
 export { isUserNeedCreateServerModule };

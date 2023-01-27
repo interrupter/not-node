@@ -4,8 +4,8 @@ export default (inquirer) => {
             {
                 type: "confirm",
                 name: "enabled",
-                message: "Add front module?",
-                default: false,
+                message: "Add front module bootstrap?",
+                default: true,
             },
         ])
         .then(({ enabled }) => {

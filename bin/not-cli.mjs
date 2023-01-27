@@ -296,7 +296,7 @@ async function renderServerControllersCommons(
     );
 }
 
-async function createFrontModule(modules_dir, config) {
+async function createBootstrapFrontModule(modules_dir, config) {
     await createDir(modules_dir);
     await createDirContent(
         modules_dir,
@@ -360,8 +360,9 @@ program
         while (await Readers.isUserNeedCreateServerModule(inquirer)) {
             await createServerModule(PATH_MODULES_SERVER, AppConfig);
         }
-        if (await Readers.isUserNeedCreateFrontModule(inquirer)) {
-            await createFrontModule(PATH_MODULES_FRONT, AppConfig);
+
+        if (await Readers.isUserNeedFrontModuleBootstrap(inquirer)) {
+            await createBootstrapFrontModule(PATH_MODULES_FRONT, AppConfig);
         }
     });
 

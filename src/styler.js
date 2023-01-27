@@ -7,7 +7,10 @@ module.exports = class notStyler {
     static #defaultStyler = DEFAULT_STYLER;
 
     static get(stylerName) {
-        if (Object.hasOwn(this.#stylers, stylerName)) {
+        if (
+            typeof stylerName !== "undefined" &&
+            Object.hasOwn(this.#stylers, stylerName)
+        ) {
             return this.#stylers[stylerName];
         } else {
             return this.#defaultStyler;
@@ -15,7 +18,11 @@ module.exports = class notStyler {
     }
 
     static set(stylerName, func) {
-        this.#stylers[stylerName] = func;
+        if (typeof stylerName === "string") {
+            this.#stylers[stylerName] = func;
+        } else {
+            throw new Error("Styler name should be a string");
+        }
         return this;
     }
 
