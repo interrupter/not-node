@@ -1,11 +1,12 @@
 const Auth = require("./auth"),
-    Env = require("./env"),
+    notAppIdentity = require("./identity"),
     notStyler = require("./styler"),
     config = require("not-config").createReader();
 
 function getRole(req) {
-    if (Auth.isUser(req) && req.user) {
-        return req.user.getPrimaryRole(Env.getEnv("rolesPriority"));
+    const identity = new notAppIdentity(req);
+    if (identity.isUser()) {
+        return identity.getRole();
     } else {
         return Auth.DEFAULT_USER_ROLE_FOR_GUEST;
     }

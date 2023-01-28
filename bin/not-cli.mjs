@@ -37,6 +37,7 @@ import ApplicationModuleServerControllersCommonStructure from "../tmpl/dirs/modu
 import ApplicationModuleFrontStructure from "../tmpl/dirs/module.front.mjs";
 
 import { firstLetterToLower } from "../src/common.js";
+import { rejects } from "node:assert";
 
 const ApplicationSubStructures = {
     server: ApplicationServerStructure,
@@ -326,6 +327,55 @@ async function createBootstrapFrontModule(modules_dir, config) {
     }
 }
 
+function installPackages(opts) {
+    return new Promise((resolve, reject) => {
+        console.log("installing packages...");
+        let npmInstall = spawn(`npm`, ["i"], { cwd: opts.dir });
+        npmInstall.stdout.on("data", (data) => {
+            //console.log(data.toString());
+        });
+        npmInstall.stderr.on("data", (data) => {
+            console.error(data.toString());
+        });
+        npmInstall.on("exit", (code) => {
+            if (code == 0) {
+                resolve();
+            } else {
+                reject(`NPM install exited with code ${code}`);
+            }
+        });
+    });
+}
+
+function buildClientSideScripts(opts) {
+    return new Promise((resolve, reject) => {
+        console.log("building client side scripts...");
+        let npmInstall = spawn(`npm`, ["run", "build"], { cwd: opts.dir });
+        npmInstall.stdout.on("data", (data) => {
+            //console.log(data.toString());
+        });
+        npmInstall.stderr.on("data", (data) => {
+            console.error(data.toString());
+        });
+        npmInstall.on("exit", (code) => {
+            if (code == 0) {
+                resolve();
+            } else {
+                reject(`npm run build job exited with code ${code}`);
+            }
+        });
+    });
+}
+
+function postStartupInstructions(opts) {
+    console.log(
+        "Generation of source code, configurations and installation of packages successfully finished."
+    );
+    console.log(
+        `To start server navigate to directory '${opts.dir}' (cd '${opts.dir}') and run 'npm start'`
+    );
+}
+
 program
     .command("create")
     .addOption(
@@ -368,18 +418,9 @@ program
             await createBootstrapFrontModule(PATH_MODULES_FRONT, AppConfig);
         }
         console.log(`cd '${opts.dir}' && npm i`);
-        let npmInstall = spawn(`npm`, ["i"], { cwd: opts.dir });
-        npmInstall.stdout.on("data", (data) => {
-            console.log(data.toString());
-        });
-
-        npmInstall.stderr.on("data", (data) => {
-            console.error(data.toString());
-        });
-
-        npmInstall.on("exit", (code) => {
-            console.log(`NPM install exited with code ${code}`);
-        });
+        await installPackages(opts);
+        await buildClientSideScripts(opts);
+        postStartupInstructions(opts);
     });
 
 program.parse();

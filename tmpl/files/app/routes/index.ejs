@@ -1,36 +1,34 @@
-const
-  notNode = require('not-node'),
-  Auth = require('not-node').Auth,
-  siteRouter = require('./site');
+const notNode = require("not-node"),
+    { Auth, notAppIdentity } = require("not-node"),
+    siteRouter = require("./site");
 
 module.exports = (web) => {
+    web.get("/api/manifest", function (req, res) {
+        notNode.notHeadersStyler.get()(req, res);
+        res.status(200).json(notNode.Application.getManifest(req));
+    });
 
-  web.get('/api/manifest', function(req, res) {
-    notNode.notHeadersStyler.get()(req,res);    
-    res.status(200).json(notNode.Application.getManifest(req));
-  });
+    web.get(
+        "/",
+        (req, res, next) => {
+            if (new notAppIdentity(req).isUser()) {
+                res.redirect("/dashboard");
+            } else {
+                next();
+            }
+        },
+        siteRouter.index
+    );
 
-
-  web.get('/', (req, res, next) => {
-      if (Auth.isUser(req)) {
-        res.redirect('/dashboard');
-      }else{
-        next();
-      }
-    },
-    siteRouter.index
-  );
-
-
-  web.get('/dashboard*',
-    (req, res, next) => {
-      if (Auth.isUser(req)) {
-        next();
-      } else {
-        res.redirect('/login');
-      }
-    },
-    siteRouter.dashboard
-  );
-
+    web.get(
+        "/dashboard*",
+        (req, res, next) => {
+            if (new notAppIdentity(req).isUser()) {
+                next();
+            } else {
+                res.redirect("/login");
+            }
+        },
+        siteRouter.dashboard
+    );
 };
