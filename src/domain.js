@@ -277,7 +277,7 @@ class notDomain extends EventEmitter {
     async execInModules(methodName, params) {
         for (let mod of Object.values(this.#modules)) {
             try {
-                await executeObjectFunction(mod, "exec", [params]);
+                await executeObjectFunction(mod, "exec", [methodName, params]);
             } catch (e) {
                 this.report(e);
             }

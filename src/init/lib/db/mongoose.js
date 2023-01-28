@@ -12,6 +12,7 @@ module.exports = class InitDBMongoose {
         const Increment = require("../../../model/increment.js");
         log.info("Setting up mongoose connection...");
         const mongoose = require("mongoose");
+        mongoose.set("strictQuery", true);
         mongoose.Promise = global.Promise;
         await mongoose.connect(
             conf.uri,

@@ -1,8 +1,9 @@
 const DEFAULT = {
     db: "test",
     host: "localhost",
-    user: "",
-    pass: "",
+    user: "tester",
+    pass: "test",
+    authSource: "admin",
 };
 
 function collectData(inquirer) {
@@ -36,9 +37,28 @@ function collectData(inquirer) {
             type: "input",
             name: "authSource",
             message: "MongoDB authSource",
-            default: "admin",
+            default: DEFAULT.authSource,
         },
     ]);
+}
+
+function needToConfigure(inquirer) {
+    return inquirer
+        .prompt([
+            {
+                type: "confirm",
+                name: "configure",
+                message: "Configure mongoose connection?",
+                default: false,
+            },
+        ])
+        .then((answer) => {
+            if (answer.configure) {
+                return collectData(inquirer);
+            } else {
+                return DEFAULT;
+            }
+        });
 }
 
 export default (inquirer) => {
@@ -47,13 +67,13 @@ export default (inquirer) => {
             {
                 type: "confirm",
                 name: "enabled",
-                message: "Configure mongoose?",
+                message: "Add mongoose connection?",
                 default: false,
             },
         ])
         .then((answer) => {
             if (answer.enabled) {
-                return collectData(inquirer);
+                return needToConfigure(inquirer);
             } else {
                 return false;
             }

@@ -23,7 +23,7 @@ export default {
     },
     "package.json": {
         tmpl: "app/package.ejs",
-        args: ["AppName", "appName", "AppDescription"],
+        args: ["AppName", "appName", "AppDescription", "modules"],
     },
     ".babelrc": "app/.babelrc",
     ".eslintignore": "app/.eslintignore",

@@ -10,8 +10,6 @@ const DEFAULT_STYLER = (req, res) => {
     res.set("Cache-Control", "max-age=31536000");
 };
 
-class notHeadersStyler extends notStyler {}
-
-notHeadersStyler.setDefault(DEFAULT_STYLER);
+let notHeadersStyler = new notStyler(DEFAULT_STYLER);
 
 module.exports = notHeadersStyler;

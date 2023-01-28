@@ -2,12 +2,13 @@
     "name": "<%- appName %>",
 	"version": "0.0.1",
 	"description": "<%- AppDescription %>",
-	"main": "app.js",
+	"main": "app/server/index.js",
 	"private": true,
 	"engines": {
 		"node": ">14.9"
 	  },
 	"scripts": {
+		"start":"node ./app/server/index.js",
 		"test": "./node_modules/.bin/mocha --reporter spec ./tests/**.js",
 		"lint": "./node_modules/.bin/eslint ./app/**/**.js ./app/server/**/**/**.js ./app/server/**/**/**/**.js ./app/server/**/**/**/**/**.js --fix",
 		"docs": "./node_modules/.bin/jsdoc -c jsdoc.json",
@@ -29,7 +30,11 @@
 	},
 	"dependencies": {
         "redis": "*",
-		"not-node": "*"
+		"pug":"*",
+		"not-node": "*",		
+		<% for(let moduleName of modules){ %>"<%- moduleName %>":"*",
+		<% } %>
+		"dotenv": "*"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.18.9",

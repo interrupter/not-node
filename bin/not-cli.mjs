@@ -8,8 +8,9 @@ import { isAbsolute, resolve, join } from "node:path";
 
 import { copyFile, constants, mkdir, writeFile } from "node:fs/promises";
 
-import { cwd } from "node:process";
+import { cwd, stdout, stderr } from "node:process";
 const CWD = cwd();
+import { spawn } from "node:child_process";
 
 import * as url from "url";
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
@@ -330,7 +331,9 @@ program
     .addOption(
         new Option("-d, --dir <dir>").default(CWD, "current working directory")
     )
-    .description("create application in target directory")
+    .description(
+        "create application in target directory (create -d [pathToDir])"
+    )
     .action(async (opts) => {
         //      console.log("create command called :" + opts.dir);
         if (!isAbsolute(opts.dir)) {
@@ -364,6 +367,19 @@ program
         if (await Readers.isUserNeedFrontModuleBootstrap(inquirer)) {
             await createBootstrapFrontModule(PATH_MODULES_FRONT, AppConfig);
         }
+        console.log(`cd '${opts.dir}' && npm i`);
+        let npmInstall = spawn(`npm`, ["i"], { cwd: opts.dir });
+        npmInstall.stdout.on("data", (data) => {
+            console.log(data.toString());
+        });
+
+        npmInstall.stderr.on("data", (data) => {
+            console.error(data.toString());
+        });
+
+        npmInstall.on("exit", (code) => {
+            console.log(`NPM install exited with code ${code}`);
+        });
     });
 
 program.parse();

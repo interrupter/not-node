@@ -9,4 +9,8 @@ export default {
         tmpl: "app/front/rollup.!.ejs",
         args: [],
     },
+    "build.env.js": {
+        tmpl: "app/front/build.env.ejs",
+        args: [],
+    },
 };

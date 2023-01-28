@@ -1,3 +1,5 @@
+const log = require("not-log")(module, "not-node//init//sessions");
+
 module.exports = class InitSessions {
     /**
      * Returns constructor of Session driver
@@ -18,7 +20,17 @@ module.exports = class InitSessions {
 
     async run({ master, config, options, emit }) {
         const conf = config.get("session");
-        const Constructor = InitSessions.getConstructor(conf);
-        await new Constructor().run({ master, config, options, conf, emit });
+        if (conf) {
+            const Constructor = InitSessions.getConstructor(conf);
+            await new Constructor().run({
+                master,
+                config,
+                options,
+                conf,
+                emit,
+            });
+        } else {
+            log("no session options");
+        }
     }
 };

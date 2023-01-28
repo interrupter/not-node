@@ -3,10 +3,14 @@ const DEFAULT_STYLER = () => {
 };
 
 module.exports = class notStyler {
-    static #stylers = {};
-    static #defaultStyler = DEFAULT_STYLER;
+    #stylers = {};
+    #defaultStyler = DEFAULT_STYLER;
 
-    static get(stylerName) {
+    constructor(defaultStyler = DEFAULT_STYLER) {
+        this.setDefault(defaultStyler);
+    }
+
+    get(stylerName) {
         if (
             typeof stylerName !== "undefined" &&
             Object.hasOwn(this.#stylers, stylerName)
@@ -17,7 +21,7 @@ module.exports = class notStyler {
         }
     }
 
-    static set(stylerName, func) {
+    set(stylerName, func) {
         if (typeof stylerName === "string") {
             this.#stylers[stylerName] = func;
         } else {
@@ -26,12 +30,12 @@ module.exports = class notStyler {
         return this;
     }
 
-    static setDefault(func) {
+    setDefault(func) {
         this.#defaultStyler = func;
         return this;
     }
 
-    static resetDefault() {
+    resetDefault() {
         this.#defaultStyler = DEFAULT_STYLER;
         return this;
     }

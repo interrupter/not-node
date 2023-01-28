@@ -27,8 +27,6 @@ const DEFAULT_STYLER = (req, res) => {
     };
 };
 
-class notMetasStyler extends notStyler {}
-
-notMetasStyler.setDefault(DEFAULT_STYLER);
+const notMetasStyler = new notStyler(DEFAULT_STYLER);
 
 module.exports = notMetasStyler;

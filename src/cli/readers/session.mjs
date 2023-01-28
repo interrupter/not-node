@@ -5,6 +5,13 @@ const DEFAULT_SECRET = generator.generate({
     numbers: true,
 });
 
+const DEFAULT_SESSION_OPTIONS = {
+    driver: "redis",
+    secret: DEFAULT_SECRET,
+    ttl: 2628000000,
+    key: "SessionID",
+};
+
 function collectData(inquirer) {
     return inquirer.prompt([
         {
@@ -41,7 +48,7 @@ export default (inquirer) => {
             {
                 type: "confirm",
                 name: "enabled",
-                message: "Configure Session module?",
+                message: "Change default configuration of sessions module?",
                 default: false,
             },
         ])
@@ -49,7 +56,7 @@ export default (inquirer) => {
             if (answer.enabled) {
                 return collectData(inquirer);
             } else {
-                return false;
+                return DEFAULT_SESSION_OPTIONS;
             }
         });
 };
