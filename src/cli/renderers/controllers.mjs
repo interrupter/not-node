@@ -20,6 +20,7 @@ export default async (
         );
         await createFileContent(TMPL_FILE_PATH, DEST_FILE_PATH, {
             ...config,
+            roleName,
             ...data,
         });
     }

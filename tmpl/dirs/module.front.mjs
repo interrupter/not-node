@@ -3,7 +3,7 @@ export default {
         content: {
             "index.js": {
                 tmpl: "module.front/common/index.ejs",
-                args: ["modules", "AppName"],
+                args: ["modules", "AppName", "ssl", "ws"],
             },
             "ncInit.js": {
                 tmpl: "module.front/common/ncInit.ejs",

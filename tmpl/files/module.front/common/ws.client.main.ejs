@@ -6,9 +6,8 @@ const main = {
   getToken: () => {
     return notCommon.getApp().getModel('user', {}).$token({})
       .then((res) => {
-        logger.log('token', res.result.token);
-        notCommon.getApp().setWorking('token', res.result.token);
-        return res.result.token;
+        notCommon.getApp().setWorking('token', res.result);
+        return res.result;
       });
   },
   messenger: {

@@ -1,4 +1,4 @@
-<% if(modules.includes('not-ws')){ %>
+<% if(modules.includes('not-ws') && ws){ %>
 import main from './ws.client.main.js';
 <% } %>
 
@@ -13,15 +13,16 @@ let manifest = {
 		url: 	'/'
 	},
   modules:{
-    <% if(modules.includes('not-ws')){ %>
+    <% if(modules.includes('not-ws') && ws){ %>
     ws:{
       clients:{
         //options for ws client here
         main: {
-          host: window.location.hostname,
-          path: 'websocket',
-          secure: true,
-          ssl: true
+          host: '<%- ws.hostname %>' || window.location.hostname,
+          port: <%- ws.port %>,
+          path: '<%- ws.path %>',
+          secure: <%- ws.secure %>,
+          ssl: <%- !!ssl %>
         }
       }
     }

@@ -2,9 +2,21 @@ function collectData(inquirer) {
     return inquirer.prompt([
         {
             type: "input",
+            name: "hostname",
+            message: "WS hostname (default: window.location.hostname)",
+            default: "",
+        },
+        {
+            type: "input",
             name: "port",
             message: "WS port number",
             default: 33000,
+        },
+        {
+            type: "input",
+            name: "path",
+            message: "WS path ",
+            default: "websocket",
         },
         {
             type: "config",

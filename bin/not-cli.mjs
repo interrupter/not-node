@@ -308,17 +308,17 @@ async function createBootstrapFrontModule(modules_dir, config) {
         await createDir(resolve(modules_dir, role));
         const targetFrontModuleDir = resolve(modules_dir, role, "main");
         await createDir(targetFrontModuleDir);
-        if (role !== "guest") {
+        if (role === "guest") {
             await Renderers.frontModuleGuestMain(
                 targetFrontModuleDir,
-                config,
+                { ...config, roleName: role },
                 renderFile,
                 PATH_TMPL
             );
         } else {
             await Renderers.frontModuleRoleMain(
                 targetFrontModuleDir,
-                config,
+                { ...config, roleName: role },
                 renderFile,
                 PATH_TMPL
             );
