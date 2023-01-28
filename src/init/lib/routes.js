@@ -59,9 +59,12 @@ module.exports = class InitRoutes {
 
     async run({ master, config, options }) {
         log.info("Setting up routes...");
+        //pages rendering
+        await master.getApp().execInModules("registerPagesRoutes", master);
+        //api first
         master.getApp().expose(master.getServer());
+        //user defined pages
         require(options.routesPath)(master.getServer(), master.getApp());
-
         master.getServer().use(serveStatic(config.get("staticPath")));
         master.getServer().use(options.indexRoute);
         master.getServer().use(

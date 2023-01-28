@@ -1,4 +1,4 @@
-const DEFAULT_HOST = "https://localhost";
+const DEFAULT_HOST = "localhost";
 export default (inquirer) => {
     return inquirer.prompt([
         {

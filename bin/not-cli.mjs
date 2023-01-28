@@ -8,7 +8,7 @@ import { isAbsolute, resolve, join } from "node:path";
 
 import { copyFile, constants, mkdir, writeFile } from "node:fs/promises";
 
-import { cwd, stdout, stderr } from "node:process";
+import { cwd } from "node:process";
 const CWD = cwd();
 import { spawn } from "node:child_process";
 
@@ -37,7 +37,6 @@ import ApplicationModuleServerControllersCommonStructure from "../tmpl/dirs/modu
 import ApplicationModuleFrontStructure from "../tmpl/dirs/module.front.mjs";
 
 import { firstLetterToLower } from "../src/common.js";
-import { rejects } from "node:assert";
 
 const ApplicationSubStructures = {
     server: ApplicationServerStructure,
@@ -331,9 +330,7 @@ function installPackages(opts) {
     return new Promise((resolve, reject) => {
         console.log("installing packages...");
         let npmInstall = spawn(`npm`, ["i"], { cwd: opts.dir });
-        npmInstall.stdout.on("data", (data) => {
-            //console.log(data.toString());
-        });
+
         npmInstall.stderr.on("data", (data) => {
             console.error(data.toString());
         });
@@ -351,9 +348,7 @@ function buildClientSideScripts(opts) {
     return new Promise((resolve, reject) => {
         console.log("building client side scripts...");
         let npmInstall = spawn(`npm`, ["run", "build"], { cwd: opts.dir });
-        npmInstall.stdout.on("data", (data) => {
-            //console.log(data.toString());
-        });
+
         npmInstall.stderr.on("data", (data) => {
             console.error(data.toString());
         });

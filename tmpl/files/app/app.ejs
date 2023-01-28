@@ -1,5 +1,7 @@
 const notNode = require("not-node");
 
+const InitIdentityTokens = require("not-user").InitIdentityTokens;
+
 const Init = require("not-node").Init,
     path = require("path"),
     manifest = require("./../../project.manifest.json");
@@ -15,6 +17,7 @@ module.exports = () => {
     const additional = {
         pre({ initSequence }) {
             initSequence.remove("InitMonitoring");
+            initSequence.insert(InitIdentityTokens);
         },
     };
 

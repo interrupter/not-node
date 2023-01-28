@@ -1,3 +1,10 @@
+const DEFAULT_CONFIG = {
+    restrict: {
+        registration: false,
+    },
+    tokenTTL: 3600,
+};
+
 function collectRestrictions(inquirer) {
     return inquirer.prompt([
         {
@@ -56,7 +63,7 @@ export default (inquirer) => {
             if (answer.enabled) {
                 return collectData(inquirer);
             } else {
-                return false;
+                return DEFAULT_CONFIG;
             }
         });
 };
