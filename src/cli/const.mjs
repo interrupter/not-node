@@ -69,3 +69,12 @@ export { DEFAULT_MODULES_SET_ENABLED };
 
 const DEFAULT_NODE_API_URL = "https://appmon.ru/api/key/collect";
 export { DEFAULT_NODE_API_URL };
+
+function getDefaultPortByShift(port, shift) {
+    if (port && !isNaN(parseInt(port))) {
+        return parseInt(port) + shift;
+    }
+    return false;
+}
+
+export { getDefaultPortByShift };

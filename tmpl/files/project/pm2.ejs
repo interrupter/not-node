@@ -1,0 +1,46 @@
+{
+	"apps": [
+		{
+			"name": "<%- appName %>.<%- environment %>",
+			"script": "./site/app/server/index.js",
+			"node_args": [
+				"--stack-trace-limit=50",
+                <% if(debugPort){ %>
+				"--inspect=<%- debugPort %>"
+                <% } %>
+			],
+			"watch": <%- pm2.watch %>,
+			"ignore_watch": [
+				"./site/node_modules",
+				"./site/docs",
+				"./site/app/static",
+				"./site/app/front/build",
+				"./db.dumps"
+			],
+			"exec_mode": "fork",
+			"env": {
+				"hostname": "<%- nginx && nginx.ssl?'https':'http' %>://<%- hostname %>",
+				"NODE_ENV": "<%- environment %>",
+                <% if (not_node_reporter){ %>
+				"NOT_NODE_ERROR_KEY": "<%- not_node_reporter.key %>",
+				"NOT_NODE_ERROR_URL_NODE": "<%- not_node_reporter.url_node %>",
+				"NOT_NODE_ERROR_URL_BROWSER": "<%- not_node_reporter.url_browser %>",
+                <% } %>
+                <% if (not_node_monitor){ %>
+				"NOT_NODE_MONITOR_INTERVAL": <%- not_node_monitor.interval %>,
+				"NOT_NODE_MONITOR_REPORT_INTERVAL": <%- not_node_monitor.report_interval %>,
+				"NOT_NODE_MONITOR_REPORT_KEY": "<%- not_node_monitor.report_key %>",
+				"NOT_NODE_MONITOR_REPORT_URL": "<%- not_node_monitor.report_url %>"
+                <% } %>
+                <% if (db && db.mongoose ){ %>               
+				"db__mongoose__uri": "mongodb://<%- db.mongoose.hostname %>/<%- db.mongoose.db %>?authSource=<%- db.mongoose.authSource %>",
+                "db__mongoose__options__host": "<%- db.mongoose.hostname %>",
+				"db__mongoose__options__user": "<%- db.mongoose.user %>",
+				"db__mongoose__options__pass": "<%- db.mongoose.pass %>",
+				"db__mongoose__options__db": "<%- db.mongoose.db %>",
+                <% } %>
+				
+			}
+		}
+	]
+}

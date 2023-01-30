@@ -44,7 +44,7 @@
       "key": "<%- session.key %>"
     },
     <% } %>
-    <% if (ssl) { %>
+    <% if (ssl && !nginx) { %>
     "ssl": {
       "enabled": true,
       "keys": {
@@ -112,14 +112,12 @@
           "search": ""
         }
       },     
-      <% } %> 
-      <% if (modules.includes('not-filter')){ %>
+      <% } %>      
       "rateLimiter": {
         "keyPrefix": "rateLimiterMiddleware",
         "points": 500,
         "duration": 1
       }
-      <% } %>      
     },
     "middleware": {
         <%- modules.map(entry => `"${entry}": {}`).join(',') %>            

@@ -1,0 +1,13 @@
+#!/bin/bash
+echo 'deploying <%- AppName %> to <%- environment %>'
+cd site
+npm run <%- environment %>
+cd ../
+echo 'syncing data'
+ssh <%- deploy.user %>@<%- deploy.hostname %> "echo '1' > <%- deploy.path %>/deploying"
+rsync -av --progress --exclude-from='./deploy/.exclude' site <%- deploy.user %>@<%- deploy.hostname %>:<%- deploy.path %>/
+rsync -av --progress deploy/<%- environment %>.json <%- deploy.user %>@<%- deploy.hostname %>:<%- deploy.path %>/pm2/<%- environment %>.json
+ssh <%- deploy.user %>@<%- deploy.hostname %> "cd <%- deploy.path %>/site && npm i"
+ssh <%- deploy.user %>@<%- deploy.hostname %> "cd <%- deploy.path %> && pm2 startOrRestart pm2/<%- environment %>.json"
+ssh <%- deploy.user %>@<%- deploy.hostname %> "rm <%- deploy.path %>/deploying"
+exit 0;

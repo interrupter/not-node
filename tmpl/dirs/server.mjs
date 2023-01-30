@@ -18,25 +18,26 @@ export default {
                     "rolesSecondary",
                     "user",
                     "ws",
+                    "nginx",
                 ],
             },
             "development.json": {
                 tmpl: EMPTY_CONFIG,
-                args: ["hostname"],
+                args: ["hostname", "nginx"],
                 options: {
                     ENV: "development",
                 },
             },
             "stage.json": {
                 tmpl: EMPTY_CONFIG,
-                args: ["hostname"],
+                args: ["hostname", "nginx"],
                 options: {
                     ENV: "stage",
                 },
             },
             "production.json": {
                 tmpl: EMPTY_CONFIG,
-                args: ["hostname"],
+                args: ["hostname", "nginx"],
                 options: {
                     ENV: "production",
                 },

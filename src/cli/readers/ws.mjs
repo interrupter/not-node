@@ -1,4 +1,6 @@
-function collectData(inquirer) {
+import { getDefaultPortByShift } from "../const.mjs";
+
+function collectData(inquirer, config) {
     return inquirer.prompt([
         {
             type: "input",
@@ -10,7 +12,7 @@ function collectData(inquirer) {
             type: "input",
             name: "port",
             message: "WS port number",
-            default: 33000,
+            default: getDefaultPortByShift(config.port, 1),
         },
         {
             type: "input",
@@ -27,7 +29,7 @@ function collectData(inquirer) {
     ]);
 }
 
-export default (inquirer) => {
+export default (inquirer, config) => {
     return inquirer
         .prompt([
             {
@@ -39,7 +41,7 @@ export default (inquirer) => {
         ])
         .then((answer) => {
             if (answer.enabled) {
-                return collectData(inquirer);
+                return collectData(inquirer, config);
             } else {
                 return false;
             }

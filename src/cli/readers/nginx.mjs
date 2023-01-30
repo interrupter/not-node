@@ -1,19 +1,22 @@
 function collectData(inquirer) {
     return inquirer.prompt([
         {
-            type: "input",
-            name: "private",
-            message: "SSL private key",
+            type: "confirm",
+            name: "http2",
+            message: "Enable HTTP2?",
+            default: true,
         },
         {
-            type: "input",
-            name: "fullchain",
-            message: "SSL fullchain",
+            type: "confirm",
+            name: "http3",
+            message: "Enable HTTP3?",
+            default: false,
         },
         {
-            type: "input",
-            name: "chain",
-            message: "SSL chain",
+            type: "confirm",
+            name: "ssl",
+            message: "Enable SSL?",
+            default: true,
         },
     ]);
 }
@@ -24,9 +27,8 @@ export default (inquirer) => {
             {
                 type: "confirm",
                 name: "enabled",
-                message:
-                    "Node with SSL (no, if you up to reverse proxy setup like nginx)?",
-                default: false,
+                message: "Create NGINX configs set?",
+                default: true,
             },
         ])
         .then((answer) => {

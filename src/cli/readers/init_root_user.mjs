@@ -5,29 +5,30 @@ const DEFAULT_PASSWORD = generator.generate({
     numbers: true,
 });
 
-function collectInitRootUser(inquirer) {
+function collectInitRootUser(inquirer, config) {
     return inquirer.prompt([
         {
             type: "input",
             name: "name",
-            message: "Name",
+            message: "Root username",
             default: "root",
         },
         {
             type: "input",
             name: "email",
-            message: "Email",
+            message: "Root user email",
+            default: `admin@${config.hostname.development}`,
         },
         {
             type: "input",
             name: "password",
-            message: "Password",
+            message: "Root user password",
             default: DEFAULT_PASSWORD,
         },
         {
             type: "input",
             name: "passwordConfirmation",
-            message: "Re-type password",
+            message: "Re-type root password",
             validate(inpt, answer) {
                 return inpt === answer.password;
             },
@@ -35,8 +36,8 @@ function collectInitRootUser(inquirer) {
     ]);
 }
 
-export default (inquirer) => {
-    inquirer
+export default (inquirer, config) => {
+    return inquirer
         .prompt([
             {
                 type: "confirm",
@@ -47,7 +48,7 @@ export default (inquirer) => {
         ])
         .then(({ enabled }) => {
             if (enabled) {
-                return collectInitRootUser(inquirer);
+                return collectInitRootUser(inquirer, config);
             } else {
                 return false;
             }

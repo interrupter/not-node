@@ -1,11 +1,14 @@
 import { DEFAULT_NODE_API_URL } from "../const.mjs";
 
-function collectNodeMonitor(inquirer) {
+function collectNodeMonitor(inquirer, config) {
     return inquirer.prompt([
         {
             type: "input",
             name: "report_key",
             message: "Report API Key",
+            default: config?.not_node_reporter
+                ? config?.not_node_reporter.key
+                : "",
         },
         {
             type: "input",
@@ -28,8 +31,8 @@ function collectNodeMonitor(inquirer) {
     ]);
 }
 
-export default (inquirer) => {
-    inquirer
+export default (inquirer, config) => {
+    return inquirer
         .prompt([
             {
                 type: "confirm",
@@ -40,7 +43,7 @@ export default (inquirer) => {
         ])
         .then(({ enabled }) => {
             if (enabled) {
-                return collectNodeMonitor(inquirer);
+                return collectNodeMonitor(inquirer, config);
             } else {
                 return false;
             }

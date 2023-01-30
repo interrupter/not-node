@@ -26,6 +26,7 @@ import * as Renderers from "../src/cli/renderers/index.mjs";
 //file system structure
 //directories
 //files and information how to render them from which template and with what args with readers names
+import ProjectStructure from "../tmpl/dirs/project.mjs";
 import ApplicationStructure from "../tmpl/dirs/app.mjs";
 import ApplicationServerStructure from "../tmpl/dirs/server.mjs";
 import ApplicationFrontStructure from "../tmpl/dirs/front.mjs";
@@ -38,7 +39,8 @@ import ApplicationModuleFrontStructure from "../tmpl/dirs/module.front.mjs";
 
 import { firstLetterToLower } from "../src/common.js";
 
-const ApplicationSubStructures = {
+const ProjectSubStructures = {
+    app: ApplicationStructure,
     server: ApplicationServerStructure,
     front: ApplicationFrontStructure,
     static: ApplicationStaticStructure,
@@ -49,17 +51,20 @@ const ApplicationSubStructures = {
 };
 //path to various templates
 const PATH_TMPL = resolve(__dirname, "../tmpl/files");
-const DEFAULT_SERVER_MODULES_SUB_PATH = "./app/server/modules";
-const DEFAULT_FRONT_MODULES_SUB_PATH = "./app/front/src";
+const DEFAULT_SERVER_MODULES_SUB_PATH = "./site/app/server/modules";
+const DEFAULT_FRONT_MODULES_SUB_PATH = "./site/app/front/src";
+
+let silent = true;
 
 async function readArgs(structure, config) {
     let result = {};
     if (Object.hasOwn(structure, "args")) {
         for (let entry of structure.args) {
             if (!Object.hasOwn(config, entry)) {
-                console.log(
-                    `no ${entry} in config, reading data from user input`
-                );
+                !silent &&
+                    console.log(
+                        `no ${entry} in config, reading data from user input`
+                    );
                 config[entry] = await Readers[entry](inquirer, config);
             }
             result[entry] = config[entry];
@@ -73,7 +78,7 @@ async function readArgs(structure, config) {
 }
 
 async function renderFile(input, dest, data) {
-    console.log("render", dest);
+    !silent && console.log("render", dest);
     const renderedFileContent = await ejs.renderFile(input, data, {
         async: true,
     });
@@ -136,14 +141,19 @@ function dirRequiresAbsentModules(subStructure, config) {
     );
 }
 
+function dirRequiresNotNullArgs(subStructure, config) {
+    return (
+        Object.hasOwn(subStructure, "ifArgs") &&
+        Array.isArray(subStructure.ifArgs) &&
+        !subStructure.ifArgs.every((entry) => {
+            return Object.hasOwn(config, entry) && config[entry];
+        })
+    );
+}
 async function createDirContent(dest, structure = {}, config = {}) {
     if (typeof structure === "string") {
         //console.log("need to create sub structure", structure);
-        await createDirContent(
-            dest,
-            ApplicationSubStructures[structure],
-            config
-        );
+        await createDirContent(dest, ProjectSubStructures[structure], config);
         return;
     }
     const dirs = {};
@@ -166,6 +176,9 @@ async function createDirContent(dest, structure = {}, config = {}) {
         const subStructure = dirs[entry];
         const directoryPath = join(dest, entry);
         if (dirRequiresAbsentModules(subStructure, config)) {
+            continue;
+        }
+        if (dirRequiresNotNullArgs(subStructure, config)) {
             continue;
         }
         await createDir(directoryPath);
@@ -202,7 +215,7 @@ async function createServerModule(modules_dir, config) {
     //console.log(JSON.stringify(moduleConfig, null, 4));
     await createDirContent(
         moduleDir,
-        ApplicationSubStructures["module.server"],
+        ProjectSubStructures["module.server"],
         moduleConfig
     );
     const layersList = moduleConfig.moduleLayers;
@@ -301,7 +314,7 @@ async function createBootstrapFrontModule(modules_dir, config) {
     await createDir(modules_dir);
     await createDirContent(
         modules_dir,
-        ApplicationSubStructures["module.front"],
+        ProjectSubStructures["module.front"],
         config
     );
     for (let role of config.roles) {
@@ -326,13 +339,15 @@ async function createBootstrapFrontModule(modules_dir, config) {
     }
 }
 
-function installPackages(opts) {
+function installPackages(siteDir) {
     return new Promise((resolve, reject) => {
         console.log("installing packages...");
-        let npmInstall = spawn(`npm`, ["i"], { cwd: opts.dir });
+        let npmInstall = spawn(`npm`, ["i"], {
+            cwd: siteDir,
+        });
 
         npmInstall.stderr.on("data", (data) => {
-            console.error(data.toString());
+            !silent && console.error(data.toString());
         });
         npmInstall.on("exit", (code) => {
             if (code == 0) {
@@ -344,13 +359,15 @@ function installPackages(opts) {
     });
 }
 
-function buildClientSideScripts(opts) {
+function buildClientSideScripts(siteDir) {
     return new Promise((resolve, reject) => {
         console.log("building client side scripts...");
-        let npmInstall = spawn(`npm`, ["run", "build"], { cwd: opts.dir });
+        let npmInstall = spawn(`npm`, ["run", "build"], {
+            cwd: siteDir,
+        });
 
         npmInstall.stderr.on("data", (data) => {
-            console.error(data.toString());
+            !silent && console.error(data.toString());
         });
         npmInstall.on("exit", (code) => {
             if (code == 0) {
@@ -362,13 +379,73 @@ function buildClientSideScripts(opts) {
     });
 }
 
-function postStartupInstructions(opts) {
+function postStartupInstructions(siteDir, config) {
     console.log(
-        "Generation of source code, configurations and installation of packages successfully finished."
+        "Generation of source code, configurations, toolchain and installation of packages successfully finished."
     );
+    if (config.nginx) {
+        console.log("To enable NGINX reverse proxy:");
+        console.log(
+            "1. Copy config file for desired envrionment to NGINX directory and enable it"
+        );
+        for (let env of ["development", "stage", "production"]) {
+            console.log(
+                `For '${env}' environment exec while in project directory:`
+            );
+            console.log(
+                `$ sudo cp nginx/${env}.conf to /var/nginx/sites-available/${config.hostname[env]}.conf`
+            );
+            console.log(
+                `$ sudo ln -s /var/nginx/sites-available/${config.hostname[env]}.conf /var/nginx/sites-enabled/${config.hostname[env]}.conf`
+            );
+        }
+        console.log("2. Restart NGINX server");
+        console.log("$ sudo systemctl restart nginx");
+    }
     console.log(
-        `To start server navigate to directory '${opts.dir}' (cd '${opts.dir}') and run 'npm start'`
+        `To start server navigate to [project]/site directory (cd '${siteDir}') and run 'npm start'`
     );
+}
+
+function makeScriptExecutable(pathToTargetScript) {
+    return new Promise((resolve, reject) => {
+        console.log(`chmod`, "+x", pathToTargetScript);
+        let npmInstall = spawn(`chmod`, ["+x", pathToTargetScript]);
+        npmInstall.stderr.on("data", (data) => {
+            !silent && console.error(data.toString());
+        });
+        npmInstall.on("exit", (code) => {
+            if (code == 0) {
+                resolve();
+            } else {
+                reject(`chmod +x ${pathToTargetScript}  ${code}`);
+            }
+        });
+    });
+}
+
+async function createProjectToolsAndConfigs(projectDir, projectConfig) {
+    console.log(projectDir);
+    if (projectConfig.pm2) {
+        console.log("Rendering PM2 configs");
+        await Renderers.pm2(projectDir, {}, projectConfig, createFileContent);
+    }
+
+    if (projectConfig.nginx) {
+        console.log("Rendering NGINX configs");
+        await Renderers.nginx(projectDir, {}, projectConfig, createFileContent);
+    }
+
+    if (projectConfig.deploy) {
+        console.log("Rendering deployment scripts");
+        await Renderers.deploy(
+            projectDir,
+            {},
+            projectConfig,
+            createFileContent,
+            makeScriptExecutable
+        );
+    }
 }
 
 program
@@ -376,6 +453,7 @@ program
     .addOption(
         new Option("-d, --dir <dir>").default(CWD, "current working directory")
     )
+    .addOption(new Option("-v, --verbose").default(false, "extensive output"))
     .description(
         "create application in target directory (create -d [pathToDir])"
     )
@@ -384,19 +462,47 @@ program
         if (!isAbsolute(opts.dir)) {
             opts.dir = resolve(CWD, opts.dir);
         }
-        console.log("creating application in", opts.dir);
-        const AppConfig = {};
+        const siteDir = resolve(opts.dir, "./site");
+        if (opts.v) {
+            silent = false;
+        }
+        console.log("creating project in", opts.dir);
+        console.log("creating site in", siteDir);
+        const ProjectConfig = {
+            path: opts.dir,
+        };
         //
-        AppConfig.AppName = await Readers.AppName(inquirer, AppConfig);
-        AppConfig.appName = await Readers.appName(inquirer, AppConfig);
-        AppConfig.roles = await Readers.roles(inquirer, AppConfig);
-        AppConfig.rolesSecondary = await Readers.rolesSecondary(
+        ProjectConfig.AppName = await Readers.AppName(inquirer, ProjectConfig);
+        ProjectConfig.appName = await Readers.appName(inquirer, ProjectConfig);
+        ProjectConfig.hostname = await Readers.hostname(
             inquirer,
-            AppConfig
+            ProjectConfig
         );
-        AppConfig.modules = await Readers.modules(inquirer, AppConfig);
+        ProjectConfig.roles = await Readers.roles(inquirer, ProjectConfig);
+        ProjectConfig.rolesSecondary = await Readers.rolesSecondary(
+            inquirer,
+            ProjectConfig
+        );
+        ProjectConfig.modules = await Readers.modules(inquirer, ProjectConfig);
+        ProjectConfig.nginx = await Readers.nginx(inquirer, ProjectConfig);
+        ProjectConfig.pm2 = await Readers.pm2(inquirer, ProjectConfig);
+        ProjectConfig.deploy = await Readers.deploy(inquirer, ProjectConfig);
+        ProjectConfig.port = await Readers.port(inquirer, ProjectConfig);
+        ProjectConfig.debugPort = await Readers.debugPort(
+            inquirer,
+            ProjectConfig
+        );
+        ProjectConfig.not_node_monitor = await Readers.not_node_monitor(
+            inquirer,
+            ProjectConfig
+        );
+        ProjectConfig.not_node_reporter = await Readers.not_node_reporter(
+            inquirer,
+            ProjectConfig
+        );
         await createDir(opts.dir);
-        await createDirContent(opts.dir, ApplicationStructure, AppConfig);
+        await createDirContent(opts.dir, ProjectStructure, ProjectConfig);
+        await createProjectToolsAndConfigs(opts.dir, ProjectConfig);
         const PATH_MODULES_SERVER = resolve(
             opts.dir,
             DEFAULT_SERVER_MODULES_SUB_PATH
@@ -406,16 +512,17 @@ program
             DEFAULT_FRONT_MODULES_SUB_PATH
         );
         while (await Readers.isUserNeedCreateServerModule(inquirer)) {
-            await createServerModule(PATH_MODULES_SERVER, AppConfig);
+            await createServerModule(PATH_MODULES_SERVER, ProjectConfig);
         }
 
         if (await Readers.isUserNeedFrontModuleBootstrap(inquirer)) {
-            await createBootstrapFrontModule(PATH_MODULES_FRONT, AppConfig);
+            await createBootstrapFrontModule(PATH_MODULES_FRONT, ProjectConfig);
         }
-        console.log(`cd '${opts.dir}' && npm i`);
-        await installPackages(opts);
-        await buildClientSideScripts(opts);
-        postStartupInstructions(opts);
+
+        console.log("siteDir", siteDir);
+        await installPackages(siteDir);
+        await buildClientSideScripts(siteDir);
+        postStartupInstructions(siteDir, ProjectConfig);
     });
 
 program.parse();

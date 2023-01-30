@@ -16,6 +16,15 @@ export { cors };
 import db from "./db.mjs";
 export { db };
 
+import deploy from "./deploy.mjs";
+export { deploy };
+
+import debugPort from "./debugPort.mjs";
+export { debugPort };
+
+import pm2 from "./pm2.mjs";
+export { pm2 };
+
 import filter from "./filter.mjs";
 export { filter };
 
@@ -45,6 +54,9 @@ export { ModelName };
 
 import modules from "./modules.mjs";
 export { modules };
+
+import nginx from "./nginx.mjs";
+export { nginx };
 
 import not_node_monitor from "./not_node_monitor.mjs";
 export { not_node_monitor };

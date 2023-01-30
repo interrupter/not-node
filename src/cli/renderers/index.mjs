@@ -27,3 +27,12 @@ export { frontModuleRoleMain };
 
 import frontModuleGuestMain from "./frontModuleGuestMain.mjs";
 export { frontModuleGuestMain };
+
+import pm2 from "./pm2.mjs";
+export { pm2 };
+
+import deploy from "./deploy.mjs";
+export { deploy };
+
+import nginx from "./nginx.mjs";
+export { nginx };
