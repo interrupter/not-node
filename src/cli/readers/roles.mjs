@@ -1,4 +1,4 @@
-import { DEFAULT_PRIMARY_ROLES_SET } from "../const.mjs";
+import Options from "../lib/opts.mjs";
 
 export default (inquirer) => {
     return inquirer
@@ -7,7 +7,7 @@ export default (inquirer) => {
                 type: "checkbox",
                 message: "Select primary user roles set",
                 name: "roles",
-                choices: DEFAULT_PRIMARY_ROLES_SET.map((role) => {
+                choices: Options.roles.map((role) => {
                     return {
                         name: role,
                         checked: true,
