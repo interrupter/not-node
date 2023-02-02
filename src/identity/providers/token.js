@@ -22,11 +22,11 @@ module.exports = class IdentityProviderToken {
     }
 
     static setPrimaryRoles(list = []) {
-        this.#options.primaryRoles = list;
+        IdentityProviderToken.#getOptions().primaryRoles = [...list];
     }
 
     static setSecondaryRoles(list = []) {
-        this.#options.secondaryRoles = list;
+        IdentityProviderToken.#getOptions().secondaryRoles = [...list];
     }
 
     constructor(req) {
@@ -186,7 +186,9 @@ module.exports = class IdentityProviderToken {
     getPrimaryRole() {
         const roles = this.getRole();
         for (let role of roles) {
-            if (this.#options.primaryRoles.includes(role)) {
+            if (
+                IdentityProviderToken.#getOptions().primaryRoles.includes(role)
+            ) {
                 return role;
             }
         }

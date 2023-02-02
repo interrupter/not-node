@@ -22,16 +22,16 @@ class Identity {
 
     static setPrimaryRoles(list = []) {
         this.#primaryRoles = [...list];
-        this.#providers.forEach((itm) => {
-            itm.setPrimaryRoles([...list]);
+        Object.keys(this.#providers).forEach((itm) => {
+            this.#providers[itm].setPrimaryRoles([...list]);
         });
         return this;
     }
 
     static setSecondaryRoles(list = []) {
         this.#secondaryRoles = [...list];
-        this.#providers.forEach((itm) => {
-            itm.setSecondaryRoles([...list]);
+        Object.keys(this.#providers).forEach((itm) => {
+            this.#providers[itm].setSecondaryRoles([...list]);
         });
         return this;
     }
