@@ -17,6 +17,25 @@ class Identity {
         token: IdentityProviderToken,
     };
 
+    static #primaryRoles = [];
+    static #secondaryRoles = [];
+
+    static setPrimaryRoles(list = []) {
+        this.#primaryRoles = [...list];
+        this.#providers.forEach((itm) => {
+            itm.setPrimaryRoles([...list]);
+        });
+        return this;
+    }
+
+    static setSecondaryRoles(list = []) {
+        this.#secondaryRoles = [...list];
+        this.#providers.forEach((itm) => {
+            itm.setSecondaryRoles([...list]);
+        });
+        return this;
+    }
+
     static of(req) {
         const Provider = this.providerSelector(req);
         return new Provider(req);

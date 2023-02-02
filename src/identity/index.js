@@ -23,6 +23,7 @@ module.exports = class notAppIdentity {
             root: identity.isRoot(),
             auth: identity.isUser(),
             role: identity.getRole(),
+            primaryRole: identity.getPrimaryRole(),
             uid: identity.getUserId(),
             sid: identity.getSessionId(),
             ip: getIP(req),

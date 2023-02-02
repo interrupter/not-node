@@ -1,5 +1,6 @@
 const initEnv = require("./lib/env");
 const initDB = require("./lib/db");
+const initIdentity = require("./lib/identity");
 const InitDBRedlock = require("./lib/redlock");
 const initExpress = require("./lib/express");
 const initCompression = require("./lib/compression");
@@ -27,6 +28,8 @@ module.exports = [
     initEnv,
     //DB access drivers
     initDB,
+    //user Identity roles
+    initIdentity,
     //locking mech based upon ioredis
     InitDBRedlock,
     //http(s) server

@@ -21,6 +21,14 @@ module.exports = class IdentityProviderToken {
         return this.#options;
     }
 
+    static setPrimaryRoles(list = []) {
+        this.#options.primaryRoles = list;
+    }
+
+    static setSecondaryRoles(list = []) {
+        this.#options.secondaryRoles = list;
+    }
+
     constructor(req) {
         this.req = req;
         this.#extractToken(req);
@@ -169,6 +177,20 @@ module.exports = class IdentityProviderToken {
      **/
     isUser() {
         return !!this.tokenContent?._id;
+    }
+
+    /**
+     *	Returns primary user role from request object
+     *	@return {string} user role
+     **/
+    getPrimaryRole() {
+        const roles = this.getRole();
+        for (let role of roles) {
+            if (this.#options.primaryRoles.includes(role)) {
+                return role;
+            }
+        }
+        return CONST.DEFAULT_USER_ROLE_FOR_GUEST;
     }
 
     /**

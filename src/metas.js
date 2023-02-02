@@ -6,7 +6,7 @@ const Auth = require("./auth"),
 function getRole(req) {
     const identity = new notAppIdentity(req);
     if (identity.isUser()) {
-        return identity.getRole();
+        return identity.getPrimaryRole();
     } else {
         return Auth.DEFAULT_USER_ROLE_FOR_GUEST;
     }

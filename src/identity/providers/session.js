@@ -12,6 +12,14 @@ module.exports = class IdentityProviderSession {
         return this.#options;
     }
 
+    static setPrimaryRoles(list = []) {
+        this.#options.primaryRoles = list;
+    }
+
+    static setSecondaryRoles(list = []) {
+        this.#options.secondaryRoles = list;
+    }
+
     constructor(req) {
         this.req = req;
         return this;
@@ -28,8 +36,22 @@ module.exports = class IdentityProviderSession {
     }
 
     /**
+     *	Returns primary user role from request object
+     *	@return {string} user role
+     **/
+    getPrimaryRole() {
+        const roles = this.getRole();
+        for (let role of roles) {
+            if (this.#options.primaryRoles.includes(role)) {
+                return role;
+            }
+        }
+        return CONST.DEFAULT_USER_ROLE_FOR_GUEST;
+    }
+
+    /**
      *	Returns user role from request object
-     *	@return user role
+     *	@return {Array<string>} user role
      **/
     getRole() {
         const req = this.req;
