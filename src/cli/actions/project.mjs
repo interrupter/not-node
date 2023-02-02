@@ -52,31 +52,31 @@ async function createProjectToolsAndConfigs(projectDir, projectConfig) {
 export default (program, { CWD }) => {
     program
         .command("create")
-        .addOption(
+        /*.addOption(
             new Option("-d, --dir <dir>").default(
                 CWD,
                 "current working directory"
             )
-        )
+        )*/
+        .argument("<dir>", "target dir")
         .addOption(
             new Option("-v, --verbose").default(false, "extensive output")
         )
         .description(
             "create application in target directory (create -d [pathToDir])"
         )
-        .action(async (opts) => {
-            //      console.log("create command called :" + opts.dir);
-            if (!isAbsolute(opts.dir)) {
-                opts.dir = resolve(CWD, opts.dir);
+        .action(async (dir, ...opts) => {
+            if (!isAbsolute(dir)) {
+                dir = resolve(CWD, dir);
             }
-            const siteDir = resolve(opts.dir, "./site");
-            if (opts.v) {
+            const siteDir = resolve(dir, "./site");
+            if (opts.verbose) {
                 Logger.setSilent(false);
             }
-            console.log("creating project in", opts.dir);
+            console.log("creating project in", dir);
             console.log("creating site in", siteDir);
             const ProjectConfig = {
-                path: opts.dir,
+                path: dir,
             };
             //
             ProjectConfig.AppName = await Readers.AppName(
@@ -119,15 +119,15 @@ export default (program, { CWD }) => {
                 inquirer,
                 ProjectConfig
             );
-            await createDir(opts.dir);
-            await createDirContent(opts.dir, ProjectStructure, ProjectConfig);
-            await createProjectToolsAndConfigs(opts.dir, ProjectConfig);
+            await createDir(dir);
+            await createDirContent(dir, ProjectStructure, ProjectConfig);
+            await createProjectToolsAndConfigs(dir, ProjectConfig);
             const PATH_MODULES_SERVER = resolve(
-                opts.dir,
+                dir,
                 Options.DEFAULT_SERVER_MODULES_SUB_PATH
             );
             const PATH_MODULES_FRONT = resolve(
-                opts.dir,
+                dir,
                 Options.DEFAULT_FRONT_MODULES_SUB_PATH
             );
             while (await Readers.isUserNeedCreateServerModule(inquirer)) {
