@@ -54,3 +54,9 @@ module.exports.Generic = require("./src/generic/index.js");
 module.exports.notMetasStyler = require("./src/metas.js");
 //for http headers files, web pages, XHR etc
 module.exports.notHeadersStyler = require("./src/headers.js");
+
+/** Interconnect between instances */
+//static interface
+module.exports.notCluster = require("./src/cluster");
+//static provider
+module.exports.notClusterRedisProvider = require("./src/cluster/cluster.redis");
