@@ -368,7 +368,7 @@ class Form {
         }
         if (
             req?.notRouteData?.rule?.fields &&
-            Array.isArray(req.notRouteData.rule.fields)
+            Array.isArray(req.notRouteData.rule.fields.flat(2))
         ) {
             return req.notRouteData.rule.fields;
         }
