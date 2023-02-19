@@ -359,25 +359,36 @@ class Form {
         }
     }
 
+    extractActionFieldsFromRequest(req) {
+        if (
+            req?.notRouteData?.actionData?.fields &&
+            Array.isArray(req.notRouteData.actionData.fields)
+        ) {
+            return req.notRouteData.actionData.fields.flat(2);
+        }
+        if (
+            req?.notRouteData?.rule?.fields &&
+            Array.isArray(req.notRouteData.rule.fields)
+        ) {
+            return req.notRouteData.rule.fields;
+        }
+        return [];
+    }
+
     createInstructionFromRouteActionFields(
         req,
         mainInstruction = "fromBody",
         exceptions = {}
     ) {
         const result = {};
-        if (
-            req?.notRouteData?.actionData?.fields &&
-            Array.isArray(req.notRouteData.actionData.fields)
-        ) {
-            const fields = req.notRouteData.actionData.fields.flat(2);
-            fields.forEach((fieldName) => {
-                if (objHas(exceptions, fieldName)) {
-                    result[fieldName] = exceptions[fieldName];
-                } else {
-                    result[fieldName] = mainInstruction;
-                }
-            });
-        }
+        const fields = this.extractActionFieldsFromRequest(req);
+        fields.forEach((fieldName) => {
+            if (objHas(exceptions, fieldName)) {
+                result[fieldName] = exceptions[fieldName];
+            } else {
+                result[fieldName] = mainInstruction;
+            }
+        });
         return result;
     }
 
