@@ -180,3 +180,27 @@ function getMutationForField(name, list) {
     return false;
 }
 module.exports.getMutationForField = getMutationForField;
+
+function mutateFieldSide(field, mutation, side) {
+    if (Object.hasOwn(mutation, side)) {
+        if (Object.hasOwn(field, side)) {
+            field[side] = { ...field[side], ...mutation[side] };
+        } else {
+            field[side] = mutation[side];
+        }
+    }
+}
+
+module.exports.mutateFieldSide = mutateFieldSide;
+
+function mutateField(sourceField, sourceMutation) {
+    const sides = ["ui", " model"];
+    let field = structuredClone(sourceField);
+    let mutation = structuredClone(sourceMutation);
+    if (mutation) {
+        sides.forEach((side) => mutateFieldSide(field, mutation, side));
+    }
+    return field;
+}
+
+module.exports.mutateField = mutateField;
