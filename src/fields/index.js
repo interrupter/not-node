@@ -194,9 +194,9 @@ function mutateFieldSide(field, mutation, side) {
 module.exports.mutateFieldSide = mutateFieldSide;
 
 function mutateField(sourceField, sourceMutation) {
-    const sides = ["ui", " model"];
-    let field = structuredClone(sourceField);
-    let mutation = structuredClone(sourceMutation);
+    const sides = ["ui", "model"];
+    let field = clone(sourceField);
+    let mutation = clone(sourceMutation);
     if (mutation) {
         sides.forEach((side) => mutateFieldSide(field, mutation, side));
     }
