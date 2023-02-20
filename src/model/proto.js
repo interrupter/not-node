@@ -22,7 +22,16 @@ module.exports = class ModelFabricate {
             }
         }
         if (targetModule.schemaOptions) {
-            options.schemaOptions = targetModule.schemaOptions;
+            options = {
+                ...options,
+                schemaOptions: targetModule.schemaOptions,
+            };
+        }
+        if (targetModule.options) {
+            options = {
+                ...options,
+                ...targetModule.options,
+            };
         }
         return options;
     }
@@ -64,6 +73,11 @@ module.exports = class ModelFabricate {
 
     static enrichByFields(targetModule, options) {
         if (targetModule.enrich) {
+            const model_name = targetModule.thisModelName;
+            console.log(
+                `MODEL: ${model_name}`,
+                JSON.stringify(options, null, 4)
+            );
             if (targetModule.enrich.validators) {
                 targetModule.thisSchema = enrich.byFieldsValidators(
                     targetModule.thisSchema,

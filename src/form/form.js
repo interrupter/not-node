@@ -1,3 +1,5 @@
+const validator = require("validator");
+
 const FormFabric = require("./fabric");
 
 const { createSchemaFromFields } = require("../fields");
@@ -186,6 +188,7 @@ class Form {
         return () => {
             //should be sync function
             return {
+                validator,
                 env: true, //some env variables for validators
             };
         };
@@ -368,9 +371,9 @@ class Form {
         }
         if (
             req?.notRouteData?.rule?.fields &&
-            Array.isArray(req.notRouteData.rule.fields.flat(2))
+            Array.isArray(req.notRouteData.rule.fields)
         ) {
-            return req.notRouteData.rule.fields;
+            return req.notRouteData.rule.fields.flat(2);
         }
         return [];
     }

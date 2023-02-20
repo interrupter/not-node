@@ -2,7 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const { tryFile, objHas } = require("../../common");
 const Fields = require("../../fields");
-
+const { log } = require("not-log")(module, "register//fields");
 module.exports = class notModuleRegistratorFields {
     static openFile = require;
     static fieldsManager = Fields;
@@ -39,9 +39,14 @@ module.exports = class notModuleRegistratorFields {
     }
 
     registerField({ nModule, name, field, fromPath }) {
-        this.extendByFrontValidators({ name, field, fromPath });
+        const fieldValidatorsCount = this.extendByFrontValidators({
+            name,
+            field,
+            fromPath: path.dirname(fromPath),
+        });
         nModule.setField(name, field);
-        //log(`${nModule.getName()}//${name}`);
+        const MODULE_NAME = nModule.getName();
+        log(`${MODULE_NAME}//${name} with ${fieldValidatorsCount} validators`);
     }
 
     /**
@@ -54,7 +59,7 @@ module.exports = class notModuleRegistratorFields {
         //load validators
         const validatorName = path.join(fromPath, "validators", name + ".js");
         if (!tryFile(validatorName)) {
-            return;
+            return 0;
         }
         const validators = notModuleRegistratorFields.openFile(validatorName);
         //inject into field.model
@@ -62,6 +67,7 @@ module.exports = class notModuleRegistratorFields {
             field.model.validate = [];
         }
         field.model.validate.push(...validators);
+        return validators.length;
     }
 
     /**
