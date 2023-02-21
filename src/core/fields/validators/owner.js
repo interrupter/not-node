@@ -1,7 +1,15 @@
 module.exports = [
     {
         validator(val, { validator }) {
-            return validator.isMongoId(val);
+            if (typeof val === "string") {
+                return validator.isMongoId(val);
+            } else {
+                return (
+                    val &&
+                    typeof val === "object" &&
+                    val.prototype.constructor.name === "ObjectId"
+                );
+            }
         },
         message: "not-node:owner_is_not_valid",
     },
