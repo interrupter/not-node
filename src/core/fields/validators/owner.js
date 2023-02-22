@@ -7,7 +7,7 @@ module.exports = [
                 return (
                     val &&
                     typeof val === "object" &&
-                    val.prototype.constructor.name === "ObjectId"
+                    val.constructor.name === "ObjectId"
                 );
             }
         },
