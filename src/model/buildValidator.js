@@ -1,6 +1,7 @@
 /** @module Model/Validator */
 const validate = require("mongoose-validator");
 const { objHas, executeObjectFunction, isFunc, isAsync } = require("../common");
+const notEnv = require("../env");
 
 function extractValidationEnvGetter(options) {
     if (
@@ -10,10 +11,15 @@ function extractValidationEnvGetter(options) {
     ) {
         return options.getValidationEnv;
     } else {
-        //should return at least empty object
-        return () => {
-            return { validate };
-        };
+        const globalGetValidationEnv = notEnv.getEnv("getValidationEnv");
+        if (globalGetValidationEnv && isFunc(globalGetValidationEnv)) {
+            return globalGetValidationEnv;
+        } else {
+            //should return at least empty object
+            return () => {
+                return { validate };
+            };
+        }
     }
 }
 
