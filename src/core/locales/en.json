@@ -21,7 +21,6 @@
   "field_createdAt_label": "Created At",
   "field_createdAt_placeholder": "Date and time of creation",
   "field_default_label": "Default",
-
   "field_title_label": "Title",
   "field_title_placeholder": "Title of item",
   "field_description_label": "Description",
@@ -37,30 +36,22 @@
   "field_width_placeholder": "Width",
   "field_size_label": "Size",
   "field_size_placeholder": "Size",
-
   "field_email_label": "Email",
   "field_email_placeholder": "email@server.com",
-
   "field_telephone_label": "Tel.",
   "field_telephone_placeholder": "+1 (111) 111-11-11",
-
   "field_ID_label": "ID",
   "field_ID_placeholder": "ID",
-
   "field_IP_label": "IP",
   "field_IP_placeholder": "IP",
-
   "field_price_label": "Price",
   "field_price_placeholder": "Price",
-
   "field_session_label": "Session",
   "field_session_placeholder": "Session",
   "field_userId_label": "UserId",
   "field_userId_placeholder": "UserId",
-
   "field_UUID_label": "UUID",
   "field_UUID_placeholder": "UUID",
-
   "crud_create_action_waiting": "Creating record...",
   "crud_read_action_waiting": "Reading record...",
   "crud_update_action_waiting": "Updating record...",
@@ -68,5 +59,6 @@
   "add_label": "Add",
   "select_from_list_label": "Select from list...",
   "field_actions_label": "Actions",
-  "form_exception_field_extractor_is_undefined": "Field extractor is undefined"
+  "form_exception_field_extractor_is_undefined": "Field extractor is undefined",
+  "versioning_error_same_old_data": "Same old data, saving canceled."
 }

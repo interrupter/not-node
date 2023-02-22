@@ -36,30 +36,22 @@
   "field_width_placeholder": "Ширина",
   "field_size_label": "Размер",
   "field_size_placeholder": "Размер",
-
   "field_email_label": "Email",
   "field_email_placeholder": "email@server.ru",
-
   "field_telephone_label": "Тел.",
   "field_telephone_placeholder": "+7 (111) 111-11-11",
-
   "field_ID_label": "ID",
   "field_ID_placeholder": "ID",
-
   "field_IP_label": "IP",
   "field_IP_placeholder": "ip адрес",
-
   "field_price_label": "Цена",
   "field_price_placeholder": "Цена",
-
   "field_session_label": "Сессия",
   "field_session_placeholder": "Сессия",
   "field_userId_label": "UserId",
   "field_userId_placeholder": "",
-
   "field_UUID_label": "UUID",
   "field_UUID_placeholder": "UUID",
-
   "crud_create_action_waiting": "Создание записи...",
   "crud_read_action_waiting": "Чтение записи...",
   "crud_update_action_waiting": "Обновление записи...",
@@ -67,7 +59,6 @@
   "add_label": "Добавить",
   "select_from_list_label": "Выберите из списка...",
   "field_actions_label": "Действия",
-  "form_exception_field_extractor_is_undefined": "Экстрактор для поля входных данных отсутствует"
-
-
+  "form_exception_field_extractor_is_undefined": "Экстрактор для поля входных данных отсутствует",
+  "versioning_error_same_old_data": "Данные не изменились, сохранение отклонено."
 }
