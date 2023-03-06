@@ -6,14 +6,14 @@ const notEnv = require("../env");
 function extractValidationEnvGetter(options) {
     if (
         options &&
-        objHas(options, "getValidationEnv") &&
-        isFunc(options.getValidationEnv)
+        objHas(options, "validationEnv") &&
+        isFunc(options.validationEnv)
     ) {
-        return options.getValidationEnv;
+        return options.validationEnv;
     } else {
-        const globalGetValidationEnv = notEnv.getEnv("getValidationEnv");
-        if (globalGetValidationEnv && isFunc(globalGetValidationEnv)) {
-            return globalGetValidationEnv;
+        const globalValidationEnvGetter = notEnv.getEnv("validationEnv");
+        if (globalValidationEnvGetter && isFunc(globalValidationEnvGetter)) {
+            return globalValidationEnvGetter;
         } else {
             //should return at least empty object
             return () => {

@@ -21,6 +21,7 @@ module.exports = class InitApp {
 
     static async setAppEnvs({ config, options, master, emit }) {
         await emit("app.setEnv.pre", { config, options, master });
+        master.setEnv("validationEnv", options.validationEnv);
         master.setEnv("hostname", config.get("hostname"));
         master.setEnv("server", `https://` + config.get("host"));
         master.setEnv("appPath", config.get("appPath"));

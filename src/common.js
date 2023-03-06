@@ -206,6 +206,20 @@ module.exports.tryFile = (filePath) => {
 };
 
 /**
+ *  Trying to parse input to JSON or returns def
+ * @param {string}     input  string to be parsed
+ * @param {any}     def  what to return if parse failed, default undefined
+ * @return {Object}            JSON
+ **/
+module.exports.tryParse = (input, def = undefined) => {
+    try {
+        return JSON.parse(input);
+    } catch (e) {
+        return def;
+    }
+};
+
+/**
  * Generates paths object for module/index.js files based on content and relative
  * path
  * @param {Array<string>}  content  list of module components ['models', 'logics', 'routes',...]
