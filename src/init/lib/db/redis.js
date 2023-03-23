@@ -6,8 +6,15 @@ module.exports = class InitDBRedis {
         log.info("Setting up redis connection...");
         const redis = require("redis");
         const redisClient = redis.createClient(conf);
+        await redisClient.connect();
         InitDBRedis.bindClientEvents({ master, redisClient });
         master.setEnv(`db.${alias}`, redisClient);
+        const status = redisClient.isOpen;
+        if (status) {
+            log.info(`Redis connection is opened`);
+        } else {
+            log.error(`Redis connection isn't opened`);
+        }
     }
 
     async run({ config, options, master, conf, alias, emit }) {
