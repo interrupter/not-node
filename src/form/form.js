@@ -327,9 +327,10 @@ class Form {
     }
 
     #extractByInstructionPipe({ results, instructions, fieldName, req }) {
-        if (instructions.length === 0) {
+        if (!instructions || instructions.length === 0) {
             throw new FormExceptionExtractorForFieldIsUndefined(fieldName);
         }
+        //
         this.#extractByInstruction({
             results,
             instruction: instructions[0],
@@ -380,7 +381,7 @@ class Form {
 
     createInstructionFromRouteActionFields(
         req,
-        mainInstruction = "fromBody",
+        mainInstruction = ["fromBody", "xss"],
         exceptions = {}
     ) {
         const result = {};
@@ -397,7 +398,7 @@ class Form {
 
     extractByInstructionsFromRouteActionFields(
         req,
-        mainInstruction = "fromBody",
+        mainInstruction = ["fromBody", "xss"],
         exceptions = {}
     ) {
         const instructions = this.createInstructionFromRouteActionFields(
