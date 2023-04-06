@@ -422,7 +422,7 @@ async function loadServerModule() {
                                 STYLES_EXT
                             );
                         //console.log('list', typeof list, typeof result[role]);
-                        list.push(...commons.slice());
+                        list.push(...commons);
                         result[role].styles.push(...list);
                     } catch (e) {
                         console.error(e);
