@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const notPath = require("not-path");
+const { rejects } = require("assert");
 
 /** @module Common */
 /**
@@ -206,6 +207,22 @@ module.exports.tryFile = (filePath) => {
 };
 
 /**
+ *  Asynchronously check file existence and if it's really a file
+ * @param {string}     filePath  full path to file
+ * @return {Promise<boolean>}            true if path exists and it's a file
+ **/
+module.exports.tryFileAsync = (filePath) => {
+    return new Promise((resolve, reject) => {
+        try {
+            const stat = fs.lstatSync(filePath);
+            resolve(stat && stat.isFile());
+        } catch (e) {
+            reject(false);
+        }
+    });
+};
+
+/**
  *  Trying to parse input to JSON or returns def
  * @param {string}     input  string to be parsed
  * @param {any}     def  what to return if parse failed, default undefined
@@ -217,6 +234,30 @@ module.exports.tryParse = (input, def = undefined) => {
     } catch (e) {
         return def;
     }
+};
+
+/**
+ *  Trying to asynchronously parse input to JSON or returns def
+ * @param {string}     input  string to be parsed
+ * @param {any}     def  what to return if parse failed, default undefined
+ * @return {Promise<Object>}            JSON
+ **/
+module.exports.tryParseAsync = (
+    input,
+    def = undefined,
+    throwOnException = false
+) => {
+    return new Promise((resolve, reject) => {
+        try {
+            resolve(JSON.parse(input));
+        } catch (e) {
+            if (throwOnException && !def) {
+                reject(e);
+            } else {
+                resolve(def);
+            }
+        }
+    });
 };
 
 /**
