@@ -1,7 +1,6 @@
 const fs = require("fs");
 const path = require("path");
 const notPath = require("not-path");
-const { rejects } = require("assert");
 
 /** @module Common */
 /**
@@ -157,21 +156,21 @@ module.exports.executeFunctionAsAsync = executeFunctionAsAsync;
  **/
 module.exports.executeObjectFunction = async (obj, name, params) => {
     if (obj) {
-        if (name.indexOf(".") > -1) {
-            const proc =
-                typeof obj == "object"
-                    ? notPath.get(":" + name, obj)
-                    : obj[name];
-            if (proc) {
-                return await executeFunctionAsAsync(proc.bind(obj), params);
-            }
-        } else {
-            if (obj[name] && isFunc(obj[name])) {
-                if (isAsync(obj[name])) {
-                    return await obj[name](...params);
-                } else {
-                    return obj[name](...params);
-                }
+        return;
+    }
+    if (name.indexOf(".") > -1) {
+        const proc =
+            typeof obj == "object" ? notPath.get(":" + name, obj) : obj[name];
+        if (!proc) {
+            return;
+        }
+        return await executeFunctionAsAsync(proc.bind(obj), params);
+    } else {
+        if (obj[name] && isFunc(obj[name])) {
+            if (isAsync(obj[name])) {
+                return await obj[name](...params);
+            } else {
+                return obj[name](...params);
             }
         }
     }
