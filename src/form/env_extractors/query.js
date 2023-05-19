@@ -9,11 +9,15 @@ module.exports = (form, req) => {
             `${MODULE_NAME}//${MODEL_NAME}`
         );
         if (thisSchema) {
-            const { skip, size } = notFilter.pager.process(req), //skip,size
+            let skip, size;
+            const pager = notFilter.pager.process(req), //skip,size
                 sorter = notFilter.sorter.process(req, thisSchema),
                 search = notFilter.search.process(req, thisSchema);
             let filter = notFilter.filter.process(req, thisSchema);
-
+            if (pager) {
+                skip = pager.skip;
+                size = pager.size;
+            }
             return {
                 name: "query",
                 value: { skip, size, sorter, search, filter },
