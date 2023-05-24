@@ -292,3 +292,62 @@ module.exports.getIP = (req) => {
         return undefined;
     }
 };
+
+const createIsStringPrefixedTester = (prefix) => {
+    if (!prefix || prefix.length === 0) throw Error("No prefix provided");
+    return (str) => {
+        return str && str.length > prefix.length && str.indexOf(prefix) === 0;
+    };
+};
+module.exports.createIsStringPrefixedTester = createIsStringPrefixedTester;
+
+const stringIsPrefixed = (val, options) => {
+    if (typeof val === "string" && options) {
+        if (options.tester && typeof options.tester === "function") {
+            const res = options.tester(val);
+            if (Object.hasOwn(process.env, val)) {
+                return res;
+            }
+        }
+        if (
+            options.prefix &&
+            typeof options.prefix === "string" &&
+            options.prefix.length > 0
+        ) {
+            const res = createIsStringPrefixedTester(options.prefix)(val);
+            if (Object.hasOwn(process.env, val)) {
+                return res;
+            }
+        }
+    }
+    return 0;
+};
+module.exports.stringIsPrefixed = stringIsPrefixed;
+
+/**
+ * It will get value of name from object property and then test,
+ * if value corresponds to a property process.ENV object. If it does -
+ * value from process.ENV.* will be returned, if not - just value of source[name]
+ * @param {object}      source          source object
+ * @param {string}      name            option name
+ * @param {object}      [options]         options
+ * @param {function}    [options.tester]  (str)=>integer, checks value of source[name], if returns not 0 than value is name of property in process.ENV to be returned, if number more than 0 returned and drop is set to true, returned number of chars will be droped
+ * @param {string}      [options.prefix = 'ENV$']  prefix that indicates that source[name] value corresponds to process.ENV property
+ * @param {boolean}     [options.drop = true]  should we drop prefix from value before reach for real value in process.ENV, ENV$VALUE - process.ENV.VALUE
+ * @returns  {*}    any
+ */
+const getValueFromEnv = (
+    source,
+    name,
+    options = { prefix: "ENV$", drop: true }
+) => {
+    if (source && Object.hasOwn(source, name)) {
+        const val = source[name];
+        const len = stringIsPrefixed(val, options);
+        if (len) {
+            return process.env[options.drop ? val.slice(0, len) : val];
+        }
+        return val;
+    }
+};
+module.exports.getValueFromEnv = getValueFromEnv;
