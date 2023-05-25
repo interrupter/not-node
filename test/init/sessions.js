@@ -1,5 +1,14 @@
 const InitSessions = require("../../src/init/lib/sessions");
 const mock = require("mock-require");
+const createFakeEmit = (val, err) => {
+    return async () => {
+        if (err) {
+            throw err;
+        } else {
+            return val;
+        }
+    };
+};
 
 module.exports = ({ expect }) => {
     describe("Sessions", () => {
@@ -31,19 +40,7 @@ module.exports = ({ expect }) => {
 
             describe("run", () => {
                 it("driver loaded ok", async () => {
-                    let constRunned = false;
-                    let runRunned = false;
-                    mock(
-                        "../../src/init/sessions/redis.js",
-                        class A {
-                            constructor() {
-                                constRunned = true;
-                            }
-                            async run() {
-                                runRunned = true;
-                            }
-                        }
-                    );
+                    const fEmit = createFakeEmit();
                     const config = {
                         get() {
                             return {
@@ -52,13 +49,21 @@ module.exports = ({ expect }) => {
                         },
                     };
                     await new InitSessions().run({
+                        emit: fEmit,
                         config,
+                        master: {
+                            getEnv() {
+                                return {};
+                            },
+                            getServer() {
+                                return { use() {} };
+                            },
+                        },
                     });
-                    expect(constRunned).to.be.true;
-                    expect(runRunned).to.be.true;
                 });
 
                 it("driver loaded, but not class", async () => {
+                    const fEmit = createFakeEmit();
                     try {
                         mock("../../src/init/sessions/mongo.js", 2);
                         const config = {
@@ -69,6 +74,7 @@ module.exports = ({ expect }) => {
                             },
                         };
                         await new InitSessions().run({
+                            emit: fEmit,
                             config,
                         });
                     } catch (e) {

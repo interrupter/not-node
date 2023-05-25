@@ -29,7 +29,10 @@ module.exports = ({ expect }) => {
                         };
                     },
                 };
-                await new InitBodyparser().run({ master });
+                await new InitBodyparser().run({
+                    master,
+                    emit: require("../fakes").createFakeEmit(),
+                });
                 expect(useCalled).to.be.true;
                 expect(middlewareGeneratorCalled).to.be.equal(2);
             });

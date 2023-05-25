@@ -1,10 +1,10 @@
-const notModuleRegistrator = require("../../src/manifest/registrator");
+const BatchRunner = require("../../src/manifest/batchRunner");
 
 module.exports = (input) => {
     const { expect } = input;
 
-    describe("notModuleRegistrator", () => {
-        it("setRegistrators", (done) => {
+    describe("BatchRunner", () => {
+        it("setProcessors", (done) => {
             const param = "query";
             const regs = [
                 {
@@ -14,17 +14,26 @@ module.exports = (input) => {
                     },
                 },
             ];
-            notModuleRegistrator.setRegistrators(regs);
-            expect(notModuleRegistrator.registrators).to.be.deep.equal(regs);
-            notModuleRegistrator.registrators[0].run(param);
+            const runner = new BatchRunner();
+            runner.setProcessors(regs);
+            expect(runner.processors).to.be.deep.equal(regs);
+            runner.processors[0].run(param);
         });
 
-        it("resetRegistrators", () => {
-            const regs = [];
-            notModuleRegistrator.setRegistrators(regs);
-            expect(notModuleRegistrator.registrators.length).to.be.equal(0);
-            notModuleRegistrator.resetRegistrators();
-            expect(notModuleRegistrator.registrators.length).to.be.equal(6);
+        it("resetBatchRunners", () => {
+            const regs = [
+                () => {},
+                () => {},
+                () => {},
+                () => {},
+                () => {},
+                () => {},
+            ];
+            const runner = new BatchRunner();
+            runner.setProcessors(regs);
+            expect(runner.processors.length).to.be.equal(6);
+            runner.resetProcessors();
+            expect(runner.processors.length).to.be.equal(0);
         });
 
         it("with paths", () => {
@@ -33,14 +42,16 @@ module.exports = (input) => {
                     paths: {},
                 },
             };
-            notModuleRegistrator.setRegistrators([]);
-            const res = notModuleRegistrator.registerContent({ nModule });
+            const runner = new BatchRunner();
+            runner.setProcessors([]);
+            const res = runner.exec({ nModule });
             expect(res).to.be.true;
         });
 
         it("without paths", function () {
             const nModule = { module: {} };
-            const res = notModuleRegistrator.registerContent({ nModule });
+            const runner = new BatchRunner();
+            const res = runner.exec({ nModule });
             expect(res).to.be.false;
         });
 

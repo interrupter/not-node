@@ -51,7 +51,11 @@ module.exports = ({ expect }) => {
                         expect(itm.fakeMongoose).to.be.true;
                     },
                 };
-                await new InitDB().run({ config, master });
+                await new InitDB().run({
+                    emit: require("../fakes").createFakeEmit(),
+                    config,
+                    master,
+                });
             });
         });
         after(() => {

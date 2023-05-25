@@ -27,7 +27,11 @@ module.exports = ({ expect }) => {
                         };
                     },
                 };
-                await new InitTemplate().run({ master, config });
+                await new InitTemplate().run({
+                    emit: require("../fakes").createFakeEmit(),
+                    master,
+                    config,
+                });
                 expect(setCalled).to.be.equal(2);
             });
         });

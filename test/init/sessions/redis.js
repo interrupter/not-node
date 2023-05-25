@@ -58,7 +58,11 @@ module.exports = ({ expect }) => {
                         };
                     },
                 };
-                await new InitSessionsRedis().run({ master, config });
+                await new InitSessionsRedis().run({
+                    master,
+                    config,
+                    emit: require("../../fakes").createFakeEmit(),
+                });
             });
         });
     });

@@ -114,7 +114,10 @@ module.exports = ({ expect }) => {
                         };
                     },
                 };
-                await new InitStatic().run({ master });
+                await new InitStatic().run({
+                    emit: require("../fakes").createFakeEmit(),
+                    master,
+                });
             });
         });
     });

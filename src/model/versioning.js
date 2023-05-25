@@ -16,7 +16,7 @@ function toObject(obj) {
 }
 
 const {
-    VersioningExceptioNoPpreviousVersions,
+    VersioningExceptionNoPreviousVersions,
     VersioningExceptionSameOldData,
 } = require("./exceptions.js");
 
@@ -78,7 +78,7 @@ class ModelVersioning {
                 toObject(previous)
             );
         } else {
-            throw new VersioningExceptioNoPpreviousVersions();
+            throw new VersioningExceptionNoPreviousVersions();
         }
     }
 

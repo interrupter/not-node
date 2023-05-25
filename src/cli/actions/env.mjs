@@ -1,1 +1,1 @@
-export default (program, { CWD }) => {};
+export default (/*program, { /*CWD }*/) => {};

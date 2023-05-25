@@ -16,6 +16,14 @@ function compareRolesArrayAgainstArray(userRoles, actionRoles, strict) {
     }
 }
 
+function compareRolesStrict(userRoles, actionRoles) {
+    if (actionRoles.length === 1) {
+        return actionRoles.includes(userRoles);
+    } else {
+        return false;
+    }
+}
+
 /**
  *	Compares two list of roles
  *	@param	{array|string}	userRoles 		roles of user
@@ -41,7 +49,7 @@ function compareRoles(userRoles, actionRoles, strict = true) {
     } else {
         if (Array.isArray(actionRoles)) {
             if (strict) {
-                return false;
+                return compareRolesStrict(userRoles, actionRoles);
             } else {
                 return actionRoles.indexOf(userRoles) > -1;
             }

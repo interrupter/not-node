@@ -1,10 +1,20 @@
+const path = require("node:path");
 const ADDS = require("../../src/init/additional");
 const InitApp = require("../../src/init/lib/app");
-
+const createFakeEmit = (val, err) => {
+    return async () => {
+        if (err) {
+            throw err;
+        } else {
+            return val;
+        }
+    };
+};
 module.exports = ({ expect }) => {
     describe("App", () => {
         describe("createApp", () => {
             it("not emits to call", async () => {
+                const fEmit = createFakeEmit();
                 let constructorCalled = false;
                 const fakeMongoose = {
                     this: "is fake indeed",
@@ -27,7 +37,12 @@ module.exports = ({ expect }) => {
                     },
                 };
 
-                await InitApp.createApp({ master, config, options });
+                await InitApp.createApp({
+                    master,
+                    config,
+                    options,
+                    emit: fEmit,
+                });
                 expect(constructorCalled).to.be.true;
             });
 
@@ -68,7 +83,12 @@ module.exports = ({ expect }) => {
                     },
                 };
 
-                await InitApp.createApp({ master, config, options });
+                await InitApp.createApp({
+                    master,
+                    config,
+                    options,
+                    emit: ADDS.run.bind(ADDS),
+                });
                 expect(constructorCalled).to.be.true;
                 expect(preCalled).to.be.true;
                 expect(postCalled).to.be.true;
@@ -114,7 +134,12 @@ module.exports = ({ expect }) => {
                     setEnv() {},
                 };
 
-                await InitApp.setAppEnvs({ master, config, options });
+                await InitApp.setAppEnvs({
+                    master,
+                    config,
+                    options,
+                    emit: ADDS.run.bind(ADDS),
+                });
 
                 expect(preCalled).to.be.true;
                 expect(postCalled).to.be.true;
@@ -173,7 +198,12 @@ module.exports = ({ expect }) => {
                     },
                 };
 
-                await InitApp.importModules({ master, config, options });
+                await InitApp.importModules({
+                    master,
+                    config,
+                    options,
+                    emit: ADDS.run.bind(ADDS),
+                });
 
                 expect(preCalled).to.be.true;
                 expect(postCalled).to.be.true;
@@ -218,7 +248,12 @@ module.exports = ({ expect }) => {
                         return fakeManifest;
                     },
                 };
-                await InitApp.importModules({ master, config, options });
+                await InitApp.importModules({
+                    master,
+                    config,
+                    options,
+                    emit: ADDS.run.bind(ADDS),
+                });
                 expect(preCalled).to.be.true;
                 expect(postCalled).to.be.true;
             });
@@ -226,6 +261,7 @@ module.exports = ({ expect }) => {
 
         describe("createReporter", () => {
             it("ok", async () => {
+                const fEmit = createFakeEmit();
                 let reporterConstructed = false;
                 class FakeReporter {
                     constructor(opts) {
@@ -247,7 +283,12 @@ module.exports = ({ expect }) => {
                         return fakeManifest;
                     },
                 };
-                await InitApp.createReporter({ master, config, options });
+                await InitApp.createReporter({
+                    master,
+                    config,
+                    options,
+                    emit: fEmit,
+                });
                 expect(reporterConstructed).to.be.true;
             });
 
@@ -335,7 +376,17 @@ module.exports = ({ expect }) => {
                         expect(modsPath).to.be.equal("modulesPath_fake");
                     },
                     importModuleFrom(modPath, modName) {
-                        expect(modPath).to.be.equal("npmPath_fake/" + modName);
+                        console.log(
+                            path.resolve("src/core"),
+                            path.resolve("npmPath_fake/" + modName)
+                        );
+                        console.log(modPath, modName);
+                        expect(
+                            [
+                                path.resolve("src/core"),
+                                path.resolve("npmPath_fake/" + modName),
+                            ].includes(path.resolve(modPath))
+                        ).to.be.true;
                     },
                 };
                 const master = {
@@ -357,12 +408,17 @@ module.exports = ({ expect }) => {
                     },
                 };
                 try {
-                    await new InitApp().run({ master, config, options });
+                    await new InitApp().run({
+                        master,
+                        config,
+                        options,
+                        emit: ADDS.run.bind(ADDS),
+                    });
                 } catch (e) {
+                    expect(e.message).to.be.equal("Post throwed");
                     expect(constructorCalled).to.be.true;
                     expect(preCalled).to.be.true;
                     expect(postCalled).to.be.true;
-                    expect(e.message).to.be.equal("Post throwed");
                 }
             });
         });

@@ -1,10 +1,19 @@
 const InitMiddleware = require("../../src/init/lib/middleware");
 const mock = require("mock-require");
-
+const createFakeEmit = (val, err) => {
+    return async () => {
+        if (err) {
+            throw err;
+        } else {
+            return val;
+        }
+    };
+};
 module.exports = ({ expect }) => {
     describe("Middleware", () => {
         describe("run", () => {
             it("config middleware empty", async () => {
+                const fEmit = createFakeEmit();
                 const config = {
                     get() {
                         return false;
@@ -12,6 +21,7 @@ module.exports = ({ expect }) => {
                 };
                 await new InitMiddleware().run({
                     config,
+                    emit: fEmit,
                 });
             });
 
@@ -30,6 +40,7 @@ module.exports = ({ expect }) => {
             });
 
             it("config middleware not empty", async () => {
+                const fEmit = createFakeEmit();
                 const config = {
                     get() {
                         return {
@@ -56,6 +67,7 @@ module.exports = ({ expect }) => {
                 await new InitMiddleware().run({
                     config,
                     master,
+                    emit: fEmit,
                 });
             });
         });

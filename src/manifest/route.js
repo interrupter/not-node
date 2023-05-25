@@ -108,6 +108,7 @@ class notRoute {
                     )
                 );
             }
+            console.log(rule);
             obsoleteWarning(rule, req.originalUrl);
             let actionName = this.selectActionName(rule);
             let mod = this.notApp.getModule(this.moduleName);

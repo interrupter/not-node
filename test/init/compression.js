@@ -21,7 +21,10 @@ module.exports = ({ expect }) => {
                         };
                     },
                 };
-                await new InitCompression().run({ master });
+                await new InitCompression().run({
+                    emit: require("../fakes").createFakeEmit(),
+                    master,
+                });
                 expect(useCalled).to.be.true;
                 expect(compressionCalled).to.be.true;
             });

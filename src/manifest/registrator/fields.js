@@ -87,12 +87,12 @@ module.exports = class notModuleRegistratorFields {
     }
 
     register({ nModule, fromPath }) {
-        let fields = notModuleRegistratorFields.openFile(fromPath);
-        if (fields && objHas(fields, "FIELDS")) {
+        let file = notModuleRegistratorFields.openFile(fromPath);
+        if (file && objHas(file, "FIELDS")) {
             //collection
             this.registerFields({
                 nModule,
-                lib: fields.FIELDS, //fields dictionary
+                lib: file.FIELDS, //fields dictionary
                 fromPath,
             });
         } else {
@@ -101,7 +101,7 @@ module.exports = class notModuleRegistratorFields {
             this.registerField({
                 nModule,
                 name: parts.name, //fields name
-                field: fields, //field description
+                field: file, //field description
                 fromPath,
             });
         }

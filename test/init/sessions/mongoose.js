@@ -52,7 +52,11 @@ module.exports = ({ expect }) => {
                         };
                     },
                 };
-                await new InitSessionsMongo().run({ master, config });
+                await new InitSessionsMongo().run({
+                    master,
+                    config,
+                    emit: require("../../fakes").createFakeEmit(),
+                });
                 expect(events.sort()).to.be.deep.equal(
                     ["error", "connected"].sort()
                 );

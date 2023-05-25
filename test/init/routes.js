@@ -168,6 +168,7 @@ module.exports = ({ expect }) => {
                     expose(ser) {
                         expect(ser).to.be.deep.equal(fakeServer);
                     },
+                    async execInModules() {},
                 };
                 mock("main-not-app-routes", (ser, app) => {
                     expect(ser).to.be.deep.equal(fakeServer);

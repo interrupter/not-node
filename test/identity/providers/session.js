@@ -1,11 +1,11 @@
 const Provider = require("../../../src/identity/providers/session");
-
+const { DEFAULT_USER_ROLE_FOR_GUEST } = require("../../../src/auth/const");
 const mongoose = require("mongoose");
 
 const SESSION_NOT_EXISTS = "session not exists";
 
 module.exports = ({ expect }) => {
-    describe(`${Provider.constructor.name}`, () => {
+    describe(`${Provider.name}`, () => {
         describe("isUser", function () {
             it("check if user exists - true", function () {
                 var t = {
@@ -40,6 +40,7 @@ module.exports = ({ expect }) => {
                 var t = {
                     session: {
                         user: mongoose.Types.ObjectId(),
+                        save() {},
                     },
                 };
                 var res = new Provider(t).isRoot();
@@ -53,6 +54,7 @@ module.exports = ({ expect }) => {
                     session: {
                         user: mongoose.Types.ObjectId(),
                         role: "root",
+                        save() {},
                     },
                 };
                 var res = new Provider(t).getRole();
@@ -62,10 +64,11 @@ module.exports = ({ expect }) => {
                 var t = {
                     session: {
                         user: mongoose.Types.ObjectId(),
+                        save() {},
                     },
                 };
                 var res = new Provider(t).getRole();
-                expect(res).to.eql(undefined);
+                expect(res).to.eql([DEFAULT_USER_ROLE_FOR_GUEST]);
             });
         });
 
@@ -75,6 +78,7 @@ module.exports = ({ expect }) => {
                     session: {
                         user: mongoose.Types.ObjectId(),
                         role: "user",
+                        save() {},
                     },
                 };
                 new Provider(t).setRole("root");
@@ -93,6 +97,7 @@ module.exports = ({ expect }) => {
                 const t = {
                     session: {
                         role: "user",
+                        save() {},
                     },
                 };
                 const id = mongoose.Types.ObjectId();
@@ -114,6 +119,7 @@ module.exports = ({ expect }) => {
                     session: {
                         user: mongoose.Types.ObjectId(),
                         role: "user",
+                        save() {},
                     },
                 };
                 const id = new Provider(t).getUserId();
@@ -133,6 +139,7 @@ module.exports = ({ expect }) => {
                     session: {
                         id: mongoose.Types.ObjectId(),
                         role: "user",
+                        save() {},
                     },
                 };
                 const id = new Provider(t).getSessionId();
@@ -149,7 +156,7 @@ module.exports = ({ expect }) => {
         describe("setAuth", function () {
             it("session exist", function () {
                 const t = {
-                    session: {},
+                    session: { save() {} },
                 };
                 const id = mongoose.Types.ObjectId();
                 new Provider(t).setAuth(id, "root");
@@ -169,7 +176,7 @@ module.exports = ({ expect }) => {
             it("session exist", function () {
                 const id = mongoose.Types.ObjectId();
                 const t = {
-                    session: { user: id, role: "admin" },
+                    session: { user: id, role: "admin", save() {} },
                     user: { _id: id },
                 };
                 new Provider(t).setGuest();
@@ -193,6 +200,7 @@ module.exports = ({ expect }) => {
                     session: {
                         user: id,
                         role: "admin",
+                        save() {},
                         destroy() {
                             destroyed = true;
                         },
@@ -210,6 +218,7 @@ module.exports = ({ expect }) => {
                     session: {
                         user: id,
                         role: "admin",
+                        save() {},
                     },
                 };
                 new Provider(t).cleanse();

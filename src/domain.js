@@ -63,8 +63,16 @@ class notDomain extends EventEmitter {
         return this;
     }
 
-    getOptions() {
+    get modules() {
+        return this.#modules;
+    }
+
+    get options() {
         return this.#options;
+    }
+
+    getOptions() {
+        return this.options;
     }
 
     /**
@@ -73,9 +81,9 @@ class notDomain extends EventEmitter {
      *  @param   {function}  func  function to perfom some action with module
      **/
     forEachMod(func) {
-        if (this.#modules) {
-            for (let t of Object.keys(this.#modules)) {
-                let mod = this.#modules[t];
+        if (this.modules) {
+            for (let t of Object.keys(this.modules)) {
+                let mod = this.modules[t];
                 if (mod) {
                     func(t, mod, this);
                 }
@@ -105,12 +113,16 @@ class notDomain extends EventEmitter {
         let mod = new notModule({
             modPath: modulePath,
             modObject: null,
-            mongoose: this.#options.mongoose,
+            mongoose: this.options.mongoose,
             notApp: this,
-            fields: this.#options.fields,
+            fields: this.options.fields,
         });
         this.importModule(mod, mod.getName() || moduleName);
         return this;
+    }
+
+    setModule(name, val) {
+        this.#modules[name] = val;
     }
 
     /**
@@ -120,7 +132,7 @@ class notDomain extends EventEmitter {
      *  @return {object}        notDomain
      **/
     importModule(mod, moduleName) {
-        this.#modules[moduleName] = mod;
+        this.setModule(moduleName, mod);
         return this;
     }
 
@@ -132,8 +144,8 @@ class notDomain extends EventEmitter {
     getRoute(name) {
         if (name.indexOf("//") > 0) {
             let [moduleName, routeName, routeFunctionName] = name.split("//");
-            if (this.#modules && objHas(this.#modules, moduleName)) {
-                let route = this.#modules[moduleName].getRoute(routeName);
+            if (this.modules && objHas(this.modules, moduleName)) {
+                let route = this.getModule(moduleName).getRoute(routeName);
                 if (objHas(route, routeFunctionName)) {
                     return route[routeFunctionName];
                 }
@@ -177,8 +189,8 @@ class notDomain extends EventEmitter {
 
     getByFullPath(name, type) {
         let [moduleName, resourceName] = name.split("//");
-        if (this.#modules && objHas(this.#modules, moduleName)) {
-            return this.#modules[moduleName][`get${firstLetterToUpper(type)}`](
+        if (this.modules && objHas(this.modules, moduleName)) {
+            return this.getModule(moduleName)[`get${firstLetterToUpper(type)}`](
                 resourceName
             );
         } else {
@@ -188,9 +200,9 @@ class notDomain extends EventEmitter {
     }
 
     getByShortPath(resourceName, type) {
-        for (let moduleName of Object.keys(this.#modules)) {
+        for (let moduleName of Object.keys(this.modules)) {
             const res =
-                this.#modules[moduleName][`get${firstLetterToUpper(type)}`](
+                this.getModule(moduleName)[`get${firstLetterToUpper(type)}`](
                     resourceName
                 );
             if (res) {
@@ -257,12 +269,12 @@ class notDomain extends EventEmitter {
      *  @return {object}  module
      **/
     getModule(moduleName) {
-        if (this.#modules && objHas(this.#modules, moduleName)) {
-            return this.#modules[moduleName];
+        if (this.modules && objHas(this.modules, moduleName)) {
+            return this.modules[moduleName];
         } else {
-            for (let t in this.#modules) {
-                if (this.#modules[t].getName() === moduleName) {
-                    return this.#modules[t];
+            for (let t in this.modules) {
+                if (this.modules[t].getName() === moduleName) {
+                    return this.modules[t];
                 }
             }
             return null;
@@ -275,7 +287,7 @@ class notDomain extends EventEmitter {
      *  @param {Object}  params         params to pass to method
      **/
     async execInModules(methodName, params) {
-        for (let mod of Object.values(this.#modules)) {
+        for (let mod of Object.values(this.modules)) {
             try {
                 await executeObjectFunction(mod, "exec", [methodName, params]);
             } catch (e) {
@@ -289,7 +301,7 @@ class notDomain extends EventEmitter {
      *  Create mongoose models.
      **/
     fabricate() {
-        for (let mod of Object.values(this.#modules)) {
+        for (let mod of Object.values(this.modules)) {
             mod.fabricateModels && mod.fabricateModels();
         }
     }
@@ -406,7 +418,7 @@ class notDomain extends EventEmitter {
      * @return {Object}  complex object with results
      **/
     getStatus() {
-        const mods = Object.keys(this.#modules);
+        const mods = Object.keys(this.modules);
         let stats = {
             modules: {
                 count: mods.length,
@@ -434,8 +446,8 @@ class notDomain extends EventEmitter {
                 list: [],
             },
         };
-        for (let modName in this.#modules) {
-            const mod = this.#modules[modName];
+        for (let modName in this.modules) {
+            const mod = this.modules[modName];
             let modStatus = mod.getStatus();
             stats.modules.content[modName] = modStatus;
             stats.routes.count += modStatus.routes.count;
@@ -469,7 +481,7 @@ class notDomain extends EventEmitter {
     }
 
     getModulesNames() {
-        return Object.keys(this.#modules);
+        return Object.keys(this.modules);
     }
 }
 

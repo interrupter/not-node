@@ -1,4 +1,3 @@
-const FIELDS = require("../../src/fields");
 const path = require("path");
 const notModuleRegistratorFields = require("../../src/manifest/registrator/fields");
 
@@ -87,9 +86,14 @@ module.exports = ({ expect }) => {
 
         describe("register", function () {
             it("file is lib", (done) => {
+                const libPath = path.resolve(
+                    __dirname,
+                    "../testies/module/fields/collection.js"
+                );
                 const ctx = {
-                    registerFields({ lib, fieldsImportRules }) {
-                        expect(fieldsImportRules).to.be.deep.equal({
+                    registerFields({ lib, fromPath, nModule }) {
+                        expect(fromPath).to.be.deep.equal(libPath);
+                        expect(nModule.fieldsImportRules).to.be.deep.equal({
                             one: true,
                         });
                         expect(lib).to.be.have.keys(["collectionItem"]);
@@ -102,19 +106,15 @@ module.exports = ({ expect }) => {
                             one: true,
                         },
                     },
-                    fromPath: path.resolve(
-                        __dirname,
-                        "../testies/module/fields/collection.js"
-                    ),
+                    fromPath: libPath,
                 };
                 notModuleRegistratorFields.prototype.register.call(ctx, param);
-                expect(result).to.be.deep.equal(list);
             });
 
             it("file is single field", (done) => {
                 const ctx = {
-                    registerField({ name, field, fieldsImportRules }) {
-                        expect(fieldsImportRules).to.be.deep.equal({
+                    registerField({ name, field, nModule }) {
+                        expect(nModule.fieldsImportRules).to.be.deep.equal({
                             one: true,
                         });
                         expect(field).to.be.have.keys(["ui", "model"]);
@@ -134,13 +134,30 @@ module.exports = ({ expect }) => {
                     ),
                 };
                 notModuleRegistratorFields.prototype.register.call(ctx, param);
-                expect(result).to.be.deep.equal(list);
             });
         });
 
         describe("registerFields", function () {
             it("file is a lib", () => {
-                const ctx = {};
+                const fField = {
+                    ui: {
+                        component: "UITextfield",
+                        placeholder: "collectionItem",
+                        label: "collectionItem",
+                        readonly: true,
+                    },
+                    model: {
+                        type: String,
+                        searchable: true,
+                        required: true,
+                    },
+                };
+                const ctx = {
+                    registerField({ name, field }) {
+                        expect(name).to.be.equal("collectionItem");
+                        expect(field).to.be.deep.equal(fField);
+                    },
+                };
                 const param = {
                     fieldsImportRules: {},
                     lib: require(path.resolve(
@@ -152,29 +169,37 @@ module.exports = ({ expect }) => {
                     ctx,
                     param
                 );
-                expect(Object.keys(FIELDS.LIB).includes("collectionItem")).to.be
-                    .true;
             });
         });
 
         describe("registerField", function () {
             it("file is a single field", () => {
+                const fPath = path.resolve(
+                    __dirname,
+                    "../testies/module/fields/single.js"
+                );
+                let FIELDS = {};
                 const ctx = {
                     extendByFrontValidators() {},
                 };
                 const param = {
                     name: "single",
-                    field: require(path.resolve(
-                        __dirname,
-                        "../testies/module/fields/single.js"
-                    )),
-                    fieldsImportRules: {},
+                    field: require(fPath),
+                    fromPath: fPath,
+                    nModule: {
+                        setField(name, val) {
+                            FIELDS[name] = val;
+                        },
+                        getName() {
+                            return "test_module";
+                        },
+                    },
                 };
                 notModuleRegistratorFields.prototype.registerField.call(
                     ctx,
                     param
                 );
-                expect(Object.keys(FIELDS.LIB).includes("single")).to.be.true;
+                expect(Object.keys(FIELDS).includes("single")).to.be.true;
             });
         });
     });

@@ -89,7 +89,12 @@ module.exports = ({ expect }) => {
                     },
                     set() {},
                 };
-                await new InitEnv().run({ master, options, config });
+                await new InitEnv().run({
+                    master,
+                    options,
+                    config,
+                    emit: require("../fakes").createFakeEmit(),
+                });
             });
 
             it("path:ws - not empty", async () => {
@@ -114,7 +119,12 @@ module.exports = ({ expect }) => {
                     },
                     set() {},
                 };
-                await new InitEnv().run({ master, options, config });
+                await new InitEnv().run({
+                    master,
+                    options,
+                    config,
+                    emit: require("../fakes").createFakeEmit(),
+                });
             });
         });
     });

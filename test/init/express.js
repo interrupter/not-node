@@ -44,7 +44,10 @@ module.exports = ({ expect }) => {
                         return this._server;
                     },
                 };
-                await new InitExpress().run({ master });
+                await new InitExpress().run({
+                    emit: require("../fakes").createFakeEmit(),
+                    master,
+                });
                 expect(nextCalled).to.be.true;
             });
         });

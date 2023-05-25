@@ -22,7 +22,7 @@ function stubReqWithTokenContent({ tokenContent, secret }) {
 }
 
 module.exports = ({ expect }) => {
-    describe(`${Provider.constructor.name}`, () => {
+    describe(`${Provider.name}`, () => {
         /* describe("isUser", function () {
             it("check if user exists - true", function () {
                 var t = {

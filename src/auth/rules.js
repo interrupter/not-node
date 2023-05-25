@@ -17,13 +17,13 @@ function compareWithRoot(rule, root) {
     }
 }
 
-function compareRuleRoles(rule, role, auth) {
-    if (ROLES.compareRoles(rule.role, role)) {
-        if (objHas(rule, "auth")) {
-            if (rule.auth && auth) {
+function compareRuleRoles(actionRule, userRole, auth) {
+    if (ROLES.compareRoles(userRole, actionRule.role)) {
+        if (objHas(actionRule, "auth")) {
+            if (actionRule.auth && auth) {
                 return true;
             } else {
-                return !rule.auth && !auth;
+                return !actionRule.auth && !auth;
             }
         } else {
             return true;

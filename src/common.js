@@ -155,7 +155,7 @@ module.exports.executeFunctionAsAsync = executeFunctionAsAsync;
  * @return {Promise}          results of method execution
  **/
 module.exports.executeObjectFunction = async (obj, name, params) => {
-    if (obj) {
+    if (!obj) {
         return;
     }
     if (name.indexOf(".") > -1) {

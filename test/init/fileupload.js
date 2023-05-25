@@ -22,7 +22,10 @@ module.exports = ({ expect }) => {
                         };
                     },
                 };
-                await new InitFileupload().run({ master });
+                await new InitFileupload().run({
+                    emit: require("../fakes").createFakeEmit(),
+                    master,
+                });
                 expect(useCalled).to.be.true;
                 expect(middlewareGeneratorCalled).to.be.true;
             });

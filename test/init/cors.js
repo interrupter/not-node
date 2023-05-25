@@ -38,7 +38,11 @@ module.exports = ({ expect }) => {
                     };
                 },
             };
-            await new InitCORS().run({ config, master });
+            await new InitCORS().run({
+                config,
+                master,
+                emit: require("../fakes").createFakeEmit(),
+            });
             expect(mdSet).to.be.equal(true);
         });
     });

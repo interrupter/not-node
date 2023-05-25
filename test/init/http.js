@@ -25,7 +25,14 @@ module.exports = ({ expect }) => {
                     },
                 };
                 InitHTTP.prototype.listenPromise
-                    .call({}, { config, master })
+                    .call(
+                        {},
+                        {
+                            emit: require("../fakes").createFakeEmit(),
+                            config,
+                            master,
+                        }
+                    )
                     .then(() => {
                         done();
                     })
@@ -55,7 +62,11 @@ module.exports = ({ expect }) => {
                 try {
                     await InitHTTP.prototype.listenPromise.call(
                         {},
-                        { config, master }
+                        {
+                            emit: require("../fakes").createFakeEmit(),
+                            config,
+                            master,
+                        }
                     );
                 } catch (e) {
                     expect(e).to.be.instanceof(Error);
@@ -134,7 +145,10 @@ module.exports = ({ expect }) => {
                         }[str];
                     },
                 };
-                await InitHTTP.prototype.run.call(ctx, { config });
+                await InitHTTP.prototype.run.call(ctx, {
+                    emit: require("../fakes").createFakeEmit(),
+                    config,
+                });
                 expect(runnerCalled).to.be.true;
             });
 
@@ -153,7 +167,10 @@ module.exports = ({ expect }) => {
                         }[str];
                     },
                 };
-                await InitHTTP.prototype.run.call(ctx, { config });
+                await InitHTTP.prototype.run.call(ctx, {
+                    emit: require("../fakes").createFakeEmit(),
+                    config,
+                });
                 expect(runnerCalled).to.be.true;
             });
         });

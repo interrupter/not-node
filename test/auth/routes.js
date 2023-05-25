@@ -3,6 +3,8 @@ const {
     HttpExceptionForbidden,
 } = require("../../src/exceptions/http");
 
+const notAppIdentity = require("../../src/identity/index");
+
 module.exports = ({ Auth, expect }) => {
     describe("Routes", () => {
         describe("getIP", () => {
@@ -31,6 +33,7 @@ module.exports = ({ Auth, expect }) => {
                     socket: {
                         remoteAddress: "127.0.0.1",
                     },
+                    get() {},
                 };
                 let result = Auth.getIP(req);
                 expect(result).to.deep.equal("127.0.0.1");
@@ -55,15 +58,19 @@ module.exports = ({ Auth, expect }) => {
                     headers: {
                         "x-forwarded-for": "127.0.0.1",
                     },
+                    get() {},
                     user: {},
-                    session: {},
+                    session: {
+                        save() {},
+                    },
                 };
                 let result = Auth.extractAuthData(req);
                 expect(result).to.deep.equal({
                     root: false,
                     auth: false,
-                    role: undefined,
-                    uid: undefined,
+                    role: [Auth.DEFAULT_USER_ROLE_FOR_GUEST],
+                    primaryRole: Auth.DEFAULT_USER_ROLE_FOR_GUEST,
+                    uid: null,
                     sid: undefined,
                     ip: "127.0.0.1",
                 });
@@ -76,6 +83,7 @@ module.exports = ({ Auth, expect }) => {
                         session: {
                             user: true,
                         },
+                        get() {},
                     },
                     next = function (val) {
                         return val;
@@ -89,6 +97,7 @@ module.exports = ({ Auth, expect }) => {
                         session: {
                             user: false,
                         },
+                        get() {},
                     },
                     next = function (val) {
                         return val;
@@ -101,6 +110,7 @@ module.exports = ({ Auth, expect }) => {
         describe("checkRoot", function () {
             it("check if admin exists and continues", function () {
                 const req = {
+                        get() {},
                         session: {
                             user: true,
                             role: [Auth.DEFAULT_USER_ROLE_FOR_ADMIN],
@@ -119,6 +129,7 @@ module.exports = ({ Auth, expect }) => {
                             user: true,
                             role: "manager",
                         },
+                        get() {},
                     },
                     next = function (val) {
                         return val;
@@ -135,24 +146,33 @@ module.exports = ({ Auth, expect }) => {
                             user: true,
                             role: [Auth.DEFAULT_USER_ROLE_FOR_ADMIN],
                         },
+                        get() {},
                     },
                     next = function (val) {
                         return val;
                     };
-                let result = Auth.checkAdmin(req, false, next);
+                let result = Auth.checkRoot(req, false, next);
                 expect(result).to.deep.equal();
             });
         });
 
         describe("checkRoleBuilder", function () {
             it("Role", function () {
+                notAppIdentity.identity = class {
+                    static of() {
+                        return class {
+                            static getRole() {
+                                return "user";
+                            }
+                            static getUserId() {}
+                            static isUser() {
+                                return true;
+                            }
+                        };
+                    }
+                };
                 const role = "user",
-                    req = {
-                        session: {
-                            user: true,
-                            role: "user",
-                        },
-                    },
+                    req = {},
                     next = function (val) {
                         return val;
                     };
@@ -162,9 +182,13 @@ module.exports = ({ Auth, expect }) => {
             });
 
             it("Role with error", function () {
+                let saved = false;
                 const role = "manager",
                     req = {
                         session: {
+                            save() {
+                                saved = true;
+                            },
                             user: true,
                             role: "user",
                         },

@@ -8,6 +8,10 @@ module.exports = class BatchRunner {
         this.setProcessors(processors);
     }
 
+    get processors() {
+        return this.#processors;
+    }
+
     setProcessors(list = []) {
         this.#processors = [...list];
     }
@@ -24,7 +28,7 @@ module.exports = class BatchRunner {
      * @return {boolean}                       true - executed, false - no paths
      **/
     exec({ nModule }) {
-        if (!nModule.module.paths) {
+        if (!nModule?.module?.paths) {
             return false;
         }
         //starting from simpliest forms and moving upwards

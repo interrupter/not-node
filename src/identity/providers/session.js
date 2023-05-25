@@ -43,6 +43,9 @@ module.exports = class IdentityProviderSession {
         const roles = this.getRole();
         for (let role of roles) {
             if (
+                Array.isArray(
+                    IdentityProviderSession.#getOptions().primaryRoles
+                ) &&
                 IdentityProviderSession.#getOptions().primaryRoles.includes(
                     role
                 )

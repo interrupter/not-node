@@ -1,3 +1,6 @@
+const { DEFAULT_USER_ROLE_FOR_ADMIN } = require("../src/auth");
+const notAppIdentity = require("../src/identity");
+
 const HttpError = require("../src/error").Http,
     notRoute = require("../src/manifest/route"),
     expect = require("chai").expect;
@@ -24,12 +27,10 @@ describe("notRoute", function () {
 
     describe("selectRule", function () {
         it("User(auth) request, post.list action", function () {
-            let req = {
-                    session: {
-                        user: true,
-                        role: "root",
-                    },
-                },
+            notAppIdentity.identity = require("./fakes").fakeIdentity({
+                auth: true,
+            });
+            let req = {},
                 actionData = {
                     method: "get",
                     rules: [
@@ -56,11 +57,10 @@ describe("notRoute", function () {
             });
         });
         it("User(!auth) request, post.list action", function () {
-            let req = {
-                    session: {
-                        user: false,
-                    },
-                },
+            notAppIdentity.identity = require("./fakes").fakeIdentity({
+                auth: false,
+            });
+            let req = {},
                 actionData = {
                     method: "get",
                     rules: [
@@ -88,11 +88,7 @@ describe("notRoute", function () {
         });
 
         it("User(auth) request, post.listAll action", function () {
-            let req = {
-                    session: {
-                        user: true,
-                    },
-                },
+            let req = {},
                 actionData = {
                     method: "get",
                     rules: [
@@ -116,12 +112,11 @@ describe("notRoute", function () {
         });
 
         it("User(auth, manager) request, post.listAll action", function () {
-            let req = {
-                    session: {
-                        user: true,
-                        role: ["manager"],
-                    },
-                },
+            notAppIdentity.identity = require("./fakes").fakeIdentity({
+                auth: true,
+                role: ["manager"],
+            });
+            let req = {},
                 actionData = {
                     method: "get",
                     rules: [
@@ -148,12 +143,13 @@ describe("notRoute", function () {
         });
 
         it("Admin request, post.listAll action", function () {
-            let req = {
-                    session: {
-                        user: true,
-                        role: "root",
-                    },
-                },
+            notAppIdentity.identity = require("./fakes").fakeIdentity({
+                auth: true,
+                root: true,
+                primaryRole: DEFAULT_USER_ROLE_FOR_ADMIN,
+                role: [DEFAULT_USER_ROLE_FOR_ADMIN],
+            });
+            let req = {},
                 actionData = {
                     method: "get",
                     rules: [
@@ -179,10 +175,11 @@ describe("notRoute", function () {
         });
 
         it("Guest request, post.list action", function () {
+            notAppIdentity.identity = require("./fakes").fakeIdentity({
+                auth: false,
+            });
             let req = {
-                    session: {
-                        user: false,
-                    },
+                    get() {},
                 },
                 actionData = {
                     method: "get",
@@ -202,11 +199,10 @@ describe("notRoute", function () {
         });
 
         it("actionData - null", function () {
-            let req = {
-                    session: {
-                        user: false,
-                    },
-                },
+            notAppIdentity.identity = require("./fakes").fakeIdentity({
+                auth: false,
+            });
+            let req = {},
                 actionData = false,
                 routerAction = new notRoute(
                     {},
@@ -240,9 +236,7 @@ describe("notRoute", function () {
             };
         it("Guest request post.list", function (done) {
             let req = {
-                    session: {
-                        user: false,
-                    },
+                    get() {},
                 },
                 actionData = {
                     method: "get",
@@ -281,11 +275,14 @@ describe("notRoute", function () {
                         return fakeMod;
                     },
                 };
+            notAppIdentity.identity = require("./fakes").fakeIdentity({
+                auth: true,
+                root: true,
+                primaryRole: DEFAULT_USER_ROLE_FOR_ADMIN,
+                role: [DEFAULT_USER_ROLE_FOR_ADMIN],
+            });
             let req = {
-                    session: {
-                        user: true,
-                        role: "root",
-                    },
+                    get() {},
                 },
                 actionData = {
                     method: "get",
@@ -331,11 +328,14 @@ describe("notRoute", function () {
                         return fakeMod;
                     },
                 };
+            notAppIdentity.identity = require("./fakes").fakeIdentity({
+                auth: true,
+                root: false,
+                primaryRole: "manager",
+                role: ["manager"],
+            });
             let req = {
-                    session: {
-                        user: true,
-                        role: "manager",
-                    },
+                    get() {},
                 },
                 actionData = {
                     method: "get",
@@ -381,10 +381,11 @@ describe("notRoute", function () {
                         return fakeMod;
                     },
                 };
+            notAppIdentity.identity = require("./fakes").fakeIdentity({
+                auth: true,
+            });
             let req = {
-                    session: {
-                        user: true,
-                    },
+                    get() {},
                 },
                 actionData = {
                     method: "get",
@@ -432,11 +433,14 @@ describe("notRoute", function () {
                         return fakeMod;
                     },
                 };
+            notAppIdentity.identity = require("./fakes").fakeIdentity({
+                auth: true,
+                root: true,
+                primaryRole: DEFAULT_USER_ROLE_FOR_ADMIN,
+                role: [DEFAULT_USER_ROLE_FOR_ADMIN],
+            });
             let req = {
-                    session: {
-                        user: true,
-                        role: "root",
-                    },
+                    get() {},
                 },
                 actionData = {
                     method: "get",
@@ -487,11 +491,14 @@ describe("notRoute", function () {
                         return fakeMod;
                     },
                 };
+            notAppIdentity.identity = require("./fakes").fakeIdentity({
+                auth: true,
+                root: true,
+                primaryRole: DEFAULT_USER_ROLE_FOR_ADMIN,
+                role: [DEFAULT_USER_ROLE_FOR_ADMIN],
+            });
             let req = {
-                    session: {
-                        user: true,
-                        role: "root",
-                    },
+                    get() {},
                 },
                 actionData = {
                     method: "get",
@@ -543,11 +550,14 @@ describe("notRoute", function () {
                         return fakeMod;
                     },
                 };
+            notAppIdentity.identity = require("./fakes").fakeIdentity({
+                auth: true,
+                root: true,
+                primaryRole: DEFAULT_USER_ROLE_FOR_ADMIN,
+                role: [DEFAULT_USER_ROLE_FOR_ADMIN],
+            });
             let req = {
-                    session: {
-                        user: true,
-                        role: "root",
-                    },
+                    get() {},
                 },
                 actionData = {
                     method: "get",
@@ -599,10 +609,11 @@ describe("notRoute", function () {
                         return fakeMod;
                     },
                 };
+            notAppIdentity.identity = require("./fakes").fakeIdentity({
+                auth: true,
+            });
             let req = {
-                    session: {
-                        user: true,
-                    },
+                    get() {},
                 },
                 actionData = {
                     method: "get",
@@ -654,10 +665,11 @@ describe("notRoute", function () {
                         return fakeMod;
                     },
                 };
+            notAppIdentity.identity = require("./fakes").fakeIdentity({
+                auth: true,
+            });
             let req = {
-                    session: {
-                        user: true,
-                    },
+                    get() {},
                 },
                 actionData = {
                     method: "get",
@@ -709,11 +721,15 @@ describe("notRoute", function () {
                         return fakeMod;
                     },
                 };
+            notAppIdentity.identity = require("./fakes").fakeIdentity({
+                auth: true,
+                root: false,
+                role: ["manager"],
+                primaryRole: "manager",
+            });
+
             let req = {
-                    session: {
-                        user: true,
-                        role: "manager",
-                    },
+                    get() {},
                 },
                 actionData = {
                     method: "get",
@@ -739,7 +755,7 @@ describe("notRoute", function () {
                     actionData
                 );
             routerAction
-                .exec(req)
+                .exec(req, false, done)
                 .then((result) => {
                     expect(result).to.deep.equal("__list");
                     done();
@@ -767,10 +783,7 @@ describe("notRoute", function () {
                     },
                 };
             let req = {
-                    session: {
-                        user: true,
-                        role: "manager",
-                    },
+                    get() {},
                 },
                 actionData = {
                     method: "get",
@@ -821,10 +834,7 @@ describe("notRoute", function () {
                     },
                 };
             let req = {
-                    session: {
-                        user: true,
-                        role: "manager",
-                    },
+                    get() {},
                 },
                 actionData = {
                     method: "get",
@@ -857,12 +867,14 @@ describe("notRoute", function () {
         });
 
         it("Wrong rule", function () {
-            let req = {
-                    session: {
-                        user: false,
-                        role: "manager",
-                    },
-                },
+            let reported = false;
+            notAppIdentity.identity = require("./fakes").fakeIdentity({
+                auth: true,
+                root: false,
+                role: ["validated"],
+                primaryRole: "manager",
+            });
+            let req = {},
                 actionData = {
                     method: "get",
                     rules: [
@@ -877,20 +889,25 @@ describe("notRoute", function () {
                     ],
                 },
                 routerAction = new notRoute(
-                    {},
+                    {
+                        report(e) {
+                            console.error(e);
+                            reported = true;
+                        },
+                        getModule() {},
+                    },
                     "not-user",
                     "post",
                     "list",
                     actionData
                 );
             routerAction.exec(req, false, (err) => {
-                expect(err).to.be.deep.equal(
-                    new HttpError(
-                        403,
-                        "rule for router not found; not-user; post"
-                    )
+                expect(err).to.be.instanceof(Error);
+                expect(err.message).to.be.deep.equal(
+                    "rule for router not found; not-user; post"
                 );
             });
+            expect(reported).to.be.false;
         });
 
         it("Route is not runnable", function () {
@@ -906,6 +923,7 @@ describe("notRoute", function () {
                     getModule() {
                         return fakeMod;
                     },
+                    report() {},
                 },
                 req = {
                     session: {
@@ -947,12 +965,7 @@ describe("notRoute", function () {
                         throwned = true;
                     },
                 },
-                req = {
-                    session: {
-                        user: true,
-                        role: "user",
-                    },
-                },
+                req = {},
                 actionData = {
                     method: "get",
                     rules: [

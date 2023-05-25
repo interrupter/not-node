@@ -1,5 +1,5 @@
 const {
-    VersioningExceptioNoPreviousVersions,
+    VersioningExceptionNoPreviousVersions,
 } = require("../../src/model/exceptions.js");
 
 const expect = require("chai").expect,
@@ -267,12 +267,12 @@ module.exports = ({ mongoose }) => {
                     await ModelVersioning.isNew(modelProto.Document, latest);
                 } catch (e) {
                     expect(e).to.be.instanceOf(
-                        VersioningExceptioNoPreviousVersions
+                        VersioningExceptionNoPreviousVersions
                     );
                     return;
                 }
                 throw new Error(
-                    "no exception from inside, VersioningExceptioNoPreviousVersions"
+                    "no exception from inside, VersioningExceptionNoPreviousVersions"
                 );
             });
 

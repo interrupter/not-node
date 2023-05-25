@@ -1,3 +1,3 @@
-module.exports = ({expect})=>{
-  describe('CSP', ()=>{});
+module.exports = ({ expect }) => {
+    describe("CSP", () => {});
 };
