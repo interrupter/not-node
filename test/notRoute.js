@@ -871,7 +871,7 @@ describe("notRoute", function () {
             notAppIdentity.identity = require("./fakes").fakeIdentity({
                 auth: true,
                 root: false,
-                role: ["validated"],
+                role: ["user", "confirmed"],
                 primaryRole: "manager",
             });
             let req = {},
