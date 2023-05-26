@@ -29,7 +29,7 @@ const FIELDS = [
             const instructions = {
             <% if (fields && Array.isArray(fields)) { %>
                 <% for(let field of fields){ %>
-                    <%- field+': "extractFromBody" ,' -%>
+                    <%- field+': fromBody" ,' -%>
                         <% } %>
                             <% } %>
                                 owner: "activeUserId",
