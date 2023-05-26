@@ -4,44 +4,42 @@ const { MODULE_NAME } = require("../const");
 const Form = require("not-node").Form;
 //form
 const FIELDS = [
-<% if (fields && Array.isArray(fields)) { %>
-    <% for(let field of fields){ %>
-        "<%- field %>",
-            <% } %>
-                <% } %>
-                    ];
+["activeUser", "not-node//requiredObject"],
+["data", `${MODULE_NAME}//_<%- ModelName %>_data`],
+    ["ip", "not-node//ip"],
+    ];
 
-                    const FORM_NAME = `${MODULE_NAME}:<%- ModelName %>CreateForm`;
+    const FORM_NAME = `${MODULE_NAME}:<%- ModelName %>CreateForm`;
 
-                        /**
-                        *
-                        **/
-                        module.exports = class <%- ModelName %>CreateForm extends Form {
-                            constructor({ app }) {
-                            super({ FIELDS, FORM_NAME, app });
-                            }
+        /**
+        *
+        **/
+        module.exports = class <%- ModelName %>CreateForm extends Form {
+            constructor({ app }) {
+            super({ FIELDS, FORM_NAME, app });
+            }
 
-                            /**
-                            * Extracts data
-                            * @param {ExpressRequest} req expressjs request object
-                            * @return {Object} forma data
-                            **/
-                            extract(req) {
-                            const ip = getIP(req);
-                            const instructions = {
-                            <% if (fields && Array.isArray(fields)) { %>
-                                <% for(let field of fields){ %>
-                                    <%- field+': "extractFromBody" ,' -%>
-                                        <% } %>
-                                            <% } %>
-                                                owner: "activeUserId",
-                                                ownerModel: "activeUserModelName",
-                                                };
-                                                const data = this.extractByInstructions(req, instructions);
-                                                return {
-                                                activeUser: req.user,
-                                                ip,
-                                                data,
-                                                };
-                                                }
-                                                };
+            /**
+            * Extracts data
+            * @param {ExpressRequest} req expressjs request object
+            * @return {Object} forma data
+            **/
+            extract(req) {
+            const ip = getIP(req);
+            const instructions = {
+            <% if (fields && Array.isArray(fields)) { %>
+                <% for(let field of fields){ %>
+                    <%- field+': "extractFromBody" ,' -%>
+                        <% } %>
+                            <% } %>
+                                owner: "activeUserId",
+                                ownerModel: "activeUserModelName",
+                                };
+                                const data = this.extractByInstructions(req, instructions);
+                                return {
+                                activeUser: req.user,
+                                ip,
+                                data,
+                                };
+                                }
+                                };
