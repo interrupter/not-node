@@ -3,33 +3,33 @@ const { MODULE_NAME } = require("../const");
 const Form = require("not-node").Form;
 
 const FIELDS = [
-    <% if (fields && Array.isArray(fields)) { %>
+<% if (fields && Array.isArray(fields)) { %>
     <% for(let field of fields){ %>
-    <%- `"${field}",` -%>
-    <% } %>
-    <% } %>
-    ["owner", "not-node//owner"],
-    ["ownerModel", "not-node//ownerModel"],
-];
+        <%- `"${field}",` -%>
+            <% } %>
+                <% } %>
+                    ["owner", "not-node//owner"],
+                    ["ownerModel", "not-node//ownerModel"],
+                    ];
 
-const FORM_NAME = `${MODULE_NAME}:_<%- ModelName %>DataForm`;
+                    const FORM_NAME = `${MODULE_NAME}:_<%- ModelName %>DataForm`;
 
 
-//const validateTitle = require("./validators/title.js");
+                        //const validateTitle = require("./validators/title.js");
 
-module.exports = class _DataForm extends Form {
-    constructor({ app }) {
-        super({ FIELDS, FORM_NAME, app });
-    }
+                        module.exports = class _DataForm extends Form {
+                        constructor({ app }) {
+                        super({ FIELDS, FORM_NAME, app });
+                        }
 
-    extract(data) {
-        return data;
-    }
+                        extract(data) {
+                        return data;
+                        }
 
-    getFormValidationRules() {
-        return [
-            //add validators here
-            //validateTitle,
-        ];
-    }
-};
+                        getFormValidationRules() {
+                        return [
+                        //add validators here
+                        //validateTitle,
+                        ];
+                        }
+                        };

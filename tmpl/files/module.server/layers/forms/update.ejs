@@ -3,38 +3,38 @@ const Form = require("not-node").Form;
 const getIP = require("not-node").Auth.getIP;
 
 const FIELDS = [
-    ["targetId", { required: true }, "not-node//objectId"],
-    ["activeUser", "not-node//requiredObject"],
-    ["data", `${ModuleName}//_${ModelName}_data`],  //sub forms validators should start with underscore
+["targetId", { required: true }, "not-node//objectId"],
+["activeUser", "not-node//requiredObject"],
+["data", `${MODULE_NAME}//_<%- ModelName %>_data`], //sub forms validators should start with underscore
     ["ip", "not-node//ip"],
-];
-const FORM_NAME = `${ModuleName}:<%- ModelName %>UpdateForm`;
+    ];
+    const FORM_NAME = `${MODULE_NAME}:<%- ModelName %>UpdateForm`;
 
-module.exports = class <%- ModelName %>UpdateForm extends Form {
-    constructor({ app }) {
-        super({ FIELDS, FORM_NAME, app });
-    }
+        module.exports = class <%- ModelName %>UpdateForm extends Form {
+            constructor({ app }) {
+            super({ FIELDS, FORM_NAME, app });
+            }
 
-    extract(req) {
-        const instructions = {
+            extract(req) {
+            const instructions = {
             <% if (fields && Array.isArray(fields)) { %>
-            <% for(let field of fields){ %>
-            <%- field+': "extractFromBody",' -%>
-            <% } %>
-            <% } %>
-            owner: "fromBody",
-            ownerModel: "fromBody",
-        };
-        const data = this.extractByInstructions(req, instructions);
-        if (!req.user.isRoot() && !req.user.isAdmin()) {
-            data.owner = req.user._id;
-            data.ownerModel = "User";
-        }
-        return {
-            targetId: req.params._id.toString(),
-            activeUser: req.user,
-            data,
-            ip: getIP(req),
-        };
-    }
-};
+                <% for(let field of fields){ %>
+                    <%- field+': "extractFromBody" ,' -%>
+                        <% } %>
+                            <% } %>
+                                owner: "fromBody",
+                                ownerModel: "fromBody",
+                                };
+                                const data = this.extractByInstructions(req, instructions);
+                                if (!req.user.isRoot() && !req.user.isAdmin()) {
+                                data.owner = req.user._id;
+                                data.ownerModel = "User";
+                                }
+                                return {
+                                targetId: req.params._id.toString(),
+                                activeUser: req.user,
+                                data,
+                                ip: getIP(req),
+                                };
+                                }
+                                };
