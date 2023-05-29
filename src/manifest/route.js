@@ -191,15 +191,17 @@ class notRoute {
                 prepared,
             ]);
             //filter result IF actionData.return specified
-            if (typeof result.toObject === "function") {
-                result = result.toObject();
+            if (typeof result !== "undefined" && result) {
+                if (typeof result.toObject === "function") {
+                    result = result.toObject();
+                }
+                if (Array.isArray(result)) {
+                    result = result.map((itm) =>
+                        itm.toObject ? itm.toObject() : itm
+                    );
+                }
+                notManifestRouteResultFilter.filter(req.notRouteData, result);
             }
-            if (Array.isArray(result)) {
-                result = result.map((itm) =>
-                    itm.toObject ? itm.toObject() : itm
-                );
-            }
-            notManifestRouteResultFilter.filter(req.notRouteData, result);
             //run after with results, continue without waiting when it finished
             return this.executeFunction(modRoute, CONST_AFTER_ACTION, [
                 req,
