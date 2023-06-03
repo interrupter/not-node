@@ -49,6 +49,16 @@ module.exports = class notModuleRegistratorFields {
         log(`${MODULE_NAME}//${name} with ${fieldValidatorsCount} validators`);
     }
 
+    findValidatorsFile(name, fromPath, possible_extensions = [".js", ".cjs"]) {
+        for (let ext of possible_extensions) {
+            const validatorName = path.join(fromPath, "validators", name + ext);
+            if (tryFile(validatorName)) {
+                return validatorName;
+            }
+        }
+        return 0;
+    }
+
     /**
      *
      **/
@@ -57,9 +67,9 @@ module.exports = class notModuleRegistratorFields {
             return;
         }
         //load validators
-        const validatorName = path.join(fromPath, "validators", name + ".js");
-        if (!tryFile(validatorName)) {
-            return 0;
+        const validatorName = this.findValidatorsFile(name, fromPath);
+        if (!validatorName) {
+            return;
         }
         const validators = notModuleRegistratorFields.openFile(validatorName);
         //inject into field.model

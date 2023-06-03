@@ -12,21 +12,21 @@ const notModuleRegistratorRoutesWS = require("./routes.ws");
  * @constant
  * @type {string}
  */
-const DEFAULT_MANIFEST_FILE_ENDING = ".manifest.js";
+const DEFAULT_MANIFEST_FILE_ENDINGS = [".manifest.js", ".manifest.cjs"];
 
 /**
  * Routes collection files ending
  * @constant
  * @type {string}
  */
-const DEFAULT_ROUTES_FILE_ENDING = ".js";
+const DEFAULT_ROUTES_FILE_ENDINGS = [".js", ".cjs"];
 
 /**
  * WS End-points collection files ending
  * @constant
  * @type {string}
  */
-const DEFAULT_WS_ROUTES_FILE_ENDING = ".ws.js";
+const DEFAULT_WS_ROUTES_FILE_ENDINGS = [".ws.js", ".ws.cjs"];
 
 /**
  * List of methods to be binded from notApp to routes and WS end-points
@@ -78,10 +78,23 @@ module.exports = class notModuleRegistratorRoutes {
         );
     }
 
+    getFileBasename(file, possible_extensions = []) {
+        for (let ext of possible_extensions) {
+            if (file.indexOf(ext) !== -1) {
+                return file.substr(0, file.indexOf(ext));
+            }
+        }
+        return false;
+    }
+
     findOne({ nModule, srcDir, file }) {
         try {
             //если имя похоже на название манифеста
-            if (file.indexOf(DEFAULT_MANIFEST_FILE_ENDING) === -1) {
+            const routeBasename = this.getFileBasename(
+                file,
+                DEFAULT_MANIFEST_FILE_ENDINGS
+            );
+            if (!routeBasename) {
                 return false;
             }
             const routeManifest =
@@ -93,10 +106,6 @@ module.exports = class notModuleRegistratorRoutes {
             if (!routeManifest) {
                 return false;
             }
-            const routeBasename = file.substr(
-                0,
-                file.indexOf(DEFAULT_MANIFEST_FILE_ENDING)
-            );
             //ищем end-points
             const route = notModuleRegistratorRoutes.tryRouteFile({
                 srcDir,
@@ -124,20 +133,18 @@ module.exports = class notModuleRegistratorRoutes {
     }
 
     static tryRouteFile({ srcDir, routeBasename }) {
-        const routePath = path.join(
-            srcDir,
-            routeBasename + DEFAULT_ROUTES_FILE_ENDING
-        );
-        if (tryFile(routePath)) {
-            const route = notModuleRegistratorRoutes.openFile(routePath);
-            route.filename = routePath;
-            if (!route.thisRouteName) {
-                route.thisRouteName = routeBasename;
+        for (let ext of DEFAULT_ROUTES_FILE_ENDINGS) {
+            const routePath = path.join(srcDir, routeBasename + ext);
+            if (tryFile(routePath)) {
+                const route = notModuleRegistratorRoutes.openFile(routePath);
+                route.filename = routePath;
+                if (!route.thisRouteName) {
+                    route.thisRouteName = routeBasename;
+                }
+                return route;
             }
-            return route;
-        } else {
-            return false;
         }
+        return false;
     }
 
     static tryRouteManifestFile({ srcDir, file }) {
@@ -150,19 +157,18 @@ module.exports = class notModuleRegistratorRoutes {
     }
 
     static tryWSRouteFile({ srcDir, routeBasename }) {
-        const routeWSPath = path.join(
-            srcDir,
-            routeBasename + DEFAULT_WS_ROUTES_FILE_ENDING
-        );
-        if (tryFile(routeWSPath)) {
-            const wsRoute = notModuleRegistratorRoutes.openFile(routeWSPath);
-            if (!wsRoute.thisRouteName) {
-                wsRoute.thisRouteName = routeBasename;
+        for (let ext of DEFAULT_WS_ROUTES_FILE_ENDINGS) {
+            const routeWSPath = path.join(srcDir, routeBasename + ext);
+            if (tryFile(routeWSPath)) {
+                const wsRoute =
+                    notModuleRegistratorRoutes.openFile(routeWSPath);
+                if (!wsRoute.thisRouteName) {
+                    wsRoute.thisRouteName = routeBasename;
+                }
+                return wsRoute;
             }
-            return wsRoute;
-        } else {
-            return false;
         }
+        return false;
     }
 
     registerManifestAndRoutes({
