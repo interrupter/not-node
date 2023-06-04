@@ -245,7 +245,7 @@ module.exports = ({
             if (shouldOwn) {
                 query[ownerFieldName] = activeUser?._id;
             }
-            let populate = getPopulate(action, {
+            let populate = await getPopulate(action, {
                 targetId,
                 activeUser,
                 ip,
@@ -335,7 +335,7 @@ module.exports = ({
             if (shouldOwn) {
                 query[ownerFieldName] = activeUser?._id;
             }
-            let populate = getPopulate(action, {
+            let populate = await getPopulate(action, {
                 targetID,
                 activeUser,
                 ip,
@@ -664,7 +664,7 @@ module.exports = ({
                 root
             );
             const { skip, size, sorter, filter, search } = query;
-            let populate = getPopulate(action, {
+            let populate = await getPopulate(action, {
                 activeUser,
                 ip,
             });
@@ -728,7 +728,7 @@ module.exports = ({
                 root
             );
             const { skip, size, sorter, filter } = query;
-            let populate = getPopulate(action, {
+            let populate = await getPopulate(action, {
                 activeUser,
                 ip,
             });
