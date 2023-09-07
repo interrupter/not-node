@@ -210,15 +210,13 @@ module.exports.tryFile = (filePath) => {
  * @param {string}     filePath  full path to file
  * @return {Promise<boolean>}            true if path exists and it's a file
  **/
-module.exports.tryFileAsync = (filePath) => {
-    return new Promise((resolve, reject) => {
-        try {
-            const stat = fs.lstatSync(filePath);
-            resolve(stat && stat.isFile());
-        } catch (e) {
-            reject(false);
-        }
-    });
+module.exports.tryFileAsync = async (filePath) => {
+    try {
+        const stat = await fs.promises.lstat(filePath);
+        return stat && stat.isFile();
+    } catch (e) {
+        return false;
+    }
 };
 
 /**

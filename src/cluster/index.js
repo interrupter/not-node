@@ -1,7 +1,10 @@
 const { log } = require("not-log")(module, "notCluster");
 const notClusterRedis = require("./cluster.redis.js");
 
-module.exports = class notCluster {
+/**
+ * Interface to event bus of cluster
+ */
+class notCluster {
     static #provider = notClusterRedis;
 
     static setProvider(newProvider) {
@@ -22,4 +25,6 @@ module.exports = class notCluster {
     static emit() {
         return this.#provider.emit(...arguments);
     }
-};
+}
+
+module.exports = notCluster;

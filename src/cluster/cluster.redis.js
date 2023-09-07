@@ -2,6 +2,9 @@ const notEnv = require("../env.js");
 const notCommon = require("../common");
 const { error } = require("not-log")(module, "ClusterRedis");
 
+/**
+ * Cluster event bus driver upon Redis events
+ */
 module.exports = class notClusterRedisProvider {
     static #clientGetter = null;
     static #clientName = "db.redis";
