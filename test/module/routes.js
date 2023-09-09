@@ -54,7 +54,7 @@ module.exports = ({ expect }) => {
         });
 
         describe("tryRouteFile", function () {
-            it("route file doesnt exists", function () {
+            it("route file doesnt exists,", function () {
                 const res = notModuleRegistratorRoutes.tryRouteFile({
                     srcDir: routesPath,
                     routeBasename: "jingle",

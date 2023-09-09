@@ -25,12 +25,12 @@ module.exports.firstLetterToUpper = function (string) {
 
 /**
  *  Validates if string is a ObjectId
- *  @param  {string}  id   ObjectId string to validate
- *  @return {booelean}  true if check is not failed
+ *  @param  {string|import('mongoose').Schema.Types.ObjectId}  id   ObjectId string to validate
+ *  @return {boolean}  true if check is not failed
  */
 module.exports.validateObjectId = (id) => {
     try {
-        return id.match(/^[0-9a-fA-F]{24}$/) ? true : false;
+        return id.toString().match(/^[0-9a-fA-F]{24}$/) ? true : false;
     } catch (e) {
         return false;
     }
@@ -38,9 +38,9 @@ module.exports.validateObjectId = (id) => {
 
 /**
  *  Validates and compares ObjectIds in string or Object form
- *  @param  {string|ObjectId}  firstId   first id
- *  @param  {string|ObjectId}  secondId   second id
- *  @return {booelean}        true if equal
+ *  @param  {string|import('mongoose').Schema.Types.ObjectId}  firstId   first id
+ *  @param  {string|import('mongoose').Schema.Types.ObjectId}  secondId   second id
+ *  @return {boolean}        true if equal
  */
 module.exports.compareObjectIds = (firstId, secondId) => {
     try {
@@ -160,7 +160,9 @@ module.exports.executeObjectFunction = async (obj, name, params) => {
     }
     if (name.indexOf(".") > -1) {
         const proc =
-            typeof obj == "object" ? notPath.get(":" + name, obj) : obj[name];
+            typeof obj == "object"
+                ? notPath.get(":" + name, obj, {})
+                : obj[name];
         if (!proc) {
             return;
         }
@@ -179,9 +181,8 @@ module.exports.executeObjectFunction = async (obj, name, params) => {
 /**
  *  Executes method of object in apropriate way inside Promise
  * @param {Object}   from     original object
- * @param {Object}   name    method name to execute
- * @param {Array}     list  array of params
- * @return {Promise}          results of method execution
+ * @param {Object}   to    method name to execute
+ * @param {Array}    list  array of params
  **/
 module.exports.mapBind = (from, to, list) => {
     list.forEach((item) => {
@@ -262,7 +263,7 @@ module.exports.tryParseAsync = (
  * path
  * @param {Array<string>}  content  list of module components ['models', 'logics', 'routes',...]
  * @param {string}         relative  path to parent folder of components
- * @param {Object}         paths object for module/index.js
+ * @returns {Object}         paths object for module/index.js
  **/
 module.exports.generatePaths = (content = [], relative = "src") => {
     const toPath = (name) => path.join(relative, name);
@@ -291,31 +292,40 @@ module.exports.getIP = (req) => {
     }
 };
 
+/**
+ *
+ *
+ * @param {string} prefix
+ * @return {function}
+ */
 const createIsStringPrefixedTester = (prefix) => {
     if (!prefix || prefix.length === 0) throw Error("No prefix provided");
     return (str) => {
-        return str && str.length > prefix.length && str.indexOf(prefix) === 0;
+        return str && str.length > prefix.length && str.indexOf(prefix) === 0
+            ? prefix.length
+            : 0;
     };
 };
 module.exports.createIsStringPrefixedTester = createIsStringPrefixedTester;
 
+/**
+ *
+ *
+ * @param {string} val
+ * @param {Object} options
+ * @return {number} prefix length
+ */
 const stringIsPrefixed = (val, options) => {
     if (typeof val === "string" && options) {
         if (options.tester && typeof options.tester === "function") {
-            const res = options.tester(val);
-            if (Object.hasOwn(process.env, val)) {
-                return res;
-            }
+            return options.tester(val);
         }
         if (
             options.prefix &&
             typeof options.prefix === "string" &&
             options.prefix.length > 0
         ) {
-            const res = createIsStringPrefixedTester(options.prefix)(val);
-            if (Object.hasOwn(process.env, val)) {
-                return res;
-            }
+            return createIsStringPrefixedTester(options.prefix)(val);
         }
     }
     return 0;
@@ -339,11 +349,14 @@ const getValueFromEnv = (
     name,
     options = { prefix: "ENV$", drop: true }
 ) => {
-    if (source && Object.hasOwn(source, name)) {
+    if (source && objHas(source, name)) {
         const val = source[name];
         const len = stringIsPrefixed(val, options);
-        if (len) {
-            return process.env[options.drop ? val.slice(0, len) : val];
+        if (len > 0) {
+            const envName = options.drop ? val.slice(len) : val;
+            if (typeof process.env[envName] !== "undefined") {
+                return process.env[envName];
+            }
         }
         return val;
     }
