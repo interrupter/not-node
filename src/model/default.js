@@ -2,6 +2,7 @@
 const routine = require("./routine");
 const notQuery = require("not-filter");
 const { objHas } = require("../common");
+const notPath = require("not-path");
 
 const defaultFilter = (obj) => {
     if (obj.schema.statics.__versioning) {
@@ -106,10 +107,10 @@ function getOne(id, population = [], condition = {}) {
 }
 
 /**
- *	Retrieves one record by unique numeric ID
+ *	Retrieves one record by unique number ID
  *	If versioning ON, it retrieves __latest and not __closed
  *	@static
- *	@param 	{number}	ID		some unique numeric identificator
+ *	@param 	{number}	ID		some unique number identificator
  *	@param 	{Object}	condition 	optional if needed additional condition
  *	@param 	{Array}		population 	optional if needed population of some fields
  *	@return {Promise}	      Promise of document, if increment is OFF - then Promise.resolve(null)
@@ -367,7 +368,7 @@ module.exports.thisStatics = {
 
 /**
  *	Returns incremental ID for this doc
- *	@return {numeric}	ID
+ *	@return {number}	ID
  */
 function getID() {
     return this.schema.statics.__incField
@@ -378,9 +379,16 @@ function getID() {
 /**
  *	Closes document and saves it
  *	This is replaces remove when Versioning is ON
- *	@return {numeric}	ID
+ *	@param {object}     [data=undefined] if we want update some fields
+ *	@return {number}	ID
  */
-function close() {
+function close(data = undefined) {
+    if (data && Object.keys(data)) {
+        Object.keys(data).forEach((fieldName) => {
+            notPath.setValueByPath(this, fieldName, data[fieldName]);
+            this.markModified(fieldName);
+        });
+    }
     this.__closed = true;
     return this.save();
 }

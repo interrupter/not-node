@@ -1,3081 +1,3169 @@
 <!DOCTYPE html>
 
 <html lang="en">
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width">
-	<title>Documentation Module: Model/Default</title>
 
-	<!--[if lt IE 9]>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Documentation Module: Model/Default</title>
+
+    <!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
-	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+    <link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
 
-	<link type="text/css" rel="stylesheet" href="styles/site.simplex.css">
+    <link type="text/css" rel="stylesheet" href="styles/site.simplex.css">
 
 </head>
 
 <body>
 
-<div class="navbar navbar-default navbar-fixed-top ">
-<div class="container">
-	<div class="navbar-header">
-		<a class="navbar-brand" href="index.html">Documentation</a>
-		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-        </button>
-	</div>
-	<div class="navbar-collapse collapse" id="topNavigation">
-		<ul class="nav navbar-nav">
-			
-			<li class="dropdown">
-				<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
-				<ul class="dropdown-menu ">
-					<li><a href="module-Auth.html">Auth</a></li><li><a href="module-Common.html">Common</a></li><li><a href="module-Lib.html">Lib</a></li><li><a href="module-Model_Default.html">Model/Default</a></li><li><a href="module-Model_Enrich.html">Model/Enrich</a></li><li><a href="module-Model_Increment.html">Model/Increment</a></li><li><a href="module-Model_Proto.html">Model/Proto</a></li><li><a href="module-Model_Routine.html">Model/Routine</a></li><li><a href="module-Model_Validator.html">Model/Validator</a></li><li><a href="module-Model_Versioning.html">Model/Versioning</a></li><li><a href="module-not-node.html">not-node</a></li><li><a href="module-not-node_Error.html">not-node/Error</a></li><li><a href="module-notModuleRegistrator.html">notModuleRegistrator</a></li><li><a href="module-Parser.html">Parser</a></li><li><a href="module-Repos.html">Repos</a></li><li><a href="module-Rollup.html">Rollup</a></li><li><a href="module-ShellHelpers.html">ShellHelpers</a></li>
-				</ul>
-			</li>
-			
-			<li class="dropdown">
-				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
-				<ul class="dropdown-menu ">
-					<li><a href="module.exports.html">module.exports</a></li><li><a href="notApp.html">notApp</a></li><li><a href="notDomain.html">notDomain</a></li><li><a href="notManifest.html">notManifest</a></li><li><a href="notModule.html">notModule</a></li><li><a href="notRoute.html">notRoute</a></li>
-				</ul>
-			</li>
-			
-			<li class="dropdown">
-				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
-				<ul class="dropdown-menu ">
-					<li><a href="global.html#checkAdmin">checkAdmin</a></li><li><a href="global.html#checkCredentials">checkCredentials</a></li><li><a href="global.html#checkRoleBuilder">checkRoleBuilder</a></li><li><a href="global.html#checkSupremacy">checkSupremacy</a></li><li><a href="global.html#checkUser">checkUser</a></li><li><a href="global.html#cleanse">cleanse</a></li><li><a href="global.html#compareRoles">compareRoles</a></li><li><a href="global.html#createSpecial">createSpecial</a></li><li><a href="global.html#DEFAULT_MANIFEST_FILE_ENDING">DEFAULT_MANIFEST_FILE_ENDING</a></li><li><a href="global.html#DEFAULT_ROUTES_FILE_ENDING">DEFAULT_ROUTES_FILE_ENDING</a></li><li><a href="global.html#DEFAULT_WS_ROUTE_ACTION_SPLITTER">DEFAULT_WS_ROUTE_ACTION_SPLITTER</a></li><li><a href="global.html#DEFAULT_WS_ROUTES_FILE_ENDING">DEFAULT_WS_ROUTES_FILE_ENDING</a></li><li><a href="global.html#EventEmitter">EventEmitter</a></li><li><a href="global.html#extractAuthData">extractAuthData</a></li><li><a href="global.html#extractSafeFields">extractSafeFields</a></li><li><a href="global.html#fieldIsSafe">fieldIsSafe</a></li><li><a href="global.html#fromSchema">fromSchema</a></li><li><a href="global.html#getIP">getIP</a></li><li><a href="global.html#getMutationForField">getMutationForField</a></li><li><a href="global.html#getOwnerId">getOwnerId</a></li><li><a href="global.html#getRole">getRole</a></li><li><a href="global.html#getSafeFieldsForRoleAction">getSafeFieldsForRoleAction</a></li><li><a href="global.html#getSessionId">getSessionId</a></li><li><a href="global.html#getUserId">getUserId</a></li><li><a href="global.html#ifAdmin">ifAdmin</a></li><li><a href="global.html#initField">initField</a></li><li><a href="global.html#initFields">initFields</a></li><li><a href="global.html#intersect_safe">intersect_safe</a></li><li><a href="global.html#isOwner">isOwner</a></li><li><a href="global.html#isUser">isUser</a></li><li><a href="global.html#LOGIC_BINDINGS_LIST">LOGIC_BINDINGS_LIST</a></li><li><a href="global.html#MODEL_BINDINGS_LIST">MODEL_BINDINGS_LIST</a></li><li><a href="global.html#MODULE_BINDINGS_LIST">MODULE_BINDINGS_LIST</a></li><li><a href="global.html#ROUTE_BINDINGS_LIST">ROUTE_BINDINGS_LIST</a></li><li><a href="global.html#ruleIsWildcard">ruleIsWildcard</a></li><li><a href="global.html#setAuth">setAuth</a></li><li><a href="global.html#setGuest">setGuest</a></li><li><a href="global.html#setRole">setRole</a></li><li><a href="global.html#setUserId">setUserId</a></li><li><a href="global.html#WS_ROUTE_BINDINGS_LIST">WS_ROUTE_BINDINGS_LIST</a></li>
-				</ul>
-			</li>
-			
-		</ul>
-        
-            <div class="col-sm-3 col-md-3">
-                <form class="navbar-form" role="search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
-                        <div class="input-group-btn">
-                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
-                        </div>
-                    </div>
-                </form>
+    <div class="navbar navbar-default navbar-fixed-top ">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html">Documentation</a>
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
             </div>
-        
-	</div>
+            <div class="navbar-collapse collapse" id="topNavigation">
+                <ul class="nav navbar-nav">
 
-</div>
-</div>
+                    <li class="dropdown">
+                        <a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b
+                                class="caret"></b></a>
+                        <ul class="dropdown-menu ">
+                            <li><a href="module-Auth.html">Auth</a></li>
+                            <li><a href="module-Common.html">Common</a></li>
+                            <li><a href="module-Lib.html">Lib</a></li>
+                            <li><a href="module-Model_Default.html">Model/Default</a></li>
+                            <li><a href="module-Model_Enrich.html">Model/Enrich</a></li>
+                            <li><a href="module-Model_Increment.html">Model/Increment</a></li>
+                            <li><a href="module-Model_Proto.html">Model/Proto</a></li>
+                            <li><a href="module-Model_Routine.html">Model/Routine</a></li>
+                            <li><a href="module-Model_Validator.html">Model/Validator</a></li>
+                            <li><a href="module-Model_Versioning.html">Model/Versioning</a></li>
+                            <li><a href="module-not-node.html">not-node</a></li>
+                            <li><a href="module-not-node_Error.html">not-node/Error</a></li>
+                            <li><a href="module-notModuleRegistrator.html">notModuleRegistrator</a></li>
+                            <li><a href="module-Parser.html">Parser</a></li>
+                            <li><a href="module-Repos.html">Repos</a></li>
+                            <li><a href="module-Rollup.html">Rollup</a></li>
+                            <li><a href="module-ShellHelpers.html">ShellHelpers</a></li>
+                        </ul>
+                    </li>
 
+                    <li class="dropdown">
+                        <a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
+                                class="caret"></b></a>
+                        <ul class="dropdown-menu ">
+                            <li><a href="module.exports.html">module.exports</a></li>
+                            <li><a href="notApp.html">notApp</a></li>
+                            <li><a href="notDomain.html">notDomain</a></li>
+                            <li><a href="notManifest.html">notManifest</a></li>
+                            <li><a href="notModule.html">notModule</a></li>
+                            <li><a href="notRoute.html">notRoute</a></li>
+                        </ul>
+                    </li>
 
-<div class="container" id="toc-content">
-<div class="row">
+                    <li class="dropdown">
+                        <a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b
+                                class="caret"></b></a>
+                        <ul class="dropdown-menu ">
+                            <li><a href="global.html#checkAdmin">checkAdmin</a></li>
+                            <li><a href="global.html#checkCredentials">checkCredentials</a></li>
+                            <li><a href="global.html#checkRoleBuilder">checkRoleBuilder</a></li>
+                            <li><a href="global.html#checkSupremacy">checkSupremacy</a></li>
+                            <li><a href="global.html#checkUser">checkUser</a></li>
+                            <li><a href="global.html#cleanse">cleanse</a></li>
+                            <li><a href="global.html#compareRoles">compareRoles</a></li>
+                            <li><a href="global.html#createSpecial">createSpecial</a></li>
+                            <li><a href="global.html#DEFAULT_MANIFEST_FILE_ENDING">DEFAULT_MANIFEST_FILE_ENDING</a></li>
+                            <li><a href="global.html#DEFAULT_ROUTES_FILE_ENDING">DEFAULT_ROUTES_FILE_ENDING</a></li>
+                            <li><a
+                                    href="global.html#DEFAULT_WS_ROUTE_ACTION_SPLITTER">DEFAULT_WS_ROUTE_ACTION_SPLITTER</a>
+                            </li>
+                            <li><a href="global.html#DEFAULT_WS_ROUTES_FILE_ENDING">DEFAULT_WS_ROUTES_FILE_ENDING</a>
+                            </li>
+                            <li><a href="global.html#EventEmitter">EventEmitter</a></li>
+                            <li><a href="global.html#extractAuthData">extractAuthData</a></li>
+                            <li><a href="global.html#extractSafeFields">extractSafeFields</a></li>
+                            <li><a href="global.html#fieldIsSafe">fieldIsSafe</a></li>
+                            <li><a href="global.html#fromSchema">fromSchema</a></li>
+                            <li><a href="global.html#getIP">getIP</a></li>
+                            <li><a href="global.html#getMutationForField">getMutationForField</a></li>
+                            <li><a href="global.html#getOwnerId">getOwnerId</a></li>
+                            <li><a href="global.html#getRole">getRole</a></li>
+                            <li><a href="global.html#getSafeFieldsForRoleAction">getSafeFieldsForRoleAction</a></li>
+                            <li><a href="global.html#getSessionId">getSessionId</a></li>
+                            <li><a href="global.html#getUserId">getUserId</a></li>
+                            <li><a href="global.html#ifAdmin">ifAdmin</a></li>
+                            <li><a href="global.html#initField">initField</a></li>
+                            <li><a href="global.html#initFields">initFields</a></li>
+                            <li><a href="global.html#intersect_safe">intersect_safe</a></li>
+                            <li><a href="global.html#isOwner">isOwner</a></li>
+                            <li><a href="global.html#isUser">isUser</a></li>
+                            <li><a href="global.html#LOGIC_BINDINGS_LIST">LOGIC_BINDINGS_LIST</a></li>
+                            <li><a href="global.html#MODEL_BINDINGS_LIST">MODEL_BINDINGS_LIST</a></li>
+                            <li><a href="global.html#MODULE_BINDINGS_LIST">MODULE_BINDINGS_LIST</a></li>
+                            <li><a href="global.html#ROUTE_BINDINGS_LIST">ROUTE_BINDINGS_LIST</a></li>
+                            <li><a href="global.html#ruleIsWildcard">ruleIsWildcard</a></li>
+                            <li><a href="global.html#setAuth">setAuth</a></li>
+                            <li><a href="global.html#setGuest">setGuest</a></li>
+                            <li><a href="global.html#setRole">setRole</a></li>
+                            <li><a href="global.html#setUserId">setUserId</a></li>
+                            <li><a href="global.html#WS_ROUTE_BINDINGS_LIST">WS_ROUTE_BINDINGS_LIST</a></li>
+                        </ul>
+                    </li>
 
-	
-	<div class="col-md-8">
-	
-		<div id="main">
-			
+                </ul>
 
-	<h1 class="page-title">Module: Model/Default</h1>
-<section>
+                <div class="col-sm-3 col-md-3">
+                    <form class="navbar-form" role="search">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                            <div class="input-group-btn">
+                                <button class="btn btn-default" id="search-submit"><i
+                                        class="glyphicon glyphicon-search"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
 
-<header>
-    
-</header>
+            </div>
 
-
-<article>
-    <div class="container-overview">
-    
-        
-
-        
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-        
-    
+        </div>
     </div>
 
-    
 
-    
+    <div class="container" id="toc-content">
+        <div class="row">
 
-    
 
-    
+            <div class="col-md-8">
 
-    
+                <div id="main">
 
-    
 
-    
-        <h3 class="subsection-title">Methods</h3>
+                    <h1 class="page-title">Module: Model/Default</h1>
+                    <section>
 
-        <dl>
-            
-<hr>
-<dt>
-    <h4 class="name" id=".add"><span class="type-signature">&lt;static> </span>add(data)</h4>
-    
-    
-</dt>
-<dd>
+                        <header>
 
-    
-    <div class="description">
-        Starts add routine
+                        </header>
+
+
+                        <article>
+                            <div class="container-overview">
+
+
+
+
+                                <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                </dl>
+
+
+
+
+                            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            <h3 class="subsection-title">Methods</h3>
+
+                            <dl>
+
+                                <hr>
+                                <dt>
+                                    <h4 class="name" id=".add"><span class="type-signature">&lt;static> </span>add(data)
+                                    </h4>
+
+
+                                </dt>
+                                <dd>
+
+
+                                    <div class="description">
+                                        Starts add routine
+                                    </div>
+
+
+
+
+
+
+
+
+                                    <h5>Parameters:</h5>
+
+
+                                    <table class="params table table-striped">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Name</th>
+
+
+                                                <th>Type</th>
+
+
+
+
+
+                                                <th class="last">Description</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+
+                                            <tr>
+
+                                                <td class="name"><code>data</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">object</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">data</td>
+                                            </tr>
+
+
+                                        </tbody>
+                                    </table>
+
+
+
+
+                                    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    <h5>Returns:</h5>
+
+
+                                    <div class="param-desc">
+                                        Promise
+                                    </div>
+
+
+
+                                    <dl>
+                                        <dt>
+                                            Type
+                                        </dt>
+                                        <dd>
+
+                                            <span class="param-type">Promise</span>
+
+
+
+                                        </dd>
+                                    </dl>
+
+
+
+
+
+                                </dd>
+
+
+
+                                <hr>
+                                <dt>
+                                    <h4 class="name" id=".countWithFilter"><span class="type-signature">&lt;static>
+                                        </span>countWithFilter(filter)</h4>
+
+
+                                </dt>
+                                <dd>
+
+
+                                    <div class="description">
+                                        Counts record method
+                                    </div>
+
+
+
+
+
+
+
+
+                                    <h5>Parameters:</h5>
+
+
+                                    <table class="params table table-striped">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Name</th>
+
+
+                                                <th>Type</th>
+
+
+
+
+
+                                                <th class="last">Description</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+
+                                            <tr>
+
+                                                <td class="name"><code>filter</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">object</span>
+                                                    |
+
+                                                    <span class="param-type">array</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">filter rules</td>
+                                            </tr>
+
+
+                                        </tbody>
+                                    </table>
+
+
+
+
+                                    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    <h5>Returns:</h5>
+
+
+                                    <div class="param-desc">
+                                        Promise
+                                    </div>
+
+
+
+                                    <dl>
+                                        <dt>
+                                            Type
+                                        </dt>
+                                        <dd>
+
+                                            <span class="param-type">Promise</span>
+
+
+
+                                        </dd>
+                                    </dl>
+
+
+
+
+
+                                </dd>
+
+
+
+                                <hr>
+                                <dt>
+                                    <h4 class="name" id=".getOne"><span class="type-signature">&lt;static>
+                                        </span>getOne(id, population)</h4>
+
+
+                                </dt>
+                                <dd>
+
+
+                                    <div class="description">
+                                        Retrieves one record by primary key
+                                        If versioning ON, it retrieves __latest and not __closed
+                                    </div>
+
+
+
+
+
+
+
+
+                                    <h5>Parameters:</h5>
+
+
+                                    <table class="params table table-striped">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Name</th>
+
+
+                                                <th>Type</th>
+
+
+
+
+
+                                                <th class="last">Description</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+
+                                            <tr>
+
+                                                <td class="name"><code>id</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">string</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">primary key</td>
+                                            </tr>
+
+
+
+                                            <tr>
+
+                                                <td class="name"><code>population</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">Array</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">optional if needed population of some
+                                                    fields</td>
+                                            </tr>
+
+
+                                        </tbody>
+                                    </table>
+
+
+
+
+                                    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    <h5>Returns:</h5>
+
+
+                                    <div class="param-desc">
+                                        Promise
+                                    </div>
+
+
+
+                                    <dl>
+                                        <dt>
+                                            Type
+                                        </dt>
+                                        <dd>
+
+                                            <span class="param-type">Promise</span>
+
+
+
+                                        </dd>
+                                    </dl>
+
+
+
+
+
+                                </dd>
+
+
+
+                                <hr>
+                                <dt>
+                                    <h4 class="name" id=".getOneByID"><span class="type-signature">&lt;static>
+                                        </span>getOneByID(ID)</h4>
+
+
+                                </dt>
+                                <dd>
+
+
+                                    <div class="description">
+                                        Retrieves one record by unique number ID
+                                        If versioning ON, it retrieves __latest and not __closed
+                                    </div>
+
+
+
+
+
+
+
+
+                                    <h5>Parameters:</h5>
+
+
+                                    <table class="params table table-striped">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Name</th>
+
+
+                                                <th>Type</th>
+
+
+
+
+
+                                                <th class="last">Description</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+
+                                            <tr>
+
+                                                <td class="name"><code>ID</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">number</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">some unique number identificator</td>
+                                            </tr>
+
+
+                                        </tbody>
+                                    </table>
+
+
+
+
+                                    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    <h5>Returns:</h5>
+
+
+                                    <div class="param-desc">
+                                        Promise of document, if increment is OFF - then Promise.resolve(null)
+                                    </div>
+
+
+
+                                    <dl>
+                                        <dt>
+                                            Type
+                                        </dt>
+                                        <dd>
+
+                                            <span class="param-type">Promise</span>
+
+
+
+                                        </dd>
+                                    </dl>
+
+
+
+
+
+                                </dd>
+
+
+
+                                <hr>
+                                <dt>
+                                    <h4 class="name" id=".getOneRaw"><span class="type-signature">&lt;static>
+                                        </span>getOneRaw(id)</h4>
+
+
+                                </dt>
+                                <dd>
+
+
+                                    <div class="description">
+                                        Retrieves one record by primary key, without any restriction
+                                    </div>
+
+
+
+
+
+
+
+
+                                    <h5>Parameters:</h5>
+
+
+                                    <table class="params table table-striped">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Name</th>
+
+
+                                                <th>Type</th>
+
+
+
+
+
+                                                <th class="last">Description</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+
+                                            <tr>
+
+                                                <td class="name"><code>id</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">string</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">primary key</td>
+                                            </tr>
+
+
+                                        </tbody>
+                                    </table>
+
+
+
+
+                                    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    <h5>Returns:</h5>
+
+
+                                    <div class="param-desc">
+                                        Promise
+                                    </div>
+
+
+
+                                    <dl>
+                                        <dt>
+                                            Type
+                                        </dt>
+                                        <dd>
+
+                                            <span class="param-type">Promise</span>
+
+
+
+                                        </dd>
+                                    </dl>
+
+
+
+
+
+                                </dd>
+
+
+
+                                <hr>
+                                <dt>
+                                    <h4 class="name" id=".list"><span class="type-signature">&lt;static>
+                                        </span>list(skip, size, sorter, filter)</h4>
+
+
+                                </dt>
+                                <dd>
+
+
+                                    <div class="description">
+                                        List record method
+                                    </div>
+
+
+
+
+
+
+
+
+                                    <h5>Parameters:</h5>
+
+
+                                    <table class="params table table-striped">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Name</th>
+
+
+                                                <th>Type</th>
+
+
+
+
+
+                                                <th class="last">Description</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+
+                                            <tr>
+
+                                                <td class="name"><code>skip</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">number</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">number of skiped records</td>
+                                            </tr>
+
+
+
+                                            <tr>
+
+                                                <td class="name"><code>size</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">number</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">length of return list</td>
+                                            </tr>
+
+
+
+                                            <tr>
+
+                                                <td class="name"><code>sorter</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">Object</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">sorter rules</td>
+                                            </tr>
+
+
+
+                                            <tr>
+
+                                                <td class="name"><code>filter</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">Object</span>
+                                                    |
+
+                                                    <span class="param-type">Array</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">filter rules</td>
+                                            </tr>
+
+
+                                        </tbody>
+                                    </table>
+
+
+
+
+                                    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    <h5>Returns:</h5>
+
+
+                                    <div class="param-desc">
+                                        Promise
+                                    </div>
+
+
+
+                                    <dl>
+                                        <dt>
+                                            Type
+                                        </dt>
+                                        <dd>
+
+                                            <span class="param-type">Promise</span>
+
+
+
+                                        </dd>
+                                    </dl>
+
+
+
+
+
+                                </dd>
+
+
+
+                                <hr>
+                                <dt>
+                                    <h4 class="name" id=".listAll"><span class="type-signature">&lt;static>
+                                        </span>listAll()</h4>
+
+
+                                </dt>
+                                <dd>
+
+
+                                    <div class="description">
+                                        List all records from collection
+                                        If Versioning is ON restricts to __latest and not __closed
+                                        By default sorts by _id in DESC
+                                    </div>
+
+
+
+
+
+
+
+
+
+
+                                    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    <h5>Returns:</h5>
+
+
+                                    <div class="param-desc">
+                                        Promise
+                                    </div>
+
+
+
+                                    <dl>
+                                        <dt>
+                                            Type
+                                        </dt>
+                                        <dd>
+
+                                            <span class="param-type">Promise</span>
+
+
+
+                                        </dd>
+                                    </dl>
+
+
+
+
+
+                                </dd>
+
+
+
+                                <hr>
+                                <dt>
+                                    <h4 class="name" id=".listAllAndPopulate"><span class="type-signature">&lt;static>
+                                        </span>listAllAndPopulate(populate)</h4>
+
+
+                                </dt>
+                                <dd>
+
+
+                                    <div class="description">
+                                        List all record in collection and populates
+                                        If Versioning is ON restricts to __latest and not __closed
+                                        By default sorts by _id in DESC
+                                    </div>
+
+
+
+
+
+
+
+
+                                    <h5>Parameters:</h5>
+
+
+                                    <table class="params table table-striped">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Name</th>
+
+
+                                                <th>Type</th>
+
+
+
+
+
+                                                <th class="last">Description</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+
+                                            <tr>
+
+                                                <td class="name"><code>populate</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">object</span>
+                                                    |
+
+                                                    <span class="param-type">array</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">populate rules</td>
+                                            </tr>
+
+
+                                        </tbody>
+                                    </table>
+
+
+
+
+                                    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    <h5>Returns:</h5>
+
+
+                                    <div class="param-desc">
+                                        Promise
+                                    </div>
+
+
+
+                                    <dl>
+                                        <dt>
+                                            Type
+                                        </dt>
+                                        <dd>
+
+                                            <span class="param-type">Promise</span>
+
+
+
+                                        </dd>
+                                    </dl>
+
+
+
+
+
+                                </dd>
+
+
+
+                                <hr>
+                                <dt>
+                                    <h4 class="name" id=".listAndCount"><span class="type-signature">&lt;async, static>
+                                        </span>listAndCount(skip, size, sorter, filter, search, populate)</h4>
+
+
+                                </dt>
+                                <dd>
+
+
+                                    <div class="description">
+                                        List record in collection and populates, with count of total founded records
+                                        By default sorts by _id in DESC
+                                    </div>
+
+
+
+
+
+
+
+
+                                    <h5>Parameters:</h5>
+
+
+                                    <table class="params table table-striped">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Name</th>
+
+
+                                                <th>Type</th>
+
+
+
+
+
+                                                <th class="last">Description</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+
+                                            <tr>
+
+                                                <td class="name"><code>skip</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">number</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">number of skiped records</td>
+                                            </tr>
+
+
+
+                                            <tr>
+
+                                                <td class="name"><code>size</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">number</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">length of return list</td>
+                                            </tr>
+
+
+
+                                            <tr>
+
+                                                <td class="name"><code>sorter</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">object</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">sorter rules</td>
+                                            </tr>
+
+
+
+                                            <tr>
+
+                                                <td class="name"><code>filter</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">object</span>
+                                                    |
+
+                                                    <span class="param-type">array</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">filter rules</td>
+                                            </tr>
+
+
+
+                                            <tr>
+
+                                                <td class="name"><code>search</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">object</span>
+                                                    |
+
+                                                    <span class="param-type">array</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">search rules</td>
+                                            </tr>
+
+
+
+                                            <tr>
+
+                                                <td class="name"><code>populate</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">object</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">populate rules</td>
+                                            </tr>
+
+
+                                        </tbody>
+                                    </table>
+
+
+
+
+                                    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    <h5>Returns:</h5>
+
+
+                                    <div class="param-desc">
+                                        {list, count, pages}
+                                    </div>
+
+
+
+                                    <dl>
+                                        <dt>
+                                            Type
+                                        </dt>
+                                        <dd>
+
+                                            <span class="param-type">Promise</span>
+
+
+
+                                        </dd>
+                                    </dl>
+
+
+
+
+
+                                </dd>
+
+
+
+                                <hr>
+                                <dt>
+                                    <h4 class="name" id=".listAndPopulate"><span class="type-signature">&lt;static>
+                                        </span>listAndPopulate(skip, size, sorter, filter, populate)</h4>
+
+
+                                </dt>
+                                <dd>
+
+
+                                    <div class="description">
+                                        List record and populate method
+                                    </div>
+
+
+
+
+
+
+
+
+                                    <h5>Parameters:</h5>
+
+
+                                    <table class="params table table-striped">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Name</th>
+
+
+                                                <th>Type</th>
+
+
+
+
+
+                                                <th class="last">Description</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+
+                                            <tr>
+
+                                                <td class="name"><code>skip</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">number</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">number of skiped records</td>
+                                            </tr>
+
+
+
+                                            <tr>
+
+                                                <td class="name"><code>size</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">number</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">length of return list</td>
+                                            </tr>
+
+
+
+                                            <tr>
+
+                                                <td class="name"><code>sorter</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">object</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">sorter rules</td>
+                                            </tr>
+
+
+
+                                            <tr>
+
+                                                <td class="name"><code>filter</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">object</span>
+                                                    |
+
+                                                    <span class="param-type">array</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">filter rules</td>
+                                            </tr>
+
+
+
+                                            <tr>
+
+                                                <td class="name"><code>populate</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">object</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">populate rules</td>
+                                            </tr>
+
+
+                                        </tbody>
+                                    </table>
+
+
+
+
+                                    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    <h5>Returns:</h5>
+
+
+                                    <div class="param-desc">
+                                        Promise
+                                    </div>
+
+
+
+                                    <dl>
+                                        <dt>
+                                            Type
+                                        </dt>
+                                        <dd>
+
+                                            <span class="param-type">Promise</span>
+
+
+
+                                        </dd>
+                                    </dl>
+
+
+
+
+
+                                </dd>
+
+
+
+                                <hr>
+                                <dt>
+                                    <h4 class="name" id=".listByField"><span class="type-signature">&lt;static>
+                                        </span>listByField(field, list, filter, populate)</h4>
+
+
+                                </dt>
+                                <dd>
+
+
+                                    <div class="description">
+                                        Returns list of items with specific values in specific field, optionaly filtered
+                                    </div>
+
+
+
+
+
+
+
+
+                                    <h5>Parameters:</h5>
+
+
+                                    <table class="params table table-striped">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Name</th>
+
+
+                                                <th>Type</th>
+
+
+
+
+
+                                                <th class="last">Description</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+
+                                            <tr>
+
+                                                <td class="name"><code>field</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">string</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">name of the field to search in</td>
+                                            </tr>
+
+
+
+                                            <tr>
+
+                                                <td class="name"><code>list</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">array</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">list of 'id' field values</td>
+                                            </tr>
+
+
+
+                                            <tr>
+
+                                                <td class="name"><code>filter</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">object</span>
+                                                    |
+
+                                                    <span class="param-type">array</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">filter rules</td>
+                                            </tr>
+
+
+
+                                            <tr>
+
+                                                <td class="name"><code>populate</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">object</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">populate rules</td>
+                                            </tr>
+
+
+                                        </tbody>
+                                    </table>
+
+
+
+
+                                    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    <h5>Returns:</h5>
+
+
+                                    <div class="param-desc">
+                                        Promise
+                                    </div>
+
+
+
+                                    <dl>
+                                        <dt>
+                                            Type
+                                        </dt>
+                                        <dd>
+
+                                            <span class="param-type">Promise</span>
+
+
+
+                                        </dd>
+                                    </dl>
+
+
+
+
+
+                                </dd>
+
+
+
+                                <hr>
+                                <dt>
+                                    <h4 class="name" id=".makeQuery"><span class="type-signature">&lt;static>
+                                        </span>makeQuery(method, filter)</h4>
+
+
+                                </dt>
+                                <dd>
+
+
+                                    <div class="description">
+                                        Common query with filtering constructor for generic method
+                                    </div>
+
+
+
+
+
+
+
+
+                                    <h5>Parameters:</h5>
+
+
+                                    <table class="params table table-striped">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Name</th>
+
+
+                                                <th>Type</th>
+
+
+
+
+
+                                                <th class="last">Description</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+
+                                            <tr>
+
+                                                <td class="name"><code>method</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">string</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">name of the method</td>
+                                            </tr>
+
+
+
+                                            <tr>
+
+                                                <td class="name"><code>filter</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">object</span>
+                                                    |
+
+                                                    <span class="param-type">array</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">filtering rules object</td>
+                                            </tr>
+
+
+                                        </tbody>
+                                    </table>
+
+
+
+
+                                    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    <h5>Returns:</h5>
+
+
+                                    <div class="param-desc">
+                                        mongoose query object
+                                    </div>
+
+
+
+                                    <dl>
+                                        <dt>
+                                            Type
+                                        </dt>
+                                        <dd>
+
+                                            <span class="param-type">Query</span>
+
+
+
+                                        </dd>
+                                    </dl>
+
+
+
+
+
+                                </dd>
+
+
+
+                                <hr>
+                                <dt>
+                                    <h4 class="name" id=".sanitizeInput"><span class="type-signature">&lt;static>
+                                        </span>sanitizeInput(input)</h4>
+
+
+                                </dt>
+                                <dd>
+
+
+                                    <div class="description">
+                                        Sanitize input
+                                    </div>
+
+
+
+
+
+
+
+
+                                    <h5>Parameters:</h5>
+
+
+                                    <table class="params table table-striped">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Name</th>
+
+
+                                                <th>Type</th>
+
+
+
+
+
+                                                <th class="last">Description</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+
+                                            <tr>
+
+                                                <td class="name"><code>input</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">object</span>
+
+
+
+
+                                                </td>
+
+
+
+
+
+                                                <td class="description last">data</td>
+                                            </tr>
+
+
+                                        </tbody>
+                                    </table>
+
+
+
+
+                                    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    <h5>Returns:</h5>
+
+
+                                    <div class="param-desc">
+                                        data;
+                                    </div>
+
+
+
+                                    <dl>
+                                        <dt>
+                                            Type
+                                        </dt>
+                                        <dd>
+
+                                            <span class="param-type">object</span>
+
+
+
+                                        </dd>
+                                    </dl>
+
+
+
+
+
+                                </dd>
+
+
+
+                                <hr>
+                                <dt>
+                                    <h4 class="name" id=".update"><span class="type-signature">&lt;static>
+                                        </span>update(filter, data, many)</h4>
+
+
+                                </dt>
+                                <dd>
+
+
+                                    <div class="description">
+                                        Starts update routine
+                                    </div>
+
+
+
+
+
+
+
+
+                                    <h5>Parameters:</h5>
+
+
+                                    <table class="params table table-striped">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Name</th>
+
+
+                                                <th>Type</th>
+
+
+
+
+                                                <th>Default</th>
+
+
+                                                <th class="last">Description</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+
+                                            <tr>
+
+                                                <td class="name"><code>filter</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">object</span>
+
+
+
+
+                                                </td>
+
+
+
+
+                                                <td class="default">
+
+                                                </td>
+
+
+                                                <td class="description last">search criteria</td>
+                                            </tr>
+
+
+
+                                            <tr>
+
+                                                <td class="name"><code>data</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">object</span>
+
+
+
+
+                                                </td>
+
+
+
+
+                                                <td class="default">
+
+                                                </td>
+
+
+                                                <td class="description last">data</td>
+                                            </tr>
+
+
+
+                                            <tr>
+
+                                                <td class="name"><code>many</code></td>
+
+
+                                                <td class="type">
+
+
+                                                    <span class="param-type">boolean</span>
+
+
+
+
+                                                </td>
+
+
+
+
+                                                <td class="default">
+
+                                                    false
+
+                                                </td>
+
+
+                                                <td class="description last">if true will affect all records according
+                                                    to filter</td>
+                                            </tr>
+
+
+                                        </tbody>
+                                    </table>
+
+
+
+
+                                    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    <h5>Returns:</h5>
+
+
+                                    <div class="param-desc">
+                                        Promise
+                                    </div>
+
+
+
+                                    <dl>
+                                        <dt>
+                                            Type
+                                        </dt>
+                                        <dd>
+
+                                            <span class="param-type">Promise</span>
+
+
+
+                                        </dd>
+                                    </dl>
+
+
+
+
+
+                                </dd>
+
+
+
+                                <hr>
+                                <dt>
+                                    <h4 class="name" id="~close"><span class="type-signature">&lt;inner> </span>close()
+                                    </h4>
+
+
+                                </dt>
+                                <dd>
+
+
+                                    <div class="description">
+                                        Closes document and saves it
+                                        This is replaces remove when Versioning is ON
+                                    </div>
+
+
+
+
+
+
+
+
+
+
+                                    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    <h5>Returns:</h5>
+
+
+                                    <div class="param-desc">
+                                        ID
+                                    </div>
+
+
+
+                                    <dl>
+                                        <dt>
+                                            Type
+                                        </dt>
+                                        <dd>
+
+                                            <span class="param-type">number</span>
+
+
+
+                                        </dd>
+                                    </dl>
+
+
+
+
+
+                                </dd>
+
+
+
+                                <hr>
+                                <dt>
+                                    <h4 class="name" id="~getID"><span class="type-signature">&lt;inner> </span>getID()
+                                    </h4>
+
+
+                                </dt>
+                                <dd>
+
+
+                                    <div class="description">
+                                        Returns incremental ID for this doc
+                                    </div>
+
+
+
+
+
+
+
+
+
+
+                                    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    <h5>Returns:</h5>
+
+
+                                    <div class="param-desc">
+                                        ID
+                                    </div>
+
+
+
+                                    <dl>
+                                        <dt>
+                                            Type
+                                        </dt>
+                                        <dd>
+
+                                            <span class="param-type">number</span>
+
+
+
+                                        </dd>
+                                    </dl>
+
+
+
+
+
+                                </dd>
+
+                            </dl>
+
+
+
+
+
+                        </article>
+
+                    </section>
+
+
+
+
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+
+
+            <div class="col-md-3">
+                <div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+            </div>
+
+
+        </div>
     </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">data</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Promise
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".countWithFilter"><span class="type-signature">&lt;static> </span>countWithFilter(filter)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Counts record method
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>filter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-|
-
-<span class="param-type">array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">filter rules</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Promise
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".getOne"><span class="type-signature">&lt;static> </span>getOne(id, population)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Retrieves one record by primary key
-	If versioning ON, it retrieves __latest and not __closed
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>id</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">primary key</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>population</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">optional if needed population of some fields</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Promise
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".getOneByID"><span class="type-signature">&lt;static> </span>getOneByID(ID)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Retrieves one record by unique numeric ID
-	If versioning ON, it retrieves __latest and not __closed
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>ID</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">some unique numeric identificator</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Promise of document, if increment is OFF - then Promise.resolve(null)
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".getOneRaw"><span class="type-signature">&lt;static> </span>getOneRaw(id)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Retrieves one record by primary key, without any restriction
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>id</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">primary key</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Promise
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".list"><span class="type-signature">&lt;static> </span>list(skip, size, sorter, filter)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        List record method
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>skip</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">number of skiped records</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>size</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">length of return list</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>sorter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">sorter rules</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>filter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-|
-
-<span class="param-type">Array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">filter rules</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Promise
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".listAll"><span class="type-signature">&lt;static> </span>listAll()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        List all records from collection
-	If Versioning is ON restricts to __latest and not __closed
-	By default sorts by _id in DESC
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Promise
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".listAllAndPopulate"><span class="type-signature">&lt;static> </span>listAllAndPopulate(populate)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        List all record in collection and populates
-	If Versioning is ON restricts to __latest and not __closed
-	By default sorts by _id in DESC
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>populate</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-|
-
-<span class="param-type">array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">populate rules</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Promise
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".listAndCount"><span class="type-signature">&lt;async, static> </span>listAndCount(skip, size, sorter, filter, search, populate)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        List record in collection and populates, with count of total founded records
-	By default sorts by _id in DESC
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>skip</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">number of skiped records</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>size</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">length of return list</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>sorter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">sorter rules</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>filter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-|
-
-<span class="param-type">array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">filter rules</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>search</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-|
-
-<span class="param-type">array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">search rules</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>populate</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">populate rules</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    {list, count, pages}
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".listAndPopulate"><span class="type-signature">&lt;static> </span>listAndPopulate(skip, size, sorter, filter, populate)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        List record and populate method
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>skip</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">number of skiped records</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>size</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">length of return list</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>sorter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">sorter rules</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>filter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-|
-
-<span class="param-type">array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">filter rules</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>populate</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">populate rules</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Promise
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".listByField"><span class="type-signature">&lt;static> </span>listByField(field, list, filter, populate)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Returns list of items with specific values in specific field, optionaly filtered
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>field</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">name of the field to search in</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>list</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">list of 'id' field values</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>filter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-|
-
-<span class="param-type">array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">filter rules</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>populate</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">populate rules</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Promise
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".makeQuery"><span class="type-signature">&lt;static> </span>makeQuery(method, filter)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Common query with filtering constructor for generic method
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>method</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">name of the method</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>filter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-|
-
-<span class="param-type">array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">filtering rules object</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    mongoose query object
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Query</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".sanitizeInput"><span class="type-signature">&lt;static> </span>sanitizeInput(input)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Sanitize input
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>input</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">data</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    data;
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">object</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".update"><span class="type-signature">&lt;static> </span>update(filter, data, many)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Starts update routine
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>filter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">search criteria</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">data</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>many</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">if true will affect all records according to filter</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Promise
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="~close"><span class="type-signature">&lt;inner> </span>close()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Closes document and saves it
-	This is replaces remove when Versioning is ON
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    ID
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">numeric</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="~getID"><span class="type-signature">&lt;inner> </span>getID()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Returns incremental ID for this doc
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    ID
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">numeric</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        </dl>
-    
-
-    
-
-    
-</article>
-
-</section>
-
-
-
-
-		</div>
-	</div>
-
-	<div class="clearfix"></div>
-
-	
-		<div class="col-md-3">
-			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
-		</div>
-	
-
-</div>
-</div>
 
 
     <div class="modal fade" id="searchResults">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Search results</h4>
-          </div>
-          <div class="modal-body"></div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Search results</h4>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
     </div>
 
 
-<footer>
+    <footer>
 
 
-<span class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a>
-	
-		on 2021-11-05T18:45:46+03:00
-	
-	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
-</span>
-</footer>
+        <span class="jsdoc-message">
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a>
 
-<script src="scripts/docstrap.lib.js"></script>
-<script src="scripts/toc.js"></script>
+            on 2021-11-05T18:45:46+03:00
+
+            using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+        </span>
+    </footer>
+
+    <script src="scripts/docstrap.lib.js"></script>
+    <script src="scripts/toc.js"></script>
 
     <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
 
 
-<script>
-$( function () {
-	$( "[id*='$']" ).each( function () {
-		var $this = $( this );
+    <script>
+        $(function () {
+            $("[id*='$']").each(function () {
+                var $this = $(this);
 
-		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
-	} );
+                $this.attr("id", $this.attr("id").replace("$", "__"));
+            });
 
-	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
-		var $this = $( this );
+            $(".tutorial-section pre, .readme-section pre, pre.prettyprint.source").each(function () {
+                var $this = $(this);
 
-		var example = $this.find( "code" );
-		exampleText = example.html();
-		var lang = /{@lang (.*?)}/.exec( exampleText );
-		if ( lang && lang[1] ) {
-			exampleText = exampleText.replace( lang[0], "" );
-			example.html( exampleText );
-			lang = lang[1];
-		} else {
-			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
-			lang = langClassMatch ? langClassMatch[1] : "javascript";
-		}
+                var example = $this.find("code");
+                exampleText = example.html();
+                var lang = /{@lang (.*?)}/.exec(exampleText);
+                if (lang && lang[1]) {
+                    exampleText = exampleText.replace(lang[0], "");
+                    example.html(exampleText);
+                    lang = lang[1];
+                } else {
+                    var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+                    lang = langClassMatch ? langClassMatch[1] : "javascript";
+                }
 
-		if ( lang ) {
+                if (lang) {
 
-			$this
-			.addClass( "sunlight-highlight-" + lang )
-			.addClass( "linenums" )
-			.html( example.html() );
+                    $this
+                        .addClass("sunlight-highlight-" + lang)
+                        .addClass("linenums")
+                        .html(example.html());
 
-		}
-	} );
+                }
+            });
 
-	Sunlight.highlightAll( {
-		lineNumbers : false,
-		showMenu : true,
-		enableDoclinks : true
-	} );
+            Sunlight.highlightAll({
+                lineNumbers: false,
+                showMenu: true,
+                enableDoclinks: true
+            });
 
-	$.catchAnchorLinks( {
-        navbarOffset: 10
-	} );
-	$( "#toc" ).toc( {
-		anchorName  : function ( i, heading, prefix ) {
-			return $( heading ).attr( "id" ) || ( prefix + i );
-		},
-		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
-		showAndHide : false,
-		smoothScrolling: true
-	} );
+            $.catchAnchorLinks({
+                navbarOffset: 10
+            });
+            $("#toc").toc({
+                anchorName: function (i, heading, prefix) {
+                    return $(heading).attr("id") || (prefix + i);
+                },
+                selectors: "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+                showAndHide: false,
+                smoothScrolling: true
+            });
 
-	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
-	$( '.dropdown-toggle' ).dropdown();
+            $("#main span[id^='toc']").addClass("toc-shim");
+            $('.dropdown-toggle').dropdown();
 
-    $( "table" ).each( function () {
-      var $this = $( this );
-      $this.addClass('table');
-    } );
+            $("table").each(function () {
+                var $this = $(this);
+                $this.addClass('table');
+            });
 
-} );
-</script>
-
-
-
-<!--Navigation and Symbol Display-->
+        });
+    </script>
 
 
-<!--Google Analytics-->
+
+    <!--Navigation and Symbol Display-->
+
+
+    <!--Google Analytics-->
 
 
 
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             SearcherDisplay.init();
         });
     </script>
 
 
 </body>
+
 </html>
