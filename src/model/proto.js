@@ -73,11 +73,6 @@ module.exports = class ModelFabricate {
 
     static enrichByFields(targetModule, options) {
         if (targetModule.enrich) {
-            const model_name = targetModule.thisModelName;
-            console.log(
-                `MODEL: ${model_name}`,
-                JSON.stringify(options, null, 4)
-            );
             if (targetModule.enrich.validators) {
                 targetModule.thisSchema = enrich.byFieldsValidators(
                     targetModule.thisSchema,
@@ -198,9 +193,7 @@ module.exports = class ModelFabricate {
         if (ModelFabricate.isIgnored(targetModule)) {
             return;
         }
-
         options = ModelFabricate.initOptions(options, targetModule);
-
         const schema = ModelFabricate.extendSchema(targetModule, options);
         if (schema) {
             targetModule.mongooseSchema = schema;
@@ -211,7 +204,7 @@ module.exports = class ModelFabricate {
                     mongoose
                 );
             } catch (error) {
-                log.error(error);
+                log && log.error(error);
             }
         }
     }
