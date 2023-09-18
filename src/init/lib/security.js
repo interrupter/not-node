@@ -8,25 +8,26 @@ module.exports = class InitSecurity {
             let CSPDirectives = config.get("CSP");
             let result = {};
             Object.keys(CSPDirectives).forEach((nm) => {
-                result[nm + "Src"] = CSPDirectives[nm].join(" ");
-                if (["default", "connect"].includes(nm)) {
-                    result[nm + "Src"] += " " + corsLine;
+                result[nm] = [...CSPDirectives[nm]];
+                if (
+                    Array.isArray(corsArr) &&
+                    ["default-src", "connect-src"].includes(nm)
+                ) {
+                    result[nm].push(...corsLine);
                 }
             });
             return result;
         } catch (e) {
-            Log.error(e);
+            Log && Log.error(e);
             return {};
         }
     }
 
-    async run({ master, config, options }) {
+    async run({ master, config }) {
         //adding protection
         const helmet = require("helmet");
         const CSPDirectives = this.getCSPDirectives({
-            options,
             config,
-            master,
         });
         master.getServer().use(
             helmet({
