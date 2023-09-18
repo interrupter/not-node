@@ -366,3 +366,61 @@ const getValueFromEnv = (
     }
 };
 module.exports.getValueFromEnv = getValueFromEnv;
+
+/**
+ * Provides shallow object signature checks
+ *
+ * @param {object} obj                  object to check
+ * @param {object} sign                 signature object {fieldName: someValueOfTargetType}
+ * @param {boolean} [strict=true]       if  you need exact properties as in signature, when false - properties not described in signature are ok
+ * @param {boolean} [typeStrict=true]   compares types of properties in obj and signature
+ * @return {boolean}                    true if object structured as signature
+ */
+const compareObjectSignatures = (
+    obj,
+    sign,
+    strict = true,
+    typeStrict = true
+) => {
+    const objKeys = Object.keys(obj);
+    const signKeys = Object.keys(sign);
+    const checkKey = (key) => {
+        if (objKeys.includes(key)) {
+            if (typeStrict) {
+                return typeof obj[key] === typeof sign[key];
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    };
+
+    if (strict) {
+        if (objKeys.length === signKeys.length) {
+            return signKeys.every(checkKey);
+        } else {
+            return false;
+        }
+    } else {
+        return signKeys.every(checkKey);
+    }
+};
+
+module.exports.compareObjectSignatures = compareObjectSignatures;
+
+/**
+ * Returns first index of signature matching to object
+ *
+ * @param {object} obj                  object to match against signatures
+ * @param {Array<object>} signatures    array of signature
+ * @param {boolean} [strict=true]       check exact number of properties
+ * @param {boolean} [typeStrict=true]   check exact properties types
+ * @return {number}                     -1 if nothing is found, from 0 to signatures.length-1 if some signature
+ */
+const findSignature = (obj, signatures, strict = true, typeStrict = true) => {
+    return signatures.findIndex((sign) => {
+        return compareObjectSignatures(obj, sign, strict, typeStrict);
+    });
+};
+module.exports.findSignature = findSignature;

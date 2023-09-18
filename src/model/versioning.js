@@ -65,9 +65,9 @@ class ModelVersioning {
 
     /**
      * Compares latest version in __versions list in data with data
-     * @param {MongooseModel}  ModelConstructor   model of data
+     * @param {import('mongoose').Model}  ModelConstructor   model of data
      * @param {Object}         data        data to save
-     * @return {boolean}                   if data differs from latest version
+     * @return {Promise<boolean>}                   if data differs from latest version
      */
     static async isNew(ModelConstructor, data) {
         let latestId = ModelVersioning.getLatestVersionId(data);
@@ -84,10 +84,10 @@ class ModelVersioning {
 
     /**
      * Saves current version to versions archive, updates current version versioning tags
-     * @param {ObjectId}      id             current version _id (just saved version)
+     * @param {import('mongoose').Types.ObjectId}      id             current version _id (just saved version)
      * @param {Object}      data             data to save
-     * @param {MongooseModel} ModelConstructor      model to use
-     * @return {Promise<MongooseDocument>}   current version with updated versioning tags
+     * @param {import('mongoose').Model} ModelConstructor      model to use
+     * @return {Promise<import('mongoose').Document>}   current version with updated versioning tags
      */
     static async saveVersion(id, data, ModelConstructor) {
         let preservedVersionNumber = ModelVersioning.extractVersionNumber(data),
@@ -112,10 +112,10 @@ class ModelVersioning {
 
     /**
      * Saves first version. Run AFTER doing .save() on document.
-     * @param {ObjectId}      id             current version _id (just saved version)
+     * @param {import('mongoose').Types.ObjectId}      id             current version _id (just saved version)
      * @param {Object}      data             data to save
-     * @param {MongooseModel} ModelConstructor      model to use
-     * @return {Promise<MongooseDocument>}   current version with updated versions tags
+     * @param {import('mongoose').Model} ModelConstructor      model to use
+     * @return {Promise<import('mongoose').Document>}   current version with updated versions tags
      */
     static async saveFirstVersion(id, data, ModelConstructor) {
         //it's not latest version, it's archived copy
@@ -138,8 +138,8 @@ class ModelVersioning {
      * Save document
      * if document is new - creates document
      * if it's updated document - updates document and versioning history
-     * @param {MongooseModel} doc document to save
-     * @return {Promise<MongooseDocument>}   current version with updated versions tags
+     * @param {import('mongoose').Model} doc document to save
+     * @return {Promise<import('mongoose').Document>}   current version with updated versions tags
      */
     static saveDiff(ModelConstructor, doc) {
         let data = toObject(doc),

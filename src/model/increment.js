@@ -1,6 +1,6 @@
 /** @module Model/Increment */
 
-const { updateResponseSuccess } = require("./utils.js");
+const { updateResponseSuccess, insertResponseSuccess } = require("./utils.js");
 const {
     IncrementExceptionIDGeneratorRebaseFailed,
     IncrementExceptionIDGenerationFailed,
@@ -25,9 +25,9 @@ let schema = null;
 
 /**
  * Returns sub-list of fields which is not contained in object
- * @param {Array.string} fields  list of fields
+ * @param {Array<string>} fields  list of fields
  * @param {Object}       data    object to filter against
- * @return {Array.string}        sub-list of fields not contained in object
+ * @return {Array<string>}        sub-list of fields not contained in object
  **/
 function notContainedInData(fields, data) {
     let keys = Object.keys(data);
@@ -52,7 +52,7 @@ function formId(modelName, filterFields, data) {
 module.exports.formId = formId;
 /**
  * Some drivers versions work-arounds
- * @param  {Mongoose.Model} thisModel   counter model
+ * @param  {import('mongoose').Model} thisModel   counter model
  * @param  {Object}         which     filter object of update request
  * @param  {Object}         cmd          command object of update request
  * @param  {Object}         opts       options of request
@@ -76,9 +76,9 @@ function newGetNext() {
      * sub-set of all documents, which is grouped by fields (filterFields) with
      * same value
      * @param  {string}  modelName
-     * @param  {Array.string}  filterFields    list of fild names, which is used for grouping
+     * @param  {Array<string>}  filterFields    list of fild names, which is used for grouping
      * @param  {Object}  data                  item data
-     * @return {Promise.Number}
+     * @return {Promise<Number>}
      **/
     return async function (modelName, filterFields, data) {
         let thisModel = this;
@@ -105,7 +105,7 @@ function newGetNext() {
                 upsert: true,
             };
         const res = await secureUpdate(thisModel, which, cmd, opts);
-        if (updateResponseSuccess(res)) {
+        if (updateResponseSuccess(res) || insertResponseSuccess(res, 1)) {
             const doc = await thisModel.findOne({ id });
             return doc.seq;
         } else {
@@ -116,12 +116,12 @@ function newGetNext() {
 
 module.exports.newGetNext = newGetNext;
 
-/**
- * Sets new current ID for model
- * @param {string} modelName   name of target model
- * @param {number} ID          desired new start ID for model
- **/
 function newRebase() {
+    /**
+     * Sets new current ID for model
+     * @param {string} modelName   name of target model
+     * @param {number} ID          desired new start ID for model
+     **/
     return async function (modelName, ID) {
         let thisModel = this;
         let which = {
