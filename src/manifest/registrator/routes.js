@@ -10,28 +10,28 @@ const notModuleRegistratorRoutesWS = require("./routes.ws");
 /**
  * Manifest files ending
  * @constant
- * @type {string}
+ * @type {Array<string>}
  */
 const DEFAULT_MANIFEST_FILE_ENDINGS = [".manifest.js", ".manifest.cjs"];
 
 /**
  * Routes collection files ending
  * @constant
- * @type {string}
+ * @type {Array<string>}
  */
 const DEFAULT_ROUTES_FILE_ENDINGS = [".js", ".cjs"];
 
 /**
  * WS End-points collection files ending
  * @constant
- * @type {string}
+ * @type {Array<string>}
  */
 const DEFAULT_WS_ROUTES_FILE_ENDINGS = [".ws.js", ".ws.cjs"];
 
 /**
  * List of methods to be binded from notApp to routes and WS end-points
  * @constant
- * @type {string}
+ * @type {Array<string>}
  */
 const ROUTE_BINDINGS_LIST = [
     "getLogic",
@@ -68,9 +68,9 @@ module.exports = class notModuleRegistratorRoutes {
     /**
      * Searching fields in directory
      * @static
-     * @param {Object}     input
-     * @param {notModule}  input.notModule
-     * @param {string}     input.srcDir
+     * @param {Object}                  input
+     * @param {import('../module')}     input.nModule
+     * @param {string}                  input.srcDir
      **/
     findAll({ nModule, srcDir }) {
         fs.readdirSync(srcDir).forEach((file) =>
@@ -127,7 +127,7 @@ module.exports = class notModuleRegistratorRoutes {
             });
             return true;
         } catch (e) {
-            log.error(e);
+            log && log.error(e);
             return false;
         }
     }

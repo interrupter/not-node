@@ -53,14 +53,11 @@ function compareAuthStatus(rule, auth) {
 
 /**
  *	Check rule against presented credentials
- *	@param	{object}		        rule	      action rule
- *  @param	{boolean}		        rule.auth   if user should be authenticated
- *  @param	{Array<String>}		  rule.role   if user shoud have some role
- *  @param	{boolean}		        rule.root   if user should be super user
- *	@param  {Boolean}		        auth	      user state of auth
- *	@param  {String|Array}	    role	      user state of role
- *	@param  {Boolean}		        root        user state of root
- *	@return {boolean}		        pass or not
+ *	@param	{import('../types').notRouteRule}		        rule	        action rule
+ *	@param  {Boolean}		                                auth	        user state of auth
+ *	@param  {String|Array}	                                role	        user state of role
+ *	@param  {Boolean}		                                root            user state of root
+ *	@return {boolean}		                                                pass or not
  */
 function checkCredentials(rule, auth, role, root) {
     //no rule - no access
@@ -68,7 +65,7 @@ function checkCredentials(rule, auth, role, root) {
         return false;
     } else {
         //posting message about obsolete options keys if found
-        postWarning(rule);
+        postWarning.obsoleteRuleFields(rule);
         //start comparing from top tier flags
         //if we have root/admin(obsolete) field field in rule compare only it
         if (ruleHasRootDirective(rule)) {

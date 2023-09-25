@@ -1,8 +1,6 @@
 //DB related validation tools
 const Form = require("../form/form");
 const { firstLetterToUpper } = require("../common");
-//not-node
-const { getIP } = require("../auth");
 //form
 const FIELDS = [
     ["activeUserId", { required: true }, "not-node//objectId"],
@@ -10,18 +8,18 @@ const FIELDS = [
     ["ip", "not-node//ip"],
 ];
 
-module.exports = ({ MODULE_NAME, actionName }) => {
-    const FORM_NAME = `${MODULE_NAME}:${firstLetterToUpper(actionName)}Form`;
+module.exports = ({ MODULE_NAME, MODEL_NAME, actionName }) => {
+    const FORM_NAME = `${MODULE_NAME}:${MODEL_NAME}:${firstLetterToUpper(
+        actionName
+    )}Form`;
     return class extends Form {
         constructor({ app }) {
             super({ FIELDS, FORM_NAME, app });
         }
 
-        extract(req) {
+        async extract(req) {
             return {
-                activeUser: req?.user,
-                activeUserId: req?.user._id,
-                ip: getIP(req),
+                ...this.extractRequestEnvs(req),
             };
         }
     };

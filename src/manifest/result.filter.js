@@ -134,7 +134,8 @@ module.exports = class notManifestRouteResultFilter {
         for (let filteringTargetName of filteringArray) {
             const subTarget = notPath.get(
                 `${notPath.PATH_START_OBJECT}${filteringTargetName}`,
-                target
+                target,
+                {}
             );
             //if sub target Array filtering each item individualy
             if (Array.isArray(subTarget)) {
@@ -231,7 +232,7 @@ module.exports = class notManifestRouteResultFilter {
     static getFilteringTarget(result, notRouteData) {
         if (result && typeof result == "object") {
             const returnListRoot = this.getFilteringTargetPath(notRouteData);
-            return notPath.get(returnListRoot, result);
+            return notPath.get(returnListRoot, result, {});
         } else {
             return result;
         }

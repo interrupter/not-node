@@ -85,7 +85,7 @@ module.exports = ({
         }
     };
 
-    const createDefaultForm = function ({ actionName }) {
+    const createDefaultForm = function ({ actionName, MODULE_NAME }) {
         const FIELDS = [
             ["activeUser", "not-node//requiredObject"],
             ["data", `${MODULE_NAME}//_data`],

@@ -1,6 +1,12 @@
 const notFilter = require("not-filter");
 const getApp = require("../../getApp");
 
+/**
+ *
+ * @param {import('../form')}                           form
+ * @param {import('../../types').notNodeExpressRequest} req
+ * @returns
+ */
 module.exports = (form, req) => {
     const MODULE_NAME = form.getModuleName();
     const MODEL_NAME = form.getModelName(req);

@@ -9,7 +9,7 @@ const { objHas, isFunc, firstLetterToUpper } = require("../common");
 const ValidationBuilder = require("not-validation").Builder;
 const ValidationSession = require("not-validation").Session;
 
-const { notValidationError, notError } = require("not-error");
+const { notValidationError, notError } = require("not-error/src");
 
 const {
     FormExceptionExtractorForFieldIsUndefined,
@@ -25,11 +25,12 @@ const DEFAULT_TRANSFORMERS = require("./transformers");
  **/
 class Form {
     /**
-     * @prop {SCHEMA} validation schema
+     * @prop {import('not-validation/src/builder').notValidationSchema} validation schema
      **/
     #SCHEMA = {
         fields: {},
         form: [],
+        forms: {},
     };
     /**
      * @prop {string} name of form
@@ -72,6 +73,13 @@ class Form {
         this.#addTransformers(TRANSFORMERS);
     }
 
+    /**
+     *
+     *
+     * @param {import('../types').notNodeExpressRequest} req
+     * @return {*}
+     * @memberof Form
+     */
     getModelName(req) {
         if (this.#MODEL_NAME) {
             return this.#MODEL_NAME;
@@ -81,6 +89,12 @@ class Form {
         return undefined;
     }
 
+    /**
+     *
+     *
+     * @return {string}
+     * @memberof Form
+     */
     getModuleName() {
         return this.#MODULE_NAME;
     }
@@ -88,9 +102,9 @@ class Form {
     /**
      * Extract data from ExpressRequest object and validates it
      * returns it or throws
-     * @param {ExpressRequest} req expressjs request object
-     * @return {Promise<Object>} form data
-     * @throws {notValidationError}
+     * @param   {import('../types').notNodeExpressRequest}   req expressjs request object
+     * @return  {Promise<Object>} form data
+     * @throws  {notValidationError}
      **/
     async run(req) {
         let data = await this.extract(req);
@@ -100,8 +114,8 @@ class Form {
 
     /**
      * Extracts data, should be overriden
-     * @param {ExpressRequest} req expressjs request object
-     * @return {Object}        forma data
+     * @param {import('../types').notNodeExpressRequest} req expressjs request object
+     * @return {Promise<import('../types').PreparedData>}        forma data
      **/
     async extract(req) {
         return {
@@ -137,7 +151,7 @@ class Form {
      * if validation failes - returns error object with detail per field description
      * of errors
      * @param {object} data input data for validation
-     * @returns {Promise<void>} resolves or throwing notValidationError or notError if reason is unknown
+     * @returns {Promise<undefined>} resolves or throwing notValidationError or notError if reason is unknown
      **/
     async validate(data) {
         try {
@@ -205,7 +219,7 @@ class Form {
 
     /**
      * Returns array of validators
-     * @return {Arrays<Object>}
+     * @return {Array<Object>}
      **/
     getValidatorsForField(fieldName) {
         return this.#SCHEMA.fields[fieldName];
@@ -255,7 +269,7 @@ class Form {
     /**
      * Validates form data or throws
      * @param {Object} data    form data
-     * @return {Object}
+     * @return {Promise<Object>}
      * @throws {notValidationError}
      **/
     async #_validate(data) {
@@ -363,6 +377,11 @@ class Form {
         }
     }
 
+    /**
+     *
+     * @param {import('../types').notNodeExpressRequest}   req     Express Request
+     * @returns {Array<string>|Array<Array<string>>}
+     */
     extractActionFieldsFromRequest(req) {
         if (
             req?.notRouteData?.actionData?.fields &&
@@ -396,6 +415,13 @@ class Form {
         return result;
     }
 
+    /**
+     *
+     * @param {import('express').Request}   req
+     * @param {Array<string>}               mainInstruction
+     * @param {object}                      exceptions
+     * @returns
+     */
     extractByInstructionsFromRouteActionFields(
         req,
         mainInstruction = ["fromBody", "xss"],
@@ -411,6 +437,7 @@ class Form {
 
     /**
      * Value transformers
+     * @param   {object}    transformers
      */
     #addTransformers(transformers = {}) {
         if (transformers) {

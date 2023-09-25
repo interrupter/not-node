@@ -327,7 +327,7 @@ function countWithFilter(filter) {
  *	Starts add routine
  *	@static
  *	@param	{object} 		data		data
- *	@return {Promise<MongooseDocument>}					Promise of saved document
+ *	@return {Promise<import('mongoose').Document>}					Promise of saved document
  */
 function add(data) {
     return routine.add(this, data);

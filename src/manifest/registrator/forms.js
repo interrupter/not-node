@@ -29,6 +29,7 @@ module.exports = class notModuleRegistratorForms {
      * Searching forms in directory
      * @param {Object}     input
      * @param {string}     input.srcDir
+     * @param {import('../module')} input.nModule
      **/
     findAll({ nModule, srcDir }) {
         fs.readdirSync(srcDir).forEach((file) => {

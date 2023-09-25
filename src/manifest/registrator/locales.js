@@ -6,12 +6,20 @@ module.exports = class notModuleRegistratorLocales {
         this.run({ nModule });
     }
 
+    /**
+     *
+     * @param {object}                  input
+     * @param {import('../module')}     input.nModule
+     * @return {boolean}
+     */
     run({ nModule }) {
         const srcDir = notModuleRegistratorLocales.getPath(nModule);
         if (!srcDir) {
             return false;
         }
-        notLocale.fromDir(srcDir, nModule.getName()).catch(log.error);
+        notLocale
+            .fromDir(srcDir, nModule.getName())
+            .catch((e) => log && log.error(e));
         return true;
     }
 

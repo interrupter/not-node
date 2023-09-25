@@ -164,7 +164,7 @@ module.exports = class ModelFabricate {
                 //creating unique indexes
                 ModelFabricate.createIndexesForFields(schema, fieldsForIndexes);
                 ModelFabricate.createIndexesForText(schema, targetModule);
-                //adding specific fields and indetificators
+                //adding specific fields and identificators
                 ModelFabricate.markFor(schema, targetModule);
                 //extending schema methods, statics, virtuals by user defined and default content
                 ModelFabricate.extendBySource(schema, targetModule);

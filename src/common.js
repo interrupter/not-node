@@ -44,6 +44,9 @@ module.exports.validateObjectId = (id) => {
  */
 module.exports.compareObjectIds = (firstId, secondId) => {
     try {
+        if (typeof firstId === "undefined" || typeof secondId === "undefined") {
+            return false;
+        }
         let a = firstId,
             b = secondId;
         if (typeof firstId !== "string") {
@@ -180,6 +183,10 @@ module.exports.executeObjectFunction = async (obj, name, params) => {
             }
         }
     }
+};
+
+module.exports.isNotEmptyString = (str) => {
+    return typeof str === "string" && str.length > 0 && str.trim().length > 0;
 };
 
 /**

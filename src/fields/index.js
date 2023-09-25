@@ -17,7 +17,7 @@ module.exports.initFileSchemaFromFields = ({
     to = DEFAULT_TO,
     moduleName = "",
 }) => {
-    const FIELDS = notPath.get(from, mod);
+    const FIELDS = notPath.get(from, mod, {});
     if (FIELDS && Array.isArray(FIELDS)) {
         const schema = module.exports.createSchemaFromFields(
             app,
@@ -25,7 +25,7 @@ module.exports.initFileSchemaFromFields = ({
             type,
             moduleName
         );
-        notPath.set(to, mod, schema);
+        notPath.set(to, mod, schema, undefined);
     }
 };
 

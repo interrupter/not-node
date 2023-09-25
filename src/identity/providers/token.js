@@ -40,7 +40,6 @@ module.exports = class IdentityProviderToken {
         const auth = req.get("Authorization");
         if (auth && auth.length) {
             const [, token] = auth.split(" ");
-            console.log("token found", token);
             return token;
         }
         return null;
@@ -58,6 +57,10 @@ module.exports = class IdentityProviderToken {
         return this.#token;
     }
 
+    /**
+     *
+     * @returns {Object}
+     */
     #decodeTokenContent() {
         try {
             if (this.#token) {
@@ -85,8 +88,11 @@ module.exports = class IdentityProviderToken {
         }
     }
 
-    #extractTokenContent(req) {
-        this.#tokenContent = this.#decodeTokenContent(req);
+    /**
+     * Decodes raw token and sets token object as #tokenContent
+     */
+    #extractTokenContent() {
+        this.#tokenContent = this.#decodeTokenContent();
     }
 
     get tokenContent() {
@@ -221,7 +227,9 @@ module.exports = class IdentityProviderToken {
      **/
     setUserId(_id) {
         if (this.tokenContent) {
-            this.#tokenContent._id = _id;
+            if (_id === "") {
+                this.#tokenContent && delete this.#tokenContent._id;
+            }
             this.#updateToken();
         }
         return this;
@@ -254,7 +262,7 @@ module.exports = class IdentityProviderToken {
     /**
      *	Set auth data in session, user id and role
      *	@param	{string}	id 		user id
-     *	@param	{string}	role 	user role
+     *	@param	{Array<string>}	role 	user role
      **/
     setAuth(id, role) {
         this.setUserId(id);
@@ -265,12 +273,11 @@ module.exports = class IdentityProviderToken {
      *	Set auth data in token to Guest
      **/
     setGuest() {
-        this.setAuth(null, [CONST.DEFAULT_USER_ROLE_FOR_GUEST]);
+        this.setAuth("", [CONST.DEFAULT_USER_ROLE_FOR_GUEST]);
     }
 
     /**
      *	Reset session
-     *	@param	{object}	req 	Express Request
      **/
     cleanse() {
         this.setGuest();

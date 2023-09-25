@@ -83,7 +83,7 @@ module.exports = class notModuleRegistratorFields {
     /**
      * Searching fields in directory
      * @param {Object}     input
-     * @param {notModule}  input.notModule
+     * @param {import('../module')}  input.nModule
      * @param {string}     input.srcDir
      **/
     findAll({ nModule, srcDir }) {
@@ -96,6 +96,13 @@ module.exports = class notModuleRegistratorFields {
         });
     }
 
+    /**
+     * Registering fields from specific path
+     *
+     * @param {Object}     input
+     * @param {import('../module')}  input.nModule
+     * @param {string}     input.fromPath
+     */
     register({ nModule, fromPath }) {
         let file = notModuleRegistratorFields.openFile(fromPath);
         if (file && objHas(file, "FIELDS")) {

@@ -1,7 +1,7 @@
 const CONST_BEFORE_ACTION = "before";
 const CONST_AFTER_ACTION = "after";
 
-const obsoleteWarning = require("../obsolete");
+const { obsoleteRuleFields, obsoleteActionFields } = require("../obsolete");
 
 const notAppIdentity = require("../identity");
 const Auth = require("../auth"),
@@ -32,17 +32,22 @@ class notRoute {
     /**
      * Cycle throu rules of action and checking user credentials against them
      * If user creds comply to some rule - returns copy of rule
-     * @param {object}   action    action rules object
+     * @param {import('../types').notActionData & import('../types').notRouteRule }   action    action rules object
      * @param {object}   user      user credentials (auth, role, root)
      * @return {object|null}       returns rule or null
      **/
-    static actionAvailableByRule(action, user) {
+    static actionAvailableByRule(action, user, url = "") {
         if (!action) {
             return null;
         }
-        if (Array.isArray(action.rules) && action.rules.length > 0) {
+        if (
+            action.rules &&
+            Array.isArray(action.rules) &&
+            action.rules.length > 0
+        ) {
             return notRoute.cycleThruRules(action.rules, user);
         } else {
+            obsoleteActionFields(action, url);
             if (
                 Auth.checkCredentials(action, user.auth, user.role, user.root)
             ) {
@@ -54,7 +59,7 @@ class notRoute {
 
     static cycleThruRules(rules, user, url = "") {
         for (let i = 0; i < rules.length; i++) {
-            obsoleteWarning(rules[i], url);
+            obsoleteRuleFields(rules[i], url);
             if (
                 Auth.checkCredentials(rules[i], user.auth, user.role, user.root)
             ) {
@@ -66,8 +71,8 @@ class notRoute {
 
     /**
      *	Select rule from available or return null
-     *	@param	{object}	req 	Express Request Object
-     *	@return	{object}	rule or null
+     *	@param	{import('../types').ExtendedExpressRequest}	req 	Express Request Object
+     *	@return	{import('../types').notRouteRule | null}	rule or null
      */
     selectRule(req) {
         const user = notAppIdentity.extractAuthData(req);
@@ -77,8 +82,27 @@ class notRoute {
         return null;
     }
 
-    setRequestRouteData(req, actionName, rule) {
-        req.notRouteData = {
+    /**
+     *
+     *
+     * @param {import('../types').ExtendedExpressRequest}       req
+     * @param {import('../types').notRouteData} notRouteData
+     * @memberof notRoute
+     */
+    setRequestRouteData(req, notRouteData) {
+        req.notRouteData = notRouteData;
+    }
+
+    /**
+     *
+     *
+     * @param {string} actionName
+     * @param {import('../types').notRouteRule} rule
+     * @return {import('../types').notRouteData}
+     * @memberof notRoute
+     */
+    createRequestRouteData(actionName, rule) {
+        return {
             actionName,
             modelName: this.routeName,
             rule: copyObj(rule),
@@ -88,9 +112,9 @@ class notRoute {
 
     /**
      *	Executes route action if such exist
-     *	@param	{object}	req 	Express Request Object
-     *	@param	{object}	res		Express Response Object
-     *	@param	{function}	callback
+     *	@param	{import('../types').ExtendedExpressRequest}	req 	Express Request Object
+     *	@param	{import('express').Response}	res		Express Response Object
+     *	@param	{function}	next
      *	@return {object}	result of execution or HttpError
      **/
     exec(req, res, next) {
@@ -109,7 +133,7 @@ class notRoute {
                 );
             }
             console.log(rule);
-            obsoleteWarning(rule, req.originalUrl);
+            obsoleteRuleFields(rule, req.originalUrl);
             let actionName = this.selectActionName(rule);
             let mod = this.notApp.getModule(this.moduleName);
             if (!mod) {
@@ -126,7 +150,10 @@ class notRoute {
                 );
             }
             let modRoute = mod.getRoute(this.routeName);
-            this.setRequestRouteData(req, actionName, rule);
+            this.setRequestRouteData(
+                req,
+                this.createRequestRouteData(actionName, rule)
+            );
             if (this.routeIsRunnable(modRoute, actionName)) {
                 return this.executeRoute(modRoute, actionName, {
                     req,
@@ -148,6 +175,7 @@ class notRoute {
             }
         } catch (e) {
             this.notApp.report(e);
+            next(e);
         }
     }
 

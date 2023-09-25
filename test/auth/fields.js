@@ -156,7 +156,7 @@ module.exports = ({ Auth, expect }) => {
                 expect(result).to.deep.equal(false);
             });
 
-            it("field.safe.action:Array<string> with special, action:string, roles:Array<string>, special:Array<string>", () => {
+            it("field.safe.action:Array<string> with special, action:string, roles:Array<string>, special:Array<string> = ['@owner']", () => {
                 const field = {
                         safe: {
                             update: ["root", "@owner"],
@@ -169,7 +169,7 @@ module.exports = ({ Auth, expect }) => {
                 expect(result).to.deep.equal(true);
             });
 
-            it("field.safe.action:Array<string> with special, action:string, roles:Array<string>, special:Array<string>", () => {
+            it("field.safe.action:Array<string> with special, action:string, roles:Array<string>, special:Array<string> = ['@system']", () => {
                 const field = {
                         safe: {
                             update: ["root", "@owner"],

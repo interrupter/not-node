@@ -12,10 +12,10 @@ module.exports = class FormFabric {
 
             /**
              * Extracts data
-             * @param {ExpressRequest} req expressjs request object
-             * @return {Object}        forma data
+             * @param {import('../types').notNodeExpressRequest} req expressjs request object
+             * @return {Promise<Object>}        forma data
              **/
-            extract(req) {
+            async extract(req) {
                 return extractor(req);
             }
         };

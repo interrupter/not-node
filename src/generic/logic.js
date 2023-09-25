@@ -58,6 +58,11 @@ module.exports = ({
         static isOwner = isOwner;
         static ownerFieldName = ownerFieldName;
 
+        /**
+         *
+         * @param {import('../types').PreparedData}  prepared
+         * @returns {Promise<Object>}
+         */
         static async _create({
             action,
             data,
@@ -92,11 +97,7 @@ module.exports = ({
 
         /**
          * create item
-         * @param {Object}  prepared
-         * @param {Object}  prepared.data           data extracted from request
-         * @param {Object}  prepared.activeUser     current user info
-         * @param {string}  prepared.ip             current user ip
-         * @param {boolean}  prepared.root          current user is root
+         * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               new document
          **/
         static async create({ data, activeUser, ip, root = false }) {
@@ -112,11 +113,7 @@ module.exports = ({
 
         /**
          * create item and own it
-         * @param {Object}  prepared
-         * @param {Object}  prepared.data           data extracted from request
-         * @param {Object}  prepared.activeUser     current user info
-         * @param {string}  prepared.ip             current user ip
-         * @param {boolean}  prepared.root          current user is root
+         * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               new document
          **/
         static async createOwn({ data, activeUser, ip, root = false }) {
@@ -130,6 +127,11 @@ module.exports = ({
             });
         }
 
+        /**
+         *
+         * @param {import('../types').PreparedData}  prepared
+         * @returns {Promise<Object>}
+         */
         static async _updateOne({
             targetId,
             data,
@@ -169,12 +171,7 @@ module.exports = ({
 
         /**
          * update item
-         * @param {Object}  prepared
-         * @param {Object}  prepared.targetId       target item _id
-         * @param {Object}  prepared.data           data extracted from request
-         * @param {Object}  prepared.activeUser     current user info
-         * @param {string}  prepared.ip             current user ip
-         * @param {boolean}  prepared.root          current user is root
+         * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               updated document
          **/
         static async update({ targetId, data, activeUser, ip, root = false }) {
@@ -191,12 +188,7 @@ module.exports = ({
 
         /**
          * update own item
-         * @param {Object}  prepared
-         * @param {Object}  prepared.targetId       target item _id
-         * @param {Object}  prepared.data           data extracted from request
-         * @param {Object}  prepared.activeUser     current user info
-         * @param {string}  prepared.ip             current user ip
-         * @param {boolean}  prepared.root          current user is root
+         * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               updated document
          **/
         static async updateOwn({
@@ -219,12 +211,7 @@ module.exports = ({
 
         /**
          * get item with populated sub-documents
-         * @param {Object}  prepared
-         * @param {Object}  prepared.targetId       target item _id
-         * @param {Object}  prepared.activeUser     current user info
-         * @param {string}  prepared.ip             current user ip
-         * @param {boolean}  prepared.root          current user is root
-         * @param {boolean}  prepared.shouldOwn     if user should be owner of target
+         * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
         static async _getOne({
@@ -269,11 +256,7 @@ module.exports = ({
 
         /**
          * get item with populated sub-documents
-         * @param {Object}  prepared
-         * @param {Object}  prepared.targetId       target item _id
-         * @param {Object}  prepared.activeUser     current user info
-         * @param {string}  prepared.ip             current user ip
-         * @param {boolean}  prepared.root          current user is root
+         * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
         static async get({ targetId, activeUser, ip, root = false }) {
@@ -289,11 +272,7 @@ module.exports = ({
 
         /**
          * get activeUser own item with populated sub-documents
-         * @param {Object}  prepared
-         * @param {Object}  prepared.targetId       target item _id
-         * @param {Object}  prepared.activeUser     current user info
-         * @param {string}  prepared.ip             current user ip
-         * @param {boolean}  prepared.root          current user is root
+         * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
         static async getOwn({ targetId, activeUser, ip, root = false }) {
@@ -309,12 +288,7 @@ module.exports = ({
 
         /**
          * get item with populated sub-documents
-         * @param {Object}  prepared
-         * @param {Object}  prepared.targetID       target item ID
-         * @param {Object}  prepared.activeUser     current user info
-         * @param {string}  prepared.ip             current user ip
-         * @param {boolean}  prepared.root          current user is root
-         * @param {boolean}  prepared.shouldOwn     if user should be owner of target
+         * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
         static async _getOneByID({
@@ -363,11 +337,7 @@ module.exports = ({
 
         /**
          * get item with populated sub-documents
-         * @param {Object}  prepared
-         * @param {Object}  prepared.targetID       target item ID
-         * @param {Object}  prepared.activeUser     current user info
-         * @param {string}  prepared.ip             current user ip
-         * @param {boolean}  prepared.root          current user is root
+         * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
         static async getByID({ targetID, activeUser, ip, root = false }) {
@@ -383,11 +353,7 @@ module.exports = ({
 
         /**
          * get activeUser own item with populated sub-documents
-         * @param {Object}  prepared
-         * @param {Object}  prepared.targetID       target item ID
-         * @param {Object}  prepared.activeUser     current user info
-         * @param {string}  prepared.ip             current user ip
-         * @param {boolean}  prepared.root          current user is root
+         * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
         static async getByIDOwn({ targetID, activeUser, ip, root = false }) {
@@ -403,12 +369,7 @@ module.exports = ({
 
         /**
          * get item without populated sub-documents
-         * @param {Object}  prepared
-         * @param {Object}  prepared.targetId       target item _id
-         * @param {Object}  prepared.activeUser     current user info
-         * @param {string}  prepared.ip             current user ip
-         * @param {boolean}  prepared.root          current user is root
-         * @param {boolean}  prepared.shouldOwn     if user should be owner of target
+         * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
         static async _getOneRaw({
@@ -448,11 +409,7 @@ module.exports = ({
 
         /**
          * get item without populated sub-documents
-         * @param {Object}  prepared
-         * @param {Object}  prepared.targetId       target item _id
-         * @param {Object}  prepared.activeUser     current user info
-         * @param {string}  prepared.ip             current user ip
-         * @param {boolean}  prepared.root          current user is root
+         * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
         static async getRaw({ targetId, activeUser, ip, root = false }) {
@@ -468,11 +425,7 @@ module.exports = ({
 
         /**
          * get item without populated sub-documents, if it's owned by activeUser
-         * @param {Object}  prepared
-         * @param {Object}  prepared.targetId       target item _id
-         * @param {Object}  prepared.activeUser     current user info
-         * @param {string}  prepared.ip             current user ip
-         * @param {boolean}  prepared.root          current user is root
+         * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
         static async getOwnRaw({ targetId, activeUser, ip, root = false }) {
@@ -488,11 +441,7 @@ module.exports = ({
 
         /**
          * removes item by id, if activeUser is its owner
-         * @param {Object}  prepared
-         * @param {Object}  prepared.targetId       target item _id
-         * @param {Object}  prepared.activeUser     current user info
-         * @param {string}  prepared.ip             current user ip
-         * @param {boolean}  prepared.root          current user is root
+         * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
         static async _delete({
@@ -562,11 +511,7 @@ module.exports = ({
 
         /**
          * removes item by id
-         * @param {Object}  prepared
-         * @param {Object}  prepared.targetId       target item _id
-         * @param {Object}  prepared.activeUser     current user info
-         * @param {string}  prepared.ip             current user ip
-         * @param {boolean}  prepared.root          current user is root
+         * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
         static async delete({ targetId, activeUser, ip, root = false }) {
@@ -582,11 +527,7 @@ module.exports = ({
 
         /**
          * removes item by id, if activeUser is its owner
-         * @param {Object}  prepared
-         * @param {Object}  prepared.targetId       target item _id
-         * @param {Object}  prepared.activeUser     current user info
-         * @param {string}  prepared.ip             current user ip
-         * @param {boolean}  prepared.root          current user is root
+         * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
         static async deleteOwn({ targetId, activeUser, ip, root = false }) {
@@ -600,6 +541,11 @@ module.exports = ({
             });
         }
 
+        /**
+         *
+         * @param {import('../types').PreparedData}  prepared
+         * @returns {Promise<Array<Object>>}
+         */
         static async _listAll({
             activeUser,
             ip,

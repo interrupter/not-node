@@ -6,7 +6,7 @@ const { objHas } = require("../common");
 /**
  * Get data owner ObjectId
  * @param {Object}             data  Document Object
- * @return {ObjectId|undefined}     owner ObjectId or undefined if field is not found
+ * @return {import('mongoose').Schema.Types.ObjectId|undefined}     owner ObjectId or undefined if field is not found
  */
 function getOwnerId(data, ownerFieldName = CONST.DOCUMENT_OWNER_FIELD_NAME) {
     if (typeof data !== "object") {
@@ -24,7 +24,7 @@ function getOwnerId(data, ownerFieldName = CONST.DOCUMENT_OWNER_FIELD_NAME) {
 /**
  * Check if data is belongs to user
  * @param {Object}   data      object
- * @param {ObjectId} user_id   possible owner
+ * @param {import('mongoose').Schema.Types.ObjectId} user_id   possible owner
  * @return {boolean}           true - belongs, false - not belongs
  **/
 
@@ -34,7 +34,12 @@ function isOwner(
     ownerFieldName = CONST.DOCUMENT_OWNER_FIELD_NAME
 ) {
     const ownerId = getOwnerId(data, ownerFieldName);
-    return COMMON.compareObjectIds(ownerId, user_id);
+    console.log("ownerId", ownerId, typeof ownerId);
+    if (typeof ownerId !== "undefined") {
+        return COMMON.compareObjectIds(ownerId, user_id);
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -57,7 +62,7 @@ function ruleIsWildcard(safeFor) {
  * @param {Object}         field     description of field from schema
  * @param {string}         action    action to check against
  * @param {Array<string>}  roles     actor roles
- * @param {string}         special   special relations of actor and target (@owner, @system)
+ * @param {Array<string>}         special   special relations of actor and target (@owner, @system)
  * @return {boolean}                 true - safe
  **/
 function fieldIsSafe(field, action, roles, special) {
@@ -130,7 +135,7 @@ function getSafeFieldsForRoleAction(schema, action, roles, owner, system) {
  * @param {string}         action    action to check against
  * @param {Object}         data      source of data to extract from
  * @param {Array<string>}  roles     actor roles
- * @param {string|ObjectId}actorId   actor objectId
+ * @param {import('mongoose').Schema.Types.ObjectId} actorId   actor objectId
  * @param {boolean}        system    true if actor is a system procedure
  * @return {Object}                  object containing only data from safe fields
  **/

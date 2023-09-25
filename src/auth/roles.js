@@ -26,8 +26,8 @@ function compareRolesStrict(userRoles, actionRoles) {
 
 /**
  *	Compares two list of roles
- *	@param	{array|string}	userRoles 		roles of user
- *	@param	{array|string}	actionRoles 	roles of action
+ *	@param	{array|string|undefined}	userRoles 		roles of user
+ *	@param	{array|string|undefined}	actionRoles 	roles of action
  *	@param	{boolean}				strict 				if true userRoles should contain all of actionRoles. else atleast one
  *	@return {boolean}	if user roles comply to action roles
  **/

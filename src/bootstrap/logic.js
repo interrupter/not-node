@@ -15,17 +15,18 @@ module.exports = ({
     const config = configInit.readerForModule(MODULE_NAME);
 
     const LogAction = ({ action, by, role, ip, root }, params = {}) => {
-        Log.log({
-            time: new Date(),
-            module: MODULE_NAME,
-            logic: MODEL_NAME,
-            action,
-            root,
-            by,
-            role,
-            ip,
-            params,
-        });
+        Log &&
+            Log.log({
+                time: new Date(),
+                module: MODULE_NAME,
+                logic: MODEL_NAME,
+                action,
+                root,
+                by,
+                role,
+                ip,
+                params,
+            });
     };
 
     return {

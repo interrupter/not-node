@@ -41,16 +41,18 @@ module.exports = class IdentityProviderSession {
      **/
     getPrimaryRole() {
         const roles = this.getRole();
-        for (let role of roles) {
-            if (
-                Array.isArray(
-                    IdentityProviderSession.#getOptions().primaryRoles
-                ) &&
-                IdentityProviderSession.#getOptions().primaryRoles.includes(
-                    role
-                )
-            ) {
-                return role;
+        if (Array.isArray(roles)) {
+            for (let role of roles) {
+                if (
+                    Array.isArray(
+                        IdentityProviderSession.#getOptions().primaryRoles
+                    ) &&
+                    IdentityProviderSession.#getOptions().primaryRoles.includes(
+                        role
+                    )
+                ) {
+                    return role;
+                }
             }
         }
         return CONST.DEFAULT_USER_ROLE_FOR_GUEST;
@@ -58,7 +60,7 @@ module.exports = class IdentityProviderSession {
 
     /**
      *	Returns user role from request object
-     *	@return {Array<string>} user role
+     *	@return {Array<string>|undefined} user role
      **/
     getRole() {
         const req = this.req;
@@ -133,7 +135,7 @@ module.exports = class IdentityProviderSession {
     /**
      *	Set auth data in session, user id and role
      *	@param	{string}	id 		user id
-     *	@param	{string}	role 	user role
+     *	@param	{Array<string>}	role 	user role
      **/
     setAuth(id, role) {
         this.setUserId(id);

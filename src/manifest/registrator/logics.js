@@ -6,7 +6,7 @@ const { tryFile, mapBind } = require("../../common");
 /**
  * List of methods to be binded from notApp to logics
  * @constant
- * @type {string}
+ * @type {Array<string>}
  **/
 const LOGIC_BINDINGS_LIST = [
     "getModel",
@@ -44,7 +44,7 @@ module.exports = class notModuleRegistratorLogics {
      * Searching fields in directory
      * @static
      * @param {Object}     input
-     * @param {notModule}  input.notModule
+     * @param {import('../module')}  input.nModule
      * @param {string}     input.srcDir
      **/
     findAll({ nModule, srcDir }) {
