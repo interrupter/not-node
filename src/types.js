@@ -31,8 +31,7 @@
  * @property   {string|Array<string>}    [role]
  * @property   {boolean}   [safe]
  * @property   {boolean}   [auth]
- * @property   {boolean}   [root]
- * @property   {boolean}   [root]
+ * @property   {boolean}   [user]
  * @property   {Array<string & Array<string>>}  [fields]
  * @property   {Array<string>}                  [return]
  */

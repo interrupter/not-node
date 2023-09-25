@@ -7,21 +7,37 @@ const {
 const { getSafeFieldsForRoleAction } = require("../auth/fields");
 const { DEFAULT_USER_ROLE_FOR_GUEST } = require("../auth/const");
 /**
- * notFilterFilter.run(getApp().getModelSchema(MODEL_NAME), fields);
- * categories:
- * safe
- * unsafe
- * all
- * timestamps
- * _id
- * ownage
+ * notFilterFilter.filter(fields, getApp().getModelSchema(MODEL_NAME), {action});
  *
+ *  usage:
+ * manifest = {
+ *      ...
+ *      actions:{
+ *          ...
+ *          list:{
+ *              rules:[{
+ *                  root: true,
+ *                  fields: notFilterFilter.filter(['@*'], getApp().getModelSchema(MODEL_NAME), {action:read});
+ *              }]
+ *          },
+ *          profile:{
+ *              method: 'get',
+ *              rules:[{
+ *                      auth: true
+ *                      fields: []
+ *                  },{
+ *                      root: true
+ *              }]
+ *          },
+ *      }
+ *      ...
+ * }
  */
 
 const OPERATOR_EXCLUDE = "-";
 const SPECIAL_SET_PREFIX = "@";
-//const FIELDS_SETS = {};
 
+//system special fields sets aka system specials
 const SPECIAL_SET_ALL = "*";
 const SPECIAL_SET_SAFE = "safe";
 const SPECIAL_SET_UNSAFE = "unsafe";
