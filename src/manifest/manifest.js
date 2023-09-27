@@ -111,14 +111,20 @@ class notManifest {
      *
      *  @param {object}   manifest  full raw manifest
      *  @param {boolean}  auth    user auth status
-     *  @param {boolean}  role    user role status
+     *  @param {Array<string>}  role    user role status
      *  @param {boolean}  root    user root status
      *
      *  @return {object}  filtered manifest
      **/
 
     filterManifest(manifest, auth, role, root) {
-        return notManifestFilter.filter(manifest, auth, role, root);
+        return notManifestFilter.filter(
+            manifest,
+            auth,
+            role,
+            root,
+            this.moduleName
+        );
     }
 }
 

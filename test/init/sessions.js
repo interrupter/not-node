@@ -14,9 +14,9 @@ module.exports = ({ expect }) => {
     describe("Sessions", () => {
         describe("getConstructor", () => {
             describe("getConstructor", () => {
-                it("driver mongo", () => {
+                it("driver mongoose", () => {
                     const res = InitSessions.getConstructor({
-                        driver: "mongo",
+                        driver: "mongoose",
                     });
                     expect(res.prototype.constructor.name).to.be.equal(
                         "InitSessionsMongo"
@@ -80,6 +80,18 @@ module.exports = ({ expect }) => {
                     } catch (e) {
                         expect(e).to.be.instanceof(Error);
                     }
+                });
+
+                it("no config", async () => {
+                    const fEmit = createFakeEmit();
+                    const config = {
+                        get() {
+                            return undefined;
+                        },
+                    };
+                    await new InitSessions().run({
+                        config,
+                    });
                 });
             });
 

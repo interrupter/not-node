@@ -26,19 +26,21 @@
  * @typedef    {object}    notRouteRule
  * @property   {string}    [actionName]
  * @property   {string}    [actionPrefix]
+ * @property   {string}    [actionSignature]
  * @property   {boolean}   [root]
  * @property   {boolean}   [admin]
  * @property   {string|Array<string>}    [role]
  * @property   {boolean}   [safe]
  * @property   {boolean}   [auth]
  * @property   {boolean}   [user]
- * @property   {Array<string & Array<string>>}  [fields]
+ * @property   {Array<string | Array<string>>}  [fields]
  * @property   {Array<string>}                  [return]
  */
 
 /**
  * @typedef    {object}                         notActionData
  * @property   {string}                         [method]
+ * @property   {string}                         [actionSignature]
  * @property   {string}                         [postFix]
  * @property   {Array<notRouteRule>}               rules
  * @property   {boolean}                        [ws]

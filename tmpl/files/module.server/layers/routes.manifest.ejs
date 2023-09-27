@@ -1,3 +1,4 @@
+const ACTION_SIGNATURES = require('not-node/src/auth/const').ACTION_SIGNATURES;
 const FIELDS = [
     ["_id", "not-node//_id"],
     ["<%- modelName %>ID", "not-node//ID"],
@@ -24,6 +25,7 @@ module.exports = {
         <% if (Object.hasOwn(actions, 'create')){ %>
         create: {
             method: "put",
+            actionSignature: ACTION_SIGNATURES.CREATE,
             title: "<%- ModuleName %>:form_title_create",
             description: "<%- ModuleName %>:form_description_create",
             rules: [
@@ -45,6 +47,7 @@ module.exports = {
         <% if (Object.hasOwn(actions,'get')){ %>
         get: {
             method: "get",
+            actionSignature: ACTION_SIGNATURES.READ,
             title: "<%- ModuleName %>:form_title_details",
             description: "<%- ModuleName %>:form_description_details",
             rules: [
@@ -79,6 +82,7 @@ module.exports = {
         <% if (Object.hasOwn(actions,'getRaw')){ %>
         getRaw: {
             method: "get",
+            actionSignature: ACTION_SIGNATURES.READ,
             title: "<%- ModuleName %>:form_title_details",
             description: "<%- ModuleName %>:form_description_details",
             rules: [
@@ -125,6 +129,7 @@ module.exports = {
         <% if (Object.hasOwn(actions,'update')){ %>
         update: {
             title: "<%- ModuleName %>:form_title_update",
+            actionSignature: ACTION_SIGNATURES.UPDATE,
             description: "<%- ModuleName %>:form_description_update",
             method: "post",
             rules: [
@@ -145,6 +150,7 @@ module.exports = {
         <% } %>
         <% if (Object.hasOwn(actions,'delete')){ %>
         delete: {
+            actionSignature: ACTION_SIGNATURES.DELETE,
             title: "<%- ModuleName %>:form_title_delete",
             description: "<%- ModuleName %>:form_description_delete",
             method: "delete",
@@ -165,6 +171,7 @@ module.exports = {
         <% if (Object.hasOwn(actions,'listAndCount')){ %>
         listAndCount: {
             method: "get",
+            actionSignature: ACTION_SIGNATURES.READ,
             data: ["pager", "sorter", "filter", "search"],
             rules: [
                 {
@@ -186,6 +193,7 @@ module.exports = {
         <% if (Object.hasOwn(actions,'listAll')){ %>
         listAll: {
             method: "get",
+            actionSignature: ACTION_SIGNATURES.READ,
             data: ["record", "sorter"],
             fields: [
             <%- fields.map((entry) => `"${entry}"`).join(',')  %>,
@@ -209,3 +217,4 @@ module.exports = {
         <% } %>
     },
 };
+

@@ -1,3 +1,10 @@
+const { notFieldsFilter } = require("..");
+const {
+    DEFAULT_USER_ROLE_FOR_GUEST,
+    ACTION_SIGNATURES,
+} = require("../src/auth");
+
+const Schema = require("mongoose").Schema;
 const expect = require("chai").expect,
     notManifestFilter = require("../src/manifest/manifest.filter");
 
@@ -163,7 +170,7 @@ describe("notManifestFilter", function () {
             const result = notManifestFilter.filterRoute(
                 route,
                 false,
-                "user",
+                ["user"],
                 false
             );
             expect(result).to.deep.equal({
@@ -179,7 +186,7 @@ describe("notManifestFilter", function () {
             const result = notManifestFilter.filterRoute(
                 route,
                 false,
-                "user",
+                ["user"],
                 true
             );
             expect(result).to.deep.equal({
@@ -198,7 +205,7 @@ describe("notManifestFilter", function () {
             const result = notManifestFilter.filterRoute(
                 route,
                 true,
-                "user",
+                ["user"],
                 false
             );
             expect(result).to.deep.equal({
@@ -214,7 +221,7 @@ describe("notManifestFilter", function () {
             const result = notManifestFilter.filterRoute(
                 route,
                 true,
-                "manager",
+                ["manager"],
                 false
             );
             expect(result).to.deep.equal({
@@ -347,20 +354,16 @@ describe("notManifestFilter", function () {
                 manAfterFilter = notManifestFilter.filter(
                     man,
                     false,
+                    [],
                     false,
-                    false
+                    ""
                 );
             expect(manAfterFilter).to.deep.equal(filtered.guest);
         });
 
         it("Auth manifest", function () {
             let man = rawRoutesManifest,
-                manAfterFilter = notManifestFilter.filter(
-                    man,
-                    true,
-                    false,
-                    false
-                );
+                manAfterFilter = notManifestFilter.filter(man, true, [], false);
             expect(manAfterFilter).to.deep.equal(filtered.user);
         });
 
@@ -369,7 +372,7 @@ describe("notManifestFilter", function () {
                 manAfterFilter = notManifestFilter.filter(
                     man,
                     true,
-                    "manager",
+                    ["manager"],
                     false
                 );
             expect(manAfterFilter).to.deep.equal(filtered.manager);
@@ -380,7 +383,7 @@ describe("notManifestFilter", function () {
                 manAfterFilter = notManifestFilter.filter(
                     man,
                     false,
-                    "notActivated",
+                    ["notActivated"],
                     false
                 );
             expect(manAfterFilter).to.deep.equal(filtered.notActivated);
@@ -388,13 +391,349 @@ describe("notManifestFilter", function () {
 
         it("Admin manifest", function () {
             let man = rawRoutesManifest,
-                manAfterFilter = notManifestFilter.filter(
-                    man,
-                    false,
-                    false,
-                    true
-                );
+                manAfterFilter = notManifestFilter.filter(man, false, [], true);
             expect(manAfterFilter).to.deep.equal(filtered.admin);
+        });
+    });
+
+    describe("Filter fields with schema and actionSignature", () => {
+        const SCHEMA = () => {
+            return {
+                role: {
+                    type: [String],
+                    required: true,
+                    searchable: true,
+                    default: ["user"],
+                    validate: [],
+                    safe: {
+                        create: ["@system"],
+                        update: ["root", "admin"],
+                        read: ["@owner", "root", "admin"],
+                    },
+                },
+                name: {
+                    type: String,
+                    safe: {
+                        create: ["@system"],
+                        update: ["@system", "@owner", "root", "admin"],
+                        read: ["*"],
+                    },
+                },
+                salt: {
+                    type: String,
+                    required: true,
+                },
+                telephone: {
+                    type: String,
+                    unique: false,
+                    searchable: true,
+                    required: false,
+                    safe: {
+                        create: ["@system"],
+                        update: ["@owner", "root", "admin"],
+                        read: ["@owner", "root", "admin"],
+                    },
+                },
+                username: {
+                    type: String,
+                    unique: true,
+                    searchable: true,
+                    required: true,
+                    safe: {
+                        create: ["@system"],
+                        read: ["*"],
+                    },
+                },
+                confirm: {
+                    type: Schema.Types.Mixed,
+                    required: false,
+                    searchable: true,
+                    safe: {
+                        create: ["@system"],
+                        update: ["@system", "root", "admin"],
+                    },
+                },
+                code: {
+                    type: String,
+                    searchable: true,
+                    required: true,
+                },
+                country: {
+                    type: String,
+                    required: false,
+                    searchable: true,
+                    default: "ru",
+                    safe: {
+                        create: ["@system"],
+                        update: ["@system", "@owner", "root", "admin"],
+                        read: ["*"],
+                    },
+                },
+                email: {
+                    type: String,
+                    unique: true,
+                    searchable: true,
+                    required: true,
+                    safe: {
+                        create: ["@system"],
+                        update: ["@owner", "root", "admin"],
+                        read: ["@owner", "root", "admin"],
+                    },
+                },
+            };
+        };
+
+        const modelName = "User";
+        const moduleName = "User";
+
+        before(() => {
+            notManifestFilter.schemaLoader = SCHEMA;
+        });
+
+        it("filterRouteAction @safe for READ", () => {
+            const actionName = "get";
+            const actionData = {
+                actionSignature: ACTION_SIGNATURES.READ,
+                method: "get",
+                rules: [
+                    {
+                        auth: false,
+                        fields: ["@safe"],
+                    },
+                ],
+            };
+            const auth = false;
+            const root = false;
+            const roles = [DEFAULT_USER_ROLE_FOR_GUEST];
+            const routeMan = {
+                actions: {},
+            };
+            const targetResult = {
+                actions: {
+                    get: {
+                        method: "get",
+                        fields: ["name", "username", "country"],
+                    },
+                },
+            };
+            notManifestFilter.filterRouteAction(
+                actionName,
+                actionData,
+                auth,
+                roles,
+                root,
+                routeMan,
+                modelName,
+                moduleName
+            );
+            expect(routeMan).to.be.deep.equal(targetResult);
+        });
+
+        it("filterRouteAction @* for READ", () => {
+            const actionName = "get";
+            const actionData = {
+                actionSignature: ACTION_SIGNATURES.READ,
+                method: "get",
+                rules: [
+                    {
+                        auth: false,
+                        fields: ["@*"],
+                    },
+                ],
+            };
+            const auth = false;
+            const root = false;
+            const roles = [DEFAULT_USER_ROLE_FOR_GUEST];
+            const routeMan = {
+                actions: {},
+            };
+            const targetResult = {
+                actions: {
+                    get: {
+                        method: "get",
+                        fields: [
+                            "_id",
+                            "userID",
+                            "role",
+                            "name",
+                            "salt",
+                            "telephone",
+                            "username",
+                            "confirm",
+                            "code",
+                            "country",
+                            "email",
+                        ],
+                    },
+                },
+            };
+            notManifestFilter.filterRouteAction(
+                actionName,
+                actionData,
+                auth,
+                roles,
+                root,
+                routeMan,
+                modelName,
+                moduleName
+            );
+            expect(routeMan).to.be.deep.equal(targetResult);
+        });
+
+        it("filterRouteAction @*,-@safe for READ", () => {
+            const actionName = "get";
+            const actionData = {
+                actionSignature: ACTION_SIGNATURES.READ,
+                method: "get",
+                rules: [
+                    {
+                        auth: false,
+                        fields: ["@*", "-@safe"],
+                    },
+                ],
+            };
+            const auth = false;
+            const root = false;
+            const roles = [DEFAULT_USER_ROLE_FOR_GUEST];
+            const routeMan = {
+                actions: {},
+            };
+            const targetResult = {
+                actions: {
+                    get: {
+                        method: "get",
+                        fields: [
+                            "_id",
+                            "userID",
+                            "role",
+                            "salt",
+                            "telephone",
+                            "confirm",
+                            "code",
+                            "email",
+                        ],
+                    },
+                },
+            };
+            notManifestFilter.filterRouteAction(
+                actionName,
+                actionData,
+                auth,
+                roles,
+                root,
+                routeMan,
+                modelName,
+                moduleName
+            );
+            expect(routeMan).to.be.deep.equal(targetResult);
+        });
+
+        it("filterRouteAction @* for UPDATE as guest", () => {
+            const actionName = "update";
+            const actionData = {
+                actionSignature: ACTION_SIGNATURES.UPDATE,
+                method: "post",
+                rules: [
+                    {
+                        role: ["user"],
+                        fields: ["@*"],
+                    },
+                ],
+            };
+            const auth = false;
+            const root = false;
+            const roles = [DEFAULT_USER_ROLE_FOR_GUEST];
+            const routeMan = {
+                actions: {},
+            };
+            const targetResult = {
+                actions: {},
+            };
+            notManifestFilter.filterRouteAction(
+                actionName,
+                actionData,
+                auth,
+                roles,
+                root,
+                routeMan,
+                modelName,
+                moduleName
+            );
+            expect(routeMan).to.be.deep.equal(targetResult);
+        });
+
+        it("filterRouteAction @safe for CREATE as guest", () => {
+            const actionName = "create";
+            const actionData = {
+                actionSignature: ACTION_SIGNATURES.CREATE,
+                method: "put",
+                rules: [
+                    {
+                        role: ["user"],
+                        fields: ["@safe"],
+                    },
+                ],
+            };
+            const auth = false;
+            const root = false;
+            const roles = [DEFAULT_USER_ROLE_FOR_GUEST];
+            const routeMan = {
+                actions: {},
+            };
+            const targetResult = {
+                actions: {},
+            };
+            notManifestFilter.filterRouteAction(
+                actionName,
+                actionData,
+                auth,
+                roles,
+                root,
+                routeMan,
+                modelName,
+                moduleName
+            );
+            expect(routeMan).to.be.deep.equal(targetResult);
+        });
+
+        it("filterRouteAction @listFields for READ", () => {
+            const actionName = "list";
+            notFieldsFilter.addSet("listFields", ["@ID", "@safe"]);
+            const actionData = {
+                actionSignature: ACTION_SIGNATURES.READ,
+                method: "get",
+                rules: [
+                    {
+                        auth: false,
+                        fields: ["@listFields"],
+                    },
+                ],
+            };
+            const auth = false;
+            const root = false;
+            const roles = [DEFAULT_USER_ROLE_FOR_GUEST];
+            const routeMan = {
+                actions: {},
+            };
+            const targetResult = {
+                actions: {
+                    list: {
+                        method: "get",
+                        fields: ["userID", "name", "username", "country"],
+                    },
+                },
+            };
+            notManifestFilter.filterRouteAction(
+                actionName,
+                actionData,
+                auth,
+                roles,
+                root,
+                routeMan,
+                modelName,
+                moduleName
+            );
+            expect(routeMan).to.be.deep.equal(targetResult);
         });
     });
 });

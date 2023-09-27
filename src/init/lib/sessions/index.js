@@ -30,7 +30,7 @@ module.exports = class InitSessions {
                 emit,
             });
         } else {
-            log("no session options");
+            log && log.log("no session options");
         }
     }
 };

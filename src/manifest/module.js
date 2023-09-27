@@ -18,7 +18,7 @@ const DEFAULT_WS_ROUTE_ACTION_SPLITTER = "//";
 /**
  * List of methods to be binded from notApp to notModule
  * @constant
- * @type {string}
+ * @type {Array<string>}
  */
 const MODULE_BINDINGS_LIST = ["getModel", "getModelSchema", "getModelFile"];
 /**
@@ -62,12 +62,12 @@ class notModule {
         if (this.path) {
             this.initFromPath(this.path);
         } else if (this.module) {
-            this.initFromModule(this.module);
+            this.initFromModule();
         } else {
             return false;
         }
         if (this.module === null || typeof this.module === "undefined") {
-            log.error(`Module ${this.path} not loaded`);
+            log && log.error(`Module ${this.path} not loaded`);
         } else if (this.appIsSet()) {
             mapBind(this.notApp, this.module, MODULE_BINDINGS_LIST);
         }
@@ -83,7 +83,7 @@ class notModule {
             }
         } catch (e) {
             this.faulty = true;
-            log.error(e);
+            log && log.error(e);
         }
     }
 
@@ -92,7 +92,7 @@ class notModule {
             this.registerContent();
         } catch (e) {
             this.faulty = true;
-            log.error(e);
+            log && log.error(e);
         }
     }
 
@@ -107,11 +107,14 @@ class notModule {
     getManifest(
         { auth, role, root } = {
             auth: false,
-            role: Auth.DEFAULT_USER_ROLE_FOR_GUEST,
+            role: [Auth.DEFAULT_USER_ROLE_FOR_GUEST],
             root: false,
         }
     ) {
-        return this.manifest.filterManifest(this.manifests, auth, role, root);
+        return (
+            this.manifest &&
+            this.manifest.filterManifest(this.manifests, auth, role, root)
+        );
     }
 
     getRouteManifest(name) {
@@ -172,7 +175,7 @@ class notModule {
         if (this.manifests && expressApp) {
             notModuleInitializator.exec({ nModule: this });
             this.initManifest(expressApp, moduleName);
-            this.manifest.registerRoutes(this.manifests);
+            this.manifest && this.manifest.registerRoutes(this.manifests);
         }
     }
 
@@ -182,9 +185,10 @@ class notModule {
 
     async exec(methodName, params) {
         if (!this.module) {
-            log.error(
-                `Cant exec ${methodName} in module ${this.path}, module not loaded`
-            );
+            log &&
+                log.error(
+                    `Cant exec ${methodName} in module ${this.path}, module not loaded`
+                );
             return false;
         }
         await executeObjectFunction(this.module, methodName, [
@@ -369,11 +373,12 @@ class notModule {
         const status = this.getStatus();
         Object.keys(status).forEach((contentType) => {
             if (status[contentType].count) {
-                log.log(
-                    `${this.getName()} ${contentType}(${
-                        status[contentType].count
-                    }): ${status[contentType].list.join(", ")}`
-                );
+                log &&
+                    log.log(
+                        `${this.getName()} ${contentType}(${
+                            status[contentType].count
+                        }): ${status[contentType].list.join(", ")}`
+                    );
             }
         });
     }

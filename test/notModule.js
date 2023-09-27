@@ -89,6 +89,46 @@ describe("notModule", function () {
         });
     });
 
+    describe("getRouteManifest", () => {
+        it("getter", () => {
+            const ctx = {
+                manifests: {
+                    some: "fest",
+                },
+            };
+            const res = notModule.prototype.getRouteManifest.call(ctx, "some");
+            expect(res).to.be.equal("fest");
+        });
+    });
+
+    describe("getRoutesManifests", () => {
+        it("getter", () => {
+            const ctx = {
+                manifests: {
+                    some: "fest",
+                },
+            };
+            const res = notModule.prototype.getRoutesManifests.call(ctx);
+            expect(res).to.be.deep.equal({
+                some: "fest",
+            });
+        });
+    });
+
+    describe("getModels", () => {
+        it("getter", () => {
+            const ctx = {
+                models: {
+                    some: "fest",
+                },
+            };
+            const res = notModule.prototype.getModels.call(ctx);
+            expect(res).to.be.deep.equal({
+                some: "fest",
+            });
+        });
+    });
+
     describe("getManifest", function () {
         it("Get module manifest without params", function (done) {
             const ctx = {
@@ -101,7 +141,7 @@ describe("notModule", function () {
                             some: "fest",
                         });
                         expect(auth).to.be.false;
-                        expect(role).to.be.equal("guest");
+                        expect(role).to.be.deep.equal(["guest"]);
                         expect(root).to.be.false;
                         done();
                     },

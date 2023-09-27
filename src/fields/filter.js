@@ -54,6 +54,8 @@ const SPECIAL_SET_ID_UUID = "id";
  * @property    {Array<string>} [roles] roles set
  * @property    {boolean}   [owner]     owner initiated action
  * @property    {boolean}   [system]    system initiated action
+ * @property    {boolean}   [root]      root initiated action
+ * @property    {boolean}   [auth]      authenticated user initiated action
  */
 
 class notFieldsFilter {
@@ -108,7 +110,7 @@ class notFieldsFilter {
             [SPECIAL_SET_SAFE]: (
                 schema,
                 {
-                    action,
+                    action = "",
                     roles = [DEFAULT_USER_ROLE_FOR_GUEST],
                     owner = false,
                     system = false,
@@ -314,7 +316,7 @@ class notFieldsFilter {
      * @return {Array<string>}
      * @memberof notFieldsFilter
      */
-    static filter(fieldsSet, schema, mods) {
+    static filter(fieldsSet, schema = {}, mods = { action: undefined }) {
         const fields = [...fieldsSet];
         this.specialsToPlain(fields, schema, mods);
         return this.removeExcludedFields(fields);
