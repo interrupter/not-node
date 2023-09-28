@@ -25,7 +25,7 @@ module.exports.initFileSchemaFromFields = ({
             type,
             moduleName
         );
-        notPath.set(to, mod, schema, undefined);
+        notPath.set(to, mod, schema);
     }
 };
 
