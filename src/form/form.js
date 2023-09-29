@@ -118,19 +118,24 @@ class Form {
      * @return {Promise<import('../types').PreparedData>}        forma data
      **/
     async extract(req) {
-        return {
-            ...this.extractRequestEnvs(req),
-            data: this.extractByInstructionsFromRouteActionFields(req),
-        };
+        return this.afterExtract(
+            {
+                ...this.extractRequestEnvs(req),
+                data: this.extractByInstructionsFromRouteActionFields(req),
+            },
+            req
+        );
     }
 
     /**
      * Chance to edit prepared data
      *
-     * @param {import('../types').PreparedData} value
+     * @param {import('../types').PreparedData}             value
+     * @param {import('../types').notNodeExpressRequest}    [req]
      * @return {Promise<import('../types').PreparedData>}
      */
-    async afterExtract(value) {
+    //eslint-disable-next-line no-unused-vars
+    async afterExtract(value, req) {
         return value;
     }
 

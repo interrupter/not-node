@@ -20,10 +20,13 @@ module.exports = ({ MODULE_NAME, MODEL_NAME, actionName }) => {
 
         async extract(req) {
             const envs = this.extractRequestEnvs(req);
-            return this.afterExtract({
-                ...envs,
-                targetId: envs.modelNameID,
-            });
+            return this.afterExtract(
+                {
+                    ...envs,
+                    targetId: envs.modelNameID,
+                },
+                req
+            );
         }
     };
 };

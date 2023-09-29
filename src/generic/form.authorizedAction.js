@@ -18,9 +18,12 @@ module.exports = ({ MODULE_NAME, MODEL_NAME, actionName }) => {
         }
 
         async extract(req) {
-            return this.afterExtract({
-                ...this.extractRequestEnvs(req),
-            });
+            return this.afterExtract(
+                {
+                    ...this.extractRequestEnvs(req),
+                },
+                req
+            );
         }
     };
 };
