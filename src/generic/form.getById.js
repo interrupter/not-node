@@ -16,7 +16,7 @@ module.exports = ({ MODULE_NAME, MODEL_NAME, actionName }) => {
     )}Form`;
     return class extends Form {
         constructor({ app }) {
-            super({ FIELDS, FORM_NAME, app });
+            super({ MODULE_NAME, MODEL_NAME, FIELDS, FORM_NAME, app });
         }
 
         async extract(req) {
