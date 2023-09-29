@@ -1,7 +1,15 @@
 const Provider = require("../../../src/identity/providers/session");
-const { DEFAULT_USER_ROLE_FOR_GUEST } = require("../../../src/auth/const");
+const {
+    DEFAULT_USER_ROLE_FOR_GUEST,
+    DEFAULT_USER_ROLE_FOR_ADMIN,
+    DEFAULT_USER_ROLE_FOR_ROOT,
+} = require("../../../src/auth/const");
 const mongoose = require("mongoose");
-
+Provider.setPrimaryRoles([
+    DEFAULT_USER_ROLE_FOR_ROOT,
+    DEFAULT_USER_ROLE_FOR_ADMIN,
+    DEFAULT_USER_ROLE_FOR_GUEST,
+]);
 const SESSION_NOT_EXISTS = "session not exists";
 
 module.exports = ({ expect }) => {
@@ -26,17 +34,17 @@ module.exports = ({ expect }) => {
         });
 
         describe("isRoot", function () {
-            it("check if user admin - true", function () {
+            it("check if user root - true", function () {
                 var t = {
                     session: {
                         user: mongoose.Types.ObjectId(),
-                        role: "root",
+                        role: ["root"],
                     },
                 };
-                var res = new Provider(t).isRoot();
+                const res = new Provider(t).isRoot();
                 expect(res).to.eql(true);
             });
-            it("check if user admin - false", function () {
+            it("check if user root - false", function () {
                 var t = {
                     session: {
                         user: mongoose.Types.ObjectId(),
@@ -53,12 +61,12 @@ module.exports = ({ expect }) => {
                 var t = {
                     session: {
                         user: mongoose.Types.ObjectId(),
-                        role: "root",
+                        role: ["root"],
                         save() {},
                     },
                 };
-                var res = new Provider(t).getRole();
-                expect(res).to.eql("root");
+                const res = new Provider(t).getRole();
+                expect(res).to.be.deep.eql(["root"]);
             });
             it("get role - undefined", function () {
                 var t = {
@@ -77,7 +85,7 @@ module.exports = ({ expect }) => {
                 var t = {
                     session: {
                         user: mongoose.Types.ObjectId(),
-                        role: "user",
+                        role: ["user"],
                         save() {},
                     },
                 };
@@ -96,7 +104,7 @@ module.exports = ({ expect }) => {
             it("session exist, set _id", function () {
                 const t = {
                     session: {
-                        role: "user",
+                        role: ["user"],
                         save() {},
                     },
                 };
@@ -118,7 +126,7 @@ module.exports = ({ expect }) => {
                 const t = {
                     session: {
                         user: mongoose.Types.ObjectId(),
-                        role: "user",
+                        role: ["user"],
                         save() {},
                     },
                 };
@@ -138,7 +146,7 @@ module.exports = ({ expect }) => {
                 const t = {
                     session: {
                         id: mongoose.Types.ObjectId(),
-                        role: "user",
+                        role: ["user"],
                         save() {},
                     },
                 };
@@ -199,7 +207,7 @@ module.exports = ({ expect }) => {
                 const t = {
                     session: {
                         user: id,
-                        role: "admin",
+                        role: ["admin"],
                         save() {},
                         destroy() {
                             destroyed = true;
@@ -217,7 +225,7 @@ module.exports = ({ expect }) => {
                 const t = {
                     session: {
                         user: id,
-                        role: "admin",
+                        role: ["admin"],
                         save() {},
                     },
                 };

@@ -1,6 +1,7 @@
 const Form = require("../form/form");
 const { firstLetterToUpper } = require("../common");
 const notFilter = require("not-filter");
+const notAppIdentity = require("../identity");
 
 const FIELDS = [
     ["query", `not-filter//_filterQuery`],
@@ -36,7 +37,8 @@ const FactoryFormListAndCount = ({ MODULE_NAME, MODEL_NAME, actionName }) => {
          */
         async extract(req) {
             const envs = this.extractRequestEnvs(req);
-            if (!req.user.isRoot() && !req.user.isAdmin()) {
+            const user = notAppIdentity.extractAuthData(req);
+            if (!user.root && !user.admin) {
                 envs.query.filter = notFilter.filter.modifyRules(
                     envs.query.filter,
                     {

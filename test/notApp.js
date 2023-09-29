@@ -26,6 +26,7 @@ describe("noApp", function () {
                 static of() {
                     return class {
                         static isRoot() {}
+                        static isAdmin() {}
                         static isUser() {}
                         static getRole() {}
                         static getPrimaryRole() {}

@@ -239,7 +239,22 @@ module.exports = class IdentityProviderToken {
         return (
             this.isUser() &&
             ROLES.compareRoles(
-                this.getRole(),
+                this.getPrimaryRole(),
+                CONST.DEFAULT_USER_ROLE_FOR_ROOT
+            )
+        );
+    }
+
+    /**
+     * Admin is for system content management
+     *
+     * @return {boolean}
+     */
+    isAdmin() {
+        return (
+            this.isUser() &&
+            ROLES.compareRoles(
+                this.getPrimaryRole(),
                 CONST.DEFAULT_USER_ROLE_FOR_ADMIN
             )
         );

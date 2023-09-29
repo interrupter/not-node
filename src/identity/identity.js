@@ -1,3 +1,8 @@
+const {
+    DEFAULT_USER_ROLE_FOR_ROOT,
+    DEFAULT_USER_ROLE_FOR_ADMIN,
+    DEFAULT_USER_ROLE_FOR_GUEST,
+} = require("../auth/const");
 const { copyObj, objHas } = require("../common");
 const IdentityProviderSession = require("./providers/session");
 const IdentityProviderToken = require("./providers/token");
@@ -17,7 +22,11 @@ class Identity {
         token: IdentityProviderToken,
     };
 
-    static #primaryRoles = [];
+    static #primaryRoles = [
+        DEFAULT_USER_ROLE_FOR_ROOT,
+        DEFAULT_USER_ROLE_FOR_ADMIN,
+        DEFAULT_USER_ROLE_FOR_GUEST,
+    ];
     static #secondaryRoles = [];
 
     static setPrimaryRoles(list = []) {

@@ -67,6 +67,7 @@ module.exports = ({ Auth, expect }) => {
                 let result = Auth.extractAuthData(req);
                 expect(result).to.deep.equal({
                     root: false,
+                    admin: false,
                     auth: false,
                     role: [Auth.DEFAULT_USER_ROLE_FOR_GUEST],
                     primaryRole: Auth.DEFAULT_USER_ROLE_FOR_GUEST,
@@ -108,12 +109,12 @@ module.exports = ({ Auth, expect }) => {
         });
 
         describe("checkRoot", function () {
-            it("check if admin exists and continues", function () {
+            it("check if root exists and continues", function () {
                 const req = {
                         get() {},
                         session: {
                             user: true,
-                            role: [Auth.DEFAULT_USER_ROLE_FOR_ADMIN],
+                            role: [Auth.DEFAULT_USER_ROLE_FOR_ROOT],
                         },
                     },
                     next = function (val) {
@@ -123,7 +124,7 @@ module.exports = ({ Auth, expect }) => {
                 expect(result).to.deep.equal();
             });
 
-            it("check if admin exists and throw exception", function () {
+            it("check if root exists and throw exception", function () {
                 const req = {
                         session: {
                             user: true,
@@ -144,7 +145,7 @@ module.exports = ({ Auth, expect }) => {
                 const req = {
                         session: {
                             user: true,
-                            role: [Auth.DEFAULT_USER_ROLE_FOR_ADMIN],
+                            role: [Auth.DEFAULT_USER_ROLE_FOR_ROOT],
                         },
                         get() {},
                     },

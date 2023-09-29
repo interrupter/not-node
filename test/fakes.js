@@ -13,6 +13,7 @@ module.exports = {
     fakeIdentity: (
         id = {
             root: false,
+            admin: false,
             auth: false,
             role: [DEFAULT_USER_ROLE_FOR_GUEST],
             primaryRole: DEFAULT_USER_ROLE_FOR_GUEST,
@@ -26,6 +27,9 @@ module.exports = {
                 return class {
                     static isRoot() {
                         return id.root;
+                    }
+                    static isAdmin() {
+                        return id.admin;
                     }
                     static isUser() {
                         return id.auth;

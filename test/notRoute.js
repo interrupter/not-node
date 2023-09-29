@@ -1,4 +1,4 @@
-const { DEFAULT_USER_ROLE_FOR_ADMIN } = require("../src/auth");
+const { DEFAULT_USER_ROLE_FOR_ROOT } = require("../src/auth");
 const notAppIdentity = require("../src/identity");
 
 const HttpError = require("../src/error").Http,
@@ -146,8 +146,8 @@ describe("notRoute", function () {
             notAppIdentity.identity = require("./fakes").fakeIdentity({
                 auth: true,
                 root: true,
-                primaryRole: DEFAULT_USER_ROLE_FOR_ADMIN,
-                role: [DEFAULT_USER_ROLE_FOR_ADMIN],
+                primaryRole: DEFAULT_USER_ROLE_FOR_ROOT,
+                role: [DEFAULT_USER_ROLE_FOR_ROOT],
             });
             let req = {},
                 actionData = {
@@ -278,8 +278,8 @@ describe("notRoute", function () {
             notAppIdentity.identity = require("./fakes").fakeIdentity({
                 auth: true,
                 root: true,
-                primaryRole: DEFAULT_USER_ROLE_FOR_ADMIN,
-                role: [DEFAULT_USER_ROLE_FOR_ADMIN],
+                primaryRole: DEFAULT_USER_ROLE_FOR_ROOT,
+                role: [DEFAULT_USER_ROLE_FOR_ROOT],
             });
             let req = {
                     get() {},
@@ -436,8 +436,8 @@ describe("notRoute", function () {
             notAppIdentity.identity = require("./fakes").fakeIdentity({
                 auth: true,
                 root: true,
-                primaryRole: DEFAULT_USER_ROLE_FOR_ADMIN,
-                role: [DEFAULT_USER_ROLE_FOR_ADMIN],
+                primaryRole: DEFAULT_USER_ROLE_FOR_ROOT,
+                role: [DEFAULT_USER_ROLE_FOR_ROOT],
             });
             let req = {
                     get() {},
@@ -494,8 +494,8 @@ describe("notRoute", function () {
             notAppIdentity.identity = require("./fakes").fakeIdentity({
                 auth: true,
                 root: true,
-                primaryRole: DEFAULT_USER_ROLE_FOR_ADMIN,
-                role: [DEFAULT_USER_ROLE_FOR_ADMIN],
+                primaryRole: DEFAULT_USER_ROLE_FOR_ROOT,
+                role: [DEFAULT_USER_ROLE_FOR_ROOT],
             });
             let req = {
                     get() {},
@@ -553,8 +553,8 @@ describe("notRoute", function () {
             notAppIdentity.identity = require("./fakes").fakeIdentity({
                 auth: true,
                 root: true,
-                primaryRole: DEFAULT_USER_ROLE_FOR_ADMIN,
-                role: [DEFAULT_USER_ROLE_FOR_ADMIN],
+                primaryRole: DEFAULT_USER_ROLE_FOR_ROOT,
+                role: [DEFAULT_USER_ROLE_FOR_ROOT],
             });
             let req = {
                     get() {},

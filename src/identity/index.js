@@ -21,6 +21,7 @@ module.exports = class notAppIdentity {
         const identity = this.#identity.of(req);
         return {
             root: identity.isRoot(),
+            admin: identity.isAdmin(),
             auth: identity.isUser(),
             role: identity.getRole(),
             primaryRole: identity.getPrimaryRole(),
