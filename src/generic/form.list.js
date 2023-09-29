@@ -10,7 +10,7 @@ const FIELDS = [
 ];
 
 /**
- * Generates generic form to get perform list and count action
+ * Generates generic form to get perform list action
  *
  * @param {object}  params
  * @param {string}  params.MODULE_NAME  //module name
@@ -18,7 +18,7 @@ const FIELDS = [
  * @param {string}  params.actionName   //action name
  * @return {Form}   form class definition
  */
-const FactoryFormListAndCount = ({ MODULE_NAME, MODEL_NAME, actionName }) => {
+const FactoryFormList = ({ MODULE_NAME, MODEL_NAME, actionName }) => {
     const FORM_NAME = `${MODULE_NAME}:${MODEL_NAME}:${firstLetterToUpper(
         actionName
     )}Form`;
@@ -44,6 +44,7 @@ const FactoryFormListAndCount = ({ MODULE_NAME, MODEL_NAME, actionName }) => {
                     }
                 );
             }
+
             return this.afterExtract({
                 ...envs,
             });
@@ -51,4 +52,4 @@ const FactoryFormListAndCount = ({ MODULE_NAME, MODEL_NAME, actionName }) => {
     };
 };
 
-module.exports = FactoryFormListAndCount;
+module.exports = FactoryFormList;

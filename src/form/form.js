@@ -124,6 +124,16 @@ class Form {
         };
     }
 
+    /**
+     * Chance to edit prepared data
+     *
+     * @param {import('../types').PreparedData} value
+     * @return {Promise<import('../types').PreparedData>}
+     */
+    async afterExtract(value) {
+        return value;
+    }
+
     #addEnvExtractors(extractors = {}) {
         if (extractors) {
             this.#ENV_EXTRACTORS = { ...this.#ENV_EXTRACTORS, ...extractors };
