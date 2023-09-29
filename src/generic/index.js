@@ -4,8 +4,10 @@ module.exports.GenericGetByIdForm = require("./form.getById.js");
 module.exports.GenericGetByIDForm = require("./form.getByID.js");
 module.exports.GenericAuthorizedActionForm = require("./form.authorizedAction.js");
 module.exports.GenericListAndCountForm = require("./form.listAndCount.js");
+module.exports.GenericListForm = require("./form.list.js");
 
 const FORMS = {};
+
 module.exports.setCustomGenericForm = (name, factory) => {
     FORMS[name] = factory;
 };
