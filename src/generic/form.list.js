@@ -42,7 +42,7 @@ const FactoryFormList = ({ MODULE_NAME, MODEL_NAME, actionName }) => {
                 envs.query.filter = notFilter.filter.modifyRules(
                     envs.query.filter,
                     {
-                        owner: req.user._id,
+                        owner: user.uid,
                     }
                 );
             }

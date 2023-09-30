@@ -15,7 +15,7 @@ module.exports = class notAppIdentity {
     /**
      *  Collects various authentification and authorization data from request object
      *  @param {import('../types').notNodeExpressRequest}  req       ExpressRequest
-     *  @return {object}  various authentification data for actor { root:boolean, auth: boolean, role: [string], uid: ObjectId, sid: string, ip:string }
+     *  @return {import('../types').notAppIdentityData}  various authentification data for actor { root:boolean, auth: boolean, role: [string], uid: ObjectId, sid: string, ip:string }
      */
     static extractAuthData(req) {
         const identity = this.#identity.of(req);

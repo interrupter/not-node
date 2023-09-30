@@ -80,4 +80,17 @@
  * @typedef     {import('express').Request & notNodeExpressRequestProperties}    notNodeExpressRequest
  */
 
+/**
+ *
+ * @typedef     {object}        notAppIdentityData
+ * @property    {boolean}       root        //system configuration administrator
+ * @property    {boolean}       admin       //system content administrator
+ * @property    {boolean}       auth        //authenticated user
+ * @property    {Array<string>} role        //list of roles, exactly one should be primary role
+ * @property    {string}        primaryRole //primary role
+ * @property    {string}        uid         //user identificator
+ * @property    {string}        sid         //user session identificator
+ * @property    {string}        ip          //request source ip
+ */
+
 module.exports = {};
