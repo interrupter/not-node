@@ -38,7 +38,7 @@ const FactoryFormList = ({ MODULE_NAME, MODEL_NAME, actionName }) => {
         async extract(req) {
             const envs = this.extractRequestEnvs(req);
             const user = notAppIdentity.extractAuthData(req);
-            if (!user.root && !user.admin) {
+            if (user.auth && !user.root && !user.admin) {
                 envs.query.filter = notFilter.filter.modifyRules(
                     envs.query.filter,
                     {
