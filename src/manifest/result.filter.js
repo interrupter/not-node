@@ -71,11 +71,22 @@ module.exports = class notManifestRouteResultFilter {
         if (!filteringTarget) {
             return;
         }
-        this.filterByRule(
-            filteringTarget,
-            filteringRule,
-            this.getFilteringStrictMode(notRouteData)
-        );
+        if (Array.isArray(filteringTarget)) {
+            filteringTarget.forEach((filteringTargetItem) => {
+                this.filterByRule(
+                    filteringTargetItem,
+                    filteringRule,
+                    this.getFilteringStrictMode(notRouteData)
+                );
+            });
+        } else {
+            this.filterByRule(
+                filteringTarget,
+                filteringRule,
+                this.getFilteringStrictMode(notRouteData)
+            );
+        }
+
         return result;
     }
 
@@ -104,7 +115,7 @@ module.exports = class notManifestRouteResultFilter {
      * if pathToProperty targets array in target, each item of array will be filtered by
      * @param {object} target
      * @param {object} rule         map of properties.
-     * @param {boolean} strict      filtering mode
+     * @param {boolean} [strict = DEFAULT_STRICT_MODE]      filtering mode
      * example:
      * {
      *      'user': ['username', 'id', 'email'], //filtering properties of object target.user
@@ -126,7 +137,7 @@ module.exports = class notManifestRouteResultFilter {
     static filterByMapRule(target, rule, strict = DEFAULT_STRICT_MODE) {
         //to form ['id', 'user.username', 'files']
         const filteringArray = Object.keys(rule);
-        //filtering direct chilren if in strict mode
+        //filtering direct children if in strict mode
         if (strict) {
             this.filterStrict(target, filteringArray);
         }
@@ -212,7 +223,7 @@ module.exports = class notManifestRouteResultFilter {
      * @returns {string}  path of sub object in notPath notation
      */
     static getFilteringTargetPath(notRouteData) {
-        let path = notPath.PATH_START_OBJECT;
+        let path = `${notPath.PATH_START_OBJECT}`;
         if (notRouteData) {
             if (objHas(notRouteData.rule, PROP_NAME_RETURN_ROOT)) {
                 path += notRouteData.rule[PROP_NAME_RETURN_ROOT];

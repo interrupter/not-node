@@ -35,6 +35,23 @@ describe("notManifestRouteResultFilter", function () {
             notManifestRouteResultFilter.filter(notRouteData, reqRes);
             expect(reqRes).to.be.deep.equal({ some: "data" });
         });
+
+        it("array of objects", function () {
+            const reqRes = [
+                { id: 1, _id: 2 },
+                { id: 11, _id: 12 },
+                { id: 21, _id: 22 },
+            ];
+            const notRouteData = {
+                rule: { return: ["id"] },
+            };
+            notManifestRouteResultFilter.filter(notRouteData, reqRes);
+            expect(reqRes).to.be.deep.equal([
+                { id: 1 },
+                { id: 11 },
+                { id: 21 },
+            ]);
+        });
     });
 
     describe("filterByRule", function () {

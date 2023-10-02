@@ -81,9 +81,9 @@ function roleRequireAuthState(requiredAuth, userAuth) {
  * @return {boolean}
  */
 function compareAuthStatus(rule, auth) {
-    if (objHas(rule, "auth")) {
+    if (objHas(rule, "auth") && typeof rule.auth !== "undefined") {
         return roleRequireAuthState(rule.auth, auth);
-    } else if (objHas(rule, "user")) {
+    } else if (objHas(rule, "user") && typeof rule.user !== "undefined") {
         return roleRequireAuthState(rule.user, auth);
     } else {
         return true;
@@ -94,7 +94,7 @@ function compareAuthStatus(rule, auth) {
  *	Check rule against presented credentials
  *	@param	{import('../types').notRouteRule}		        rule	        action rule
  *	@param  {boolean}		                                auth	        user state of auth
- *	@param  {string|Array<string>}	                                role	user state of role
+ *	@param  {Array<string>}	                        role	        user state of role
  *	@param  {boolean}		                                root            user state of root
  *	@return {boolean}		                                                pass or not
  */
