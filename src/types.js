@@ -9,6 +9,7 @@
 
 /**
  * @typedef    {Object}    PreparedData
+ * @property    {notAppIdentityData}    [identity]  user identity information
  * @property   {Object}    [data]
  * @property   {string}     [action]
  * @property   {Query}     [query]
