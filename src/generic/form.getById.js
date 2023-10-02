@@ -8,6 +8,7 @@ const FIELDS = [
     ["activeUserId", { required: true }, "not-node//objectId"],
     ["activeUser", "not-node//requiredObject"],
     ["ip", "not-node//ip"],
+    ["identity", "not-node//requiredObject"],
 ];
 
 module.exports = ({ MODULE_NAME, MODEL_NAME, actionName }) => {
