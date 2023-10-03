@@ -1,5 +1,13 @@
+const { HttpExceptionForbidden } = require("../exceptions/http");
+
 module.exports = ({ getLogic, before, after }) => {
     class notGenericRoute {
+        static restrictRootAccess = false;
+        static exceptionOnRootAccess = HttpExceptionForbidden;
+        static exceptionParamsPacker = (prepared) => {
+            return [{ params: prepared }];
+        };
+
         static before() {
             return before(...arguments);
         }
@@ -9,6 +17,11 @@ module.exports = ({ getLogic, before, after }) => {
         }
 
         static async _create(req, res, next, prepared) {
+            if (this.restrictRootAccess) {
+                throw new this.exceptionOnRootAccess(
+                    ...this.exceptionParamsPacker(prepared)
+                );
+            }
             prepared.root = true;
             return await getLogic().create(prepared);
         }
@@ -18,6 +31,11 @@ module.exports = ({ getLogic, before, after }) => {
         }
 
         static async _get(req, res, next, prepared) {
+            if (this.restrictRootAccess) {
+                throw new this.exceptionOnRootAccess(
+                    ...this.exceptionParamsPacker(prepared)
+                );
+            }
             prepared.root = true;
             return await getLogic().get(prepared);
         }
@@ -27,6 +45,11 @@ module.exports = ({ getLogic, before, after }) => {
         }
 
         static async _getByID(req, res, next, prepared) {
+            if (this.restrictRootAccess) {
+                throw new this.exceptionOnRootAccess(
+                    ...this.exceptionParamsPacker(prepared)
+                );
+            }
             prepared.root = true;
             return await getLogic().getByID(prepared);
         }
@@ -36,6 +59,11 @@ module.exports = ({ getLogic, before, after }) => {
         }
 
         static async _getRaw(req, res, next, prepared) {
+            if (this.restrictRootAccess) {
+                throw new this.exceptionOnRootAccess(
+                    ...this.exceptionParamsPacker(prepared)
+                );
+            }
             prepared.root = true;
             return await getLogic().getRaw(prepared);
         }
@@ -45,6 +73,11 @@ module.exports = ({ getLogic, before, after }) => {
         }
 
         static async _update(req, res, next, prepared) {
+            if (this.restrictRootAccess) {
+                throw new this.exceptionOnRootAccess(
+                    ...this.exceptionParamsPacker(prepared)
+                );
+            }
             prepared.root = true;
             return await getLogic().update(prepared);
         }
@@ -54,6 +87,11 @@ module.exports = ({ getLogic, before, after }) => {
         }
 
         static async _listAll(req, res, next, prepared) {
+            if (this.restrictRootAccess) {
+                throw new this.exceptionOnRootAccess(
+                    ...this.exceptionParamsPacker(prepared)
+                );
+            }
             prepared.root = true;
             return await getLogic().listAll(prepared);
         }
@@ -63,6 +101,11 @@ module.exports = ({ getLogic, before, after }) => {
         }
 
         static async _listAndCount(req, res, next, prepared) {
+            if (this.restrictRootAccess) {
+                throw new this.exceptionOnRootAccess(
+                    ...this.exceptionParamsPacker(prepared)
+                );
+            }
             prepared.root = true;
             return await getLogic().listAndCount(prepared);
         }
@@ -72,6 +115,11 @@ module.exports = ({ getLogic, before, after }) => {
         }
 
         static async _list(req, res, next, prepared) {
+            if (this.restrictRootAccess) {
+                throw new this.exceptionOnRootAccess(
+                    ...this.exceptionParamsPacker(prepared)
+                );
+            }
             prepared.root = true;
             return await getLogic().list(prepared);
         }
@@ -81,6 +129,11 @@ module.exports = ({ getLogic, before, after }) => {
         }
 
         static async _count(req, res, next, prepared) {
+            if (this.restrictRootAccess) {
+                throw new this.exceptionOnRootAccess(
+                    ...this.exceptionParamsPacker(prepared)
+                );
+            }
             prepared.root = true;
             return await getLogic().count(prepared);
         }
@@ -90,6 +143,11 @@ module.exports = ({ getLogic, before, after }) => {
         }
 
         static async _delete(req, res, next, prepared) {
+            if (this.restrictRootAccess) {
+                throw new this.exceptionOnRootAccess(
+                    ...this.exceptionParamsPacker(prepared)
+                );
+            }
             prepared.root = true;
             return await getLogic().delete(prepared);
         }
