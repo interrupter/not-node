@@ -4,6 +4,7 @@ const {
 } = require("../../src/exceptions/http");
 
 const notAppIdentity = require("../../src/identity/index");
+const IdentityProviderSession = require("../../src/identity/providers/session");
 
 module.exports = ({ Auth, expect }) => {
     describe("Routes", () => {
@@ -71,6 +72,7 @@ module.exports = ({ Auth, expect }) => {
                     auth: false,
                     role: [Auth.DEFAULT_USER_ROLE_FOR_GUEST],
                     primaryRole: Auth.DEFAULT_USER_ROLE_FOR_GUEST,
+                    provider: IdentityProviderSession.name,
                     uid: null,
                     sid: undefined,
                     ip: "127.0.0.1",

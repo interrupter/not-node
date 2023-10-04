@@ -28,6 +28,7 @@ module.exports = class notAppIdentity {
             uid: identity.getUserId(),
             sid: identity.getSessionId(),
             ip: getIP(req),
+            provider: identity.constructor.name,
         };
     }
 

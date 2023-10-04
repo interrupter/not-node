@@ -92,6 +92,7 @@
  * @property    {string}        uid         //user identificator
  * @property    {string}        sid         //user session identificator
  * @property    {string}        ip          //request source ip
+ * @property    {string}        provider    //provider class name
  */
 
 module.exports = {};
