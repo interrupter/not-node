@@ -1,4 +1,4 @@
-const { notError } = require("not-error/src");
+const notError = require("not-error/src/error.node.cjs");
 
 class VersioningExceptionSameOldData extends notError {
     constructor() {

@@ -9,7 +9,8 @@ const { objHas, isFunc, firstLetterToUpper } = require("../common");
 const ValidationBuilder = require("not-validation").Builder;
 const ValidationSession = require("not-validation").Session;
 
-const { notValidationError, notError } = require("not-error/src");
+const notValidationError = require("not-error/src/validation.error.node.cjs");
+const notError = require("not-error/src/error.node.cjs");
 
 const {
     FormExceptionExtractorForFieldIsUndefined,

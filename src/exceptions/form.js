@@ -1,4 +1,4 @@
-const { notRequestError } = require("not-error");
+const notRequestError = require("not-error/src/request.error.node.cjs");
 class FormExceptionExtractorForFieldIsUndefined extends notRequestError {
     constructor(fieldName) {
         super("not-node:form_exception_field_extractor_is_undefined", {
