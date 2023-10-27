@@ -29,6 +29,19 @@ module.exports = ({
     populateBuilders = {},
     defaultPopulate = [],
 }) => {
+    const logDebugAction = (action, identity) => {
+        Log.debug(
+            `${MODULE_NAME}//Logic//${MODEL_NAME}//${action}`,
+            identity?.ip,
+            identity?.root
+        );
+    };
+    const checkShouldOwn = (data, shouldOwn, identity) => {
+        if (shouldOwn) {
+            data[ownerFieldName] = identity?.uid;
+        }
+    };
+
     /**
      * what to populate in action
      */
@@ -63,35 +76,13 @@ module.exports = ({
          * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}
          */
-        static async _create({
-            action,
-            data,
-            activeUser,
-            ip,
-            root = false,
-            shouldOwn = false,
-        }) {
-            Log.debug(
-                `${MODULE_NAME}//Logic//${MODEL_NAME}//${action}`,
-                ip,
-                root
-            );
-            if (shouldOwn) {
-                data[ownerFieldName] = activeUser?._id;
-            }
+        static async _create({ action, data, identity, shouldOwn = false }) {
+            logDebugAction(action, identity);
+            checkShouldOwn(data, shouldOwn, identity);
             const res = await getModel().add(data);
-            LogAction(
-                {
-                    action,
-                    by: activeUser?._id,
-                    role: activeUser?.role,
-                    ip,
-                    root,
-                },
-                {
-                    targetId: res._id,
-                }
-            );
+            LogAction(action, identity, {
+                targetId: res._id,
+            });
             return res;
         }
 
@@ -100,12 +91,10 @@ module.exports = ({
          * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               new document
          **/
-        static async create({ data, activeUser, ip, root = false }) {
+        static async create({ data, identity }) {
             return await this._create({
                 data,
-                activeUser,
-                ip,
-                root,
+                identity,
                 action: "create",
                 shouldOwn: false,
             });
@@ -116,12 +105,10 @@ module.exports = ({
          * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               new document
          **/
-        static async createOwn({ data, activeUser, ip, root = false }) {
+        static async createOwn({ data, identity }) {
             return await this._create({
                 data,
-                activeUser,
-                ip,
-                root,
+                identity,
                 action: "createOwn",
                 shouldOwn: true,
             });
@@ -135,37 +122,20 @@ module.exports = ({
         static async _updateOne({
             targetId,
             data,
-            activeUser,
+            identity,
             action,
-            root,
-            ip,
             shouldOwn = true,
         }) {
-            Log.debug(
-                `${MODULE_NAME}//Logic//${MODEL_NAME}//${action}`,
-                targetId,
-                ip,
-                root
-            );
+            logDebugAction(action, identity);
             let query = {
                 _id: targetId,
             };
-            if (shouldOwn) {
-                query[ownerFieldName] = activeUser?._id;
-            }
+            checkShouldOwn(query, shouldOwn, identity);
             const result = await getModel().update(query, data);
-            LogAction(
-                {
-                    action,
-                    by: activeUser?._id,
-                    role: activeUser?.role,
-                    ip,
-                },
-                {
-                    targetId,
-                    version: result.__version,
-                }
-            );
+            LogAction(action, identity, {
+                targetId,
+                version: result.__version,
+            });
             return result;
         }
 
@@ -174,13 +144,11 @@ module.exports = ({
          * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               updated document
          **/
-        static async update({ targetId, data, activeUser, ip, root = false }) {
+        static async update({ targetId, data, identity }) {
             return await this._updateOne({
                 targetId,
                 data,
-                activeUser,
-                ip,
-                root,
+                identity,
                 action: "update",
                 shouldOwn: false,
             });
@@ -191,19 +159,11 @@ module.exports = ({
          * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               updated document
          **/
-        static async updateOwn({
-            targetId,
-            data,
-            activeUser,
-            ip,
-            root = false,
-        }) {
+        static async updateOwn({ targetId, data, identity }) {
             return await this._updateOne({
                 targetId,
                 data,
-                activeUser,
-                ip,
-                root,
+                identity,
                 action: "updateOwn",
                 shouldOwn: true,
             });
@@ -214,43 +174,19 @@ module.exports = ({
          * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
-        static async _getOne({
-            targetId,
-            action,
-            ip,
-            root,
-            activeUser,
-            shouldOwn = true,
-        }) {
-            Log.debug(
-                `${MODULE_NAME}//Logic//${MODEL_NAME}//${action}`,
-                targetId,
-                ip,
-                root
-            );
+        static async _getOne({ targetId, action, identity, shouldOwn = true }) {
+            logDebugAction(action, identity);
             let query = {};
-            if (shouldOwn) {
-                query[ownerFieldName] = activeUser?._id;
-            }
+            checkShouldOwn(query, shouldOwn, identity);
             let populate = await getPopulate(action, {
                 targetId,
-                activeUser,
-                ip,
-                root,
+                identity,
             });
             const result = await getModel().getOne(targetId, populate, query);
-            LogAction(
-                {
-                    action,
-                    by: activeUser?._id,
-                    role: activeUser?.role,
-                    ip,
-                },
-                {
-                    targetId,
-                    version: result.__version,
-                }
-            );
+            LogAction(action, identity, {
+                targetId,
+                version: result.__version,
+            });
             return result;
         }
 
@@ -259,13 +195,11 @@ module.exports = ({
          * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
-        static async get({ targetId, activeUser, ip, root = false }) {
+        static async get({ targetId, identity }) {
             return await this._getOne({
                 targetId,
                 action: "get",
-                activeUser,
-                ip,
-                root,
+                identity,
                 shouldOwn: false,
             });
         }
@@ -275,13 +209,11 @@ module.exports = ({
          * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
-        static async getOwn({ targetId, activeUser, ip, root = false }) {
+        static async getOwn({ targetId, identity }) {
             return await this._getOne({
                 targetId,
                 action: "getOwn",
-                activeUser,
-                ip,
-                root,
+                identity,
                 shouldOwn: true,
             });
         }
@@ -294,44 +226,25 @@ module.exports = ({
         static async _getOneByID({
             targetID,
             action,
-            ip,
-            root,
-            activeUser,
+            identity,
             shouldOwn = true,
         }) {
-            Log.debug(
-                `${MODULE_NAME}//Logic//${MODEL_NAME}//${action}`,
-                targetID,
-                ip,
-                root
-            );
+            logDebugAction(action, identity);
             let query = {};
-            if (shouldOwn) {
-                query[ownerFieldName] = activeUser?._id;
-            }
+            checkShouldOwn(query, shouldOwn, identity);
             let populate = await getPopulate(action, {
                 targetID,
-                activeUser,
-                ip,
-                root,
+                identity,
             });
             const result = await getModel().getOneByID(
                 targetID,
                 query,
                 populate
             );
-            LogAction(
-                {
-                    action,
-                    by: activeUser?._id,
-                    role: activeUser?.role,
-                    ip,
-                },
-                {
-                    targetID,
-                    version: result.__version,
-                }
-            );
+            LogAction(action, identity, {
+                targetID,
+                version: result.__version,
+            });
             return result;
         }
 
@@ -340,13 +253,11 @@ module.exports = ({
          * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
-        static async getByID({ targetID, activeUser, ip, root = false }) {
+        static async getByID({ targetID, identity }) {
             return await this._getOneByID({
                 targetID,
                 action: "getByID",
-                activeUser,
-                ip,
-                root,
+                identity,
                 shouldOwn: false,
             });
         }
@@ -356,13 +267,11 @@ module.exports = ({
          * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
-        static async getByIDOwn({ targetID, activeUser, ip, root = false }) {
+        static async getByIDOwn({ targetID, identity }) {
             return await this._getOneByID({
                 targetID,
                 action: "getByIDOwn",
-                activeUser,
-                ip,
-                root,
+                identity,
                 shouldOwn: true,
             });
         }
@@ -374,36 +283,18 @@ module.exports = ({
          **/
         static async _getOneRaw({
             targetId,
-            activeUser,
-            ip,
-            root,
+            identity,
             action,
             shouldOwn = true,
         }) {
-            Log.debug(
-                `${MODULE_NAME}//Logic//${MODEL_NAME}//${action}`,
-                targetId,
-                ip,
-                root
-            );
+            logDebugAction(action, identity);
             let query = {};
-            if (shouldOwn) {
-                query[ownerFieldName] = activeUser?._id;
-            }
+            checkShouldOwn(query, shouldOwn, identity);
             const result = await getModel().getOneRaw(targetId, query);
-            LogAction(
-                {
-                    action,
-                    by: activeUser?._id,
-                    role: activeUser?.role,
-                    ip,
-                    root,
-                },
-                {
-                    targetId,
-                    version: result.__version,
-                }
-            );
+            LogAction(action, identity, {
+                targetId,
+                version: result.__version,
+            });
             return result;
         }
 
@@ -412,14 +303,12 @@ module.exports = ({
          * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
-        static async getRaw({ targetId, activeUser, ip, root = false }) {
+        static async getRaw({ targetId, identity }) {
             return await this._getOneRaw({
                 targetId,
-                activeUser,
+                identity,
                 shouldOwn: false,
                 action: "getRaw",
-                ip,
-                root,
             });
         }
 
@@ -428,14 +317,12 @@ module.exports = ({
          * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
-        static async getOwnRaw({ targetId, activeUser, ip, root = false }) {
+        static async getOwnRaw({ targetId, identity }) {
             return await this._getOneRaw({
                 targetId,
-                activeUser,
+                identity,
                 shouldOwn: true,
                 action: "getOwnRaw",
-                ip,
-                root,
             });
         }
 
@@ -446,18 +333,11 @@ module.exports = ({
          **/
         static async _delete({
             action,
-            ip,
-            root,
             targetId,
-            activeUser,
+            identity,
             shouldOwn = false,
         }) {
-            Log.debug(
-                `${MODULE_NAME}//Logic//${MODEL_NAME}//${action}`,
-                targetId,
-                ip,
-                root
-            );
+            logDebugAction(action, identity);
             const model = getModel();
             const versioning = ModelRoutine.versioning(model);
             if (versioning) {
@@ -465,12 +345,12 @@ module.exports = ({
                 if (!itm) {
                     throw new DBExceptionDocumentIsNotFound();
                 }
-                if (shouldOwn && !isOwner(itm, activeUser?._id)) {
+                if (shouldOwn && !isOwner(itm, identity?.uid)) {
                     throw new DBExceptionDocumentIsNotOwnerByActiveUser({
                         params: {
                             targetId,
-                            activeUserId: activeUser?._id,
-                            role: activeUser?.role,
+                            activeUserId: identity?.uid,
+                            role: identity?.role,
                             versioning,
                         },
                     });
@@ -479,34 +359,23 @@ module.exports = ({
                 }
             } else {
                 let query = { _id: targetId };
-                if (shouldOwn) {
-                    query[ownerFieldName] = activeUser?._id;
-                }
+                checkShouldOwn(query, shouldOwn, identity);
                 const result = await model.findOneAndDelete(query).exec();
                 if (!deleteResponseSuccess(result)) {
                     throw new DBExceptionDeleteWasNotSuccessful({
                         params: {
                             result,
                             targetId,
-                            activeUserId: activeUser?._id,
-                            role: activeUser?.role,
+                            activeUserId: identity?.uid,
+                            role: identity?.role,
                             versioning,
                         },
                     });
                 }
             }
-            LogAction(
-                {
-                    action,
-                    by: activeUser?._id,
-                    role: activeUser?.role,
-                    ip,
-                    root,
-                },
-                {
-                    targetId,
-                }
-            );
+            LogAction(action, identity, {
+                targetId,
+            });
         }
 
         /**
@@ -514,13 +383,11 @@ module.exports = ({
          * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
-        static async delete({ targetId, activeUser, ip, root = false }) {
+        static async delete({ targetId, identity }) {
             await this._delete({
                 action: "delete",
                 targetId,
-                root,
-                ip,
-                activeUser,
+                identity,
                 shouldOwn: false,
             });
         }
@@ -530,13 +397,11 @@ module.exports = ({
          * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
-        static async deleteOwn({ targetId, activeUser, ip, root = false }) {
+        static async deleteOwn({ targetId, identity }) {
             await this._delete({
                 action: "deleteOwn",
                 targetId,
-                ip,
-                root,
-                activeUser,
+                identity,
                 shouldOwn: true,
             });
         }
@@ -546,51 +411,26 @@ module.exports = ({
          * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Array<Object>>}
          */
-        static async _listAll({
-            activeUser,
-            ip,
-            action,
-            shouldOwn = false,
-            root,
-        }) {
-            Log.debug(
-                `${MODULE_NAME}//Logic//${MODEL_NAME}//${action}`,
-                ip,
-                root
-            );
-            let filter;
-            if (shouldOwn) {
-                filter = {
-                    [ownerFieldName]: activeUser?._id,
-                };
-            }
+        static async _listAll({ identity, action, shouldOwn = false }) {
+            logDebugAction(action, identity);
+            let filter = {};
+            checkShouldOwn(filter, shouldOwn, identity);
             const result = await getModel().listAll(filter);
-            LogAction({
-                action,
-                by: activeUser?._id,
-                role: activeUser?.role,
-                ip,
-                root,
-                shouldOwn,
-            });
+            LogAction(action, identity, { shouldOwn });
             return result;
         }
 
-        static async listAll({ activeUser, ip, root }) {
+        static async listAll({ identity }) {
             return await this._listAll({
-                activeUser,
-                ip,
-                root,
+                identity,
                 action: "listAll",
                 shouldOwn: false,
             });
         }
 
-        static async listAllOwn({ activeUser, ip, root }) {
+        static async listAllOwn({ identity }) {
             return await this._listAll({
-                activeUser,
-                ip,
-                root,
+                identity,
                 action: "listAllOwn",
                 shouldOwn: true,
             });
@@ -598,25 +438,18 @@ module.exports = ({
 
         static async _listAndCount({
             query,
-            activeUser,
-            ip,
             action,
-            root,
+            identity,
             shouldOwn = false,
         }) {
-            Log.debug(
-                `${MODULE_NAME}//Logic//${MODEL_NAME}//${action}`,
-                ip,
-                root
-            );
+            logDebugAction(action, identity);
             const { skip, size, sorter, filter, search } = query;
             let populate = await getPopulate(action, {
-                activeUser,
-                ip,
+                identity,
             });
             if (shouldOwn) {
                 notFilter.filter.modifyRules(filter, {
-                    [ownerFieldName]: activeUser?._id,
+                    [ownerFieldName]: identity?.uid,
                 });
             }
             const result = await getModel().listAndCount(
@@ -627,60 +460,37 @@ module.exports = ({
                 search,
                 populate
             );
-            LogAction({
-                action,
-                by: activeUser?._id,
-                role: activeUser?.role,
-                ip,
-                root,
-                shouldOwn,
-            });
+            LogAction(action, identity, { shouldOwn });
             return result;
         }
 
-        static async listAndCount({ query, activeUser, ip, root }) {
+        static async listAndCount({ query, identity }) {
             return await this._listAndCount({
                 query,
-                activeUser,
-                ip,
-                root,
+                identity,
                 action: "listAndCount",
                 shouldOwn: false,
             });
         }
 
-        static async listAndCountOwn({ query, activeUser, ip, root }) {
+        static async listAndCountOwn({ query, identity }) {
             return await this._listAndCount({
                 query,
-                activeUser,
-                ip,
-                root,
+                identity,
                 action: "listAndCountOwn",
                 shouldOwn: true,
             });
         }
 
-        static async _list({
-            query,
-            activeUser,
-            ip,
-            action,
-            root,
-            shouldOwn = false,
-        }) {
-            Log.debug(
-                `${MODULE_NAME}//Logic//${MODEL_NAME}//${action}`,
-                ip,
-                root
-            );
+        static async _list({ query, identity, action, shouldOwn = false }) {
+            logDebugAction(action, identity);
             const { skip, size, sorter, filter } = query;
             let populate = await getPopulate(action, {
-                activeUser,
-                ip,
+                identity,
             });
             if (shouldOwn) {
                 notFilter.filter.modifyRules(filter, {
-                    [ownerFieldName]: activeUser?._id,
+                    [ownerFieldName]: identity?.uid,
                 });
             }
             const result = await getModel().listAndPopulate(
@@ -690,90 +500,57 @@ module.exports = ({
                 filter,
                 populate
             );
-            LogAction({
-                action,
-                by: activeUser?._id,
-                role: activeUser?.role,
-                ip,
-                root,
-                shouldOwn,
-            });
+            LogAction(action, identity, { shouldOwn });
             return result;
         }
 
-        static async list({ query, activeUser, ip, root }) {
+        static async list({ query, identity }) {
             return await this._list({
                 query,
-                activeUser,
-                ip,
-                root,
+                identity,
                 action: "list",
                 shouldOwn: false,
             });
         }
 
-        static async listOwn({ query, activeUser, ip, root }) {
+        static async listOwn({ query, identity }) {
             return await this._list({
                 query,
-                activeUser,
-                ip,
-                root,
+                identity,
                 action: "listOwn",
                 shouldOwn: true,
             });
         }
 
-        static async _count({
-            query,
-            activeUser,
-            ip,
-            action,
-            root,
-            shouldOwn = false,
-        }) {
-            Log.debug(
-                `${MODULE_NAME}//Logic//${MODEL_NAME}//${action}`,
-                ip,
-                root
-            );
+        static async _count({ query, action, identity, shouldOwn = false }) {
+            logDebugAction(action, identity);
             const { filter, search } = query;
             if (shouldOwn) {
                 notFilter.filter.modifyRules(filter, {
-                    [ownerFieldName]: activeUser?._id,
+                    [ownerFieldName]: identity?.uid,
                 });
             }
             if (search) {
                 notFilter.filter.modifyRules(search, filter);
             }
             const result = await getModel().countWithFilter(search || filter);
-            LogAction({
-                action,
-                by: activeUser?._id,
-                role: activeUser?.role,
-                ip,
-                root,
-                shouldOwn,
-            });
+            LogAction(action, identity, { shouldOwn });
             return result;
         }
 
-        static async count({ query, activeUser, ip, root }) {
+        static async count({ query, identity }) {
             return await this._count({
                 query,
-                activeUser,
-                ip,
-                root,
+                identity,
                 action: "count",
                 shouldOwn: false,
             });
         }
 
-        static async countOwn({ query, activeUser, ip, root }) {
+        static async countOwn({ query, identity }) {
             return await this._count({
                 query,
-                activeUser,
-                ip,
-                root,
+                identity,
                 action: "countOwn",
                 shouldOwn: true,
             });

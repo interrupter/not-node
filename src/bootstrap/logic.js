@@ -14,17 +14,14 @@ module.exports = ({
     const phrase = modulePhrase(MODULE_NAME);
     const config = configInit.readerForModule(MODULE_NAME);
 
-    const LogAction = ({ action, by, role, ip, root }, params = {}) => {
+    const LogAction = (action, identity, params = {}) => {
         Log &&
             Log.log({
                 time: new Date(),
                 module: MODULE_NAME,
                 logic: MODEL_NAME,
                 action,
-                root,
-                by,
-                role,
-                ip,
+                ...identity,
                 params,
             });
     };

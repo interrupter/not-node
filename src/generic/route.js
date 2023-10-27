@@ -22,7 +22,6 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            prepared.root = true;
             return await getLogic().create(prepared);
         }
 
@@ -36,7 +35,6 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            prepared.root = true;
             return await getLogic().get(prepared);
         }
 
@@ -50,7 +48,6 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            prepared.root = true;
             return await getLogic().getByID(prepared);
         }
 
@@ -64,7 +61,6 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            prepared.root = true;
             return await getLogic().getRaw(prepared);
         }
 
@@ -78,7 +74,6 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            prepared.root = true;
             return await getLogic().update(prepared);
         }
 
@@ -92,7 +87,6 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            prepared.root = true;
             return await getLogic().listAll(prepared);
         }
 
@@ -106,7 +100,6 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            prepared.root = true;
             return await getLogic().listAndCount(prepared);
         }
 
@@ -120,7 +113,6 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            prepared.root = true;
             return await getLogic().list(prepared);
         }
 
@@ -134,7 +126,6 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            prepared.root = true;
             return await getLogic().count(prepared);
         }
 
@@ -148,7 +139,6 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            prepared.root = true;
             return await getLogic().delete(prepared);
         }
 
