@@ -417,7 +417,7 @@ module.exports = ({
             checkShouldOwn(filter, shouldOwn, identity);
             const result = await getModel().listAll(filter);
             LogAction(action, identity, { shouldOwn });
-            return result;
+            return result.map((itm) => itm.toObject());
         }
 
         static async listAll({ identity }) {
@@ -460,6 +460,7 @@ module.exports = ({
                 search,
                 populate
             );
+            result.list = result.list.map((itm) => itm.toObject());
             LogAction(action, identity, { shouldOwn });
             return result;
         }
@@ -501,7 +502,7 @@ module.exports = ({
                 populate
             );
             LogAction(action, identity, { shouldOwn });
-            return result;
+            return result.map((itm) => itm.toObject());
         }
 
         static async list({ query, identity }) {
