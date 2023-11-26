@@ -2,12 +2,7 @@
 const Form = require("../form/form");
 const { firstLetterToUpper } = require("../common");
 //form
-const FIELDS = [
-    ["activeUserId", { required: true }, "not-node//objectId"],
-    ["activeUser", "not-node//requiredObject"],
-    ["ip", "not-node//ip"],
-    ["identity", "not-node//requiredObject"],
-];
+const FIELDS = [["identity", "not-node//requiredObject"]];
 
 module.exports = ({ MODULE_NAME, MODEL_NAME, actionName }) => {
     const FORM_NAME = `${MODULE_NAME}:${MODEL_NAME}:${firstLetterToUpper(

@@ -4,7 +4,6 @@ module.exports = class InitSecurity {
     getCSPDirectives({ config }) {
         try {
             let corsArr = config.get("cors");
-            let corsLine = corsArr ? corsArr.join(" ") : "";
             let CSPDirectives = config.get("CSP");
             let result = {};
             Object.keys(CSPDirectives).forEach((nm) => {
@@ -13,7 +12,7 @@ module.exports = class InitSecurity {
                     Array.isArray(corsArr) &&
                     ["default-src", "connect-src"].includes(nm)
                 ) {
-                    result[nm].push(...corsLine);
+                    result[nm].push(...corsArr);
                 }
             });
             return result;

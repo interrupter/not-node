@@ -4,9 +4,7 @@ const { firstLetterToUpper } = require("../common");
 //form
 const FIELDS = [
     ["targetID", { required: true }, "not-node//ID"],
-    ["activeUserId", { required: true }, "not-node//objectId"],
-    ["activeUser", "not-node//requiredObject"],
-    ["ip", "not-node//ip"],
+
     ["identity", "not-node//requiredObject"],
 ];
 
