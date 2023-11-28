@@ -1,5 +1,7 @@
 const log = require("not-log")(module, "RateLimiter");
 const { partCopyObj } = require("../../common");
+const notEnv = require("../../env");
+const { RateLimiterRedis } = require("rate-limiter-flexible");
 
 const DEFAULT_OPTIONS = {
     keyPrefix: "rateLimiterMiddleware",
@@ -44,15 +46,43 @@ module.exports = class InitRateLimiter {
         };
     }
 
-    static createRateLimiter({ master, config }) {
-        const { RateLimiterRedis } = require("rate-limiter-flexible");
-        const storeClient = config.get(
-            "modules.rateLimiter.client",
-            DEFAULT_CLIENT
+    static createRateLimiter({ config }) {
+        const storeClient = InitRateLimiter.getClient(
+            InitRateLimiter.getClientName({ config })
         );
         return new RateLimiterRedis({
-            storeClient: master.getEnv(`db.${storeClient}`),
-            ...InitRateLimiter.getOptions({ master, config }),
+            storeClient,
+            ...InitRateLimiter.getOptions({ config }),
+        });
+    }
+
+    /**
+     *  Returns redis client name in "db.*" of notEnv
+     *
+     * @static
+     * @param {object} { config }
+     * @return {string}
+     */
+    static getClientName({ config }) {
+        return config.get("modules.rateLimiter.client", DEFAULT_CLIENT);
+    }
+
+    static getClient(storeClient) {
+        return notEnv.getEnv(`db.${storeClient}`);
+    }
+
+    static initCustom(
+        options = {
+            keyPrefix: "rateLimiterCustom",
+            points: 20,
+            duration: 1,
+        },
+        storeName = DEFAULT_CLIENT
+    ) {
+        const storeClient = InitRateLimiter.getClient(storeName);
+        return new RateLimiterRedis({
+            storeClient,
+            ...options,
         });
     }
 };

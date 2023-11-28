@@ -71,7 +71,7 @@ class notRoute {
 
     /**
      *	Select rule from available or return null
-     *	@param	{import('../types').ExtendedExpressRequest}	req 	Express Request Object
+     *	@param	{import('../types').notNodeExpressRequest}	req 	Express Request Object
      *	@return	{import('../types').notRouteRule | null}	rule or null
      */
     selectRule(req) {
@@ -85,7 +85,7 @@ class notRoute {
     /**
      *
      *
-     * @param {import('../types').ExtendedExpressRequest}       req
+     * @param {import('../types').notNodeExpressRequest}       req
      * @param {import('../types').notRouteData} notRouteData
      * @memberof notRoute
      */
@@ -112,7 +112,7 @@ class notRoute {
 
     /**
      *	Executes route action if such exist
-     *	@param	{import('../types').ExtendedExpressRequest}	req 	Express Request Object
+     *	@param	{import('../types').notNodeExpressRequest}	req 	Express Request Object
      *	@param	{import('express').Response}	res		Express Response Object
      *	@param	{function}	next
      *	@return {object}	result of execution or HttpError

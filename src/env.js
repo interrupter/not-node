@@ -22,7 +22,7 @@ module.exports = class notEnv {
      *  Setting application environment variable
      *  @param   {string}      key  name of var
      *  @param   {object}      val  value
-     *  @return {notDomain}      chainable
+     *  @return     {notEnv}      chainable
      */
     static setEnv(key, val) {
         ENVS[key] = val;
