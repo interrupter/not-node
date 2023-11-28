@@ -57,6 +57,7 @@ class Form {
     #rateLimiter = null;
     #rateLimiterIdGetter = (data) => data.identity.sid;
     #rateLimiterException = FormExceptionTooManyRequests;
+    #rateLimiterClientName = InitRateLimiter.DEFAULT_CLIENT;
 
     constructor({
         FIELDS,
@@ -477,6 +478,9 @@ class Form {
             if (rate.exception) {
                 this.#rateLimiterException = rate.exception;
             }
+            if (rate.client && typeof rate.client === "string") {
+                this.#rateLimiterClientName = rate.client;
+            }
             if (
                 rate.options &&
                 typeof rate.options == "object" &&
@@ -484,7 +488,7 @@ class Form {
             ) {
                 this.#rateLimiter = InitRateLimiter.initCustom(
                     rate.options,
-                    rate.client
+                    this.#rateLimiterClientName
                 );
             }
         }

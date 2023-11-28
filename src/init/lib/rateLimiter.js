@@ -12,6 +12,10 @@ const DEFAULT_OPTIONS = {
 const DEFAULT_CLIENT = "ioredis";
 
 module.exports = class InitRateLimiter {
+    static get DEFAULT_CLIENT() {
+        return DEFAULT_CLIENT;
+    }
+
     static createMiddleware({ rateLimiter }) {
         return (req, res, next) => {
             rateLimiter
