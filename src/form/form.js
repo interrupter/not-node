@@ -68,7 +68,7 @@ class Form {
         EXTRACTORS = {},
         ENV_EXTRACTORS = {},
         TRANSFORMERS = {},
-        rate = null,
+        rate,
     }) {
         this.#FORM_NAME = FORM_NAME;
         this.#MODEL_NAME = MODEL_NAME;
@@ -471,7 +471,7 @@ class Form {
     }
 
     #createRateLimiter(rate) {
-        if (rate) {
+        if (rate && rate.options && typeof rate.options == "object") {
             if (typeof rate.idGetter === "function") {
                 this.#rateLimiterIdGetter = rate.idGetter;
             }
@@ -481,16 +481,10 @@ class Form {
             if (rate.client && typeof rate.client === "string") {
                 this.#rateLimiterClientName = rate.client;
             }
-            if (
-                rate.options &&
-                typeof rate.options == "object" &&
-                typeof rate.client === "string"
-            ) {
-                this.#rateLimiter = InitRateLimiter.initCustom(
-                    rate.options,
-                    this.#rateLimiterClientName
-                );
-            }
+            this.#rateLimiter = InitRateLimiter.initCustom(
+                rate.options,
+                this.#rateLimiterClientName
+            );
         }
     }
 
