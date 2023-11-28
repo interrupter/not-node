@@ -1,7 +1,5 @@
 const validator = require("validator");
-
 const FormFabric = require("./fabric");
-
 const { createSchemaFromFields } = require("../fields");
 
 const { objHas, isFunc, firstLetterToUpper } = require("../common");
@@ -10,6 +8,8 @@ const ValidationBuilder = require("not-validation").Builder;
 const ValidationSession = require("not-validation").Session;
 
 const notValidationError = require("not-error/src/validation.error.node.cjs");
+const InitRateLimiter = require("../init/lib/rateLimiter");
+
 const notError = require("not-error/src/error.node.cjs");
 
 const {
@@ -53,6 +53,10 @@ class Form {
         ...DEFAULT_TRANSFORMERS,
     };
 
+    #rateLimiter = null;
+    #rateLimiterIdGetter = null;
+    #rateLimiterException = null;
+
     constructor({
         FIELDS,
         FORM_NAME,
@@ -62,6 +66,7 @@ class Form {
         EXTRACTORS = {},
         ENV_EXTRACTORS = {},
         TRANSFORMERS = {},
+        rate = null,
     }) {
         this.#FORM_NAME = FORM_NAME;
         this.#MODEL_NAME = MODEL_NAME;
@@ -72,6 +77,7 @@ class Form {
         this.#addExtractors(EXTRACTORS);
         this.#addEnvExtractors(ENV_EXTRACTORS);
         this.#addTransformers(TRANSFORMERS);
+        this.#createRateLimiter(rate);
     }
 
     /**
@@ -109,6 +115,7 @@ class Form {
      **/
     async run(req) {
         let data = await this.extract(req);
+        this.#checkRate(data);
         await this.#_validate(data);
         return data;
     }
@@ -458,6 +465,33 @@ class Form {
     #addTransformers(transformers = {}) {
         if (transformers) {
             this.#TRANSFORMERS = { ...this.#TRANSFORMERS, ...transformers };
+        }
+    }
+
+    #createRateLimiter(rate) {
+        if (rate) {
+            this.#rateLimiterIdGetter = rate.idGetter;
+            this.#rateLimiterException = rate.exception;
+            this.#rateLimiter = InitRateLimiter.initCustom(
+                rate.options,
+                rate.client
+            );
+        }
+    }
+
+    async #checkRate(envs) {
+        try {
+            this.#rateLimiter &&
+                typeof this.#rateLimiterIdGetter === "function" &&
+                (await this.#rateLimiter.consume(
+                    this.#rateLimiterIdGetter(envs)
+                ));
+        } catch (e) {
+            if (this.#rateLimiterException) {
+                throw new this.#rateLimiterException(envs);
+            } else {
+                throw e;
+            }
         }
     }
 }

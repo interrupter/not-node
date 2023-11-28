@@ -28,7 +28,6 @@ module.exports = class InitRateLimiter {
         await emit("rateLimiter.pre", { config, master });
         const rateLimiter = InitRateLimiter.createRateLimiter({
             config,
-            master,
         });
         const middleware = InitRateLimiter.createMiddleware({ rateLimiter });
         master.getServer().use(middleware);

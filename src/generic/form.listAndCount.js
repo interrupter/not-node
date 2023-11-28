@@ -23,8 +23,14 @@ const FactoryFormListAndCount = ({ MODULE_NAME, MODEL_NAME, actionName }) => {
     )}Form`;
 
     return class extends Form {
-        constructor({ app }) {
-            super({ FIELDS, FORM_NAME, app, MODULE_NAME, MODEL_NAME });
+        constructor(params) {
+            super({
+                ...params,
+                FIELDS,
+                FORM_NAME,
+                MODULE_NAME,
+                MODEL_NAME,
+            });
         }
 
         /**
