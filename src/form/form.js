@@ -117,7 +117,7 @@ class Form {
      **/
     async run(req) {
         let data = await this.extract(req);
-        this.#checkRate(data);
+        await this.#checkRate(data);
         await this.#_validate(data);
         return data;
     }
