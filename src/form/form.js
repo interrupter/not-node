@@ -11,6 +11,7 @@ const notValidationError = require("not-error/src/validation.error.node.cjs");
 const InitRateLimiter = require("../init/lib/rateLimiter");
 
 const notError = require("not-error/src/error.node.cjs");
+const { FormExceptionTooManyRequests } = require("../exceptions/form.js");
 
 const {
     FormExceptionExtractorForFieldIsUndefined,
@@ -54,8 +55,8 @@ class Form {
     };
 
     #rateLimiter = null;
-    #rateLimiterIdGetter = null;
-    #rateLimiterException = null;
+    #rateLimiterIdGetter = (data) => data.identity.sid;
+    #rateLimiterException = FormExceptionTooManyRequests;
 
     constructor({
         FIELDS,
@@ -470,28 +471,33 @@ class Form {
 
     #createRateLimiter(rate) {
         if (rate) {
-            this.#rateLimiterIdGetter = rate.idGetter;
-            this.#rateLimiterException = rate.exception;
-            this.#rateLimiter = InitRateLimiter.initCustom(
-                rate.options,
-                rate.client
-            );
+            if (typeof rate.idGetter === "function") {
+                this.#rateLimiterIdGetter = rate.idGetter;
+            }
+            if (rate.exception) {
+                this.#rateLimiterException = rate.exception;
+            }
+            if (
+                rate.options &&
+                typeof rate.options == "object" &&
+                typeof rate.client === "string"
+            ) {
+                this.#rateLimiter = InitRateLimiter.initCustom(
+                    rate.options,
+                    rate.client
+                );
+            }
         }
     }
 
     async #checkRate(envs) {
         try {
             this.#rateLimiter &&
-                typeof this.#rateLimiterIdGetter === "function" &&
                 (await this.#rateLimiter.consume(
                     this.#rateLimiterIdGetter(envs)
                 ));
-        } catch (e) {
-            if (this.#rateLimiterException) {
-                throw new this.#rateLimiterException(envs);
-            } else {
-                throw e;
-            }
+        } catch (_) {
+            throw new this.#rateLimiterException(envs);
         }
     }
 }

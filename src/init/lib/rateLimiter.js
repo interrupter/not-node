@@ -18,7 +18,7 @@ module.exports = class InitRateLimiter {
                 .consume(req.ip)
                 .then(() => next())
                 .catch(() => {
-                    log.error("Too many requests by " + req.ip);
+                    log?.error("Too many requests by " + req.ip);
                     res.status(429).send("Too Many Requests");
                 });
         };
@@ -59,7 +59,7 @@ module.exports = class InitRateLimiter {
      *  Returns redis client name in "db.*" of notEnv
      *
      * @static
-     * @param {object} { config }
+     * @param {object}  params={ config }
      * @return {string}
      */
     static getClientName({ config }) {

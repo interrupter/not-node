@@ -1,4 +1,4 @@
-const { notRequestError } = require("not-error");
+const notRequestError = require("not-error/src/request.error.node.cjs");
 
 //https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses
 
@@ -41,3 +41,10 @@ class HttpExceptionNotFound extends notRequestError {
     }
 }
 module.exports.HttpExceptionNotFound = HttpExceptionNotFound;
+
+class HttpExceptionTooManyRequests extends notRequestError {
+    constructor(params) {
+        super("Too many requests", { code: 429, ...params });
+    }
+}
+module.exports.HttpExceptionTooManyRequests = HttpExceptionTooManyRequests;
