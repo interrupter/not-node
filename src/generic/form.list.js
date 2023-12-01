@@ -17,7 +17,7 @@ const FIELDS = [
  * @param {string}  params.actionName   //action name
  * @return {Form}   form class definition
  */
-const FactoryFormList = ({ MODULE_NAME, MODEL_NAME, actionName }) => {
+const FactoryFormList = ({ MODULE_NAME, MODEL_NAME, actionName = "list" }) => {
     const FORM_NAME = `${MODULE_NAME}:${MODEL_NAME}:${firstLetterToUpper(
         actionName
     )}Form`;

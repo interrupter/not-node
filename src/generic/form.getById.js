@@ -8,7 +8,7 @@ const FIELDS = [
     ["identity", "not-node//requiredObject"],
 ];
 
-module.exports = ({ MODULE_NAME, MODEL_NAME, actionName }) => {
+module.exports = ({ MODULE_NAME, MODEL_NAME, actionName = "getById" }) => {
     const FORM_NAME = `${MODULE_NAME}:${MODEL_NAME}:${firstLetterToUpper(
         actionName
     )}Form`;

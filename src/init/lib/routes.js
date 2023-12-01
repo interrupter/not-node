@@ -48,7 +48,7 @@ module.exports = class InitRoutes {
                     message: err.message,
                 });
             } else {
-                log.error("Unknown error:", err);
+                log?.error("Unknown error:", err);
                 res.status(500).json({
                     status: "error",
                 });
@@ -58,7 +58,7 @@ module.exports = class InitRoutes {
     }
 
     async run({ master, config, options }) {
-        log.info("Setting up routes...");
+        log?.info("Setting up routes...");
         //pages rendering
         await master.getApp().execInModules("registerPagesRoutes", master);
         //api first
