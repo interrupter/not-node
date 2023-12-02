@@ -87,9 +87,8 @@ module.exports = ({
 
     const createDefaultForm = function ({ actionName, MODULE_NAME }) {
         const FIELDS = [
-            ["activeUser", "not-node//requiredObject"],
+            ["identity", "not-node//requiredObject"],
             ["data", `${MODULE_NAME}//_data`],
-            ["ip", "not-node//ip"],
         ];
         const FORM_NAME = `${MODULE_NAME}:${firstLetterToUpper(
             actionName
@@ -117,16 +116,19 @@ module.exports = ({
     };
 
     const beforeDecorator = async (req, res, next) => {
+        Log?.debug(
+            req.method,
+            req.originalUrl,
+            JSON.stringify(req.notRouteData, null, 4)
+        );
         const actionName = req.notRouteData.actionName;
         const trimmedActionName = actionName.replace("_", "");
         const FormValidator = getForm(trimmedActionName);
-        if (FormValidator) {
-            const prepared = await FormValidator.run(req, res, next);
-            checkAccessRules(trimmedActionName, prepared);
-            return prepared;
-        } else {
-            return {};
-        }
+        const prepared = FormValidator
+            ? await FormValidator.run(req, res, next)
+            : {};
+        await checkAccessRules(trimmedActionName, prepared, req);
+        return prepared;
     };
 
     const afterDecorator = (req, res, next, result) => {

@@ -133,14 +133,16 @@ class notRoute {
                 );
             }
             obsoleteRuleFields(rule, req.originalUrl);
-            let actionName = this.selectActionName(rule);
-            let mod = this.notApp.getModule(this.moduleName);
+            const actionName = this.selectActionName(rule);
+            const mod = this.notApp.getModule(this.moduleName);
             if (!mod) {
                 return next(
                     new HttpError(
                         404,
                         [
                             "module not found",
+                            req.method,
+                            req.originalUrl,
                             this.moduleName,
                             this.routeName,
                             actionName,
@@ -148,7 +150,7 @@ class notRoute {
                     )
                 );
             }
-            let modRoute = mod.getRoute(this.routeName);
+            const modRoute = mod.getRoute(this.routeName);
             this.setRequestRouteData(
                 req,
                 this.createRequestRouteData(actionName, rule)
@@ -165,6 +167,8 @@ class notRoute {
                         404,
                         [
                             "route not found",
+                            req.method,
+                            req.originalUrl,
                             this.moduleName,
                             this.routeName,
                             actionName,
