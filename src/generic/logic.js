@@ -4,10 +4,9 @@ const { deleteResponseSuccess } = require("../model/utils.js");
 const {
     DBExceptionDocumentIsNotFound,
     DBExceptionDeleteWasNotSuccessful,
-} = require("../exceptions/db.js");
-const {
     DBExceptionDocumentIsNotOwnerByActiveUser,
-} = require("../exceptions/http");
+} = require("../exceptions/db.js");
+
 const isOwnerImported = require("../auth/fields.js").isOwner;
 const { DOCUMENT_OWNER_FIELD_NAME } = require("../auth/const.js");
 const notFilter = require("not-filter");
@@ -81,7 +80,7 @@ module.exports = ({
             checkShouldOwn(data, shouldOwn, identity);
             const res = await getModel().add(data);
             LogAction(action, identity, {
-                targetId: res._id,
+                targetId: res?._id,
             });
             return res;
         }
@@ -134,7 +133,7 @@ module.exports = ({
             const result = await getModel().update(query, data);
             LogAction(action, identity, {
                 targetId,
-                version: result.__version,
+                version: result?.__version,
             });
             return result;
         }
@@ -185,7 +184,7 @@ module.exports = ({
             const result = await getModel().getOne(targetId, populate, query);
             LogAction(action, identity, {
                 targetId,
-                version: result.__version,
+                version: result?.__version,
             });
             return result;
         }
@@ -243,7 +242,7 @@ module.exports = ({
             );
             LogAction(action, identity, {
                 targetID,
-                version: result.__version,
+                version: result?.__version,
             });
             return result;
         }
@@ -293,7 +292,7 @@ module.exports = ({
             const result = await getModel().getOneRaw(targetId, query);
             LogAction(action, identity, {
                 targetId,
-                version: result.__version,
+                version: result?.__version,
             });
             return result;
         }
