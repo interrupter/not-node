@@ -12,7 +12,7 @@ const TECH_FIELDS = [
 ];
 
 function toObject(obj) {
-    return obj.toObject ? obj.toObject() : obj;
+    return obj.toObject ? obj.toObject({ minimize: false }) : obj;
 }
 
 const {

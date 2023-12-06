@@ -186,7 +186,7 @@ class Form {
             );
             if (!validationResult.clean) {
                 throw new notValidationError(
-                    "not-core:form_validation_error",
+                    "not-node:form_validation_error",
                     validationResult.getReport(),
                     null,
                     data
@@ -305,7 +305,7 @@ class Form {
                 throw e;
             } else {
                 throw new notError(
-                    "core:form_validation_error",
+                    "not-node:form_validation_error",
                     {
                         FORM_NAME: this.#FORM_NAME,
                         PROTO_FIELDS: this.#PROTO_FIELDS,

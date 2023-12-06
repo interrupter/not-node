@@ -394,7 +394,11 @@ function close(data = undefined) {
 }
 
 function saveNewVersion() {
-    return routine.update(this.constructor, { _id: this._id }, this.toObject());
+    return routine.update(
+        this.constructor,
+        { _id: this._id },
+        this.toObject({ minimize: false })
+    );
 }
 
 module.exports.thisMethods = {
