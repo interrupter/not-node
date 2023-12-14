@@ -10,7 +10,7 @@ const FIELDS = [
     ];
     const FORM_NAME = `${MODULE_NAME}:<%- ModelName %>UpdateForm`;
 
-        module.exports = class <%- ModelName %>UpdateForm extends Form {
+        class <%- ModelName %>UpdateForm extends Form {
             constructor({ app }) {
             super({ FIELDS, FORM_NAME, app });
             }
@@ -37,4 +37,5 @@ const FIELDS = [
                                 ip: getIP(req),
                                 };
                                 }
-                                };
+                                }
+                                module.exports = <%- ModelName %>UpdateForm;

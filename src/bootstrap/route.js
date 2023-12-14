@@ -87,8 +87,8 @@ module.exports = ({
 
     const createDefaultForm = function ({ actionName, MODULE_NAME }) {
         const FIELDS = [
-            ["identity", "not-node//requiredObject"],
-            ["data", `${MODULE_NAME}//_data`],
+            ["identity", "not-node//identity"],
+            ["data", `${MODULE_NAME}//_${MODEL_NAME}`],
         ];
         const FORM_NAME = `${MODULE_NAME}:${firstLetterToUpper(
             actionName

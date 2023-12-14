@@ -54,6 +54,22 @@ async function copyTmplFile(from, to) {
     }
 }
 
+function getProjectSiteDir(dir, CWD) {
+    if (dir === "") {
+        return resolve(CWD, "./site");
+    } else {
+        if (
+            (dir.indexOf("/") > -1 || dir.indexOf("\\") > -1) &&
+            dir !== "./" &&
+            dir !== ".\\"
+        ) {
+            return dir;
+        } else {
+            return resolve(CWD, dir);
+        }
+    }
+}
+
 async function createDir(dirPath) {
     try {
         //console.log("mkdir", dirPath);
@@ -173,4 +189,5 @@ export {
     buildClientSideScripts,
     installPackages,
     readJSONFile,
+    getProjectSiteDir,
 };

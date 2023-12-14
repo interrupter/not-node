@@ -24,7 +24,8 @@ const DEFAULT_TRANSFORMERS = require("./transformers");
 
 /**
  * Generic form validation class
- **/
+ * @class Form
+ */
 class Form {
     /**
      * @prop {import('not-validation/src/builder').notValidationSchema} validation schema
@@ -38,10 +39,11 @@ class Form {
      * @prop {string} name of form
      **/
     #FORM_NAME;
+
     #MODEL_NAME;
     #MODULE_NAME;
     #PROTO_FIELDS;
-    #VALIDATOR;
+
     #EXTRACTORS = {
         ...DEFAULT_EXTRACTORS,
     };
@@ -197,7 +199,7 @@ class Form {
                 throw e;
             } else {
                 throw new notError(
-                    "not-core:form_validation_unknown_error",
+                    "not-node:form_validation_unknown_error",
                     {
                         FORM_NAME: this.#FORM_NAME,
                         PROTO_FIELDS: this.#PROTO_FIELDS,

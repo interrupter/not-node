@@ -1,13 +1,10 @@
 const { MODULE_NAME } = require("../const");
 //DB related validation tools
 const Form = require("not-node").Form;
-//not-node
-const getIP = require("not-node").Auth.getIP;
 //form
 const FIELDS = [
-    ["activeUser", "not-node//requiredObject"],
-    ["data", `${MODULE_NAME}//_data`],
-    ["ip", "not-node//ip"],
+    ["identity", "not-node//identity"],
+    ["data", `${MODULE_NAME}//_data`],    
 ];
 
 const FORM_NAME = `${MODULE_NAME}:CreateForm`;

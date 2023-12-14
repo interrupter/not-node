@@ -37,6 +37,10 @@ export default (inquirer, config, layersList) => {
             result.validators = await modelValidators(inquirer);
             result.versioning = await modelVersioning(inquirer);
             result.increment = await modelIncrement(inquirer, result);
+        } else {
+            result.increment = false;
+            result.versioning = false;
+            result.validators = true;
         }
         console.log("Entity data", JSON.stringify(result));
         return result;

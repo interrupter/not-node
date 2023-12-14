@@ -1,12 +1,11 @@
-const getIP = require("not-node").Auth.getIP;
 const { MODULE_NAME } = require("../const");
 //DB related validation tools
 const Form = require("not-node").Form;
 //form
+
 const FIELDS = [
-["activeUser", "not-node//requiredObject"],
+["identity", "not-node//identity"],
 ["data", `${MODULE_NAME}//_<%- ModelName %>_data`],
-    ["ip", "not-node//ip"],
     ];
 
     const FORM_NAME = `${MODULE_NAME}:<%- ModelName %>CreateForm`;
@@ -21,15 +20,14 @@ const FIELDS = [
 
             /**
             * Extracts data
-            * @param {ExpressRequest} req expressjs request object
+            * @param {import('not-node/src/types.js').notNodeExpressRequest} req expressjs request object
             * @return {Object} forma data
             **/
             extract(req) {
-            const ip = getIP(req);
             const instructions = {
             <% if (fields && Array.isArray(fields)) { %>
                 <% for(let field of fields){ %>
-                    <%- field+': fromBody" ,' -%>
+                    <%- field+': "fromBody" ,' -%>
                         <% } %>
                             <% } %>
                                 owner: "activeUserId",

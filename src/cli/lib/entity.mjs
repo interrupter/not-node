@@ -22,6 +22,15 @@ async function renderEntityFiles(module_src_dir, data, config) {
             console.error("No renderer for layer: ", layerName);
         }
     }
+    if (data.layers.includes("controllers") && Renderers.controllersCommons) {
+        Renderers.controllersCommons(
+            resolve(module_src_dir, `./controllers/common`),
+            [data],
+            config,
+            renderFile,
+            Options.PATH_TMPL
+        );
+    }
 }
 
 async function createEntity(modules_dir, config) {
@@ -30,12 +39,13 @@ async function createEntity(modules_dir, config) {
     const moduleDir = resolve(modules_dir, ModuleName);
     const moduleLayers = await Readers.moduleLayers(inquirer);
     const moduleConfig = { ...config, moduleName, ModuleName, moduleLayers };
-    console.log();
+    console.log("moduleConfig", moduleConfig);
     const entityData = await Readers.entityData(
         inquirer,
         moduleConfig,
         moduleConfig.moduleLayers
     );
+    console.log("entityData", entityData);
     await renderEntityFiles(
         resolve(moduleDir, "./src"),
         entityData,
