@@ -1,220 +1,224 @@
 const ACTION_SIGNATURES = require('not-node/src/auth/const').ACTION_SIGNATURES;
 const FIELDS = [
     ["_id", "not-node//_id"],
+    <% if (increment){ %>
     ["<%- modelName %>ID", "not-node//ID"],
+    <% } %>
     <% if (fields && Array.isArray(fields)) { %>
     <% for(let field of fields){ %>
     "<%- field %>",
     <% } %>
     <% } %>
+    <% if (ownage){ %>
     ["owner", "not-node//owner"],
     ["ownerModel", "not-node//ownerModel"],
+    <% } %>
+    <% if (dates){ %>
     ["createdAt", "not-node//createdAt"],
     ["updatedAt", "not-node//updatedAt"],
+    <% } %>
 ];
 
 const actionNamePath = "/:actionName";
 const idActionPath = "/:record[_id]/:actionName";
 
 module.exports = {
-    model: "<%- modelName %>",
-    url: "/api/:modelName",
-    fields: FIELDS,
-    privateFields: [],
-    actions: {                        
-        <% if (Object.hasOwn(actions, 'create')){ %>
-        create: {
-            method: "put",
-            actionSignature: ACTION_SIGNATURES.CREATE,
-            title: "<%- ModuleName %>:form_title_create",
-            description: "<%- ModuleName %>:form_description_create",
-            rules: [
-                {
-                    auth: true,
-                    root: true,
-                    fields: [<%- fields.map((entry) => `"${entry}"`).join(',')  %>,"owner"],
-                },
-                {
-                    auth: true,
-                    role: ["client", "confirmed"],
-                    fields: ["title"],
-                },
-            ],
-            data: ["record"],
-            postFix: actionNamePath,
-        },
-        <% } %>
-        <% if (Object.hasOwn(actions,'get')){ %>
-        get: {
-            method: "get",
-            actionSignature: ACTION_SIGNATURES.READ,
-            title: "<%- ModuleName %>:form_title_details",
-            description: "<%- ModuleName %>:form_description_details",
-            rules: [
-                {
-                    auth: true,
-                    root: true,
-                    fields: [
-                        "_id",
-                        "<%- modelName %>ID",
-                        <%- fields.map((entry) => `"${entry}"`).join(',')  %>,
-                        "owner",
-                        "ownerModel",
-                        "createdAt",
-                        "updatedAt",
-                    ],
-                },
-                {
-                    auth: true,
-                    role: ["client", "confirmed"],
-                    fields: [
-                        "_id",
-                        "<%- modelName %>ID",
-                        <%- fields.map((entry) => `"${entry}"`).join(',')  %>,
-                        "createdAt",
-                        "updatedAt",
-                    ],
-                },
-            ],
-            postFix: idActionPath,
-        },
-        <% } %>
-        <% if (Object.hasOwn(actions,'getRaw')){ %>
-        getRaw: {
-            method: "get",
-            actionSignature: ACTION_SIGNATURES.READ,
-            title: "<%- ModuleName %>:form_title_details",
-            description: "<%- ModuleName %>:form_description_details",
-            rules: [
-                {
-                    auth: true,
-                    root: true,
-                    fields: [
-                        "_id",
-                        "<%- modelName %>ID",
-                        <%- fields.map((entry) => `"${entry}"`).join(',')  %>,
-                        "owner",
-                        "ownerModel",
-                        "createdAt",
-                        "updatedAt",
-                    ],
-                },
-                {
-                    auth: true,
-                    role: "admin",
-                    fields: [
-                        "_id",
-                        "<%- modelName %>ID",
-                        <%- fields.map((entry) => `"${entry}"`).join(',')  %>,
-                        "owner",
-                        "ownerModel",
-                        "createdAt",
-                        "updatedAt",
-                    ],
-                },
-                {
-                    auth: true,
-                    role: ["client", "confirmed"],
-                    fields: [
-                        "<%- modelName %>ID",
-                        <%- fields.map((entry) => `"${entry}"`).join(',')  %>,
-                        "createdAt",
-                        "updatedAt",
-                    ],
-                },
-            ],
-            postFix: idActionPath,
-        },
-        <% } %>
-        <% if (Object.hasOwn(actions,'update')){ %>
-        update: {
-            title: "<%- ModuleName %>:form_title_update",
-            actionSignature: ACTION_SIGNATURES.UPDATE,
-            description: "<%- ModuleName %>:form_description_update",
-            method: "post",
-            rules: [
-                {
-                    auth: true,
-                    root: true,
-                    fields: [<%- fields.map((entry) => `"${entry}"`).join(',')  %>, "owner", "ownerModel"],
-                },
-                {
-                    auth: true,
-                    role: ["client", "confirmed"],
-                    fields: [<%- fields.map((entry) => `"${entry}"`).join(',')  %>],
-                },
-            ],
-            data: ["record"],
-            postFix: idActionPath,
-        },        
-        <% } %>
-        <% if (Object.hasOwn(actions,'delete')){ %>
-        delete: {
-            actionSignature: ACTION_SIGNATURES.DELETE,
-            title: "<%- ModuleName %>:form_title_delete",
-            description: "<%- ModuleName %>:form_description_delete",
-            method: "delete",
-            rules: [
-                {
-                    auth: true,
-                    root: true,
-                },
-                {
-                    auth: true,
-                    role: ["client", "confirmed"],
-                },
-            ],
-            data: ["record"],
-            postFix: idActionPath,
-        },
-        <% } %>
-        <% if (Object.hasOwn(actions,'listAndCount')){ %>
-        listAndCount: {
-            method: "get",
-            actionSignature: ACTION_SIGNATURES.READ,
-            data: ["pager", "sorter", "filter", "search"],
-            rules: [
-                {
-                    auth: true,
-                    root: true,
-                },
-                {
-                    auth: true,
-                    role: "admin",
-                },
-                {
-                    auth: true,
-                    role: ["client", "confirmed"],
-                },
-            ],
-            postFix: actionNamePath,
-        },
-        <% } %>
-        <% if (Object.hasOwn(actions,'listAll')){ %>
-        listAll: {
-            method: "get",
-            actionSignature: ACTION_SIGNATURES.READ,
-            data: ["record", "sorter"],
-            fields: [
-            <%- fields.map((entry) => `"${entry}"`).join(',')  %>,
-                "createdAt",
-                "updatedAt",
-            ],
-            postFix: actionNamePath,
-            rules: [
-                {
-                    root: true,
-                },
-                {
-                    auth: true,
-                    role: ["manager"],
-                },
-                {
-                    auth: true,
-                },
-            ],
-        },
-        <% } %>
-    },
+	model: "<%- modelName %>",
+	url: "/api/:modelName",
+	fields: FIELDS,
+	privateFields: [],
+	actions: {
+		<% if (Object.hasOwn(actions, 'create')){ %>
+		create: {
+			method: "put",
+			actionSignature: ACTION_SIGNATURES.CREATE,
+			title: "<%- ModuleName %>:form_title_create",
+			description: "<%- ModuleName %>:form_description_create",
+			rules: [
+				{
+					auth: true,
+					root: true,
+					fields: [
+						<%- fields.map((entry) => `"${entry}"`).join(',')  %>,
+						<% if (ownage){ %>"owner",<% } %>
+					],
+				},
+				{
+					auth: true,
+					role: ["client", "confirmed"],
+					fields: ["title"],
+				},
+			],
+			data: ["record"],
+			postFix: actionNamePath,
+		},
+		<% } %>
+		<% if (Object.hasOwn(actions,'get')){ %>
+		get: {
+			method: "get",
+			actionSignature: ACTION_SIGNATURES.READ,
+			title: "<%- ModuleName %>:form_title_details",
+			description: "<%- ModuleName %>:form_description_details",
+			rules: [
+				{
+					auth: true,
+					root: true,
+					fields: [
+						"_id",
+						<% if (increment){ %>"<%- modelName %>ID",<% } %>
+						<%- fields.map((entry) => `"${entry}"`).join(',')  %>,
+						<% if (ownage){ %>"owner","ownerModel",<% } %>
+						<% if (dates){ %>"createdAt","updatedAt",<% } %>
+					],
+				},
+				{
+					auth: true,
+					role: ["client", "confirmed"],
+					fields: [
+						"_id",
+						<% if (increment){ %>"<%- modelName %>ID",<% } %>
+						<%- fields.map((entry) => `"${entry}"`).join(',')  %>,
+						<% if (dates){ %>"createdAt","updatedAt",<% } %>
+					],
+				},
+			],
+			postFix: idActionPath,
+		},
+		<% } %>
+		<% if (Object.hasOwn(actions,'getRaw')){ %>
+		getRaw: {
+			method: "get",
+			actionSignature: ACTION_SIGNATURES.READ,
+			title: "<%- ModuleName %>:form_title_details",
+			description: "<%- ModuleName %>:form_description_details",
+			rules: [
+				{
+					auth: true,
+					root: true,
+					fields: [
+						"_id",
+						<% if (increment){ %>"<%- modelName %>ID",<% } %>
+						<%- fields.map((entry) => `"${entry}"`).join(',')  %>,
+						<% if (ownage){ %>"owner","ownerModel",<% } %>
+						<% if (dates){ %>"createdAt","updatedAt",<% } %>
+					],
+				},
+				{
+					auth: true,
+					role: "admin",
+					fields: [
+						"_id",
+						<% if (increment){ %>"<%- modelName %>ID",<% } %>
+						<%- fields.map((entry) => `"${entry}"`).join(',')  %>,
+						<% if (ownage){ %>"owner","ownerModel",<% } %>
+						<% if (dates){ %>"createdAt","updatedAt",<% } %>
+					],
+				},
+				{
+					auth: true,
+					role: ["client", "confirmed"],
+					fields: [
+						<% if (increment){ %>"<%- modelName %>ID",<% } %>
+						<%- fields.map((entry) => `"${entry}"`).join(',')  %>,
+						<% if (dates){ %>"createdAt","updatedAt",<% } %>
+					],
+				},
+			],
+			postFix: idActionPath,
+		},
+		<% } %>
+		<% if (Object.hasOwn(actions,'update')){ %>
+		update: {
+			title: "<%- ModuleName %>:form_title_update",
+			actionSignature: ACTION_SIGNATURES.UPDATE,
+			description: "<%- ModuleName %>:form_description_update",
+			method: "post",
+			rules: [
+				{
+					auth: true,
+					root: true,
+					fields: [
+						<%- fields.map((entry) => `"${entry}"`).join(',')  %>,
+						<% if (ownage){ %>"owner", "ownerModel",<% } %>
+					],
+				},
+				{
+					auth: true,
+					role: ["client", "confirmed"],
+					fields: [<%- fields.map((entry) => `"${entry}"`).join(',')  %>],
+				},
+			],
+			data: ["record"],
+			postFix: idActionPath,
+		}, 
+		<% } %>
+		<% if (Object.hasOwn(actions,'delete')){ %>
+		delete: {
+			actionSignature: ACTION_SIGNATURES.DELETE,
+			title: "<%- ModuleName %>:form_title_delete",
+			description: "<%- ModuleName %>:form_description_delete",
+			method: "delete",
+			rules: [
+				{
+					auth: true,
+					root: true,
+				},
+				{
+					auth: true,
+					role: ["client", "confirmed"],
+				},
+			],
+			data: ["record"],
+			postFix: idActionPath,
+		},
+		<% } %>
+		<% if (Object.hasOwn(actions,'listAndCount')){ %>
+		listAndCount: {
+			method: "get",
+			actionSignature: ACTION_SIGNATURES.READ,
+			data: ["pager", "sorter", "filter", "search"],
+			rules: [
+				{
+					auth: true,
+					root: true,
+				},
+				{
+					auth: true,
+					role: "admin",
+				},
+				{
+					auth: true,
+					role: ["client", "confirmed"],
+				},
+			],
+			postFix: actionNamePath,
+		},
+		<% } %>
+		<% if (Object.hasOwn(actions,'listAll')){ %>
+		listAll: {
+			method: "get",
+			actionSignature: ACTION_SIGNATURES.READ,
+			data: ["record", "sorter"],
+			fields: [
+				<%- fields.map((entry) => `"${entry}"`).join(',')  %>,
+				<% if (dates){ %>"createdAt","updatedAt",<% } %>
+			],
+			postFix: actionNamePath,
+			rules: [
+				{
+					root: true,
+				},
+				{
+					auth: true,
+					role: ["manager"],
+				},
+				{
+					auth: true,
+				},
+			],
+		},
+		<% } %>
+	},
 };
+
 

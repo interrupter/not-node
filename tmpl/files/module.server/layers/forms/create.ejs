@@ -19,9 +19,9 @@ class <%- ModelName %>CreateForm extends Form {
 	/**
 	* Extracts data
 	* @param {import('not-node/src/types.js').notNodeExpressRequest} req expressjs request object
-	* @return {Object} forma data
+	* @return {Promise<Object>} form data
 	**/
-	extract(req) {		
+	async extract(req) {		
 		const data = this.extractByInstructionsFromRouteActionFields(
 			req,			//request object 
 			["fromBody", "xss"], 	//extraction common pipe [extractor, ...transformers]

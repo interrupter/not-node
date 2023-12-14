@@ -13,7 +13,7 @@ class <%- ModelName %>UpdateForm extends Form {
 		super({ FIELDS, FORM_NAME, app });
 	}
 
-	extract(req) {
+	async extract(req) {
 		const data = this.extractByInstructionsFromRouteActionFields(req, ["fromBody", "xss"], {});
 		const envs = this.extractRequestEnvs(req);
 		<% if ( ownage ) { %>

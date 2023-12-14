@@ -5,7 +5,7 @@ export default (inquirer) => {
                 type: "input",
                 name: "name",
                 message: "Module Name",
-                default: "notNodeModule",
+                default: "not-my-module",
             },
         ])
         .then((answers) => {

@@ -22,10 +22,14 @@ const FIELDS = [
     "<%- field %>",
     <% } %>
     <% } %>
+    <% if (ownage){ %>
     ["owner", "not-node//owner"],
     ["ownerModel", "not-node//ownerModel"],
+    <% } %>
+    <% if (dates){ %>
     ["createdAt", "not-node//createdAt"],
     ["updatedAt", "not-node//updatedAt"],
+    <% } %>
 ];
 
 module.exports.FIELDS = FIELDS;
@@ -45,16 +49,21 @@ module.exports.thisVirtuals = {
 
 module.exports.thisPre = {
     updateOne: async () => {
+    	<% if (dates){ %>this.updatedAt = new Date();<% } %>
         //	console.debug('model pre updateOne');
     },
-    insert: async () => {
+    insert: async () => {    
         //console.log('model pre insert');
+        <% if (dates){ %>this.updatedAt = new Date();
+        this.createdAt = new Date();<% } %>
     },
     save: async () => {
         //console.log('model pre save');
+        <% if (dates){ %>this.updatedAt = new Date();<% } %>
     },
     update: async () => {
         //console.log('model pre update' );
+        <% if (dates){ %>this.updatedAt = new Date();<% } %>
     },
 };
 
