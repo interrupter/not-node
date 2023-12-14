@@ -5,6 +5,8 @@ import entityLayers from "./entityLayers.mjs";
 import modelValidators from "./modelValidators.mjs";
 import modelVersioning from "./modelVersioning.mjs";
 import modelIncrement from "./modelIncrement.mjs";
+import modelDates from "./modelDates.mjs";
+import modelOwnage from "./modelOwnage.mjs";
 
 const DEFAULT = {
     ModelName: "NewModel",
@@ -37,10 +39,14 @@ export default (inquirer, config, layersList) => {
             result.validators = await modelValidators(inquirer);
             result.versioning = await modelVersioning(inquirer);
             result.increment = await modelIncrement(inquirer, result);
+            result.ownage = await modelOwnage(inquirer);
+            result.dates = await modelDates(inquirer);
         } else {
             result.increment = false;
             result.versioning = false;
             result.validators = true;
+            result.ownage = false;
+            result.dates = false;
         }
         console.log("Entity data", JSON.stringify(result));
         return result;

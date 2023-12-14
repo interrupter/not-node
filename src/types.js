@@ -95,4 +95,32 @@
  * @property    {string}        provider    //provider class name
  */
 
+/**
+ * @typedef     {string|function}    notAppFormPropertyProcessingPipeInstruction
+ */
+
+/**
+ * @typedef     {Array<notAppFormPropertyProcessingPipeInstruction>}    notAppFormPropertyProcessingPipe
+ */
+
+/**
+ * @typedef     {Object.<string, notAppFormPropertyProcessingPipe>}    notAppFormProcessingPipe
+ */
+
+/**
+ * @typedef     {object}    notAppFormEnvExtractor
+ * @property    {string}    name
+ * @property    {any}       value
+ */
+
+/**
+ * @typedef     {object}    notAppFormRateLimiterOptions
+ * @property    {object}    [options]
+ * @property    {string}    [options.keyPrefix]
+ * @property    {number}    [options.points]
+ * @property    {number}    [options.duration]
+ * @property    {object}    [exception]
+ * @property    {function}  [idGetter]
+ * @property    {string}    [client]
+ */
 module.exports = {};

@@ -1,41 +1,33 @@
 const { MODULE_NAME } = require("../const");
 const Form = require("not-node").Form;
-const getIP = require("not-node").Auth.getIP;
 
 const FIELDS = [
-["targetId", { required: true }, "not-node//objectId"],
-["activeUser", "not-node//requiredObject"],
-["data", `${MODULE_NAME}//_<%- ModelName %>_data`], //sub forms validators should start with underscore
-    ["ip", "not-node//ip"],
-    ];
-    const FORM_NAME = `${MODULE_NAME}:<%- ModelName %>UpdateForm`;
+	["targetId", { required: true }, "not-node//objectId"],
+	["identity", "not-node//identity"],
+	["data", `${MODULE_NAME}//_<%- ModelName %>_data`], //sub forms validators should start with underscore
+];
+const FORM_NAME = `${MODULE_NAME}:<%- ModelName %>UpdateForm`;
 
-        class <%- ModelName %>UpdateForm extends Form {
-            constructor({ app }) {
-            super({ FIELDS, FORM_NAME, app });
-            }
+class <%- ModelName %>UpdateForm extends Form {
+	constructor({ app }) {
+		super({ FIELDS, FORM_NAME, app });
+	}
 
-            extract(req) {
-            const instructions = {
-            <% if (fields && Array.isArray(fields)) { %>
-                <% for(let field of fields){ %>
-                    <%- field+': "fromBody" ,' -%>
-                        <% } %>
-                            <% } %>
-                                owner: "fromBody",
-                                ownerModel: "fromBody",
-                                };
-                                const data = this.extractByInstructions(req, instructions);
-                                if (!req.user.isRoot() && !req.user.isAdmin()) {
-                                data.owner = req.user._id;
-                                data.ownerModel = "User";
-                                }
-                                return {
-                                targetId: req.params._id.toString(),
-                                activeUser: req.user,
-                                data,
-                                ip: getIP(req),
-                                };
-                                }
-                                }
-                                module.exports = <%- ModelName %>UpdateForm;
+	extract(req) {
+		const data = this.extractByInstructionsFromRouteActionFields(req, ["fromBody", "xss"], {});
+		const envs = this.extractRequestEnvs(req);
+		<% if ( ownage ) { %>
+		//admin could change ownage for others hardwired
+		if (!identity.admin) {
+			data.owner && delete data.owner;
+			data.ownerModel && delete data.ownerModel;
+		}
+		<% } %>	
+		return {
+			...envs, //contains targetId, identity and some more. look list in not-node/src/form/env_extractors/index.js
+			data,
+		};
+	}
+}
+
+module.exports = <%- ModelName %>UpdateForm;

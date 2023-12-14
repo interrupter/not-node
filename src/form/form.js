@@ -1,4 +1,5 @@
 const validator = require("validator");
+const notPath = require("not-path");
 const FormFabric = require("./fabric");
 const { createSchemaFromFields } = require("../fields");
 
@@ -61,6 +62,19 @@ class Form {
     #rateLimiterException = FormExceptionTooManyRequests;
     #rateLimiterClientName = InitRateLimiter.DEFAULT_CLIENT;
 
+    /**
+     *
+     * @param {Object} options
+     * @param {Array<string|Array<string>>} options.FIELDS
+     * @param {string} options.FORM_NAME
+     * @param {string} options.MODEL_NAME
+     * @param {string} options.MODULE_NAME
+     * @param {import('../app.js')} options.app
+     * @param {Object.<string, Function>} options.EXTRACTORS
+     * @param {Object.<string, Function>} options.TRANSFORMERS
+     * @param {Object.<string, import('../types.js').notAppFormEnvExtractor>} options.ENV_EXTRACTORS
+     * @param   {import('../types.js').notAppFormRateLimiterOptions}    options.rate
+     */
     constructor({
         FIELDS,
         FORM_NAME,
@@ -119,6 +133,7 @@ class Form {
      **/
     async run(req) {
         let data = await this.extract(req);
+        data = await this.afterExtract(data, req);
         await this.#checkRate(data);
         await this.#_validate(data);
         return data;
@@ -130,13 +145,10 @@ class Form {
      * @return {Promise<import('../types').PreparedData>}        forma data
      **/
     async extract(req) {
-        return this.afterExtract(
-            {
-                ...this.extractRequestEnvs(req),
-                data: this.extractByInstructionsFromRouteActionFields(req),
-            },
-            req
-        );
+        return {
+            ...this.extractRequestEnvs(req),
+            data: this.extractByInstructionsFromRouteActionFields(req),
+        };
     }
 
     /**
@@ -325,76 +337,119 @@ class Form {
         return FormFabric;
     }
 
+    /**
+     *  Object with named extractor functions
+     * @param {Object.<string,function>} extractors
+     */
     #addExtractors(extractors = {}) {
         if (extractors) {
             this.#EXTRACTORS = { ...this.#EXTRACTORS, ...extractors };
         }
     }
 
+    /**
+     * Extracts from express Request object data by inststructions object
+     * @param {import('../types').notNodeExpressRequest} req
+     * @param {import('../types.js').notAppFormProcessingPipe} instructions {fieldName: [extractor, ...transformers]}   extractors and transformers should be string (names of functions from libs) or functions
+     * @returns {Object}
+     */
     extractByInstructions(req, instructions) {
         const results = {};
         for (let fieldName in instructions) {
             const instruction = instructions[fieldName];
             if (Array.isArray(instruction)) {
-                this.#extractByInstructionPipe({
-                    results,
-                    instructions: instruction,
-                    fieldName,
-                    req,
-                });
-            } else {
-                this.#extractByInstruction({
+                this.#extractByInstructionPipe(
                     results,
                     instruction,
                     fieldName,
-                    req,
-                });
+                    req
+                );
+            } else {
+                this.#extractByInstruction(
+                    results,
+                    instruction,
+                    fieldName,
+                    req
+                );
             }
         }
         return results;
     }
 
-    #extractByInstruction({ results, instruction, fieldName, req }) {
+    /**
+     *  Runs one extractor provided as name of extractor from library or as a function.
+     *  Add extracted data to results object.
+     * @param {Object} results
+     * @param {import('../types.js').notAppFormPropertyProcessingPipeInstruction} instruction
+     * @param {string} fieldName    field name, maybe path to sub-object aka data.id
+     * @param {import('../types.js').notNodeExpressRequest} req
+     * @throws {FormExceptionExtractorForFieldIsUndefined}
+     */
+    #extractByInstruction(results, instruction, fieldName, req) {
         if (isFunc(instruction)) {
-            results[fieldName] = instruction(req, fieldName);
+            //using notPath to be able use paths to sub-objects for properties as data.targetId, data.list[0].value etc
+            notPath.set(
+                notPath.PATH_START_OBJECT + fieldName,
+                results,
+                // @ts-ignore
+                instruction(req, fieldName)
+            );
         } else if (typeof instruction == "string") {
             const extractor = this.#EXTRACTORS[instruction];
             if (isFunc(extractor)) {
-                results[fieldName] = extractor(req, fieldName);
+                notPath.set(
+                    notPath.PATH_START_OBJECT + fieldName,
+                    results,
+                    extractor(req, fieldName)
+                );
             } else {
                 throw new FormExceptionExtractorForFieldIsUndefined(fieldName);
             }
         }
     }
 
-    #extractByInstructionPipe({ results, instructions, fieldName, req }) {
+    /**
+     *
+     * @param {Object}       results    resulting object
+     * @param {import('../types.js').notAppFormPropertyProcessingPipe}       instructions
+     * @param {string}  fieldName   field name, maybe path to sub-object aka data.id
+     * @param {import('../types.js').notNodeExpressRequest} req
+     */
+    #extractByInstructionPipe(results, instructions, fieldName, req) {
         if (!instructions || instructions.length === 0) {
             throw new FormExceptionExtractorForFieldIsUndefined(fieldName);
         }
         //
-        this.#extractByInstruction({
-            results,
-            instruction: instructions[0],
-            fieldName,
-            req,
-        });
+        this.#extractByInstruction(results, instructions[0], fieldName, req);
         for (let t = 1; t < instructions.length; t++) {
             const instruction = instructions[t];
-            this.#transformByInstruction({
-                results,
-                instruction,
-                fieldName,
-            });
+            this.#transformByInstruction(results, instruction, fieldName);
         }
     }
 
-    #transformByInstruction({ results, instruction, fieldName }) {
+    /**
+     *
+     * @param {Object} results      resulting object
+     * @param {import('../types.js').notAppFormPropertyProcessingPipeInstruction} instruction
+     * @param {string} fieldName    field name, maybe path to sub-object aka data.id
+     * @throws  {FormExceptionTransformerForFieldIsUndefined}
+     */
+    #transformByInstruction(results, instruction, fieldName) {
         if (isFunc(instruction)) {
-            results[fieldName] = instruction(results[fieldName]);
+            notPath.set(
+                notPath.PATH_START_OBJECT + fieldName,
+                results,
+                // @ts-ignore
+                instruction(results[fieldName])
+            );
         } else if (typeof instruction == "string") {
             const transformer = this.#TRANSFORMERS[instruction];
             if (isFunc(transformer)) {
-                results[fieldName] = transformer(results[fieldName]);
+                notPath.set(
+                    notPath.PATH_START_OBJECT + fieldName,
+                    results,
+                    transformer(results[fieldName])
+                );
             } else {
                 throw new FormExceptionTransformerForFieldIsUndefined(
                     fieldName,
@@ -425,6 +480,13 @@ class Form {
         return [];
     }
 
+    /**
+     *
+     * @param {import('../types.js').notNodeExpressRequest} req
+     * @param {import('../types.js').notAppFormPropertyProcessingPipe} mainInstruction
+     * @param {import('../types.js').notAppFormProcessingPipe} exceptions
+     * @returns {import('../types.js').notAppFormProcessingPipe}
+     */
     createInstructionFromRouteActionFields(
         req,
         mainInstruction = ["fromBody", "xss"],
@@ -439,26 +501,32 @@ class Form {
                 result[fieldName] = mainInstruction;
             }
         });
+        // @ts-ignore
         return result;
     }
 
     /**
-     *
-     * @param {import('express').Request}   req
-     * @param {Array<string>}               mainInstruction
-     * @param {object}                      exceptions
-     * @returns
+     *  Creates object {[fieldName]: Array[extractor:string|function, ...transformers:Array<string|function>]}
+     * @param {import('../types.js').notNodeExpressRequest}   req       express request with notRouteData property
+     * @param {import('../types.js').notAppFormPropertyProcessingPipe}               mainInstruction             what is a common pipe to apply to an property [extractor, ...transformers]
+     * @param {import('../types.js').notAppFormProcessingPipe}                      exceptions                  what shouldn't be treated as common and have own pipes {fieldName:string: [extractor, ...transformers]}
+     * @param {import('../types.js').notAppFormProcessingPipe}                      additional
+     * @returns {object}
      */
     extractByInstructionsFromRouteActionFields(
         req,
         mainInstruction = ["fromBody", "xss"],
-        exceptions = {}
+        exceptions = {},
+        additional = {}
     ) {
-        const instructions = this.createInstructionFromRouteActionFields(
-            req,
-            mainInstruction,
-            exceptions
-        );
+        const instructions = {
+            ...this.createInstructionFromRouteActionFields(
+                req,
+                mainInstruction,
+                exceptions
+            ),
+            ...additional,
+        };
         return this.extractByInstructions(req, instructions);
     }
 

@@ -2,42 +2,45 @@ const { MODULE_NAME } = require("../const");
 //DB related validation tools
 const Form = require("not-node").Form;
 //form
+const FIELDS = [	
+	["data", `${MODULE_NAME}//_<%- ModelName %>_data`],
+];
 
-const FIELDS = [
-["identity", "not-node//identity"],
-["data", `${MODULE_NAME}//_<%- ModelName %>_data`],
-    ];
+const FORM_NAME = `${MODULE_NAME}:<%- ModelName %>CreateForm`;
 
-    const FORM_NAME = `${MODULE_NAME}:<%- ModelName %>CreateForm`;
+/**
+ *
+**/
+class <%- ModelName %>CreateForm extends Form {
+	constructor({ app }) {
+		super({ FIELDS, FORM_NAME, app });
+	}
 
-        /**
-        *
-        **/
-        module.exports = class <%- ModelName %>CreateForm extends Form {
-            constructor({ app }) {
-            super({ FIELDS, FORM_NAME, app });
-            }
+	/**
+	* Extracts data
+	* @param {import('not-node/src/types.js').notNodeExpressRequest} req expressjs request object
+	* @return {Object} forma data
+	**/
+	extract(req) {		
+		const data = this.extractByInstructionsFromRouteActionFields(
+			req,			//request object 
+			["fromBody", "xss"], 	//extraction common pipe [extractor, ...transformers]
+			{}			//exceptions {fieldName: [extractor, ...transformers],...}
+		);
+		//contains targetId, identity and some more. look full list in not-node/src/form/env_extractors/index.js
+		const envs = this.extractRequestEnvs(req);
+		<% if ( ownage ) { %>
+		//admin could change ownage for others hardwired
+		if (!identity.admin) {
+			data.owner = identity.uid;
+			data.ownerModel = 'User';
+		}
+		<% } %>
+		return	{
+			...envs,
+			data
+		};	
+	}
+}
 
-            /**
-            * Extracts data
-            * @param {import('not-node/src/types.js').notNodeExpressRequest} req expressjs request object
-            * @return {Object} forma data
-            **/
-            extract(req) {
-            const instructions = {
-            <% if (fields && Array.isArray(fields)) { %>
-                <% for(let field of fields){ %>
-                    <%- field+': "fromBody" ,' -%>
-                        <% } %>
-                            <% } %>
-                                owner: "activeUserId",
-                                ownerModel: "activeUserModelName",
-                                };
-                                const data = this.extractByInstructions(req, instructions);
-                                return {
-                                activeUser: req.user,
-                                ip,
-                                data,
-                                };
-                                }
-                                };
+module.exports = <%- ModelName %>CreateForm;

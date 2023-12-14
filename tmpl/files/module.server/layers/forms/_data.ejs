@@ -4,32 +4,36 @@ const Form = require("not-node").Form;
 
 const FIELDS = [
 <% if (fields && Array.isArray(fields)) { %>
-    <% for(let field of fields){ %>
-        <%- `"${field}",` -%>
-            <% } %>
-                <% } %>
-                    ["owner", "not-node//owner"],
-                    ["ownerModel", "not-node//ownerModel"],
-                    ];
+<% for(let field of fields){ %>
+	<%- `"${field}",` -%>
+<% } %>
+<% } %>
+<% if (ownage) { %>
+	["owner", "not-node//owner"],
+	["ownerModel", "not-node//ownerModel"],
+<% } %>
+];
 
-                    const FORM_NAME = `${MODULE_NAME}:_<%- ModelName %>DataForm`;
+const FORM_NAME = `${MODULE_NAME}:_<%- ModelName %>DataForm`;
 
+//const validateTitle = require("./validators/title.js");
+class _<%- ModelName %>_DataForm extends Form {
+	constructor({ app }) {
+		super({ FIELDS, FORM_NAME, app });
+	}
 
-                        //const validateTitle = require("./validators/title.js");
+	//could do something with data, before validation
+	async extract(data) {
+		return data;
+	}
+	
+	//fields validators are loaded automatically, form validators should be returned from here as an array
+	getFormValidationRules() {
+		return [
+			//add validators here
+			//validateTitle,
+		];
+	}
+}
 
-                        module.exports = class _DataForm extends Form {
-                        constructor({ app }) {
-                        super({ FIELDS, FORM_NAME, app });
-                        }
-
-                        extract(data) {
-                        return data;
-                        }
-
-                        getFormValidationRules() {
-                        return [
-                        //add validators here
-                        //validateTitle,
-                        ];
-                        }
-                        };
+module.exports = _<%- ModelName %>_DataForm;
