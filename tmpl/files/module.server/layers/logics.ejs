@@ -43,9 +43,11 @@ class <%- ModelName %>Logic extends <%- ModelName %>GenericLogic {
 		const action = "<%- actionName %>";
 		Log.debug(
 			`${MODULE_NAME}//Logic//${MODEL_NAME}//${action}`,
-			targetId,
-			ip: identity.ip,
-			root: identity.root,
+			{
+				targetId,
+				ip: identity.ip,
+				root: identity.root,
+			}
 		);
 		const results = await getModel().<%- actionName %>(			
 			targetId,
