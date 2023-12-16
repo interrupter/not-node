@@ -37,35 +37,8 @@ const <%- ModelName %>GenericLogic = notNode.Generic.GenericLogic({
 module.exports.thisLogicName = MODEL_NAME;
 
 class <%- ModelName %>Logic extends <%- ModelName %>GenericLogic {
-	<% if(Object.keys(actions).length){ %>
-	<% for(let actionName in actions) { %>
-	static async <%- actionName %>({ identity, data, targetId, shouldOwn }) {
-		const action = "<%- actionName %>";
-		Log.debug(
-			`${MODULE_NAME}//Logic//${MODEL_NAME}//${action}`,
-			{
-				targetId,
-				ip: identity.ip,
-				root: identity.root,
-			}
-		);
-		const results = await getModel().<%- actionName %>(			
-			targetId,
-			data,
-			identity
-		);
-		LogAction({
-			action,
-			by: identity.uid,
-			role: identity.role,
-			ip: identity.ip,
-			root: identity.root,
-			shouldOwn,
-		});
-		return results;
-	}
-	<% } %>
-	<% } %>
+	
 }
 
 module.exports[MODEL_NAME] = <%- ModelName %>Logic;
+

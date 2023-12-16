@@ -25,26 +25,7 @@ const <%- ModelName %>GenericRoute = notNode.Generic.GenericRoute({
 });
 
 class <%- ModelName %>Route extends <%- ModelName %>GenericRoute {
-	<% if(Object.keys(actions).length){ %>
-	<% for(let actionName in actions) { %>
-	static async <%- actionName %>(
-		req, res, next, 	//standart express routes objects
-		prepared 		//extracted by `before` if form class exists
-	) {
-	<% if (layers.includes('forms') && layers.includes('logics')){ %>
-	return await getLogic().<%- actionName %>({ ...prepared });
-	<% } %>
-        
-	<% if (layers.includes('forms') && !layers.includes('logics')){ %>
-	return {...prepared};
-	<% } %>
-
-	<% if (!layers.includes('forms') && layers.includes('logics')){ %>
-	return await getLogic().<%- actionName %>();
-	<% } %>
-    }
-    <% } %>   
-    <% } %>   
+	static restrictRootAccess = true;
 }
 
 module.exports = <%- ModelName %>Route;

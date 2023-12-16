@@ -32,21 +32,18 @@ module.exports = {
 		create: {
 			method: "put",
 			actionSignature: ACTION_SIGNATURES.CREATE,
-			title: "<%- ModuleName %>:form_title_create",
-			description: "<%- ModuleName %>:form_description_create",
+			title: "not-node:crud_create_action_form_title",
+			description: "not-node:crud_create_action_form_description",
 			rules: [
 				{
 					auth: true,
-					root: true,
-					fields: [
-						<%- fields.map((entry) => `"${entry}"`).join(',')  %>,
-						<% if (ownage){ %>"owner",<% } %>
-					],
+					role: "admin",
+					fields: [<%- fields.map((entry) => `"${entry}"`).join(',')  %>,<% if (ownage){ %>"owner",<% } %>],
 				},
 				{
 					auth: true,
 					role: ["client", "confirmed"],
-					fields: ["title"],
+					fields: [<% if (fields && Array.isArray(fields)) { %><% for(let field of fields){ %>"<%- field %>",<% } %><% } %>],
 				},
 			],
 			data: ["record"],
@@ -57,12 +54,12 @@ module.exports = {
 		get: {
 			method: "get",
 			actionSignature: ACTION_SIGNATURES.READ,
-			title: "<%- ModuleName %>:form_title_details",
-			description: "<%- ModuleName %>:form_description_details",
+			title: "not-node:crud_read_action_form_title",
+			description: "not-node:crud_read_action_form_description",
 			rules: [
 				{
 					auth: true,
-					root: true,
+					role: "admin",
 					fields: [
 						"_id",
 						<% if (increment){ %>"<%- modelName %>ID",<% } %>
@@ -89,20 +86,9 @@ module.exports = {
 		getRaw: {
 			method: "get",
 			actionSignature: ACTION_SIGNATURES.READ,
-			title: "<%- ModuleName %>:form_title_details",
-			description: "<%- ModuleName %>:form_description_details",
-			rules: [
-				{
-					auth: true,
-					root: true,
-					fields: [
-						"_id",
-						<% if (increment){ %>"<%- modelName %>ID",<% } %>
-						<%- fields.map((entry) => `"${entry}"`).join(',')  %>,
-						<% if (ownage){ %>"owner","ownerModel",<% } %>
-						<% if (dates){ %>"createdAt","updatedAt",<% } %>
-					],
-				},
+			title: "not-node:crud_read_action_form_title",
+			description: "not-node:crud_read_action_form_description",
+			rules: [				
 				{
 					auth: true,
 					role: "admin",
@@ -129,14 +115,14 @@ module.exports = {
 		<% } %>
 		<% if (Object.hasOwn(actions,'update')){ %>
 		update: {
-			title: "<%- ModuleName %>:form_title_update",
-			actionSignature: ACTION_SIGNATURES.UPDATE,
-			description: "<%- ModuleName %>:form_description_update",
+			title: "not-node:crud_update_action_form_title",
+			description: "not-node:crud_update_action_form_description",
+			actionSignature: ACTION_SIGNATURES.UPDATE,			
 			method: "post",
 			rules: [
 				{
 					auth: true,
-					root: true,
+					role: ["admin"],
 					fields: [
 						<%- fields.map((entry) => `"${entry}"`).join(',')  %>,
 						<% if (ownage){ %>"owner", "ownerModel",<% } %>
@@ -155,13 +141,13 @@ module.exports = {
 		<% if (Object.hasOwn(actions,'delete')){ %>
 		delete: {
 			actionSignature: ACTION_SIGNATURES.DELETE,
-			title: "<%- ModuleName %>:form_title_delete",
-			description: "<%- ModuleName %>:form_description_delete",
+			title: "not-node:crud_delete_action_form_title",
+			description: "not-node:crud_delete_action_form_description",
 			method: "delete",
 			rules: [
 				{
 					auth: true,
-					root: true,
+					role: ["admin"],
 				},
 				{
 					auth: true,
@@ -176,19 +162,16 @@ module.exports = {
 		listAndCount: {
 			method: "get",
 			actionSignature: ACTION_SIGNATURES.READ,
+			title: "not-node:crud_listAndCount_action_form_title",
+			description: "not-node:crud_listAndCount_action_form_description",
 			data: ["pager", "sorter", "filter", "search"],
-			rules: [
+			rules: [				
 				{
 					auth: true,
-					root: true,
+					role: ["admin"],
 				},
 				{
-					auth: true,
-					role: "admin",
-				},
-				{
-					auth: true,
-					role: ["client", "confirmed"],
+					auth: true					
 				},
 			],
 			postFix: actionNamePath,
@@ -199,15 +182,14 @@ module.exports = {
 			method: "get",
 			actionSignature: ACTION_SIGNATURES.READ,
 			data: ["record", "sorter"],
+			title: "not-node:crud_listAll_action_form_title",
+			description: "not-node:crud_listAll_action_form_description",
 			fields: [
 				<%- fields.map((entry) => `"${entry}"`).join(',')  %>,
 				<% if (dates){ %>"createdAt","updatedAt",<% } %>
 			],
 			postFix: actionNamePath,
-			rules: [
-				{
-					root: true,
-				},
+			rules: [				
 				{
 					auth: true,
 					role: ["manager"],
