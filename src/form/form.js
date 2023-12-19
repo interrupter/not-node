@@ -3,7 +3,12 @@ const notPath = require("not-path");
 const FormFabric = require("./fabric");
 const { createSchemaFromFields } = require("../fields");
 
-const { objHas, isFunc, firstLetterToUpper } = require("../common");
+const {
+    objHas,
+    isFunc,
+    firstLetterToUpper,
+    firstLetterToLower,
+} = require("../common");
 
 const ValidationBuilder = require("not-validation").Builder;
 const ValidationSession = require("not-validation").Session;
@@ -96,6 +101,40 @@ class Form {
         this.#addEnvExtractors(ENV_EXTRACTORS);
         this.#addTransformers(TRANSFORMERS);
         this.#createRateLimiter(rate);
+    }
+
+    static createName(MODULE_NAME, MODEL_NAME, actionName) {
+        return `${MODULE_NAME}:${MODEL_NAME}:${firstLetterToUpper(
+            actionName
+        )}Form`;
+    }
+
+    static createPath(MODULE_NAME, MODEL_NAME, actionName) {
+        if (MODEL_NAME) {
+            return `${MODULE_NAME}//${firstLetterToLower(
+                MODEL_NAME
+            )}.${actionName}`;
+        } else {
+            return `${MODULE_NAME}//${actionName}`;
+        }
+    }
+
+    /**
+     *
+     * @param   {object} options
+     * @param   {import('../app.js')}   options.app
+     * @param   {string}   options.MODULE_NAME
+     * @param   {string}   options.MODEL_NAME
+     * @param   {string}   options.actionName
+     * @returns {object}    instance of Form
+     */
+    static createDefaultInstance({ app, MODULE_NAME, MODEL_NAME, actionName }) {
+        const FIELDS = [
+            ["identity", "not-node//identity"],
+            ["data", `${MODULE_NAME}//_${MODEL_NAME}`],
+        ];
+        const FORM_NAME = Form.createName(MODULE_NAME, MODEL_NAME, actionName);
+        return new Form({ FIELDS, FORM_NAME, app, MODULE_NAME });
     }
 
     /**

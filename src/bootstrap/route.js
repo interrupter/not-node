@@ -3,12 +3,7 @@ const getApp = require("../getApp.js"),
     HttpExceptions = require("../exceptions/http"),
     configInit = require("not-config"),
     { sayForModule } = require("not-locale"),
-    {
-        objHas,
-        isFunc,
-        executeFunctionAsAsync,
-        firstLetterToUpper,
-    } = require("../common"),
+    { objHas, isFunc, executeFunctionAsAsync } = require("../common"),
     LogInit = require("not-log");
 
 module.exports = ({
@@ -39,6 +34,7 @@ module.exports = ({
     accessRulesBuilders = {}, //per action builders, {actionName: (preapared: any, req: ExpressRequest)=>{/** pass or throw an exception **/ */}}
     accessRuleBuilder = false, //universal will be used if no dedicated action builder was found
     defaultAccessRule = false, //if builder is not found, safe by default
+    createForm = Form.createDefaultInstance,
 }) => {
     const Log = LogInit(target, `${MODEL_NAME}/Routes'`);
     const say = sayForModule(MODULE_NAME);
@@ -85,34 +81,25 @@ module.exports = ({
         }
     };
 
-    const createDefaultForm = function ({ actionName, MODULE_NAME }) {
-        const FIELDS = [
-            ["identity", "not-node//identity"],
-            ["data", `${MODULE_NAME}//_${MODEL_NAME}`],
-        ];
-        const FORM_NAME = `${MODULE_NAME}:${firstLetterToUpper(
-            actionName
-        )}Form`;
-        const cls = class extends Form {
-            constructor({ app }) {
-                super({ FIELDS, FORM_NAME, app, MODULE_NAME });
-            }
-        };
-        return new cls({ app: getApp() });
-    };
-
     const getForm = (actionName) => {
         const form = getApp().getForm(
-            [MODULE_NAME, `${MODEL_NAME}.${actionName}`].join("//")
+            Form.createPath(MODULE_NAME, MODEL_NAME, actionName)
         );
         if (form) {
             return form;
         }
-        const form2 = getApp().getForm([MODULE_NAME, actionName].join("//"));
+        const form2 = getApp().getForm(
+            Form.createPath(MODULE_NAME, undefined, actionName)
+        );
         if (form2) {
             return form2;
         }
-        return createDefaultForm({ actionName, MODULE_NAME });
+        return createForm({
+            app: getApp(),
+            MODULE_NAME,
+            MODEL_NAME,
+            actionName,
+        });
     };
 
     const beforeDecorator = async (req, res, next) => {
