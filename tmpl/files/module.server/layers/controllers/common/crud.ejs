@@ -1,13 +1,13 @@
+import { MODULE_NAME } from "../../const.js";
 import Validators from "../common/validators.js";
 import { Frame } from "not-bulma";
 const { notCRUD } = Frame;
 
-const MODULE_NAME = "<%- ModuleName %>";
 const MODEL_NAME = "<%- ModelName %>";
 
 const LABELS = {
-    plural: "<%- `${ModuleName}:${modelName}_label_plural` %>",
-    single: "<%- `${ModuleName}:${modelName}_label_single` %>",
+    plural: `${MODULE_NAME}:${MODEL_NAME}_label_plural`,
+    single: `${MODULE_NAME}:${MODEL_NAME}_label_single`,
 };
 
 class nc<%- ModelName %>Common extends notCRUD {
@@ -44,7 +44,7 @@ class nc<%- ModelName %>Common extends notCRUD {
                 <% for (let fieldName of fields){ %>
                 {
                     path: ":<%- fieldName %>",
-                    title: "<%- `${ModuleName}:${modelName}_field_${fieldName}_label` %>",
+                    title: `${MODULE_NAME}:<%- `${modelName}_field_${fieldName}_label` %>`,
                     searchable: true,
                     sortable: true,
                 },
@@ -56,17 +56,17 @@ class nc<%- ModelName %>Common extends notCRUD {
                     preprocessor: (value) => {
                         return [
                             {
-                                action: this.goDetails.bind(this, value),
+                                action: ()=>this.goDetails(value),
                                 title: "Подробнее",
                                 size: "small",
                             },
                             {
-                                action: this.goUpdate.bind(this, value),
+                                action: ()=>this.goUpdate(value),
                                 title: "Изменить",
                                 size: "small",
                             },
                             {
-                                action: this.goDelete.bind(this, value),
+                                action: ()=>this.goDelete(value),
                                 color: "danger",
                                 title: "Удалить",
                                 size: "small",
@@ -93,4 +93,5 @@ class nc<%- ModelName %>Common extends notCRUD {
 }
 
 export default nc<%- ModelName %>Common;
+
 
