@@ -53,7 +53,7 @@
   "field_UUID_label": "UUID",
   "field_UUID_placeholder": "UUID",
   "crud_create_action_waiting": "Создание записи...",
-  "crud_create_action_form_title_": "Добавление",
+  "crud_create_action_form_title": "Добавление",
   "crud_create_action_form_description": "Добавить новый документ",
   "crud_read_action_waiting": "Чтение записи...",
   "crud_read_action_form_title": "Детали",
