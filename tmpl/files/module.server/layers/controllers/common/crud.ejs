@@ -83,9 +83,8 @@ class nc<%- ModelName %>Common extends notCRUD {
     }
 
     createDefault() {        
-        let newRecord = this.make[this.getModelName()]({
-            _id: null,
-            <% for (let fieldName of fields){ %><%- fieldName %>: null,
+        let newRecord = this.getModel({            
+            <% for (let fieldName of fields){ %><%- fieldName %>: undefined,
             <% } %>
         });
         return newRecord;

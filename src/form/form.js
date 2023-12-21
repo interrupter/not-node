@@ -103,12 +103,32 @@ class Form {
         this.#createRateLimiter(rate);
     }
 
+    /**
+     * Creates model name string used in logging
+     * @param {string} MODULE_NAME
+     * @param {string|undefined} MODEL_NAME
+     * @param {string} actionName
+     * @returns {string}
+     */
     static createName(MODULE_NAME, MODEL_NAME, actionName) {
-        return `${MODULE_NAME}:${MODEL_NAME}:${firstLetterToUpper(
-            actionName
-        )}Form`;
+        if (MODEL_NAME) {
+            return `${MODULE_NAME}:${MODEL_NAME}:${firstLetterToUpper(
+                actionName
+            )}Form`;
+        } else {
+            return `${MODULE_NAME}:Common:${firstLetterToUpper(
+                actionName
+            )}Form`;
+        }
     }
 
+    /**
+     * Create path to form in notDomain resources manager. Could be used to find form via notApplication.getForm(formPath)
+     * @param {string} MODULE_NAME
+     * @param {string|undefined} MODEL_NAME
+     * @param {string} actionName
+     * @returns {string}
+     */
     static createPath(MODULE_NAME, MODEL_NAME, actionName) {
         if (MODEL_NAME) {
             return `${MODULE_NAME}//${firstLetterToLower(
@@ -141,7 +161,7 @@ class Form {
      *
      *
      * @param {import('../types').notNodeExpressRequest} req
-     * @return {*}
+     * @return {string|undefined}
      * @memberof Form
      */
     getModelName(req) {

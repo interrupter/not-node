@@ -1,0 +1,24 @@
+const notNode = require("not-node");
+const { firstLetterToLower } = notNode.Common;
+const Schema = require("mongoose").Schema;
+const { MODULE_NAME } = require("../const");
+const MODEL_NAME = "<%- ModelName %>";
+
+module.exports = {
+    model: {
+        type: Schema.Types.Mixed,
+        required: true,
+        validate: [
+            {
+                validator(val) {
+                    return notNode.Application.getForm(
+                        `${MODULE_NAME}//_${firstLetterToLower(
+                            MODEL_NAME
+                        )}_data`
+                    ).run(val);
+                },
+                message: `${MODULE_NAME}:${firstLetterToLower(MODEL_NAME)}`,
+            },
+        ],
+    },
+};

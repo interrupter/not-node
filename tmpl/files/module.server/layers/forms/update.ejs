@@ -1,6 +1,7 @@
-const { MODULE_NAME } = require("../const");
 const Form = require("not-node").Form;
 
+const { MODULE_NAME } = require("../const");
+const MODEL_NAME = '<%- ModelName %>';
 const actionName = 'update';
 const FORM_NAME = Form.createName(MODULE_NAME, MODEL_NAME, actionName);
 
