@@ -2,8 +2,9 @@ const { MODULE_NAME } = require("../const");
 //DB related validation tools
 const Form = require("not-node").Form;
 //form
-const FIELDS = [	
-	["data", `${MODULE_NAME}//_<%- ModelName %>_data`],
+const FIELDS = [
+	["identity", "not-node//identity"],
+	["data", `${MODULE_NAME}//_<%- modelName %>_data`],
 ];
 
 const FORM_NAME = `${MODULE_NAME}:<%- ModelName %>CreateForm`;
@@ -44,3 +45,4 @@ class <%- ModelName %>CreateForm extends Form {
 }
 
 module.exports = <%- ModelName %>CreateForm;
+

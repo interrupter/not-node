@@ -4,7 +4,7 @@ const Form = require("not-node").Form;
 const FIELDS = [
 	["targetId", { required: true }, "not-node//objectId"],
 	["identity", "not-node//identity"],
-	["data", `${MODULE_NAME}//_<%- ModelName %>_data`], //sub forms validators should start with underscore
+	["data", `${MODULE_NAME}//_<%- modelName %>_data`], //sub forms validators should start with underscore
 ];
 const FORM_NAME = `${MODULE_NAME}:<%- ModelName %>UpdateForm`;
 
