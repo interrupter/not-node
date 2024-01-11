@@ -2,6 +2,7 @@ const merge = require("deepmerge");
 const Auth = require("../auth");
 const notFieldsFilter = require("../fields/filter");
 const getApp = require("../getApp");
+const { firstLetterToUpper } = require("../common");
 
 const DIRTY_FIELDS = [
     "rules",
@@ -32,7 +33,7 @@ module.exports = class notManifestFilter {
      **/
     static filterRoute(route, auth, role, root, moduleName = "") {
         let result = JSON.parse(JSON.stringify(route));
-        const modelName = result.modelName;
+        const modelName = result.model;
         result.actions = {};
         if (!route || !route.actions) {
             return result;
@@ -167,9 +168,9 @@ module.exports = class notManifestFilter {
     static composeFullModelName(moduleName, modelName) {
         if (modelName) {
             if (moduleName) {
-                return `${moduleName}//${modelName}`;
+                return `${moduleName}//${firstLetterToUpper(modelName)}`;
             } else {
-                return `${modelName}`;
+                return `${firstLetterToUpper(modelName)}`;
             }
         }
         return "";

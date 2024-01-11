@@ -7,7 +7,7 @@ const {
 const { getSafeFieldsForRoleAction } = require("../auth/fields");
 const { DEFAULT_USER_ROLE_FOR_GUEST } = require("../auth/const");
 /**
- * notFilterFilter.filter(fields, getApp().getModelSchema(MODEL_NAME), {action});
+ * notFieldsFilter.filter(fields, getApp().getModelSchema(MODEL_NAME), {action});
  *
  *  usage:
  * manifest = {
@@ -17,7 +17,7 @@ const { DEFAULT_USER_ROLE_FOR_GUEST } = require("../auth/const");
  *          list:{
  *              rules:[{
  *                  root: true,
- *                  fields: notFilterFilter.filter(['@*'], getApp().getModelSchema(MODEL_NAME), {action:read});
+ *                  fields: notFieldsFilter.filter(['@*'], getApp().getModelSchema(MODEL_NAME), {action:read});
  *              }]
  *          },
  *          profile:{
