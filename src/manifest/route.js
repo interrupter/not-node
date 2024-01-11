@@ -228,7 +228,7 @@ class notRoute {
                 }
                 if (Array.isArray(result)) {
                     result = result.map((itm) =>
-                        itm.toObject ? itm.toObject() : itm
+                        itm && itm.toObject ? itm.toObject() : itm
                     );
                 }
                 notManifestRouteResultFilter.filter(req.notRouteData, result);
