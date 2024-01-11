@@ -2,13 +2,19 @@
 const Form = require("../form/form");
 
 //form
-const FIELDS = [["identity", "not-node//requiredObject"]];
+const STANDART_FIELDS = [["identity", "not-node//identity"]];
 
-module.exports = ({ MODULE_NAME, MODEL_NAME, actionName }) => {
+module.exports = ({ MODULE_NAME, MODEL_NAME, actionName, FIELDS = [] }) => {
     const FORM_NAME = Form.createName(MODULE_NAME, MODEL_NAME, actionName);
     return class extends Form {
         constructor(params) {
-            super({ ...params, MODULE_NAME, MODEL_NAME, FIELDS, FORM_NAME });
+            super({
+                ...params,
+                MODULE_NAME,
+                MODEL_NAME,
+                FIELDS: [...STANDART_FIELDS, ...FIELDS],
+                FORM_NAME,
+            });
         }
 
         async extract(req) {
