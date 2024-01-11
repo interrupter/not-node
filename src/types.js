@@ -132,4 +132,41 @@
  * @property    {function}  [idGetter]
  * @property    {string}    [client]
  */
+
+/**
+ * @typedef {object}    notFieldSafety
+ * @property    {Array<string>} create
+ * @property    {Array<string>} update
+ * @property    {Array<string>} read
+ */
+
+/**
+ * @typedef     {Number|String|Array|Object|Date|import('mongoose').Types.ObjectId|import('mongoose').Schema.Types.Mixed}    notFieldModelType
+ */
+
+/**
+ * @typedef     {object}    notFieldModel
+ * @property    {notFieldModelType}    type
+ * @property    {any}       default             default value
+ * @property    {boolean}   [sortable]          if field is sortable
+ * @property    {boolean}   [required]          if required to be defined
+ * @property    {notFieldSafety}    [safe]      safety requirements
+ * @property    {string}    [ref]               mongoose model name, if type is ObjectId
+ * @property    {string}    [refPath]           path to field with name of mongoose model this field value of ObjectId type reference to
+ */
+
+/**
+ * @typedef     {object}    notFieldUI
+ * @property    {string}    component       name of component to render
+ * @property    {string}    [label]           field label text or locale string
+ * @property    {string}    [placeholder]     field placeholder text or locale string
+ * @property    {boolean}   [readonly]          if component readonly or not
+ */
+
+/**
+ * @typedef     {object} notField
+ * @property    {notFieldUI}        [ui]
+ * @property    {notFieldModel}     [model]
+ */
+
 module.exports = {};
