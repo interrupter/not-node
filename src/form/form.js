@@ -1,3 +1,4 @@
+const Schema = require("mongoose").Schema;
 const validator = require("validator");
 const notPath = require("not-path");
 const FormFabric = require("./fabric");
@@ -590,6 +591,23 @@ class Form {
 
     /**
      *
+     * @param {Object} schemaField
+     */
+    extractDefaultTransformers(schemaField) {
+        if (typeof schemaField === "undefined" || schemaField === null) {
+            return [];
+        }
+        switch (schemaField.type) {
+            case String:
+            case Schema.Types.String:
+                return ["xss"];
+            default:
+                return [];
+        }
+    }
+
+    /**
+     *
      * @param {import('../types.js').notNodeExpressRequest} req
      * @param {import('../types.js').notAppFormPropertyProcessingPipe} mainInstruction
      * @param {import('../types.js').notAppFormProcessingPipe} exceptions
@@ -597,7 +615,7 @@ class Form {
      */
     createInstructionFromRouteActionFields(
         req,
-        mainInstruction = ["fromBody", "xss"],
+        mainInstruction = ["fromBody"],
         exceptions = {}
     ) {
         const result = {};
@@ -614,7 +632,17 @@ class Form {
             if (objHas(exceptions, fieldName)) {
                 result[fieldName] = exceptions[fieldName];
             } else {
-                result[fieldName] = mainInstruction;
+                const fieldTransformers = this.extractDefaultTransformers(
+                    schema[fieldName]
+                );
+                if (Array.isArray(fieldTransformers)) {
+                    result[fieldName] = [
+                        ...mainInstruction,
+                        ...fieldTransformers,
+                    ];
+                } else {
+                    result[fieldName] = [...mainInstruction];
+                }
             }
         });
         // @ts-ignore
@@ -631,7 +659,7 @@ class Form {
      */
     extractByInstructionsFromRouteActionFields(
         req,
-        mainInstruction = ["fromBody", "xss"],
+        mainInstruction = ["fromBody"],
         exceptions = {},
         additional = {}
     ) {
