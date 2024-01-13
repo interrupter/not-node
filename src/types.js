@@ -49,24 +49,24 @@
 
 /**
  * @typedef    {object}                         notActionData
- * @property   {string}                         [method]
- * @property   {string}                         [actionSignature]
- * @property   {string}                         [postFix]
- * @property   {Array<notRouteRule>}               rules
- * @property   {boolean}                        [ws]
- * @property   {Array<string & Array<string>>}  [fields]
- * @property   {Array<string>}                  [return]
- * @property   {boolean}                        [isArray]
- * @property   {Array<string>}                  [data]
- * @property   {string}                         [title]
+ * @property   {string}                         [method]            HTTP method name GET,PUT,POST,DELETE
+ * @property   {string}                         [actionSignature]   one of create,read,update,delete,any
+ * @property   {string}                         [postFix]           uri rule
+ * @property   {Array<notRouteRule>}            rules               access rules
+ * @property   {boolean}                        [ws]                use WS routers for this actions
+ * @property   {Array<string & Array<string>>}  [fields]            array of fields names or fields set aliases, used in form generators, validators
+ * @property   {Array<string>}                  [return]            rule to filter results, used to exclude from response sensetive data
+ * @property   {boolean}                        [isArray]           obsolete
+ * @property   {Array<string>}                  [data]              list consisting of sources (pager,sorter,search,record) for request generation on client side
+ * @property   {string}                         [title]             used in form generators
  */
 
 /**
- * @typedef    {Object}       notRouteData
- * @property   {string}       actionName
- * @property   {string}       modelName
- * @property   {notRouteRule}    rule
- * @property   {notActionData}   actionData
+ * @typedef    {Object}             notRouteData
+ * @property   {string}             actionName          name of action
+ * @property   {string}             modelName           first letter should not be not capital
+ * @property   {notRouteRule}       rule                current rule
+ * @property   {notActionData}      actionData          action details
  */
 
 /**

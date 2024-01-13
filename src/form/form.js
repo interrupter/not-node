@@ -1,8 +1,10 @@
 const validator = require("validator");
 const notPath = require("not-path");
 const FormFabric = require("./fabric");
+const Auth = require("../auth");
 const { createSchemaFromFields } = require("../fields");
-
+const notFieldsFilter = require("../fields/filter.js");
+const getApp = require("../getApp.js");
 const {
     objHas,
     isFunc,
@@ -27,6 +29,7 @@ const {
 const DEFAULT_EXTRACTORS = require("./extractors");
 const DEFAULT_ID_EXTRACTORS = require("./env_extractors");
 const DEFAULT_TRANSFORMERS = require("./transformers");
+const notAppIdentity = require("../identity/index.js");
 
 /**
  * Generic form validation class
@@ -41,6 +44,7 @@ class Form {
         form: [],
         forms: {},
     };
+    #MODEL_SCHEMA;
     /**
      * @prop {string} name of form
      **/
@@ -521,7 +525,7 @@ class Form {
     /**
      *
      * @param {import('../types').notNodeExpressRequest}   req     Express Request
-     * @returns {Array<string>|Array<Array<string>>}
+     * @returns {Array<string>}
      */
     extractActionFieldsFromRequest(req) {
         if (
@@ -541,6 +545,51 @@ class Form {
 
     /**
      *
+     * @param {import('../types.js').notActionData} actionData
+     * @returns
+     */
+    getActionSignature(actionData) {
+        if (actionData.actionSignature) {
+            return actionData.actionSignature;
+        } else if (actionData.method && typeof actionData.method === "string") {
+            const METHOD = actionData.method.toUpperCase();
+            if (objHas(Auth.METHOD_SIGNAURES, METHOD)) {
+                return Auth.METHOD_SIGNAURES[METHOD];
+            }
+        }
+        return Auth.ACTION_SIGNATURES.ANY;
+    }
+
+    /**
+     *
+     * @param {import('../types.js').notNodeExpressRequest} req
+     * @returns {import('../fields/filter.js').FieldsFilteringModificators}
+     */
+    extractActionMods(req) {
+        const authData = notAppIdentity.extractAuthData(req);
+        /**
+         * @type {import('../types.js').notRouteData}
+         */
+        const routeData = req.notRouteData;
+        let action = this.getActionSignature(req.notRouteData.actionData);
+        if (
+            action === Auth.ACTION_SIGNATURES.ANY &&
+            routeData.actionName &&
+            routeData.actionName.length
+        ) {
+            action = routeData.actionName;
+        }
+        return {
+            auth: authData.auth,
+            roles: authData.role,
+            root: authData.root,
+            modelName: routeData.modelName,
+            action,
+        };
+    }
+
+    /**
+     *
      * @param {import('../types.js').notNodeExpressRequest} req
      * @param {import('../types.js').notAppFormPropertyProcessingPipe} mainInstruction
      * @param {import('../types.js').notAppFormProcessingPipe} exceptions
@@ -553,7 +602,15 @@ class Form {
     ) {
         const result = {};
         const fields = this.extractActionFieldsFromRequest(req);
-        fields.forEach((fieldName) => {
+        const schema = getApp().getModelSchema(
+            `${this.getModuleName()}//${this.getModelName(req)}`
+        );
+        const filteredFields = notFieldsFilter.filter(
+            fields,
+            schema,
+            this.extractActionMods(req)
+        );
+        filteredFields.forEach((fieldName) => {
             if (objHas(exceptions, fieldName)) {
                 result[fieldName] = exceptions[fieldName];
             } else {

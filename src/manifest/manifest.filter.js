@@ -194,7 +194,7 @@ module.exports = class notManifestFilter {
      *  @param      {Array<string>}         mods.role
      *  @param      {string}                mods.modelName
      *  @param      {string}                mods.moduleName
-     *  @param      {string|undefined}                mods.actionSignature    create/read/update/delete
+     *  @param      {string|undefined}      mods.actionSignature    create/read/update/delete
      *  @return     {object}               clean action data
      **/
     static clearActionFromRules(
