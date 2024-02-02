@@ -54,7 +54,6 @@ module.exports.insertResponseSuccess = insertResponseSuccess;
  */
 function updateResponseSuccess(res, count = 1) {
     const targetSignature = createUpdateManySuccessSignature(count);
-    console.log(targetSignature);
     if (compareObjectSignatures(res, targetSignature, false, true)) {
         return res.upsertedCount + res.modifiedCount === count;
     } else {

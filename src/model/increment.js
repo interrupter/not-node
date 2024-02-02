@@ -105,7 +105,7 @@ function newGetNext() {
                 upsert: true,
             };
         const res = await secureUpdate(thisModel, which, cmd, opts);
-        console.log(res);
+
         if (updateResponseSuccess(res, 1)) {
             const doc = await thisModel.findOne({ id });
             return doc.seq;
