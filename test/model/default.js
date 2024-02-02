@@ -317,7 +317,7 @@ module.exports = ({
 
         describe("getOne", () => {
             it("versioning, populate not specified", async () => {
-                const id = mongoose.Types.ObjectId();
+                const id = new mongoose.Types.ObjectId();
                 const ctx = {
                     schema: {
                         statics: {
@@ -350,7 +350,7 @@ module.exports = ({
             });
 
             it("!versioning, populate not specified", async () => {
-                const id = mongoose.Types.ObjectId();
+                const id = new mongoose.Types.ObjectId();
                 const ctx = {
                     schema: {
                         statics: {},
@@ -379,7 +379,7 @@ module.exports = ({
             });
 
             it("versioning, populate === null", async () => {
-                const id = mongoose.Types.ObjectId();
+                const id = new mongoose.Types.ObjectId();
                 const ctx = {
                     schema: {
                         statics: {
@@ -517,7 +517,7 @@ module.exports = ({
 
         describe("getOneRaw", () => {
             it("simple run", async () => {
-                const id = mongoose.Types.ObjectId();
+                const id = new mongoose.Types.ObjectId();
                 const ctx = {
                     schema: {
                         statics: {

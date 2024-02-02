@@ -1,6 +1,6 @@
 const { objHas, isFunc, executeFunctionAsAsync } = require("../common");
 const ModelRoutine = require("../model/routine");
-const { deleteResponseSuccess } = require("../model/utils.js");
+
 const {
     DBExceptionDocumentIsNotFound,
     DBExceptionDeleteWasNotSuccessful,
@@ -360,7 +360,7 @@ module.exports = ({
                 let query = { _id: targetId };
                 checkShouldOwn(query, shouldOwn, identity);
                 const result = await model.findOneAndDelete(query).exec();
-                if (!deleteResponseSuccess(result)) {
+                if (!result) {
                     throw new DBExceptionDeleteWasNotSuccessful({
                         params: {
                             result,

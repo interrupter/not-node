@@ -1,6 +1,6 @@
 /** @module Model/Increment */
 
-const { updateResponseSuccess, insertResponseSuccess } = require("./utils.js");
+const { updateResponseSuccess } = require("./utils.js");
 const {
     IncrementExceptionIDGeneratorRebaseFailed,
     IncrementExceptionIDGenerationFailed,
@@ -105,7 +105,8 @@ function newGetNext() {
                 upsert: true,
             };
         const res = await secureUpdate(thisModel, which, cmd, opts);
-        if (updateResponseSuccess(res) || insertResponseSuccess(res, 1)) {
+        console.log(res);
+        if (updateResponseSuccess(res, 1)) {
             const doc = await thisModel.findOne({ id });
             return doc.seq;
         } else {
