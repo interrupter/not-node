@@ -22,7 +22,7 @@ class LogicProxied {
 
     #MODEL_NAME;
     #MODULE_NAME;
-    #USER_MODEL_NAME = "not-user//User";
+    #USER_MODEL_NAME = "";
 
     #log;
     #say;
@@ -56,10 +56,18 @@ class LogicProxied {
     constructor(
         actions = {},
         actionRunner = ActionRunner,
-        { MODULE_NAME, MODEL_NAME, target, defaultPopulate, populateBuilders }
+        {
+            MODULE_NAME,
+            MODEL_NAME,
+            target,
+            defaultPopulate,
+            populateBuilders,
+            USER_MODEL_NAME = "not-user//User",
+        }
     ) {
         this.#MODEL_NAME = MODEL_NAME;
         this.#MODULE_NAME = MODULE_NAME;
+        this.#USER_MODEL_NAME = USER_MODEL_NAME;
 
         defaultPopulate && (this.#defaultPopulate = defaultPopulate);
         populateBuilders && (this.#populateBuilders = populateBuilders);
@@ -137,7 +145,9 @@ class LogicProxied {
     }
 
     getModelUser() {
-        return getApp().getModel(this.#USER_MODEL_NAME);
+        return this.#USER_MODEL_NAME
+            ? getApp().getModel(this.#USER_MODEL_NAME)
+            : undefined;
     }
 
     async getPopulate(actionName, prepared) {
@@ -176,7 +186,12 @@ class LogicProxied {
                 ]);
                 return actionResult;
             } catch (e) {
-                throw new LogicExceptionActionExecutionError(actionName, e);
+                throw new LogicExceptionActionExecutionError(
+                    this.#MODULE_NAME,
+                    this.#MODEL_NAME,
+                    actionName,
+                    e
+                );
             }
         };
     }

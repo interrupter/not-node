@@ -255,7 +255,7 @@ module.exports = ({ mongoose }) => {
                     ...secondHistoryVersion,
                     username: "username3",
                     __versions: [
-                        mongoose.Types.ObjectId(),
+                        new mongoose.Types.ObjectId(),
                         second._id,
                         first._id,
                     ],

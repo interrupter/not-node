@@ -1,25 +1,58 @@
-const { findSignature } = require("../common");
+const { compareObjectSignatures } = require("../common");
 
-const INSERT_SIGNATURE = {
-    acknowledged: true,
-    modifiedCount: 0,
-    upsertedId: {},
-    upsertedCount: 1,
-    matchedCount: 0,
-};
+function getBaseResult() {
+    return {
+        acknowledged: true,
+    };
+}
 
-const SIGNATURES = {
-    INSERT: [INSERT_SIGNATURE],
-    UPDATE: [],
-    DELETE: [],
-};
+function createInsertManySuccessSignature(count) {
+    if (count > 0) {
+        return Object.assign(
+            {
+                insertedCount: count,
+            },
+            getBaseResult()
+        );
+    } else {
+        return Object.assign({}, getBaseResult());
+    }
+}
+
+function createInsertOneSuccessSignature() {
+    return Object.assign({}, getBaseResult());
+}
+
+function createUpdateManySuccessSignature(count) {
+    return Object.assign(
+        {
+            matchedCount: count,
+            upsertedCount: 0,
+            modifiedCount: 0,
+        },
+        getBaseResult()
+    );
+}
+
+function createDeleteManySuccessSignature(count) {
+    if (count > 0) {
+        return Object.assign(
+            {
+                deletedCount: count,
+            },
+            getBaseResult()
+        );
+    } else {
+        return Object.assign({}, getBaseResult());
+    }
+}
 
 function insertResponseSuccess(res, count = 1) {
-    const ind = findSignature(res, SIGNATURES.INSERT);
-    if (ind === -1) {
-        return false;
-    }
-    return SIGNATURES.INSERT[ind].upsertedCount === count;
+    const targetSignature =
+        count === 1
+            ? createInsertOneSuccessSignature()
+            : createInsertManySuccessSignature(count);
+    return compareObjectSignatures(res, targetSignature, false, true, true);
 }
 
 module.exports.insertResponseSuccess = insertResponseSuccess;
@@ -28,32 +61,26 @@ module.exports.insertResponseSuccess = insertResponseSuccess;
  * checking result of modification queries to ensure that changes were made
  */
 function updateResponseSuccess(res, count = 1) {
-    if (res) {
-        const responseList = Object.keys(res);
-        if (responseList.includes("ok")) {
-            return res.ok === 1 && res.n === count;
-        } else {
-            return res.matchedCount === count && res.acknowledged;
-        }
+    const targetSignature = createUpdateManySuccessSignature(count);
+    if (compareObjectSignatures(res, targetSignature, false, true)) {
+        return res.upsertedCount + res.modifiedCount === count;
     } else {
         return false;
     }
 }
 module.exports.updateResponseSuccess = updateResponseSuccess;
 
+function deleteManyResponseSuccess(res, count) {
+    const targetSignature = createDeleteManySuccessSignature(count);
+    return compareObjectSignatures(res, targetSignature, true, true, true);
+}
+
+module.exports.deleteManyResponseSuccess = deleteManyResponseSuccess;
+
 /**
  * checking result of modification queries to ensure that changes were made
  */
 function deleteResponseSuccess(res, count = 1) {
-    if (res) {
-        const responseList = Object.keys(res);
-        if (responseList.includes("ok")) {
-            return res.ok === 1 && res.n === count;
-        } else {
-            return res.deletedCount === count;
-        }
-    } else {
-        return false;
-    }
+    return deleteManyResponseSuccess(res, count);
 }
 module.exports.deleteResponseSuccess = deleteResponseSuccess;

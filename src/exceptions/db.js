@@ -1,11 +1,12 @@
-const { notRequestError } = require("not-error");
+const { notError, notRequestError } = require("not-error/src/index.cjs");
 
 //delete wasnt successful, or error, or count of deleted documents dont match requested
-class DBExceptionDeleteWasNotSuccessful extends notRequestError {
-    constructor({ params = {}, cause = null } = {}) {
-        super("DB Delete Was Not Successful", { code: 505, ...params }, cause);
+class DBExceptionDeleteWasNotSuccessful extends notError {
+    constructor(result) {
+        super("DB Delete Was Not Successful", result);
     }
 }
+
 module.exports.DBExceptionDeleteWasNotSuccessful =
     DBExceptionDeleteWasNotSuccessful;
 

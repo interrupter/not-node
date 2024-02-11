@@ -4,7 +4,7 @@ module.exports = ({ Auth, expect }) => {
     describe("Fields", () => {
         describe("getOwnerId", () => {
             it("data has ownerId as String", () => {
-                const val = mongoose.Types.ObjectId().toString();
+                const val = new mongoose.Types.ObjectId().toString();
                 const data = {
                     owner: val,
                 };
@@ -13,7 +13,7 @@ module.exports = ({ Auth, expect }) => {
             });
 
             it("data has ownerId as ObjectId", () => {
-                const val = mongoose.Types.ObjectId();
+                const val = new mongoose.Types.ObjectId();
                 const data = {
                     owner: val,
                 };
@@ -35,7 +35,7 @@ module.exports = ({ Auth, expect }) => {
 
         describe("isOwner", () => {
             it("data.ownerId:ObjectId, user_id not empty:string, equal", () => {
-                const owner = mongoose.Types.ObjectId();
+                const owner = new mongoose.Types.ObjectId();
                 const data = {
                     owner: owner,
                 };
@@ -45,15 +45,15 @@ module.exports = ({ Auth, expect }) => {
 
             it("data.ownerId:ObjectId, user_id:ObjectId, not equal", () => {
                 const data = {
-                    owner: mongoose.Types.ObjectId(),
+                    owner: new mongoose.Types.ObjectId(),
                 };
-                let result = Auth.isOwner(data, mongoose.Types.ObjectId());
+                let result = Auth.isOwner(data, new mongoose.Types.ObjectId());
                 expect(result).to.deep.equal(false);
             });
 
             it("data.ownerId not defined, user_id:ObjectId, not equal", () => {
                 const data = {};
-                let result = Auth.isOwner(data, mongoose.Types.ObjectId());
+                let result = Auth.isOwner(data, new mongoose.Types.ObjectId());
                 expect(result).to.deep.equal(false);
             });
 

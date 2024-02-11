@@ -6,6 +6,7 @@ module.exports = ({
     LogicConstructor = LogicProxied,
     MODULE_NAME,
     MODEL_NAME,
+    USER_MODEL_NAME = "not-user//User",
     actionRunner = undefined,
     actionsSets = ["standart"],
     actions = {},
@@ -28,6 +29,7 @@ module.exports = ({
         MODULE_NAME,
         MODEL_NAME,
         target,
+        USER_MODEL_NAME,
     });
 
     beforeActionsAll.forEach((action) => Logic.onBefore(undefined, action));

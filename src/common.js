@@ -381,23 +381,26 @@ module.exports.getValueFromEnv = getValueFromEnv;
  * @param {object} sign                 signature object {fieldName: someValueOfTargetType}
  * @param {boolean} [strict=true]       if  you need exact properties as in signature, when false - properties not described in signature are ok
  * @param {boolean} [typeStrict=true]   compares types of properties in obj and signature
+ * @param {boolean} [valueStrict=false] compares values of properties in obj and signature
  * @return {boolean}                    true if object structured as signature
  */
 const compareObjectSignatures = (
     obj,
     sign,
     strict = true,
-    typeStrict = true
+    typeStrict = true,
+    valueStrict = false
 ) => {
     const objKeys = Object.keys(obj);
     const signKeys = Object.keys(sign);
     const checkKey = (key) => {
         if (objKeys.includes(key)) {
-            if (typeStrict) {
-                return typeof obj[key] === typeof sign[key];
-            } else {
-                return true;
+            const isTypeStrict = typeof obj[key] === typeof sign[key];
+            const isValueStrict = obj[key] === sign[key];
+            if (typeStrict && !isTypeStrict) {
+                return false;
             }
+            return valueStrict ? isValueStrict : true;
         } else {
             return false;
         }

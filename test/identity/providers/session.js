@@ -37,7 +37,7 @@ module.exports = ({ expect }) => {
             it("check if user root - true", function () {
                 var t = {
                     session: {
-                        user: mongoose.Types.ObjectId(),
+                        user: new mongoose.Types.ObjectId(),
                         role: ["root"],
                     },
                 };
@@ -47,7 +47,7 @@ module.exports = ({ expect }) => {
             it("check if user root - false", function () {
                 var t = {
                     session: {
-                        user: mongoose.Types.ObjectId(),
+                        user: new mongoose.Types.ObjectId(),
                         save() {},
                     },
                 };
@@ -60,7 +60,7 @@ module.exports = ({ expect }) => {
             it("get role - root", function () {
                 var t = {
                     session: {
-                        user: mongoose.Types.ObjectId(),
+                        user: new mongoose.Types.ObjectId(),
                         role: ["root"],
                         save() {},
                     },
@@ -71,7 +71,7 @@ module.exports = ({ expect }) => {
             it("get role - undefined", function () {
                 var t = {
                     session: {
-                        user: mongoose.Types.ObjectId(),
+                        user: new mongoose.Types.ObjectId(),
                         save() {},
                     },
                 };
@@ -84,7 +84,7 @@ module.exports = ({ expect }) => {
             it("session exist, set role - root", function () {
                 var t = {
                     session: {
-                        user: mongoose.Types.ObjectId(),
+                        user: new mongoose.Types.ObjectId(),
                         role: ["user"],
                         save() {},
                     },
@@ -108,14 +108,14 @@ module.exports = ({ expect }) => {
                         save() {},
                     },
                 };
-                const id = mongoose.Types.ObjectId();
+                const id = new mongoose.Types.ObjectId();
                 new Provider(t).setUserId(id);
                 expect(t.session.user).to.eql(id);
             });
 
             it("session not exist, set _id", function () {
                 const t = {};
-                const id = mongoose.Types.ObjectId();
+                const id = new mongoose.Types.ObjectId();
                 new Provider(t).setUserId(id);
                 expect(t).to.be.deep.eql({});
             });
@@ -125,7 +125,7 @@ module.exports = ({ expect }) => {
             it("session exist, user id exist", function () {
                 const t = {
                     session: {
-                        user: mongoose.Types.ObjectId(),
+                        user: new mongoose.Types.ObjectId(),
                         role: ["user"],
                         save() {},
                     },
@@ -145,7 +145,7 @@ module.exports = ({ expect }) => {
             it("session exist, session id exist", function () {
                 const t = {
                     session: {
-                        id: mongoose.Types.ObjectId(),
+                        id: new mongoose.Types.ObjectId(),
                         role: ["user"],
                         save() {},
                     },
@@ -166,7 +166,7 @@ module.exports = ({ expect }) => {
                 const t = {
                     session: { save() {} },
                 };
-                const id = mongoose.Types.ObjectId();
+                const id = new mongoose.Types.ObjectId();
                 new Provider(t).setAuth(id, "root");
                 expect(t.session.user.toString()).to.eql(id.toString());
                 expect(t.session.role).to.eql("root");
@@ -174,7 +174,7 @@ module.exports = ({ expect }) => {
 
             it(SESSION_NOT_EXISTS, function () {
                 const t = {};
-                const id = mongoose.Types.ObjectId();
+                const id = new mongoose.Types.ObjectId();
                 new Provider(t).setAuth(id, "user");
                 expect(t).to.be.deep.eql({});
             });
@@ -182,7 +182,7 @@ module.exports = ({ expect }) => {
 
         describe("setGuest", function () {
             it("session exist", function () {
-                const id = mongoose.Types.ObjectId();
+                const id = new mongoose.Types.ObjectId();
                 const t = {
                     session: { user: id, role: "admin", save() {} },
                     user: { _id: id },
@@ -202,7 +202,7 @@ module.exports = ({ expect }) => {
 
         describe("cleanse", function () {
             it("session exist, destroy method exists", function () {
-                const id = mongoose.Types.ObjectId();
+                const id = new mongoose.Types.ObjectId();
                 let destroyed = false;
                 const t = {
                     session: {
@@ -221,7 +221,7 @@ module.exports = ({ expect }) => {
             });
 
             it("session exist, destroy method exists", function () {
-                const id = mongoose.Types.ObjectId();
+                const id = new mongoose.Types.ObjectId();
                 const t = {
                     session: {
                         user: id,

@@ -24,7 +24,7 @@ describe("Common", function () {
     let testie = "Иероним Босх";
     describe(`validateObjectId, build in validator failed on ${testie}`, function () {
         it(`Mongoose.Types.ObjectId.isValid('${testie}') -> true`, function () {
-            expect(ObjectId.isValid(testie)).to.be.ok;
+            expect(ObjectId.isValid(testie)).to.be.not.ok;
         });
 
         it(`validateObjectId(${testie}) -> false`, function () {

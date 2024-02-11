@@ -1,8 +1,4 @@
-const { deleteResponseSuccess } = require("../../../model/utils.js");
-const {
-    DBExceptionDeleteWasNotSuccessful,
-} = require("../../../exceptions/db.js");
-
+const { LogicDeleteActionException } = require("../../../exceptions/action.js");
 module.exports = class DeleteAction {
     static async run(
         logic,
@@ -10,23 +6,23 @@ module.exports = class DeleteAction {
         { identity, defaultQueryById, targetId }
     ) {
         logic.logDebugAction(actionName, identity);
-
+        /** @type {import('../../../types.js').notAppModel } */
         const model = logic.getModel();
-        const result = await model.findOneAndDelete(defaultQueryById);
-
-        if (!deleteResponseSuccess(result)) {
-            throw new DBExceptionDeleteWasNotSuccessful({
-                params: {
-                    result,
+        try {
+            await model.removeOne(defaultQueryById);
+            logic.logAction(actionName, identity, {
+                query: defaultQueryById,
+            });
+        } catch (e) {
+            throw new LogicDeleteActionException(
+                {
                     targetId,
                     query: defaultQueryById,
                     activeUserId: identity?.uid,
                     role: identity?.role,
                 },
-            });
+                e
+            );
         }
-        logic.logAction(actionName, identity, {
-            query: defaultQueryById,
-        });
     }
 };

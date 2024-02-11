@@ -1,3 +1,5 @@
+const { deleteResponseSuccess, updateResponseSuccess } = require("./utils.js");
+const { DBExceptionDeleteWasNotSuccessful } = require("../exceptions/db.js");
 /** @module Model/Default */
 const routine = require("./routine");
 const notQuery = require("not-filter");
@@ -158,7 +160,7 @@ function getOneRaw(id, condition = {}) {
  *	@static
  *	@param 	{string}		method 		name of the method
  *	@param 	{object|array}	filter 		filtering rules object
- *	@return {Query}						mongoose query object
+ *	@return {import('mongoose').Query}						mongoose query object
  **/
 function makeQuery(method, filter) {
     let versioningMod = {
@@ -349,6 +351,34 @@ function update(filter, data, many = false) {
     }
 }
 
+async function removeOne(filter) {
+    if (this.schema.statics.__versioning) {
+        const res = await this.updateOne(filter, { __closed: true });
+        if (!updateResponseSuccess(res, 1)) {
+            throw new DBExceptionDeleteWasNotSuccessful(res);
+        }
+    } else {
+        const res = await this.deleteOne(filter);
+        if (!deleteResponseSuccess(res, 1)) {
+            throw new DBExceptionDeleteWasNotSuccessful(res);
+        }
+    }
+}
+
+async function removeMany(filter) {
+    if (this.schema.statics.__versioning) {
+        const res = await this.updateMany(filter, { __closed: true });
+        if (!updateResponseSuccess(res, 0)) {
+            throw new DBExceptionDeleteWasNotSuccessful(res);
+        }
+    } else {
+        const res = await this.deleteMany(filter);
+        if (!deleteResponseSuccess(res, 0)) {
+            throw new DBExceptionDeleteWasNotSuccessful(res);
+        }
+    }
+}
+
 module.exports.thisStatics = {
     sanitizeInput,
     getOne,
@@ -364,6 +394,8 @@ module.exports.thisStatics = {
     listAndCount,
     add,
     update,
+    removeOne,
+    removeMany,
 };
 
 /**
@@ -383,14 +415,18 @@ function getID() {
  *	@return {number}	ID
  */
 function close(data = undefined) {
-    if (data && Object.keys(data)) {
-        Object.keys(data).forEach((fieldName) => {
-            notPath.setValueByPath(this, fieldName, data[fieldName]);
-            this.markModified(fieldName);
-        });
+    if (this?.schema?.statics?.__versioning) {
+        if (data && Object.keys(data)) {
+            Object.keys(data).forEach((fieldName) => {
+                notPath.setValueByPath(this, fieldName, data[fieldName]);
+                this.markModified(fieldName);
+            });
+        }
+        this.__closed = true;
+        return this.save();
+    } else {
+        return this.deleteOne({ _id: this._id });
     }
-    this.__closed = true;
-    return this.save();
 }
 
 function saveNewVersion() {

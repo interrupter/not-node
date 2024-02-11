@@ -31,3 +31,70 @@ class OwnageExceptionIdentityUserIdIsNotDefined extends notRequestError {
 }
 module.exports.OwnageExceptionIdentityUserIdIsNotDefined =
     OwnageExceptionIdentityUserIdIsNotDefined;
+
+class LogicDeleteActionException extends notRequestError {
+    constructor(params, cause) {
+        super("Logic Delete Action exception", { code: 505, params }, cause);
+    }
+}
+module.exports.LogicDeleteActionException = LogicDeleteActionException;
+
+class LogicCreateActionException extends notRequestError {
+    constructor(params, cause) {
+        super("Logic Create Action exception", { code: 505, params }, cause);
+    }
+}
+module.exports.LogicCreateActionException = LogicCreateActionException;
+class LogicUpdateActionException extends notRequestError {
+    constructor(params, cause) {
+        super("Logic Update Action exception", { code: 505, params }, cause);
+    }
+}
+module.exports.LogicUpdateActionException = LogicUpdateActionException;
+
+class LogicCountActionException extends notRequestError {
+    constructor(params, cause) {
+        super("Logic Count Action exception", { code: 505, params }, cause);
+    }
+}
+module.exports.LogicCountActionException = LogicCountActionException;
+
+class LogicListAndCountActionException extends notRequestError {
+    constructor(params, cause) {
+        super(
+            "Logic ListAndCount Action exception",
+            { code: 505, params },
+            cause
+        );
+    }
+}
+module.exports.LogicListAndCountActionException =
+    LogicListAndCountActionException;
+
+class LogicGetActionException extends notRequestError {
+    constructor(params, cause) {
+        super("Logic Get Action exception", { code: 505, params }, cause);
+    }
+}
+module.exports.LogicGetActionException = LogicGetActionException;
+
+class LogicGetRawActionException extends notRequestError {
+    constructor(params, cause) {
+        super("Logic GetRaw Action exception", { code: 505, params }, cause);
+    }
+}
+module.exports.LogicGetRawActionException = LogicGetRawActionException;
+
+class LogicListActionException extends notRequestError {
+    constructor(params, cause) {
+        super("Logic List Action exception", { code: 505, params }, cause);
+    }
+}
+module.exports.LogicListActionException = LogicListActionException;
+
+class LogicListAllActionException extends notRequestError {
+    constructor(params, cause) {
+        super("Logic ListAll Action exception", { code: 505, params }, cause);
+    }
+}
+module.exports.LogicListAllActionException = LogicListAllActionException;
