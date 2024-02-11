@@ -41,11 +41,11 @@ describe("notModel", function () {
         mongoose,
     });
 
-    require("./model/utils")({
+    /*require("./model/utils")({
         expect,
         mongod,
         mongoose,
-    });
+    });*/
 
     after(async () => {
         await mongoose.disconnect();

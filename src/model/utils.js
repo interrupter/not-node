@@ -7,12 +7,16 @@ function getBaseResult() {
 }
 
 function createInsertManySuccessSignature(count) {
-    return Object.assign(
-        {
-            insertedCount: count,
-        },
-        getBaseResult()
-    );
+    if (count > 0) {
+        return Object.assign(
+            {
+                insertedCount: count,
+            },
+            getBaseResult()
+        );
+    } else {
+        return Object.assign({}, getBaseResult());
+    }
 }
 
 function createInsertOneSuccessSignature() {
@@ -31,12 +35,16 @@ function createUpdateManySuccessSignature(count) {
 }
 
 function createDeleteManySuccessSignature(count) {
-    return Object.assign(
-        {
-            deletedCount: count,
-        },
-        getBaseResult()
-    );
+    if (count > 0) {
+        return Object.assign(
+            {
+                deletedCount: count,
+            },
+            getBaseResult()
+        );
+    } else {
+        return Object.assign({}, getBaseResult());
+    }
 }
 
 function insertResponseSuccess(res, count = 1) {
@@ -68,6 +76,7 @@ function deleteManyResponseSuccess(res, count) {
 }
 
 module.exports.deleteManyResponseSuccess = deleteManyResponseSuccess;
+
 /**
  * checking result of modification queries to ensure that changes were made
  */
