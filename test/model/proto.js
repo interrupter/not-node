@@ -351,6 +351,8 @@ module.exports = ({ mongod, mongoose }) => {
                 "listAllAndPopulate",
                 "listAndCount",
                 "listByField",
+                "removeMany",
+                "removeOne",
             ]);
             expect(moduleProto1.mongooseSchema.methods).to.have.keys([
                 "getName",

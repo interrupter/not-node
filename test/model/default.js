@@ -974,6 +974,11 @@ module.exports = ({
             describe("close", () => {
                 it("simple run", async () => {
                     const ctx = {
+                        schema: {
+                            statics: {
+                                __versioning: true,
+                            },
+                        },
                         __closed: false,
                         async save() {
                             return this;

@@ -12,7 +12,7 @@ module.exports = {
         searchable: true,
         sortable: true,
         safe: {
-            update: ["@owner", "root", "admin"],
+            create: ["@system"],
             read: ["@owner", "root", "admin"],
         },
     },

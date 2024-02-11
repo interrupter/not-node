@@ -169,4 +169,52 @@
  * @property    {notFieldModel}     [model]
  */
 
+/**
+ * @typedef {string}    uuid
+ */
+
+/**
+ * @typedef {object}    ListAndCountResult
+ * @property {Array<notAppDocument>}    list    list of extended mongoose documents
+ * @property {number} skip                      count of skiped from start of set
+ * @property {number} count                     total count of documents in this set
+ * @property {number} page                      number of returned page
+ * @property {number} pages                     total count of pages in this set
+ */
+
+/**
+ * @typedef     {object}    notAppModelMethods
+ * @property    {function(object):object} sanitizeInput
+ * @property    {function(uuid, [Array<string>], [object]):Promise<notAppDocument>} getOne
+ * @property    {function(number, [Array<string>], [object]):Promise<notAppDocument>} getOneByID
+ * @property    {function(uuid, [object]):Promise<notAppDocument>} getOneRaw
+ * @property    {function(string, object):Promise<notAppDocument|Array<notAppDocument>|undefined>} makeQuery
+ * @property    {function(number, number, object, object|Array):Promise<Array<notAppDocument>>} list
+ * @property    {function(string, Array<String>, object, Array<String>):Promise<Array<notAppDocument>>} listByField
+ * @property    {function([object]):Promise<Array<notAppDocument>>} listAll
+ * @property    {function(object|array):Promise<Array<notAppDocument>>} listAllAndPopulate
+ * @property    {function(object):Promise<number>} countWithFilter
+ * @property    {function(number, number, object, object | Array, Array<String>):Promise<Array<notAppDocument>>} listAndPopulate
+ * @property    {function(number, number, object, object|array, object|array, object):Promise<ListAndCountResult>} listAndCount
+ * @property    {function(object):Promise<notAppDocument>} add
+ * @property    {function(object, object, boolean):Promise<notAppDocument|undefined>} update
+ * @property    {function(object):Promise<undefined>} removeOne
+ * @property    {function(object):Promise<undefined>} removeMany
+ */
+
+/**
+ * @typedef     {import('mongoose').Model & notAppModelMethods}    notAppModel
+ **/
+
+/**
+ * @typedef     {object}    notAppDocumentMethods
+ * @property    {function():number} getID
+ * @property    {function([object]):Promise<notAppDocument|undefined>} close
+ * @property    {function():Promise<notAppDocument>} saveNewVersion
+ **/
+
+/**
+ * @typedef     {import('mongoose').Document & notAppDocumentMethods}    notAppDocument
+ **/
+
 module.exports = {};
