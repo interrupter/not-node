@@ -357,11 +357,13 @@ async function removeOne(filter) {
         if (!updateResponseSuccess(res, 1)) {
             throw new DBExceptionDeleteWasNotSuccessful(res);
         }
+        return res;
     } else {
         const res = await this.deleteOne(filter);
         if (!deleteResponseSuccess(res, 1)) {
             throw new DBExceptionDeleteWasNotSuccessful(res);
         }
+        return res;
     }
 }
 
@@ -371,11 +373,13 @@ async function removeMany(filter) {
         if (!updateResponseSuccess(res, 0)) {
             throw new DBExceptionDeleteWasNotSuccessful(res);
         }
+        return res;
     } else {
         const res = await this.deleteMany(filter);
         if (!deleteResponseSuccess(res, 0)) {
             throw new DBExceptionDeleteWasNotSuccessful(res);
         }
+        return res;
     }
 }
 

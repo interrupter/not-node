@@ -11,7 +11,7 @@ module.exports = ({
     actionsSets = ["standart"],
     actions = {},
     beforeActions = {},
-    beforeActionsAll = [],
+    beforeActionsAll = [require('./actions.before/standart.queries.js')],
     afterActions = {},
     afterActionsAll = [],
 }) => {
@@ -19,8 +19,8 @@ module.exports = ({
     const ACTIONS = {};
     //add all from actions sets library
     actionsSets.forEach((setName) => {
-        actionsSetsLibrary[setName] &&
-            Object.assign(ACTIONS, actionsSetsLibrary[setName]);
+        actionsSetsLibrary.has(setName) &&
+            Object.assign(ACTIONS, actionsSetsLibrary.get(setName));
     });
     //add user defined
     Object.assign(ACTIONS, actions);
@@ -32,7 +32,9 @@ module.exports = ({
         USER_MODEL_NAME,
     });
 
-    beforeActionsAll.forEach((action) => Logic.onBefore(undefined, action));
+    beforeActionsAll.forEach((action) => {
+        Logic.onBefore(undefined, action);
+    });
     afterActionsAll.forEach((action) => Logic.onAfter(undefined, action));
 
     Object.keys(beforeActions).forEach((actionName) =>

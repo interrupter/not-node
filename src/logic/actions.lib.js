@@ -13,6 +13,10 @@ class ActionsSetsLibrary {
         }
         return {};
     }
+
+    has(name){
+        return this.#lib.has(name);
+    }
 }
 
 module.exports = ActionsSetsLibrary;

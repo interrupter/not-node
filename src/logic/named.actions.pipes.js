@@ -16,36 +16,40 @@ class NamedActionPipes {
     #type = CONSECUTIVE;
     #all = [];
     #named = {};
-    #actionRunner = ActionRunner;
+    actionRunner = ActionRunner;
 
     constructor(type = CONSECUTIVE, actionRunner = ActionRunner) {
         this.#type = type;
-        actionRunner && (this.#actionRunner = actionRunner);
+        actionRunner && (this.actionRunner = actionRunner);
+    }
+
+    get type(){
+        return this.#type;
     }
 
     add(name, action) {
         if (typeof name === "undefined") {
-            this.#addToPipe(this.#all, action);
+            this.addToPipe(this.#all, action);
         } else {
-            this.#initNamedPipe(name);
-            this.#addToPipe(this.#named[name], action);
+            this.initNamedPipe(name);
+            this.addToPipe(this.#named[name], action);
         }
         return this;
     }
 
-    #addToPipe(pipe, action) {
+    addToPipe(pipe, action) {
         if (!pipe.includes(action)) {
             pipe.push(action);
         }
     }
 
-    #removeFromPipe(pipe, action) {
+    removeFromPipe(pipe, action) {
         if (pipe.includes(action)) {
             pipe.splice(pipe.indexOf(action), 1);
         }
     }
 
-    #initNamedPipe(name) {
+    initNamedPipe(name) {
         if (!objHas(this.#named, name) || !Array.isArray(this.#named[name])) {
             this.#named[name] = [];
         }
@@ -53,24 +57,24 @@ class NamedActionPipes {
 
     remove(name, action) {
         if (typeof name === "undefined") {
-            this.#removeFromPipe(this.#all, action);
+            this.removeFromPipe(this.#all, action);
         } else {
-            this.#initNamedPipe(name);
-            this.#removeFromPipe(this.#named[name], action);
+            this.initNamedPipe(name);
+            this.removeFromPipe(this.#named[name], action);
         }
         return this;
     }
 
-    #buildPipe(name) {
+    buildPipe(name) {
         const final = [...this.#all];
-        this.#initNamedPipe(name);
+        this.initNamedPipe(name);
         final.push(...this.#named[name]);
         return final;
     }
 
     async execute(name, params) {
         try {
-            const pipe = this.#buildPipe(name);
+            const pipe = this.buildPipe(name);
             return await this.#execute(pipe, params);
         } catch (e) {
             throw new ActionExceptionPipeExecutionError({ cause: e });
@@ -79,21 +83,21 @@ class NamedActionPipes {
 
     async #execute(pipe, params) {
         const ways = {
-            CONSECUTIVE: this.#executeConsecutive,
-            PARALLEL: this.#executeParallel,
+            [CONSECUTIVE]: this.executeConsecutive.bind(this),
+            [PARALLEL]: this.executeParallel.bind(this),
         };
-        return await ways[this.#type](pipe, params);
+        return await ways[this.type](pipe, params);
     }
 
-    async #executeConsecutive(pipe, params) {
+    async executeConsecutive(pipe, params) {
         for (let action of pipe) {
-            await this.#actionRunner.run(action, params);
+            await this.actionRunner.run(action, params);
         }
     }
 
-    async #executeParallel(pipe, params) {
+    async executeParallel(pipe, params) {
         const promisesOfPipe = pipe.map((action) =>
-            this.#actionRunner.run(action, params)
+            this.actionRunner.run(action, params)
         );
         await Promise.all(promisesOfPipe);
     }
