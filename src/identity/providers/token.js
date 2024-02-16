@@ -1,5 +1,8 @@
-const { error, log } = require("not-log")(module, "Identity//Token");
-const { notRequestError } = require("not-error");
+const Log = require("not-log")(module, "Identity//Token");
+const notRequestError = require("not-error/src/request.error.node.cjs");
+const notCommon = require("../../common");
+const Request = require("http").IncomingMessage;
+
 const CONST = require("../../auth/const");
 const ROLES = require("../../auth/roles");
 const { objHas } = require("../../common");
@@ -7,14 +10,22 @@ const phrase = require("not-locale").modulePhrase("not-node");
 
 const JWT = require("jsonwebtoken");
 
+const TOKEN_OBJECT_REQUIRED_PROPERTIES = ["_id", "role", "active", "username"];
+
 module.exports = class IdentityProviderToken {
+    /**
+     * @type {null|object}
+     */
     #tokenContent = null;
+    /**
+     * @type {null|string}
+     */
     #token = null;
 
     static #options = {};
 
     static setOptions(options = {}) {
-        this.#options = options;
+        this.#options = { ...this.#options, ...options };
     }
 
     static #getOptions() {
@@ -30,9 +41,12 @@ module.exports = class IdentityProviderToken {
     }
 
     constructor(req) {
-        this.req = req;
-        this.#extractToken(req);
-        this.#extractTokenContent();
+        if (IdentityProviderToken.sourceIsRequest(req)) {
+            this.#extractToken(req);
+            this.#extractTokenContent();
+        } else if (IdentityProviderToken.sourceIsTokenContent(req)) {
+            this.#tokenContent = IdentityProviderToken.copyTokenContent(req);
+        }
         return this;
     }
 
@@ -70,20 +84,20 @@ module.exports = class IdentityProviderToken {
             }
             return null;
         } catch (e) {
-            error(e.message);
+            Log && Log.error(e.message);
             return null;
         }
     }
 
     #encodeTokenContent() {
         try {
-            if (this.#token) {
+            if (this.#token && this.#tokenContent) {
                 const secret = IdentityProviderToken.#getOptions().secret;
                 return JWT.sign(this.#tokenContent, secret);
             }
             return null;
         } catch (e) {
-            error(e.message);
+            Log && Log.error(e.message);
             return null;
         }
     }
@@ -119,7 +133,7 @@ module.exports = class IdentityProviderToken {
 
     static #validateTTLForToken(tokenTTL) {
         if (tokenTTL <= 0 || isNaN(tokenTTL)) {
-            log(phrase("user_token_ttl_not_set"));
+            Log && Log.log(phrase("user_token_ttl_not_set"));
             tokenTTL = CONST.TOKEN_TTL;
         }
         return tokenTTL;
@@ -193,7 +207,7 @@ module.exports = class IdentityProviderToken {
         const roles = this.getRole();
         for (let role of roles) {
             if (
-                IdentityProviderToken.#getOptions().primaryRoles.includes(role)
+                IdentityProviderToken.#getOptions()?.primaryRoles.includes(role)
             ) {
                 return role;
             }
@@ -298,7 +312,29 @@ module.exports = class IdentityProviderToken {
         this.setGuest();
     }
 
-    static test(req) {
-        return !!this.getTokenFromRequest(req);
+    static test(some) {
+        if (this.sourceIsRequest(some)) {
+            return !!this.getTokenFromRequest(some);
+        } else if (this.sourceIsTokenContent(some)) {
+            return !!this.copyTokenContent(some);
+        }
+        return false;
+    }
+
+    static sourceIsRequest(some) {
+        return some instanceof Request;
+    }
+
+    static sourceIsTokenContent(some) {
+        return (
+            typeof some === "object" &&
+            notCommon.objHas(some, TOKEN_OBJECT_REQUIRED_PROPERTIES)
+        );
+    }
+
+    static copyTokenContent(obj) {
+        return {
+            ...obj,
+        };
     }
 };

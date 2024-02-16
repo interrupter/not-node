@@ -5,7 +5,7 @@ module.exports = class IdentityProviderSession {
     static #options = {};
 
     static setOptions(options = {}) {
-        this.#options = options;
+        this.#options = {...this.#options, ...options};
     }
 
     static #getOptions() {
