@@ -208,12 +208,15 @@ class notRoute {
 
     async executeRoute(modRoute, actionName, { req, res, next }) {
         try {
+            let prepared = undefined;
             //waiting preparation
-            let prepared = await this.executeFunction(
-                modRoute,
-                CONST_BEFORE_ACTION,
-                [req, res, next]
-            );
+            if (modRoute[CONST_AFTER_ACTION]) {
+                prepared = await this.executeFunction(
+                    modRoute,
+                    CONST_BEFORE_ACTION,
+                    [req, res, next]
+                );
+            }
             //waiting results
             let result = await this.executeFunction(modRoute, actionName, [
                 req,
@@ -234,12 +237,16 @@ class notRoute {
                 notManifestRouteResultFilter.filter(req.notRouteData, result);
             }
             //run after with results, continue without waiting when it finished
-            return this.executeFunction(modRoute, CONST_AFTER_ACTION, [
-                req,
-                res,
-                next,
-                result,
-            ]);
+            if (modRoute[CONST_AFTER_ACTION]) {
+                return this.executeFunction(modRoute, CONST_AFTER_ACTION, [
+                    req,
+                    res,
+                    next,
+                    result,
+                ]);
+            } else {
+                return result;
+            }
         } catch (e) {
             next(e);
         }
