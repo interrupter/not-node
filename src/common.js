@@ -104,12 +104,29 @@ module.exports.copyObj = (obj) => {
 
 /**
  * Copies object to secure it from changes
- * @param {object}   obj     original object
+ * @param {object}   obj            original object
+ * @param {Array<string>}   list     properties list to include
  * @return {object}          copy of object
  **/
 module.exports.partCopyObj = (obj, list) => {
     let partObj = Object.keys(obj).reduce((prev, curr) => {
         if (list.includes(curr)) {
+            prev[curr] = obj[curr];
+        }
+        return prev;
+    }, {});
+    return JSON.parse(JSON.stringify(partObj));
+};
+
+/**
+ * Copies object to secure it from changes
+ * @param {object}   obj            original object
+ * @param {Array<string>}   except     properties list to exclude
+ * @return {object}          copy of object
+ **/
+module.exports.partCopyObjExcept = (obj, except) => {
+    let partObj = Object.keys(obj).reduce((prev, curr) => {
+        if (!except.includes(curr)) {
             prev[curr] = obj[curr];
         }
         return prev;
