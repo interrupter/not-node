@@ -15,7 +15,7 @@ module.exports = ({
     afterActions = {},
     populateBuilders = {},
     afterActionsAll = [],
-    defaulPopulate = [],
+    defaultPopulate = [],
 }) => {
     //start with empty set
     const ACTIONS = {};
@@ -33,7 +33,7 @@ module.exports = ({
         target,
         USER_MODEL_NAME,
         populateBuilders,
-        defaulPopulate,
+        defaultPopulate,
     });
 
     beforeActionsAll.forEach((action) => {
