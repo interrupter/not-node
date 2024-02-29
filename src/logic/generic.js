@@ -11,9 +11,11 @@ module.exports = ({
     actionsSets = ["standart"],
     actions = {},
     beforeActions = {},
-    beforeActionsAll = [require('./actions.before/standart.queries.js')],
+    beforeActionsAll = [require("./actions.before/standart.queries.js")],
     afterActions = {},
+    populateBuilders = {},
     afterActionsAll = [],
+    defaulPopulate = [],
 }) => {
     //start with empty set
     const ACTIONS = {};
@@ -30,6 +32,8 @@ module.exports = ({
         MODEL_NAME,
         target,
         USER_MODEL_NAME,
+        populateBuilders,
+        defaulPopulate,
     });
 
     beforeActionsAll.forEach((action) => {
