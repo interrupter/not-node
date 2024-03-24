@@ -4,7 +4,7 @@ const { objHas } = require("./common");
 const fs = require("fs"),
     os = require("os"),
     fse = require("fs-extra"),
-    rmdir = require("rmdir"),
+    { rimraf } = require("rimraf"),
     git = require("simple-git"),
     ejs = require("ejs"),
     path = require("path"),
@@ -46,7 +46,9 @@ module.exports.clearRepo = async (repo, parentDir) => {
                 (repo.clear.files ? repo.clear.files.length : 0);
             for (let dir of repo.clear.dirs) {
                 Log.log("removing ", dir);
-                rmdir(path.join(parentDir, dir), (err) => {
+                try {
+                    await rimraf(path.join(parentDir, dir));
+                } catch (err) {
                     if (err) {
                         reject(err);
                     } else {
@@ -56,7 +58,7 @@ module.exports.clearRepo = async (repo, parentDir) => {
                             resolve();
                         }
                     }
-                });
+                }
             }
             for (let file of repo.clear.files) {
                 Log.log("removing ", file);
