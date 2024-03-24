@@ -9,7 +9,7 @@ module.exports = class InitSessionsRedis {
         const expressSession = require("express-session");
         const storeClient = config.get("session.client", DEFAULT_CLIENT);
         const redisClient = master.getEnv(`db.${storeClient}`);
-        const redisStore = require("connect-redis")(expressSession);
+        const redisStore = require("connect-redis").default;
         master.getServer().use(
             expressSession({
                 secret: config.get("session.secret"),

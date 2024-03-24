@@ -29,10 +29,7 @@ module.exports = ({ expect }) => {
                     ]);
                     return () => {};
                 });
-                mock("connect-redis", (inpt) => {
-                    expect(typeof inpt).to.be.equal("function");
-                    return class FakeRedis {};
-                });
+                mock("connect-redis", { default: class FakeRedis {} });
 
                 const config = {
                     get(str) {
