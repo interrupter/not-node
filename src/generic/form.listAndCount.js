@@ -5,7 +5,7 @@ const notAppIdentity = require("../identity");
 
 const FIELDS = [
     ["query", `not-filter//_filterQuery`],
-    ["identity", "not-node//requiredObject"],
+    ["identity", "not-node//identity"],
 ];
 
 /**

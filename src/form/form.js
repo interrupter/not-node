@@ -30,6 +30,7 @@ const {
 const DEFAULT_EXTRACTORS = require("./extractors");
 const DEFAULT_ID_EXTRACTORS = require("./env_extractors");
 const DEFAULT_TRANSFORMERS = require("./transformers");
+const DEFAULT_AFTER_EXTRACT_TRANSFORMERS = [];
 const notAppIdentity = require("../identity/index.js");
 
 /**
@@ -67,6 +68,10 @@ class Form {
         ...DEFAULT_TRANSFORMERS,
     };
 
+    #AFTER_EXTRACT_TRANSFORMERS = {
+        ...DEFAULT_AFTER_EXTRACT_TRANSFORMERS,
+    };
+
     #rateLimiter = null;
     #rateLimiterIdGetter = (data) => data.identity.sid;
     #rateLimiterException = FormExceptionTooManyRequests;
@@ -82,6 +87,7 @@ class Form {
      * @param {import('../app.js')} options.app
      * @param {Object.<string, Function>} options.EXTRACTORS
      * @param {Object.<string, Function>} options.TRANSFORMERS
+     * @param {Array<Function>} options.AFTER_EXTRACT_TRANSFORMERS
      * @param {Object.<string, import('../types.js').notAppFormEnvExtractor>} options.ENV_EXTRACTORS
      * @param   {import('../types.js').notAppFormRateLimiterOptions}    options.rate
      */
@@ -94,6 +100,7 @@ class Form {
         EXTRACTORS = {},
         ENV_EXTRACTORS = {},
         TRANSFORMERS = {},
+        AFTER_EXTRACT_TRANSFORMERS = [],
         rate,
     }) {
         this.#FORM_NAME = FORM_NAME;
@@ -105,6 +112,7 @@ class Form {
         this.#addExtractors(EXTRACTORS);
         this.#addEnvExtractors(ENV_EXTRACTORS);
         this.#addTransformers(TRANSFORMERS);
+        this.#addAfterExtractTransformers(AFTER_EXTRACT_TRANSFORMERS);
         this.#createRateLimiter(rate);
     }
 
@@ -224,6 +232,11 @@ class Form {
      */
     //eslint-disable-next-line no-unused-vars
     async afterExtract(value, req) {
+        if (this.#AFTER_EXTRACT_TRANSFORMERS) {
+            this.#AFTER_EXTRACT_TRANSFORMERS.forEach((aeTransformer) => {
+                aeTransformer(value, req);
+            });
+        }
         return value;
     }
 
@@ -681,6 +694,12 @@ class Form {
     #addTransformers(transformers = {}) {
         if (transformers) {
             this.#TRANSFORMERS = { ...this.#TRANSFORMERS, ...transformers };
+        }
+    }
+
+    #addAfterExtractTransformers(transformers = []) {
+        if (transformers && Array.isArray(transformers)) {
+            this.#AFTER_EXTRACT_TRANSFORMERS = [...transformers];
         }
     }
 

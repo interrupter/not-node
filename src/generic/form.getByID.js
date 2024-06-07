@@ -4,7 +4,7 @@ const Form = require("../form/form");
 //form
 const FIELDS = [
     ["targetID", { required: true }, "not-node//ID"],
-    ["identity", "not-node//requiredObject"],
+    ["identity", "not-node//identity"],
 ];
 
 module.exports = ({ MODULE_NAME, MODEL_NAME, actionName = "getByID" }) => {
