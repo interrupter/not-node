@@ -116,6 +116,10 @@ class Form {
         this.#createRateLimiter(rate);
     }
 
+    get FORM_NAME() {
+        return this.#FORM_NAME;
+    }
+
     /**
      * Creates model name string used in logging
      * @param {string} MODULE_NAME
