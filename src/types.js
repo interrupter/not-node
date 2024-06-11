@@ -113,7 +113,7 @@
  */
 
 /**
- * @typedef     {Object.<string, notAppFormPropertyProcessingPipe>}    notAppFormProcessingPipe
+ * @typedef     {Object.<string, notAppFormPropertyProcessingPipe | notAppFormPropertyProcessingPipeInstruction>}    notAppFormProcessingPipe
  */
 
 /**
