@@ -72,6 +72,8 @@ class Form {
         ...DEFAULT_AFTER_EXTRACT_TRANSFORMERS,
     };
 
+    #INSTRUCTIONS = null;
+
     #rateLimiter = null;
     #rateLimiterIdGetter = (data) => data.identity.sid;
     #rateLimiterException = FormExceptionTooManyRequests;
@@ -87,6 +89,7 @@ class Form {
      * @param {import('../app.js')} options.app
      * @param {Object.<string, Function>} options.EXTRACTORS
      * @param {Object.<string, Function>} options.TRANSFORMERS
+     * @param {import('../types.js').notAppFormProcessingPipe|null} options.INSTRUCTIONS
      * @param {Array<Function>} options.AFTER_EXTRACT_TRANSFORMERS
      * @param {Object.<string, import('../types.js').notAppFormEnvExtractor>} options.ENV_EXTRACTORS
      * @param   {import('../types.js').notAppFormRateLimiterOptions}    options.rate
@@ -100,6 +103,7 @@ class Form {
         EXTRACTORS = {},
         ENV_EXTRACTORS = {},
         TRANSFORMERS = {},
+        INSTRUCTIONS = null,
         AFTER_EXTRACT_TRANSFORMERS = [],
         rate,
     }) {
@@ -109,6 +113,7 @@ class Form {
         this.#PROTO_FIELDS = FIELDS;
         this.#createValidationSchema(app);
         this.#augmentValidationSchema();
+        this.#addInstructions(INSTRUCTIONS);
         this.#addExtractors(EXTRACTORS);
         this.#addEnvExtractors(ENV_EXTRACTORS);
         this.#addTransformers(TRANSFORMERS);
@@ -223,8 +228,16 @@ class Form {
     async extract(req) {
         return {
             ...this.extractRequestEnvs(req),
-            data: this.extractByInstructionsFromRouteActionFields(req),
+            data: this.#extractByBestInstructions(req),
         };
+    }
+
+    #extractByBestInstructions(req) {
+        if (this.#INSTRUCTIONS) {
+            return this.extractByInstructions(req, this.#INSTRUCTIONS);
+        } else {
+            return this.extractByInstructionsFromRouteActionFields(req);
+        }
     }
 
     /**
@@ -416,6 +429,15 @@ class Form {
 
     static fabric() {
         return FormFabric;
+    }
+    /**
+     *  Object with named extractor functions
+     * @param {import('../types.js').notAppFormProcessingPipe|null} instructions
+     */
+    #addInstructions(instructions = null) {
+        if (instructions) {
+            this.#INSTRUCTIONS = { ...instructions };
+        }
     }
 
     /**
