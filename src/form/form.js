@@ -189,7 +189,7 @@ class Form {
     getModelName(req) {
         if (this.#MODEL_NAME) {
             return this.#MODEL_NAME;
-        } else if (req) {
+        } else if (req && req.notRouteData) {
             return firstLetterToUpper(req.notRouteData.modelName);
         }
         return undefined;

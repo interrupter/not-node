@@ -185,6 +185,8 @@ module.exports = ({
             LogAction(action, identity, {
                 targetId,
                 version: result?.__version,
+                populate,
+                query,
             });
             return result;
         }
@@ -242,6 +244,8 @@ module.exports = ({
             );
             LogAction(action, identity, {
                 targetID,
+                query,
+                populate,
                 version: result?.__version,
             });
             return result;
@@ -292,6 +296,7 @@ module.exports = ({
             const result = await getModel().getOneRaw(targetId, query);
             LogAction(action, identity, {
                 targetId,
+                query,
                 version: result?.__version,
             });
             return result;
