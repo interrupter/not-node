@@ -349,7 +349,12 @@ module.exports = ({
                 if (!itm) {
                     throw new DBExceptionDocumentIsNotFound();
                 }
-                if (shouldOwn && !isOwner(itm, identity?.uid)) {
+                if (
+                    shouldOwn &&
+                    identity &&
+                    identity?.uid &&
+                    !isOwner(itm, identity.uid)
+                ) {
                     throw new DBExceptionDocumentIsNotOwnerByActiveUser({
                         params: {
                             targetId,
@@ -447,12 +452,12 @@ module.exports = ({
             shouldOwn = false,
         }) {
             logDebugAction(action, identity);
-            const { skip, size, sorter, filter, search } = query;
+            let { skip, size, sorter, filter, search } = query;
             let populate = await getPopulate(action, {
                 identity,
             });
             if (shouldOwn) {
-                notFilter.filter.modifyRules(filter, {
+                filter = notFilter.filter.modifyRules(filter, {
                     [ownerFieldName]: identity?.uid,
                 });
             }
@@ -489,12 +494,12 @@ module.exports = ({
 
         static async _list({ query, identity, action, shouldOwn = false }) {
             logDebugAction(action, identity);
-            const { skip, size, sorter, filter } = query;
+            let { skip, size, sorter, filter } = query;
             let populate = await getPopulate(action, {
                 identity,
             });
             if (shouldOwn) {
-                notFilter.filter.modifyRules(filter, {
+                filter = notFilter.filter.modifyRules(filter, {
                     [ownerFieldName]: identity?.uid,
                 });
             }
@@ -529,14 +534,14 @@ module.exports = ({
 
         static async _count({ query, action, identity, shouldOwn = false }) {
             logDebugAction(action, identity);
-            const { filter, search } = query;
+            let { filter, search } = query;
             if (shouldOwn) {
-                notFilter.filter.modifyRules(filter, {
+                filter = notFilter.filter.modifyRules(filter, {
                     [ownerFieldName]: identity?.uid,
                 });
             }
             if (search) {
-                notFilter.filter.modifyRules(search, filter);
+                filter = notFilter.filter.modifyRules(search, filter);
             }
             const result = await getModel().countWithFilter(search || filter);
             LogAction(action, identity, { shouldOwn });

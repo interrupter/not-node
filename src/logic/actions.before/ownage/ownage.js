@@ -18,13 +18,13 @@ module.exports = class OwnageBeforeAction {
         if (identity.uid) {
             //if searching, counting, listing and so on
             //adding condition of ownership by this excat user
-            const { filter, search } = query;
+            let { filter, search } = query;
             if (filter) {
-                notFilter.filter.modifyRules(filter, {
+                filter = notFilter.filter.modifyRules(filter, {
                     [OwnageBeforeAction.ownerFieldName]: identity?.uid,
                 });
                 if (search) {
-                    notFilter.filter.modifyRules(search, filter);
+                    search = notFilter.filter.modifyRules(search, filter);
                 }
             }
             args.defaultQueryById = {
