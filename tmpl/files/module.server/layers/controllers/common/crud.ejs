@@ -1,6 +1,8 @@
 import { MODULE_NAME } from "../../const.js";
 import Validators from "../common/validators.js";
 import { Frame } from "not-bulma";
+import CRUDActionList from "not-bulma/src/frame/crud/actions/list";
+
 const { notCRUD } = Frame;
 
 const MODEL_NAME = "<%- ModelName %>";
@@ -53,27 +55,7 @@ class nc<%- ModelName %>Common extends notCRUD {
                     path: ":_id",
                     title: "Действия",
                     type: "button",
-                    preprocessor: (value) => {
-                        return [
-                            {
-                                action: ()=>this.goDetails(value),
-                                title: "Подробнее",
-                                size: "small",
-                            },
-                            {
-                                action: ()=>this.goUpdate(value),
-                                title: "Изменить",
-                                size: "small",
-                            },
-                            {
-                                action: ()=>this.goDelete(value),
-                                color: "danger",
-                                title: "Удалить",
-                                size: "small",
-                                style: "outlined",
-                            },
-                        ];
-                    },
+                    preprocessor: (value) => CRUDActionList.createActionsButtons(this, value),
                 },
             ],
         });
@@ -82,8 +64,8 @@ class nc<%- ModelName %>Common extends notCRUD {
         return this;
     }
 
-    createDefault() {        
-        let newRecord = this.getModel({            
+    createDefault() {
+        let newRecord = this.getModel({
             <% for (let fieldName of fields){ %><%- fieldName %>: undefined,
             <% } %>
         });
