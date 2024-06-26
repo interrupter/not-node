@@ -249,6 +249,20 @@ module.exports.tryFileAsync = async (filePath) => {
 };
 
 /**
+ *  Asynchronously check dir existence and if it's really a file
+ * @param {string}     dirPath  full path to file
+ * @return {Promise<boolean>}            true if path exists and it's a file
+ **/
+module.exports.tryDirAsync = async (dirPath) => {
+    try {
+        const stat = await fs.promises.lstat(dirPath);
+        return stat && stat.isDirectory();
+    } catch (e) {
+        return false;
+    }
+};
+
+/**
  *  Trying to parse input to JSON or returns def
  * @param {string}     input  string to be parsed
  * @param {any}     def  what to return if parse failed, default undefined
