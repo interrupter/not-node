@@ -2,6 +2,7 @@
   "booleans_false": "False",
   "booleans_true": "True",
   "empty_list_placeholder": "List is empty",
+  "go_back_button_label": "Back",
   "list_navigation_prev_button_label": "Prev",
   "list_navigation_next_button_label": "Next",
   "button_cancel_label": "Cancel",
