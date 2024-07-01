@@ -1,5 +1,6 @@
 const log = require("not-log")(module, "not-node//init//env");
 const { tryDirAsync } = require("../../common");
+const notEnv = require("../../env");
 const {
     DEFAULT_PATH_WS,
     DEFAULT_PATH_MODULES,
@@ -9,6 +10,34 @@ const {
 } = require("../../const");
 
 module.exports = class InitENV {
+    static CONFIG_SET = [
+        {
+            from: "path:static",
+            to: "staticPath",
+            def: DEFAULT_PATH_STATIC,
+        },
+        {
+            from: "path:modules",
+            to: "modulesPath",
+            def: DEFAULT_PATH_MODULES,
+        },
+        {
+            from: "path:tmp",
+            to: "tmpPath",
+            def: DEFAULT_PATH_TMP,
+        },
+        {
+            from: "path:dbDumps",
+            to: "dbDumpsPath",
+            def: DEFAULT_PATH_DB_DUMPS,
+        },
+        {
+            from: "path:ws",
+            to: "wsPath",
+            def: DEFAULT_PATH_WS,
+        },
+    ];
+
     static getProxyPort(config) {
         return parseInt(config.get("proxy:port") || config.get("port"));
     }
@@ -41,46 +70,56 @@ module.exports = class InitENV {
         }
     }
 
+    static addToEnv(key, val) {
+        notEnv.setEnv(key, val);
+        return val;
+    }
+
+    static setObsoleteAndNew({ config, master, from, to, def }) {
+        config.set(
+            to,
+            InitENV.addToEnv(to, master.getAbsolutePath(config.get(from, def))),
+            `obsolete: use notEnv.getEnv('${to}') instead`
+        );
+    }
+
+    static initFromTemplate({ config, master }) {
+        InitENV.CONFIG_SET.forEach((item) => {
+            InitENV.setObsoleteAndNew({
+                config,
+                master,
+                ...item,
+            });
+        });
+    }
+
     async run({ config, options, master, emit }) {
         log?.info("Setting up server environment variables...");
         await emit("env.pre", { config, options, master });
+
+        InitENV.initFromTemplate({ config, master });
+
         config.set(
-            "staticPath",
-            master.getAbsolutePath(
-                config.get("path:static", DEFAULT_PATH_STATIC)
-            )
-        );
-        config.set(
-            "modulesPath",
-            master.getAbsolutePath(
-                config.get("path:modules", DEFAULT_PATH_MODULES)
-            )
+            "appPath",
+            InitENV.addToEnv("appPath", options.pathToApp),
+            "obsolete: use notEnv.getEnv('appPath')"
         );
 
         config.set(
-            "tmpPath",
-            master.getAbsolutePath(config.get("path:tmp", DEFAULT_PATH_TMP))
+            "npmPath",
+            InitENV.addToEnv("npmPath", options.pathToNPM),
+            "obsolete: use notEnv.getEnv('npmPath')"
         );
 
         config.set(
-            "dbDumpsPath",
-            master.getAbsolutePath(
-                config.get("path:dbDumps", DEFAULT_PATH_DB_DUMPS)
-            )
+            "fullServerName",
+            InitENV.addToEnv(
+                "fullServerName",
+                InitENV.getFullServerName(config)
+            ),
+            "obsolete: use notEnv.getEnv('fullServerName')"
         );
-        config.set("appPath", options.pathToApp);
-        config.set("npmPath", options.pathToNPM);
-        config.set("fullServerName", InitENV.getFullServerName(config));
-        if (config.get("path:ws")) {
-            log?.log(
-                "wsPath",
-                master.getAbsolutePath(config.get("path:ws", DEFAULT_PATH_WS))
-            );
-            config.set(
-                "wsPath",
-                master.getAbsolutePath(config.get("path:ws", DEFAULT_PATH_WS))
-            );
-        }
+
         await InitENV.checkPaths(master, config);
         await emit("env.post", { config, options, master });
     }
