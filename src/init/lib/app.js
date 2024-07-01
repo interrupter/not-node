@@ -24,10 +24,20 @@ module.exports = class InitApp {
         master.setEnv("validationEnv", options.validationEnv);
         master.setEnv("hostname", config.get("hostname"));
         master.setEnv("server", `https://` + config.get("host"));
-        master.setEnv("appPath", config.get("appPath"));
+        master.setEnv(
+            "appPath",
+            master.getAbsolutePath(config.get("path.app"))
+        );
+        master.setEnv(
+            "dbDumpsPath",
+            master.getAbsolutePath(config.get("path.dbDumps"))
+        );
+        master.setEnv(
+            "tmpPath",
+            master.getAbsolutePath(config.get("path.tmp"))
+        );
         master.setEnv("name", master.getManifest().name);
         master.setEnv("fullServerName", config.get("fullServerName"));
-        master.setEnv("dbDumpsPath", config.get("dbDumpsPath"));
         master.setEnv(
             "rolesPriority",
             master.getManifest().targets.server.roles

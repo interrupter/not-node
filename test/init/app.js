@@ -35,6 +35,9 @@ module.exports = ({ expect }) => {
                     getMongoose() {
                         return fakeMongoose;
                     },
+                    getAbsolutePath(val) {
+                        return val;
+                    },
                 };
 
                 await InitApp.createApp({
@@ -80,6 +83,9 @@ module.exports = ({ expect }) => {
                     },
                     getMongoose() {
                         return fakeMongoose;
+                    },
+                    getAbsolutePath(val) {
+                        return val;
                     },
                 };
 
@@ -132,6 +138,9 @@ module.exports = ({ expect }) => {
                         return fakeManifest;
                     },
                     setEnv() {},
+                    getAbsolutePath(val) {
+                        return val;
+                    },
                 };
 
                 await InitApp.setAppEnvs({
@@ -405,6 +414,9 @@ module.exports = ({ expect }) => {
                     },
                     getManifest() {
                         return fakeManifest;
+                    },
+                    getAbsolutePath(val) {
+                        return val;
                     },
                 };
                 try {
