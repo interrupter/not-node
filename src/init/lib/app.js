@@ -38,10 +38,10 @@ module.exports = class InitApp {
 
     static async importModules({ config, options, master, emit }) {
         await emit("app.importModules.pre", { config, options, master });
-        master.getApp().importModulesFrom(config.get("modulesPath"));
+        master.getApp().importModulesFrom(master.getEnv("modulesPath"));
         if (Array.isArray(config.get("importModulesFromNPM"))) {
             config.get("importModulesFromNPM").forEach((modName) => {
-                const modPath = path.join(config.get("npmPath"), modName);
+                const modPath = path.join(master.getEnv("npmPath"), modName);
                 master.getApp().importModuleFrom(modPath, modName);
             });
         }
@@ -69,7 +69,7 @@ module.exports = class InitApp {
             await InitApp.setAppEnvs({ config, options, master, emit });
             await InitApp.initCore({ config, options, master, emit });
             await InitApp.importModules({ config, options, master, emit });
-            await InitApp.createReporter({ config, options, master, emit });
+            await InitApp.createReporter({ config, master });
             await emit("app.post", { config, options, master });
         } catch (e) {
             master.throwError(e.message, 1);

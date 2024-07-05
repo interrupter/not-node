@@ -205,6 +205,9 @@ module.exports = ({ expect }) => {
                     getManifest() {
                         return fakeManifest;
                     },
+                    getEnv(name) {
+                        return `${name}_fake`;
+                    },
                 };
 
                 await InitApp.importModules({
@@ -255,6 +258,9 @@ module.exports = ({ expect }) => {
                     },
                     getManifest() {
                         return fakeManifest;
+                    },
+                    getEnv(name) {
+                        return `${name}_fake`;
                     },
                 };
                 await InitApp.importModules({
@@ -400,6 +406,13 @@ module.exports = ({ expect }) => {
                 };
                 const master = {
                     setEnv() {},
+                    getEnv: (str) => {
+                        if (str === "importModulesFromNPM") {
+                            return ["fakeMod", "fakeMod2"];
+                        } else {
+                            return str + "_fake";
+                        }
+                    },
                     setApp(app) {
                         expect(app).to.be.instanceof(FakeApp);
                     },
