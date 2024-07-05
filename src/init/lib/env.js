@@ -97,6 +97,10 @@ module.exports = class InitENV {
         log?.info("Setting up server environment variables...");
         await emit("env.pre", { config, options, master });
 
+        master.setEnv("validationEnv", options.validationEnv);
+        master.setEnv("hostname", config.get("hostname"));
+        master.setEnv("server", `https://` + config.get("host"));
+
         InitENV.initFromTemplate({ config, master });
 
         config.set(

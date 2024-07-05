@@ -5,6 +5,7 @@ const ENVS = {
 };
 
 module.exports = class notEnv {
+    static LOG_STRING_ASSIGNMENTS = true;
     /**
      * Obsolete!
      * Wrapper for 'get'
@@ -52,6 +53,9 @@ module.exports = class notEnv {
      *  @return     {notEnv}      chainable
      */
     static set(key, val) {
+        if (notEnv.LOG_STRING_ASSIGNMENTS && typeof val === "string") {
+            console.log("ENV SET ", key, " = ", val);
+        }
         ENVS[key] = val;
         return notEnv;
     }

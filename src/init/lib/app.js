@@ -3,7 +3,7 @@ const ENV = process.env.NODE_ENV || "development";
 const path = require("path");
 const logger = require("not-log");
 const log = logger(module, "not-node//init//app");
-const { notErrorReporter } = require("not-error");
+const { notErrorReporter } = require("not-error/src/index.cjs");
 
 const CONST_CORE_PATH = path.join(__dirname, "../../core");
 
@@ -21,23 +21,7 @@ module.exports = class InitApp {
 
     static async setAppEnvs({ config, options, master, emit }) {
         await emit("app.setEnv.pre", { config, options, master });
-        master.setEnv("validationEnv", options.validationEnv);
-        master.setEnv("hostname", config.get("hostname"));
-        master.setEnv("server", `https://` + config.get("host"));
-        master.setEnv(
-            "appPath",
-            master.getAbsolutePath(config.get("path.app"))
-        );
-        master.setEnv(
-            "dbDumpsPath",
-            master.getAbsolutePath(config.get("path.dbDumps"))
-        );
-        master.setEnv(
-            "tmpPath",
-            master.getAbsolutePath(config.get("path.tmp"))
-        );
         master.setEnv("name", master.getManifest().name);
-        master.setEnv("fullServerName", config.get("fullServerName"));
         master.setEnv(
             "rolesPriority",
             master.getManifest().targets.server.roles

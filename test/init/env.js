@@ -78,6 +78,7 @@ module.exports = ({ expect }) => {
                     getAbsolutePath(str) {
                         return str + "_fake_absolute";
                     },
+                    setEnv() {},
                 };
                 const options = {
                     pathToApp: "pathToApp__fake",
@@ -108,6 +109,7 @@ module.exports = ({ expect }) => {
                     getAbsolutePath(str) {
                         return str + "_fake_absolute";
                     },
+                    setEnv() {},
                 };
                 const options = {
                     pathToApp: "pathToApp__fake",
