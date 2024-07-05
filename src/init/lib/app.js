@@ -63,7 +63,7 @@ module.exports = class InitApp {
 
     async run({ config, options, master, emit }) {
         try {
-            log.info("Init not-app...");
+            log?.info("Init not-app...");
             await emit("app.pre", { config, options, master });
             await InitApp.createApp({ config, options, master, emit });
             await InitApp.setAppEnvs({ config, options, master, emit });

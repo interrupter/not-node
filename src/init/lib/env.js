@@ -1,6 +1,6 @@
 const log = require("not-log")(module, "not-node//init//env");
 const { tryDirAsync } = require("../../common");
-const notEnv = require("../../env");
+
 const {
     DEFAULT_PATH_WS,
     DEFAULT_PATH_MODULES,
@@ -60,25 +60,37 @@ module.exports = class InitENV {
     static async checkPaths(master, config) {
         const paths = config.get("path");
         if (paths) {
+            log?.log("Paths existence check");
             for (let pathName of Object.keys(paths)) {
-                if (await tryDirAsync(paths[pathName])) {
-                    log?.error(
-                        `config path (${pathName}) not exists: ${paths[pathName]}`
-                    );
+                const absolutePath = master.getEnv(`${pathName}Path`);
+                if (absolutePath) {
+                    if (!(await tryDirAsync(absolutePath))) {
+                        log?.error(
+                            `config path (${pathName}) not exists: ${paths[pathName]} - ${absolutePath}`
+                        );
+                    } else {
+                        log?.log(
+                            `config path (${pathName}) exists: ${paths[pathName]} - ${absolutePath}`
+                        );
+                    }
                 }
             }
         }
     }
 
-    static addToEnv(key, val) {
-        notEnv.set(key, val);
+    static addToEnv(master, key, val) {
+        master.setEnv(key, val);
         return val;
     }
 
     static setObsoleteAndNew({ config, master, from, to, def }) {
         config.set(
             to,
-            InitENV.addToEnv(to, master.getAbsolutePath(config.get(from, def))),
+            InitENV.addToEnv(
+                master,
+                to,
+                master.getAbsolutePath(config.get(from, def))
+            ),
             `obsolete: use notEnv.get('${to}') instead`
         );
     }
@@ -105,19 +117,20 @@ module.exports = class InitENV {
 
         config.set(
             "appPath",
-            InitENV.addToEnv("appPath", options.pathToApp),
+            InitENV.addToEnv(master, "appPath", options.pathToApp),
             "obsolete: use notEnv.get('appPath')"
         );
 
         config.set(
             "npmPath",
-            InitENV.addToEnv("npmPath", options.pathToNPM),
+            InitENV.addToEnv(master, "npmPath", options.pathToNPM),
             "obsolete: use notEnv.get('npmPath')"
         );
 
         config.set(
             "fullServerName",
             InitENV.addToEnv(
+                master,
                 "fullServerName",
                 InitENV.getFullServerName(config)
             ),

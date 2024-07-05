@@ -106,8 +106,8 @@ class Init {
     }
 
     static printOutManifest = () => {
-        log.debug("Manifest:");
-        log.debug(JSON.stringify(Init.notApp.getManifest(), null, 4));
+        log?.debug("Manifest:");
+        log?.debug(JSON.stringify(Init.notApp.getManifest(), null, 4));
     };
 
     /**
@@ -122,7 +122,7 @@ class Init {
 
     static async run({ config, options, manifest, additional }) {
         try {
-            log.info("Kick start app..." + os.platform() + " " + os.arch());
+            log?.info("Kick start app..." + os.platform() + " " + os.arch());
             ADDS.init(additional);
             const initSequence = new InitSequence(STANDART_INIT_SEQUENCE);
             await ADDS.run("pre", {
@@ -159,8 +159,8 @@ class Init {
     }
 
     static throwError(errMsg = "Fatal error", errCode = 1) {
-        log.error(errMsg);
-        log.log(`Exit process...with code ${errCode}`);
+        log?.error(errMsg);
+        log?.log(`Exit process...with code ${errCode}`);
         throw new Error(errMsg);
     }
 }
