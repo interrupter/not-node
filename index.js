@@ -1,8 +1,12 @@
 /**
  * @module not-node
  */
-
+/** Environment variables */
 module.exports.Env = require("./src/env.js");
+/** getter/setter shortcuts */
+module.exports.getEnv = module.exports.Env.get;
+module.exports.setEnv = module.exports.Env.set;
+
 /** Error module
  * @type {not-node/Error}
  */

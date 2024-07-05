@@ -49,7 +49,7 @@ module.exports = class notClusterRedisProvider {
             if (this.#clientGetter) {
                 return this.#clientGetter();
             } else {
-                return notEnv.getEnv(this.#clientName);
+                return notEnv.get(this.#clientName);
             }
         } catch (e) {
             error(e);

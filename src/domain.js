@@ -466,7 +466,7 @@ class notDomain extends EventEmitter {
     }
 
     getEnv(key) {
-        return Env.getEnv(key);
+        return Env.get(key);
     }
 
     /**
@@ -476,7 +476,7 @@ class notDomain extends EventEmitter {
      *  @return {notDomain}      chainable
      */
     static setEnv(key, val) {
-        Env.setEnv(key, val);
+        Env.set(key, val);
         return this;
     }
 

@@ -2,7 +2,11 @@
 
 const serveStatic = require("serve-static");
 const log = require("not-log")(module, "not-node//init//routes");
-const { notError, notValidationError, notRequestError } = require("not-error");
+const {
+    notError,
+    notValidationError,
+    notRequestError,
+} = require("not-error/src/index.cjs");
 
 module.exports = class InitRoutes {
     static finalError({ master }) {
@@ -57,7 +61,7 @@ module.exports = class InitRoutes {
         };
     }
 
-    async run({ master, config, options }) {
+    async run({ master, options }) {
         log?.info("Setting up routes...");
         //pages rendering
         await master.getApp().execInModules("registerPagesRoutes", master);
@@ -65,7 +69,7 @@ module.exports = class InitRoutes {
         master.getApp().expose(master.getServer());
         //user defined pages
         require(options.routesPath)(master.getServer(), master.getApp());
-        master.getServer().use(serveStatic(config.get("staticPath")));
+        master.getServer().use(serveStatic(master.getEnv("staticPath")));
         master.getServer().use(options.indexRoute);
         master.getServer().use(
             InitRoutes.finalError({

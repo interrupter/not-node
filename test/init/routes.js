@@ -182,16 +182,14 @@ module.exports = ({ expect }) => {
                     getServer() {
                         return fakeServer;
                     },
+                    getEnv(str) {
+                        return str + "__fake";
+                    },
                     getApp() {
                         return fakeApp;
                     },
                 };
-                const config = {
-                    get(str) {
-                        return str + "__fake";
-                    },
-                };
-                await new InitRoutes().run({ master, config, options });
+                await new InitRoutes().run({ master, options });
             });
         });
     });

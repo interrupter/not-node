@@ -76,11 +76,11 @@ class Init {
     }
 
     static setEnv(key, val) {
-        Env.setEnv(key, val);
+        Env.set(key, val);
     }
 
     static getEnv(key) {
-        return Env.getEnv(key);
+        return Env.get(key);
     }
 
     static getApp() {

@@ -71,7 +71,7 @@ module.exports = class InitRateLimiter {
     }
 
     static getClient(storeClient) {
-        return notEnv.getEnv(`db.${storeClient}`);
+        return notEnv.get(`db.${storeClient}`);
     }
 
     static initCustom(

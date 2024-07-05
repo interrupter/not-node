@@ -71,7 +71,7 @@ module.exports = class InitENV {
     }
 
     static addToEnv(key, val) {
-        notEnv.setEnv(key, val);
+        notEnv.set(key, val);
         return val;
     }
 
@@ -79,7 +79,7 @@ module.exports = class InitENV {
         config.set(
             to,
             InitENV.addToEnv(to, master.getAbsolutePath(config.get(from, def))),
-            `obsolete: use notEnv.getEnv('${to}') instead`
+            `obsolete: use notEnv.get('${to}') instead`
         );
     }
 
@@ -102,13 +102,13 @@ module.exports = class InitENV {
         config.set(
             "appPath",
             InitENV.addToEnv("appPath", options.pathToApp),
-            "obsolete: use notEnv.getEnv('appPath')"
+            "obsolete: use notEnv.get('appPath')"
         );
 
         config.set(
             "npmPath",
             InitENV.addToEnv("npmPath", options.pathToNPM),
-            "obsolete: use notEnv.getEnv('npmPath')"
+            "obsolete: use notEnv.get('npmPath')"
         );
 
         config.set(
@@ -117,7 +117,7 @@ module.exports = class InitENV {
                 "fullServerName",
                 InitENV.getFullServerName(config)
             ),
-            "obsolete: use notEnv.getEnv('fullServerName')"
+            "obsolete: use notEnv.get('fullServerName')"
         );
 
         await InitENV.checkPaths(master, config);

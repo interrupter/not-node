@@ -11,7 +11,7 @@ function extractValidationEnvGetter(options) {
     ) {
         return options.validationEnv;
     } else {
-        const globalValidationEnvGetter = notEnv.getEnv("validationEnv");
+        const globalValidationEnvGetter = notEnv.get("validationEnv");
         if (globalValidationEnvGetter && isFunc(globalValidationEnvGetter)) {
             return globalValidationEnvGetter;
         } else {
