@@ -65,8 +65,11 @@
  * @typedef    {Object}             notRouteData
  * @property   {string}             actionName          name of action
  * @property   {string}             modelName           first letter should not be not capital
+ * @property   {string}             moduleName          first letter should not be not capital
+ * @property   {string}             modelPath           arg for getModel/getSchema
  * @property   {notRouteRule}       rule                current rule
  * @property   {notActionData}      actionData          action details
+ * @property   {string}             actionSignature     action signature
  */
 
 /**
@@ -102,6 +105,16 @@
  * @property    {string}        sid         //user session identificator
  * @property    {string}        ip          //request source ip
  * @property    {string}        provider    //provider class name
+ */
+
+/**
+ *
+ * @typedef     {object}        notAppIdentityShortData
+ * @property    {boolean}       root        //system configuration administrator
+ * @property    {boolean}       admin       //system content administrator
+ * @property    {boolean}       auth        //authenticated user
+ * @property    {Array<string>} role        //list of roles, exactly one should be primary role
+ * @property    {string}        primaryRole //primary role
  */
 
 /**

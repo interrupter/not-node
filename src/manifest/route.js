@@ -8,7 +8,13 @@ const Auth = require("../auth"),
     HttpError = require("../error").Http;
 
 const notManifestRouteResultFilter = require("./result.filter");
-const { copyObj, executeObjectFunction } = require("../common");
+const notManifestFilter = require("./manifest.filter");
+
+const {
+    copyObj,
+    executeObjectFunction,
+    firstLetterToUpper,
+} = require("../common");
 
 /**
  *	Route representation
@@ -105,8 +111,15 @@ class notRoute {
         return {
             actionName,
             modelName: this.routeName,
+            moduleName: this.moduleName,
+            modelPath: `${this.moduleName}//${firstLetterToUpper(
+                this.routeName
+            )}`,
             rule: copyObj(rule),
             actionData: copyObj(this.actionData),
+            actionSignature: notManifestFilter.detectActionSignature(
+                this.actionData
+            ),
         };
     }
 
@@ -234,7 +247,11 @@ class notRoute {
                         itm && itm.toObject ? itm.toObject() : itm
                     );
                 }
-                notManifestRouteResultFilter.filter(req.notRouteData, result);
+                notManifestRouteResultFilter.filter(
+                    req.notRouteData,
+                    result,
+                    notAppIdentity.extractAuthData(req)
+                );
             }
             //run after with results, continue without waiting when it finished
             if (modRoute[CONST_AFTER_ACTION]) {

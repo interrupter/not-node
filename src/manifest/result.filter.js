@@ -1,5 +1,8 @@
 const notPath = require("not-path");
 const { objHas, copyObj } = require("../common");
+const notManifestFilter = require("./manifest.filter");
+
+const Auth = require("../auth/const");
 
 const PROP_NAME_RETURN_ROOT = "returnRoot"; //path to object to filter
 const PROP_NAME_RETURN_RULE = "return"; //filtering rule
@@ -62,15 +65,38 @@ module.exports = class notManifestRouteResultFilter {
      * if presented
      * @param {object} notRouteData request rules and preferencies
      * @param {object} result result returned by main action processor
+     * @param {import('../types').notAppIdentityShortData} identity
      */
-    static filter(notRouteData, result) {
+    static filter(
+        notRouteData,
+        result,
+        identity = {
+            auth: false,
+            admin: false,
+            root: false,
+            primaryRole: Auth.DEFAULT_USER_ROLE_FOR_GUEST,
+            role: [Auth.DEFAULT_USER_ROLE_FOR_GUEST],
+        }
+    ) {
         if (!(result && typeof result === "object")) return;
-        const filteringRule = this.getFilteringRule(notRouteData);
+        let filteringRule = this.getFilteringRule(notRouteData);
         if (!filteringRule) return;
         const filteringTarget = this.getFilteringTarget(result, notRouteData);
         if (!filteringTarget) {
             return;
         }
+        filteringRule = notManifestFilter.filterReturnSet(
+            filteringRule,
+            notManifestFilter.loadSchema(notRouteData.modelPath),
+            {
+                auth: identity.auth,
+                role: identity.role,
+                root: identity.root,
+                modelName: notRouteData.modelName,
+                moduleName: notRouteData.moduleName,
+                actionSignature: notRouteData.actionSignature,
+            }
+        );
         if (Array.isArray(filteringTarget)) {
             filteringTarget.forEach((filteringTargetItem) => {
                 this.filterByRule(

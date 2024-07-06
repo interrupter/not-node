@@ -238,6 +238,39 @@ module.exports = class notManifestFilter {
         return Auth.ACTION_SIGNATURES.READ;
     }
 
+    static filterReturnSet(
+        returnSet,
+        modelSchema,
+        {
+            auth = false,
+            role = [Auth.DEFAULT_USER_ROLE_FOR_GUEST],
+            root = false,
+            modelName = "",
+            actionSignature = undefined,
+        } = {
+            auth: false,
+            role: [Auth.DEFAULT_USER_ROLE_FOR_GUEST],
+            root: false,
+            modelName: "",
+            actionSignature: undefined,
+        }
+    ) {
+        if (
+            notManifestFilter.ruleSetHasReturnDirectiveInAllStringFormat({
+                return: returnSet,
+            })
+        ) {
+            return notFieldsFilter.filter([...returnSet], modelSchema, {
+                action: actionSignature,
+                roles: role,
+                auth,
+                root,
+                modelName,
+            });
+        }
+        return returnSet;
+    }
+
     /**
      *  Clear action definition from rules of access
      *  @param      {object}                action   action data
@@ -284,17 +317,19 @@ module.exports = class notManifestFilter {
                 { action: actionSignature, roles: role, auth, root, modelName }
             );
         }
-        if (
-            notManifestFilter.ruleSetHasReturnDirectiveInAllStringFormat(
-                ruleSet
-            )
-        ) {
-            copy.return = notFieldsFilter.filter(
-                [...ruleSet.return],
+        if (ruleSet && ruleSet.return) {
+            copy.return = notManifestFilter.filterReturnSet(
+                ruleSet.return,
                 modelSchema,
-                { action: actionSignature, roles: role, auth, root, modelName }
+                {
+                    auth,
+                    role,
+                    root,
+                    modelName,
+                    moduleName,
+                    actionSignature,
+                }
             );
-            //console.log(fullModelName, ruleSet.return, ' - > ',copy.return);
         }
         return copy;
     }
