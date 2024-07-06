@@ -326,6 +326,21 @@ class notDomain extends EventEmitter {
         return this;
     }
 
+    warn() {
+        this.logger.warn(...arguments);
+        return this;
+    }
+
+    error() {
+        this.logger.error(...arguments);
+        return this;
+    }
+
+    debug() {
+        this.logger.debug(...arguments);
+        return this;
+    }
+
     /**
      *  reporter - errors
      */
