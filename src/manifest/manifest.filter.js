@@ -95,7 +95,10 @@ module.exports = class notManifestFilter {
                                 root,
                                 modelName,
                                 moduleName,
-                                actionSignature: actionSet.actionSignature,
+                                actionSignature:
+                                    notManifestFilter.detectActionSignature(
+                                        actionSet
+                                    ),
                             }
                         );
                     break;
@@ -113,7 +116,10 @@ module.exports = class notManifestFilter {
                             root,
                             modelName,
                             moduleName,
-                            actionSignature: actionSet.actionSignature,
+                            actionSignature:
+                                notManifestFilter.detectActionSignature(
+                                    actionSet
+                                ),
                         }
                     );
             }
@@ -165,6 +171,24 @@ module.exports = class notManifestFilter {
         );
     }
 
+    /**
+     * Return true if ruleSet object has not empty list of return and return is an Array<string>
+     * @param {Object} ruleSet specific set of rules for action
+     * @return {boolean} if rule set has not empty fields list
+     */
+    static ruleSetHasReturnDirectiveInAllStringFormat(ruleSet) {
+        return (
+            typeof ruleSet !== "undefined" &&
+            ruleSet !== null &&
+            ruleSet.return &&
+            Array.isArray(ruleSet.return) &&
+            ruleSet.return.length &&
+            ruleSet.return.every(
+                (returnFieldName) => typeof returnFieldName === "string"
+            )
+        );
+    }
+
     static composeFullModelName(moduleName, modelName) {
         if (modelName) {
             if (moduleName) {
@@ -182,6 +206,36 @@ module.exports = class notManifestFilter {
         } else {
             return {};
         }
+    }
+
+    /**
+     *
+     * Returns Action signature for action
+     * @static
+     * @param {import('../types').notActionData} action
+     * @return {string}
+     */
+    static detectActionSignature(action) {
+        if (action) {
+            switch (action?.method?.toLocaleLowerCase()) {
+                case "get":
+                    return Auth.ACTION_SIGNATURES.READ;
+
+                case "post":
+                case "patch":
+                    return Auth.ACTION_SIGNATURES.UPDATE;
+
+                case "put":
+                    return Auth.ACTION_SIGNATURES.CREATE;
+
+                case "delete":
+                    return Auth.ACTION_SIGNATURES.DELETE;
+
+                default:
+                    return Auth.ACTION_SIGNATURES.READ;
+            }
+        }
+        return Auth.ACTION_SIGNATURES.READ;
     }
 
     /**
@@ -221,16 +275,26 @@ module.exports = class notManifestFilter {
         //copy fields list from rule to action if it exists
         //fields list is used to restrict fields of data that could be accessed via
         //this action
+        const fullModelName = this.composeFullModelName(moduleName, modelName);
+        const modelSchema = this.loadSchema(fullModelName);
         if (notManifestFilter.ruleSetHasFieldsDirective(ruleSet)) {
-            const fullModelName = this.composeFullModelName(
-                moduleName,
-                modelName
-            );
             copy.fields = notFieldsFilter.filter(
                 [...ruleSet.fields],
-                this.loadSchema(fullModelName),
+                modelSchema,
                 { action: actionSignature, roles: role, auth, root, modelName }
             );
+        }
+        if (
+            notManifestFilter.ruleSetHasReturnDirectiveInAllStringFormat(
+                ruleSet
+            )
+        ) {
+            copy.return = notFieldsFilter.filter(
+                [...ruleSet.return],
+                modelSchema,
+                { action: actionSignature, roles: role, auth, root, modelName }
+            );
+            //console.log(fullModelName, ruleSet.return, ' - > ',copy.return);
         }
         return copy;
     }
