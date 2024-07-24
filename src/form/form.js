@@ -32,6 +32,7 @@ const DEFAULT_ID_EXTRACTORS = require("./env_extractors");
 const DEFAULT_TRANSFORMERS = require("./transformers");
 const DEFAULT_AFTER_EXTRACT_TRANSFORMERS = [];
 const notAppIdentity = require("../identity/index.js");
+const { ACTION_DATA_TYPES } = require("../const.js");
 
 /**
  * Generic form validation class
@@ -196,6 +197,26 @@ class Form {
     }
 
     /**
+     *  Returns array of types of data in action. Is subset of values of ACTION_DATA_TYPES object.
+     *
+     * @param {import('../types').notNodeExpressRequest} req
+     * @return {Array<string>}
+     * @memberof Form
+     */
+    getActionDataDataTypes(req) {
+        if (
+            req &&
+            req.notRouteData &&
+            req.notRouteData.actionData &&
+            req.notRouteData.actionData.data &&
+            Array.isArray(req.notRouteData.actionData.data)
+        ) {
+            return req.notRouteData.actionData.data;
+        }
+        return [];
+    }
+
+    /**
      *
      *
      * @return {string}
@@ -221,15 +242,19 @@ class Form {
     }
 
     /**
-     * Extracts data, should be overriden
+     * Extracts data, may be be overriden
      * @param {import('../types').notNodeExpressRequest} req expressjs request object
      * @return {Promise<import('../types').PreparedData>}        forma data
      **/
     async extract(req) {
-        return {
+        /** @type {import('../types').PreparedData} */
+        let result = {
             ...this.extractRequestEnvs(req),
-            data: this.#extractByBestInstructions(req),
         };
+        if (this.getActionDataDataTypes(req).includes(ACTION_DATA_TYPES.DATA)) {
+            result.data = this.#extractByBestInstructions(req);
+        }
+        return result;
     }
 
     #extractByBestInstructions(req) {

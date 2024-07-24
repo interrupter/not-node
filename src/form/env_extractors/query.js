@@ -1,5 +1,28 @@
 const notFilter = require("not-filter");
 const getApp = require("../../getApp");
+const ACTION_DATA_TYPES = require("../../manifest/const").ACTION_DATA_TYPES;
+
+const extractors = Object.freeze({
+    [ACTION_DATA_TYPES.PAGER]: (result, req) => {
+        const pager = notFilter.pager.process(req);
+        if (pager) {
+            result.skip = pager.skip;
+            result.size = pager.size;
+        }
+    },
+    [ACTION_DATA_TYPES.SORTER]: (result, req, thisSchema) => {
+        result.sorter = notFilter.sorter.process(req, thisSchema);
+    },
+    [ACTION_DATA_TYPES.SEARCH]: (result, req, thisSchema) => {
+        result.search = notFilter.search.process(req, thisSchema);
+    },
+    [ACTION_DATA_TYPES.FILTER]: (result, req, thisSchema) => {
+        result.filter = notFilter.filter.process(req, thisSchema);
+    },
+    [ACTION_DATA_TYPES.RETURN]: (result, req, thisSchema) => {
+        result.return = notFilter.return.process(req, thisSchema);
+    },
+});
 
 /**
  *
@@ -20,18 +43,20 @@ module.exports = (form, req) => {
         thisSchema = getApp().getModelSchema(`${MODEL_NAME}`);
     }
     if (thisSchema) {
-        let skip, size;
-        const pager = notFilter.pager.process(req), //skip,size
-            sorter = notFilter.sorter.process(req, thisSchema),
-            search = notFilter.search.process(req, thisSchema);
-        let filter = notFilter.filter.process(req, thisSchema);
-        if (pager) {
-            skip = pager.skip;
-            size = pager.size;
-        }
+        let result = {};
+        const routeActionDataTypes = form.getActionDataDataTypes(req);
+        Object.values(ACTION_DATA_TYPES).forEach((dataType) => {
+            if (
+                routeActionDataTypes.includes(dataType) &&
+                Object.hasOwn(extractors, dataType)
+            ) {
+                extractors[dataType](result, req, thisSchema);
+            }
+        });
+
         return {
             name: "query",
-            value: { skip, size, sorter, search, filter },
+            value: result, //{ skip, size, sorter, search, filter, return }
         };
     }
 
