@@ -15,3 +15,4 @@ const ACTION_DATA_TYPES = Object.freeze({
 });
 
 module.exports.ACTION_DATA_TYPES = ACTION_DATA_TYPES;
+module.exports.ACTION_DATA_TYPES_VALUES = Object.values(ACTION_DATA_TYPES);
