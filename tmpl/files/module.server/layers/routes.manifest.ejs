@@ -41,7 +41,7 @@ module.exports = {
 					fields: [<% if (fields && Array.isArray(fields)) { %><% for(let field of fields){ %>"<%- field %>",<% } %><% } %>],
 				},
 			],
-			data: ["record"],
+			data: ["data"],
 			postFix: actionNamePath,
 		},
 		<% } %>
@@ -83,7 +83,7 @@ module.exports = {
 			actionSignature: ACTION_SIGNATURES.READ,
 			title: "not-node:crud_read_action_form_title",
 			description: "not-node:crud_read_action_form_description",
-			rules: [				
+			rules: [
 				{
 					auth: true,
 					role: "admin",
@@ -112,7 +112,7 @@ module.exports = {
 		update: {
 			title: "not-node:crud_update_action_form_title",
 			description: "not-node:crud_update_action_form_description",
-			actionSignature: ACTION_SIGNATURES.UPDATE,			
+			actionSignature: ACTION_SIGNATURES.UPDATE,
 			method: "post",
 			rules: [
 				{
@@ -129,9 +129,9 @@ module.exports = {
 					fields: [<%- fields.map((entry) => `"${entry}"`).join(',')  %>],
 				},
 			],
-			data: ["record"],
+			data: ["data"],
 			postFix: idActionPath,
-		}, 
+		},
 		<% } %>
 		<% if (Object.hasOwn(actions,'delete')){ %>
 		delete: {
@@ -149,7 +149,7 @@ module.exports = {
 					role: ["client", "confirmed"],
 				},
 			],
-			data: ["record"],
+			data: ["data"],
 			postFix: idActionPath,
 		},
 		<% } %>
@@ -160,13 +160,13 @@ module.exports = {
 			title: "not-node:crud_listAndCount_action_form_title",
 			description: "not-node:crud_listAndCount_action_form_description",
 			data: ["pager", "sorter", "filter", "search"],
-			rules: [				
+			rules: [
 				{
 					auth: true,
 					role: ["admin"],
 				},
 				{
-					auth: true					
+					auth: true
 				},
 			],
 			postFix: actionNamePath,
@@ -176,7 +176,7 @@ module.exports = {
 		listAll: {
 			method: "get",
 			actionSignature: ACTION_SIGNATURES.READ,
-			data: ["record", "sorter"],
+			data: ["data", "sorter"],
 			title: "not-node:crud_listAll_action_form_title",
 			description: "not-node:crud_listAll_action_form_description",
 			fields: [
@@ -184,7 +184,7 @@ module.exports = {
 				<% if (dates){ %>"createdAt","updatedAt",<% } %>
 			],
 			postFix: actionNamePath,
-			rules: [				
+			rules: [
 				{
 					auth: true,
 					role: ["manager"],

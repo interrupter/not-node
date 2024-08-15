@@ -64,8 +64,7 @@ async function renderServerContollersIndexes(
             entitiesData,
             config,
             renderFile,
-            PATH_TMPL,
-            createDir
+            PATH_TMPL
         );
     }
 }
