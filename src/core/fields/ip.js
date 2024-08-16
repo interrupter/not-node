@@ -8,5 +8,6 @@ module.exports = {
         type: String,
         searchable: true,
         required: true,
+        transformers: ['xss']
     },
 };

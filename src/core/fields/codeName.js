@@ -7,5 +7,6 @@ module.exports = {
     model: {
         type: String,
         required: true,
+        transformers: ['xss']
     },
 };

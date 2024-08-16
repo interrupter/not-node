@@ -9,5 +9,6 @@ module.exports = {
         required: true,
         searchable: true,
         sortable: true,
+        transformers: ['xss']
     },
 };
