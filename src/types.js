@@ -159,13 +159,14 @@
 
 /**
  * @typedef     {object}    notFieldModel
- * @property    {notFieldModelType}    type
- * @property    {any}       default             default value
- * @property    {boolean}   [sortable]          if field is sortable
- * @property    {boolean}   [required]          if required to be defined
- * @property    {notFieldSafety}    [safe]      safety requirements
- * @property    {string}    [ref]               mongoose model name, if type is ObjectId
- * @property    {string}    [refPath]           path to field with name of mongoose model this field value of ObjectId type reference to
+ * @property    {notFieldModelType}     type
+ * @property    {Array<string>}         [transformers]         list of transformers names to pipe down aka ['xss', 'trim', 'removeDots', 'maxLength1000'], used in Form as default transforming pipeline on data extraction stage
+ * @property    {any}                   default             default value
+ * @property    {boolean}               [sortable]          if field is sortable
+ * @property    {boolean}               [required]          if required to be defined
+ * @property    {notFieldSafety}        [safe]      safety requirements
+ * @property    {string}                [ref]               mongoose model name, if type is ObjectId
+ * @property    {string}                [refPath]           path to field with name of mongoose model this field value of ObjectId type reference to
  */
 
 /**

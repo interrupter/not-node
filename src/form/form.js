@@ -87,6 +87,7 @@ class Form {
      * @param {string} options.FORM_NAME
      * @param {string} options.MODEL_NAME
      * @param {string} options.MODULE_NAME
+     * @param {string} options.actionName
      * @param {import('../app.js')} options.app
      * @param {Object.<string, Function>} options.EXTRACTORS
      * @param {Object.<string, Function>} options.TRANSFORMERS
@@ -100,6 +101,7 @@ class Form {
         FORM_NAME,
         MODEL_NAME,
         MODULE_NAME,
+        actionName,
         app,
         EXTRACTORS = {},
         ENV_EXTRACTORS = {},
@@ -108,7 +110,7 @@ class Form {
         AFTER_EXTRACT_TRANSFORMERS = [],
         rate,
     }) {
-        this.#FORM_NAME = FORM_NAME;
+        this.#FORM_NAME = FORM_NAME ?? this.createName(MODULE_NAME, MODEL_NAME, actionName);
         this.#MODEL_NAME = MODEL_NAME;
         this.#MODULE_NAME = MODULE_NAME;
         this.#PROTO_FIELDS = FIELDS;
@@ -130,10 +132,10 @@ class Form {
      * Creates model name string used in logging
      * @param {string} MODULE_NAME
      * @param {string|undefined} MODEL_NAME
-     * @param {string} actionName
+     * @param {string} actionName = 'data'
      * @returns {string}
      */
-    static createName(MODULE_NAME, MODEL_NAME, actionName) {
+    static createName(MODULE_NAME, MODEL_NAME, actionName = 'data') {
         if (MODEL_NAME) {
             return `${MODULE_NAME}:${MODEL_NAME}:${firstLetterToUpper(
                 actionName
@@ -659,6 +661,9 @@ class Form {
     extractDefaultTransformers(schemaField) {
         if (typeof schemaField === "undefined" || schemaField === null) {
             return [];
+        }
+        if(schemaField.transformers && Array.isArray(schemaField.transformers)){
+            return schemaField.transformers;
         }
         switch (schemaField.type) {
             case String:
