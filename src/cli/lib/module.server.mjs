@@ -1,5 +1,5 @@
 import { firstLetterToLower } from "../../../src/common.js";
-import { resolve } from "node:path";
+import { join } from "node:path";
 import inquirer from "inquirer";
 import inquirerPrompt from "inquirer-autocomplete-prompt";
 
@@ -26,10 +26,10 @@ function entitiesInLayers(layersList = []) {
 
 async function createLayersDirs(modules_dir, layersList, ModuleName) {
     if (layersList.length) {
-        await createDir(resolve(modules_dir, ModuleName, "./src"));
+        await createDir(join(modules_dir, ModuleName, "./src"));
     }
     for (let layer of layersList) {
-        await createDir(resolve(modules_dir, ModuleName, "./src", layer));
+        await createDir(join(modules_dir, ModuleName, "./src", layer));
     }
 }
 
@@ -38,7 +38,8 @@ async function renderServerControllersCommons(
     entitiesData,
     config
 ) {
-    const dirPath = resolve(module_src_dir, `./common`);
+    const dirPath = join(module_src_dir, `./common`);
+    //console.log('renderServerControllersCommons',dirPath);
     await createDir(dirPath);
     await createDirContent(
         dirPath,
@@ -62,7 +63,7 @@ async function renderServerContollersIndexes(
     const subDirList = [...config.roles];
     for (let dirName of subDirList) {
         await Renderers.controllersIndex(
-            resolve(module_src_dir, `./controllers/${dirName}`),
+            join(module_src_dir, `./controllers/${dirName}`),
             entitiesData,
             config,
             renderFile,
@@ -71,12 +72,12 @@ async function renderServerContollersIndexes(
     }
 }
 
-async function createServerModule(modules_dir, config) {
+async function createServerModule(modules_dir, config, availableFields) {
     //read module name
     const ModuleName = await Readers.ModuleName(inquirer);
     const moduleName = firstLetterToLower(ModuleName);
-    const moduleDir = resolve(modules_dir, ModuleName);
-    const moduleConfig = { ...config, moduleName, ModuleName };
+    const moduleDir = join(modules_dir, ModuleName);
+    const moduleConfig = { ...config, moduleName, ModuleName, availableFields };
     await createDir(moduleDir);
     //console.log(JSON.stringify(moduleConfig, null, 4));
     await createDirContent(
@@ -100,19 +101,19 @@ async function createServerModule(modules_dir, config) {
         }
         for (let entityData of entitiesList) {
             await renderEntityFiles(
-                resolve(moduleDir, "./src"),
+                join(moduleDir, "./src"),
                 entityData,
                 moduleConfig
             );
         }
         if (layersList.includes("controllers")) {
             await renderServerContollersIndexes(
-                resolve(moduleDir, "./src"),
+                join(moduleDir, "./src"),
                 entitiesList,
                 moduleConfig
             );
             await renderServerControllersCommons(
-                resolve(moduleDir, "./src/controllers"),
+                join(moduleDir, "./src/controllers"),
                 entitiesList,
                 moduleConfig
             );

@@ -7,8 +7,8 @@ export default async (
     config,
     createFileContent,
     PATH_TMPL
-) => {
-    for (let entityData of entitiesList) {
+) => {    
+    for (let entityData of entitiesList) {        
         const TMPL_FILE_PATH = resolve(PATH_TMPL, TEMPLATES_DIR, `crud.ejs`);
         const DEST_FILE_PATH = resolve(
             module_layer_dir,

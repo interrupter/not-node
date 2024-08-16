@@ -56,7 +56,7 @@ export default async (
     const TMPL_FILE_PATH_DATA = resolve(PATH_TMPL, TEMPLATES_DIR, `_data.ejs`);
     const DEST_FILE_PATH_DATA = resolve(
         module_layer_dir,
-        `_${data.modelName}_data.js`
+        `_${data.modelName}.js`
     );
     await renderEntityActionForm(
         createFileContent,

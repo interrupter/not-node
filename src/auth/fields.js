@@ -34,7 +34,7 @@ function isOwner(
     ownerFieldName = CONST.DOCUMENT_OWNER_FIELD_NAME
 ) {
     const ownerId = getOwnerId(data, ownerFieldName);
-    console.log("ownerId", ownerId, typeof ownerId);
+
     if (typeof ownerId !== "undefined") {
         return COMMON.compareObjectIds(ownerId, user_id);
     } else {

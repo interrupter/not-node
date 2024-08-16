@@ -39,13 +39,13 @@ async function createEntity(modules_dir, config) {
     const moduleDir = resolve(modules_dir, ModuleName);
     const moduleLayers = await Readers.moduleLayers(inquirer);
     const moduleConfig = { ...config, moduleName, ModuleName, moduleLayers };
-    console.log("moduleConfig", moduleConfig);
+    // console.log("moduleConfig", moduleConfig);
     const entityData = await Readers.entityData(
         inquirer,
         moduleConfig,
         moduleConfig.moduleLayers
     );
-    console.log("entityData", entityData);
+    //console.log("entityData", entityData);
     await renderEntityFiles(
         resolve(moduleDir, "./src"),
         entityData,

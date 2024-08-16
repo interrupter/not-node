@@ -99,7 +99,7 @@ describe("Common", function () {
             let to = undefined;
             try {
                 Common.mapBind({ getModel() {} }, to, ["getModel"]);
-                console.log(to);
+                //console.log(to);
                 done(new Error("should throw"));
             } catch (e) {
                 expect(e).to.be.instanceof(Error);

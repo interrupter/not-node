@@ -32,6 +32,7 @@ const DEFAULT_MODULE_LAYERS = [
 export { DEFAULT_MODULE_LAYERS };
 
 const DEFAULT_ENTITY_LAYERS = [
+    "fields",
     "forms",
     "models",
     "logics",

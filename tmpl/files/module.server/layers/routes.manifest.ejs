@@ -3,11 +3,12 @@ const { firstLetterToLower } = require("not-node").Common;
 const ACTION_SIGNATURES = require('not-node/src/auth/const').ACTION_SIGNATURES;
 const MODEL_NAME = "<%- ModelName %>";
 const modelName = firstLetterToLower(MODEL_NAME);
-
+<% const fieldsShortNames = (fields | []).map((entry) => entry.indexOf('//')>-1?entry.split('//')[0]:entry); %>
 const FIELDS = [
 	["_id", "not-node//_id"],
 	<% if (increment){ %>["<%- modelName %>ID", "not-node//ID"],<% } %>
-	<% if (fields && Array.isArray(fields)) { %><% for(let field of fields){ %>"<%- field %>",<% } %><% } %>
+	<% if (fields && Array.isArray(fields)) { %><% for(let field of fields){ %>"<%- field %>",
+	<% } %><% } %>
 	<% if (ownage){ %>["owner", "not-node//owner"],
 	["ownerModel", "not-node//ownerModel"],<% } %>
 <% if (dates){ %>	["createdAt", "not-node//createdAt"],
@@ -33,12 +34,12 @@ module.exports = {
 				{
 					auth: true,
 					role: "admin",
-					fields: [<%- fields.map((entry) => `"${entry}"`).join(',')  %>,<% if (ownage){ %>"owner",<% } %>],
+					fields: [<%- fieldsShortNames.map((entry) => `"${entry}"`).join(',')  %>,<% if (ownage){ %>"owner",<% } %>],
 				},
 				{
 					auth: true,
 					role: ["client", "confirmed"],
-					fields: [<% if (fields && Array.isArray(fields)) { %><% for(let field of fields){ %>"<%- field %>",<% } %><% } %>],
+					fields: [<%- fieldsShortNames.map((entry) => `"${entry}"`).join(',')  %>],
 				},
 			],
 			data: ["data"],
@@ -58,7 +59,7 @@ module.exports = {
 					fields: [
 						"_id",
 						<% if (increment){ %>"<%- modelName %>ID",<% } %>
-						<%- fields.map((entry) => `"${entry}"`).join(',')  %>,
+						<%- fieldsShortNames.map((entry) => `"${entry}"`).join(',')  %>,
 						<% if (ownage){ %>"owner","ownerModel",<% } %>
 						<% if (dates){ %>"createdAt","updatedAt",<% } %>
 					],
@@ -69,7 +70,7 @@ module.exports = {
 					fields: [
 						"_id",
 						<% if (increment){ %>"<%- modelName %>ID",<% } %>
-						<%- fields.map((entry) => `"${entry}"`).join(',')  %>,
+						<%- fieldsShortNames.map((entry) => `"${entry}"`).join(',')  %>,
 						<% if (dates){ %>"createdAt","updatedAt",<% } %>
 					],
 				},
@@ -90,7 +91,7 @@ module.exports = {
 					fields: [
 						"_id",
 						<% if (increment){ %>"<%- modelName %>ID",<% } %>
-						<%- fields.map((entry) => `"${entry}"`).join(',')  %>,
+						<%- fieldsShortNames.map((entry) => `"${entry}"`).join(',')  %>,
 						<% if (ownage){ %>"owner","ownerModel",<% } %>
 						<% if (dates){ %>"createdAt","updatedAt",<% } %>
 					],
@@ -100,7 +101,7 @@ module.exports = {
 					role: ["client", "confirmed"],
 					fields: [
 						<% if (increment){ %>"<%- modelName %>ID",<% } %>
-						<%- fields.map((entry) => `"${entry}"`).join(',')  %>,
+						<%- fieldsShortNames.map((entry) => `"${entry}"`).join(',')  %>,
 						<% if (dates){ %>"createdAt","updatedAt",<% } %>
 					],
 				},
@@ -119,14 +120,14 @@ module.exports = {
 					auth: true,
 					role: ["admin"],
 					fields: [
-						<%- fields.map((entry) => `"${entry}"`).join(',')  %>,
+						<%- fieldsShortNames.map((entry) => `"${entry}"`).join(',')  %>,
 						<% if (ownage){ %>"owner", "ownerModel",<% } %>
 					],
 				},
 				{
 					auth: true,
 					role: ["client", "confirmed"],
-					fields: [<%- fields.map((entry) => `"${entry}"`).join(',')  %>],
+					fields: [<%- fieldsShortNames.map((entry) => `"${entry}"`).join(',')  %>],
 				},
 			],
 			data: ["data"],
@@ -180,7 +181,7 @@ module.exports = {
 			title: "not-node:crud_listAll_action_form_title",
 			description: "not-node:crud_listAll_action_form_description",
 			fields: [
-				<%- fields.map((entry) => `"${entry}"`).join(',')  %>,
+				<%- fieldsShortNames.map((entry) => `"${entry}"`).join(',')  %>,
 				<% if (dates){ %>"createdAt","updatedAt",<% } %>
 			],
 			postFix: actionNamePath,

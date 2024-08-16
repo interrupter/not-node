@@ -190,7 +190,7 @@ module.exports = class notManifestRouteResultFilter {
     }
 
     static filterStrict(target, filteringArray) {
-        console.log(target, filteringArray);
+        //console.log(target, filteringArray);
         //to form ['id', 'user', 'files']
         const filteringArrayDirectChildren = filteringArray.map(
             (propName) => propName.split(notPath.PATH_SPLIT)[0]

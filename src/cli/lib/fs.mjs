@@ -28,22 +28,30 @@ import Options from "./opts.mjs";
 const PATH_TMPL = Options.PATH_TMPL;
 
 async function renderFile(input, dest, data) {
-    Logger.log("render", dest);
-    const renderedFileContent = await ejs.renderFile(input, data, {
-        async: true,
-    });
-    await writeFile(dest, renderedFileContent);
+    try{
+        Logger.log("render", dest);
+        const renderedFileContent = await ejs.renderFile(input, data, {
+            async: true,
+        });
+        await writeFile(dest, renderedFileContent);
+    }catch(e){
+        console.error(e);
+    }
 }
 
 async function createFileContent(filePath, structure, config) {
-    if (typeof structure == "string") {
-        await copyTmplFile(resolve(PATH_TMPL, structure), filePath);
-        return;
-    }
-    if (Object.hasOwn(structure, "tmpl")) {
-        const tmplFilePath = resolve(PATH_TMPL, structure.tmpl);
-        const data = await readArgs(structure, config);
-        await renderFile(tmplFilePath, filePath, data);
+    try{
+        if (typeof structure == "string") {
+            await copyTmplFile(resolve(PATH_TMPL, structure), filePath);
+            return;
+        }
+        if (Object.hasOwn(structure, "tmpl")) {
+            const tmplFilePath = resolve(PATH_TMPL, structure.tmpl);
+            const data = await readArgs(structure, config);
+            await renderFile(tmplFilePath, filePath, data);
+        }
+    }catch(e){
+        console.error(e);
     }
 }
 
@@ -74,10 +82,10 @@ function getProjectSiteDir(dir, CWD) {
 
 async function createDir(dirPath) {
     try {
-        //console.log("mkdir", dirPath);
+        console.log("mkdir", dirPath);
         await mkdir(dirPath, { recursive: true });
     } catch {
-        // console.error("Can't create directory", dirPath);
+        console.error("Can't create directory", dirPath);
     }
 }
 
@@ -232,8 +240,7 @@ async function findAllFieldsInModules(modulesDirPath) {
         const modulesNames = await readdir(modulesDirPath);
         const result = [];
         for (const moduleName of modulesNames) {
-            if (moduleName && moduleName.indexOf("not-") === 0) {
-                console.log("searchin in ", moduleName);
+            if (moduleName && moduleName.indexOf("not-") === 0) {                
                 const listOfFieldsInModule = await findFieldsInModule(
                     join(modulesDirPath, moduleName)
                 );
@@ -246,8 +253,7 @@ async function findAllFieldsInModules(modulesDirPath) {
                                 fullName: `${moduleName}//${fieldName}`,
                             };
                         }
-                    );
-                    console.log(listOfFieldsDescriptions);
+                    );                    
                     result.push(...listOfFieldsDescriptions);
                 }
             }

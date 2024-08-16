@@ -19,7 +19,7 @@ export default async (
     );
     const DEST_FILE_PATH_DATA = resolve(
         module_layer_dir,
-        `_${data.modelName}_data.js`
+        `_${data.modelName}.js`
     );
     await renderEntityDataField(
         createFileContent,
