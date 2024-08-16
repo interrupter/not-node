@@ -2,9 +2,7 @@ const Form = require("not-node").Form;
 
 const { MODULE_NAME } = require("../const");
 const MODEL_NAME = '<%- ModelName %>';
-
 const actionName = 'update';
-const FORM_NAME = Form.createName(MODULE_NAME, MODEL_NAME, actionName);
 
 const FIELDS = [
 	["targetId", { required: true }, "not-node//objectId"],
@@ -14,7 +12,7 @@ const FIELDS = [
 
 class <%- ModelName %>UpdateForm extends Form {
 	constructor({ app }) {
-		super({ FIELDS, FORM_NAME, app });
+		super({MODULE_NAME,MODEL_NAME, actionName,  FIELDS, app });
 	}
 }
 

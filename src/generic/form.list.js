@@ -18,14 +18,12 @@ const FIELDS = [
  * @return {Form}   form class definition
  */
 const FactoryFormList = ({ MODULE_NAME, MODEL_NAME, actionName = "list" }) => {
-    const FORM_NAME = Form.createName(MODULE_NAME, MODEL_NAME, actionName);
-
     return class extends Form {
         constructor(params) {
             super({
                 ...params,
                 FIELDS,
-                FORM_NAME,
+                actionName,
                 MODULE_NAME,
                 MODEL_NAME,
             });

@@ -22,16 +22,16 @@ const FactoryFormListAndCount = ({
     MODEL_NAME,
     actionName = "listAndCount",
 }) => {
-    const FORM_NAME = Form.createName(MODULE_NAME, MODEL_NAME, actionName);
+
 
     return class extends Form {
         constructor(params) {
             super({
                 ...params,
                 FIELDS,
-                FORM_NAME,
                 MODULE_NAME,
                 MODEL_NAME,
+                actionName
             });
         }
 
