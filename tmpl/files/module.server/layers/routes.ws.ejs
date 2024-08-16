@@ -6,12 +6,14 @@ const getLogic = () =>
     notNode.Application.getLogic(`${MODULE_NAME}//${MODEL_NAME}`);
 
 
-async function someAction({ data, client }) {
+async function someAction({
+        data,       //client request data
+        client,     //wsclient object
+        identity    //notAppIdentityData
+    }) {
     return await getLogic().getData({
         data,
-        activeUser: client.identity,
-        ip: client.getIP(),
-        root: false,
+        identity
     });
 }
 

@@ -2,34 +2,19 @@ const Form = require("not-node").Form;
 
 const { MODULE_NAME } = require("../const");
 const MODEL_NAME = '<%- ModelName %>';
+
 const actionName = 'update';
 const FORM_NAME = Form.createName(MODULE_NAME, MODEL_NAME, actionName);
 
 const FIELDS = [
 	["targetId", { required: true }, "not-node//objectId"],
 	["identity", "not-node//identity"],
-	["data", `${MODULE_NAME}//_<%- modelName %>_data`], //sub forms validators should start with underscore
+	["data", `${MODULE_NAME}//_<%- modelName %>`], //sub forms validators should start with underscore
 ];
 
 class <%- ModelName %>UpdateForm extends Form {
 	constructor({ app }) {
 		super({ FIELDS, FORM_NAME, app });
-	}
-
-	async extract(req) {
-		const data = this.extractByInstructionsFromRouteActionFields(req, ["fromBody", "xss"], {});
-		const envs = this.extractRequestEnvs(req);
-		<% if ( ownage ) { %>
-		//admin could change ownage for others hardwired
-		if (!identity.admin) {
-			data.owner && delete data.owner;
-			data.ownerModel && delete data.ownerModel;
-		}
-		<% } %>	
-		return {
-			...envs, //contains targetId, identity and some more. look list in not-node/src/form/env_extractors/index.js
-			data,
-		};
 	}
 }
 

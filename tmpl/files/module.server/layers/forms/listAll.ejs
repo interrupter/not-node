@@ -1,8 +1,9 @@
 const notNode = require("not-node");
 const { MODULE_NAME } = require("../const");
+const MODEL_NAME = '<%- ModelName %>';
 
 module.exports = notNode.Generic.GenericListAndCountForm({
-MODULE_NAME,
-MODEL_NAME: "<%- ModelName %>",
+    MODULE_NAME,
+    MODEL_NAME,
     actionName: "listAll",
-    });
+});

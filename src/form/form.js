@@ -174,7 +174,7 @@ class Form {
     static createDefaultInstance({ app, MODULE_NAME, MODEL_NAME, actionName }) {
         const FIELDS = [
             ["identity", "not-node//identity"],
-            ["data", `${MODULE_NAME}//_${MODEL_NAME}`],
+            ["data", `${MODULE_NAME}//_${firstLetterToLower(MODEL_NAME)}`],
         ];
         const FORM_NAME = Form.createName(MODULE_NAME, MODEL_NAME, actionName);
         return new Form({ FIELDS, FORM_NAME, app, MODULE_NAME });

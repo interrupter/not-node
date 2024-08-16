@@ -45,8 +45,8 @@ class nc<%- ModelName %>Common extends notCRUD {
                 <% } %>
                 <% for (let fieldName of fields){ %>
                 {
-                    path: ":<%- fieldName %>",
-                    title: `${MODULE_NAME}:<%- `${modelName}_field_${fieldName}_label` %>`,
+                    path: ":<%- fieldName[0] %>",
+                    title: `${MODULE_NAME}:<%- `${modelName}_field_${fieldName[0]}_label` %>`,
                     searchable: true,
                     sortable: true,
                 },
@@ -66,7 +66,7 @@ class nc<%- ModelName %>Common extends notCRUD {
 
     createDefault() {
         let newRecord = this.getModel({
-            <% for (let fieldName of fields){ %><%- fieldName %>: undefined,
+            <% for (let fieldName of fields){ %><%- fieldName[0] %>: undefined,
             <% } %>
         });
         return newRecord;

@@ -3,16 +3,16 @@ const { firstLetterToLower } = require("not-node").Common;
 const ACTION_SIGNATURES = require('not-node/src/auth/const').ACTION_SIGNATURES;
 const MODEL_NAME = "<%- ModelName %>";
 const modelName = firstLetterToLower(MODEL_NAME);
-<% const fieldsShortNames = (fields | []).map((entry) => entry.indexOf('//')>-1?entry.split('//')[0]:entry); %>
+
 const FIELDS = [
 	["_id", "not-node//_id"],
 	<% if (increment){ %>["<%- modelName %>ID", "not-node//ID"],<% } %>
-	<% if (fields && Array.isArray(fields)) { %><% for(let field of fields){ %>"<%- field %>",
+	<% if (fields && Array.isArray(fields)) { %><% for(let field of fields){ %>["<%- field[0] %>", "<%- field[1] %>"],
 	<% } %><% } %>
-	<% if (ownage){ %>["owner", "not-node//owner"],
-	["ownerModel", "not-node//ownerModel"],<% } %>
-<% if (dates){ %>	["createdAt", "not-node//createdAt"],
-	["updatedAt", "not-node//updatedAt"],<% } %>
+	<% if (ownage && ownageFields && Array.isArray(ownageFields)){ %><% for(let field of ownageFields){ %>["<%- field[0] %>", "<%- field[1] %>"],
+	<% } %><% } %>
+	<% if (dates && datesFields && Array.isArray(datesFields)){ %><% for(let field of datesFields){ %>["<%- field[0] %>", "<%- field[1] %>"],
+	<% } %><% } %>
 ];
 
 const actionNamePath = "/:actionName";

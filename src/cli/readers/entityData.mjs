@@ -37,15 +37,15 @@ export default (inquirer, config, layersList) => {
                 layers: await entityLayers(inquirer, config, layersList),
             };
             if (result.layers.includes("models")) {
-                result.fieldsShortNames = result.fields.map((itm) => itm.indexOf('//') > 0?itm.split('//')[1]:itm);
+                result.fieldsShortNames = result.fields.map((itm) => itm[0]);
                 result.validators = await modelValidators(inquirer);
-                result.versioning = await modelVersioning(inquirer);                
+                result.versioning = await modelVersioning(inquirer);
                 result.ownage = await modelOwnage(inquirer);
-                result.ownageFields = result.ownage?['not-node//owner','not-node//ownerModel']:[];                
+                result.ownageFields = result.ownage?[['owner','not-node//owner'],['ownerModel','not-node//ownerModel']]:[];
                 result.dates = await modelDates(inquirer);
-                result.datesFields = result.dates?['not-node//createdAt','not-node//updatedAt']:[];
-                const fieldsCompleteList = [...result.fields, ...result.ownageFields, ...result.datesFields];
-                result.increment = await modelIncrement(inquirer, {fields:fieldsCompleteList});
+                result.datesFields = result.dates?[['createdAt','not-node//createdAt'],['updatedAt','not-node//updatedAt']]:[];
+                const fieldsCompleteList = [...result.fields, ...result.ownageFields, ...result.datesFields].map(itm=>itm[0]);
+                result.increment = await modelIncrement(inquirer, { fields: fieldsCompleteList });
             } else {
                 result.fields = [];
                 result.fieldsShortNames = [];
@@ -56,7 +56,7 @@ export default (inquirer, config, layersList) => {
                 result.ownageFields = [];
                 result.dates = false;
                 result.datesFields = [];
-            }            
+            }
             return result;
         } catch (e) {
             console.error(e);

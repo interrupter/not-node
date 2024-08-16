@@ -17,19 +17,13 @@ module.exports.enrich = {
 };
 
 const FIELDS = [
-    <% if (fields && Array.isArray(fields)) { %>
-    <% for(let field of fields){ %>
-    "<%- field %>",
-    <% } %>
-    <% } %>
-    <% if (ownage){ %>
-    ["owner", "not-node//owner"],
-    ["ownerModel", "not-node//ownerModel"],
-    <% } %>
-    <% if (dates){ %>
-    ["createdAt", "not-node//createdAt"],
-    ["updatedAt", "not-node//updatedAt"],
-    <% } %>
+   <% if (increment){ %>["<%- modelName %>ID", "not-node//ID"],<% } %>
+	<% if (fields && Array.isArray(fields)) { %><% for(let field of fields){ %>["<%- field[0] %>", "<%- field[1] %>"],
+	<% } %><% } %>
+	<% if (ownage && ownageFields && Array.isArray(ownageFields)){ %><% for(let field of ownageFields){ %>["<%- field[0] %>", "<%- field[1] %>"],
+	<% } %><% } %>
+	<% if (dates && datesFields && Array.isArray(datesFields)){ %><% for(let field of datesFields){ %>["<%- field[0] %>", "<%- field[1] %>"],
+	<% } %><% } %>
 ];
 
 module.exports.FIELDS = FIELDS;
