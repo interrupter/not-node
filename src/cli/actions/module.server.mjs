@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import Logger from "../lib/log.mjs";
 import { createServerModule } from "../lib/module.server.mjs";
 import { loadProjectConfig } from "../lib/project.mjs";
-import { getProjectSiteDir } from "../lib/fs.mjs";
+import { getProjectSiteDir, findAllFields } from "../lib/fs.mjs";
 
 export default (program, { CWD }) => {
     program
@@ -27,11 +27,12 @@ export default (program, { CWD }) => {
                 siteDir,
                 infoFromManifest.serverModulesDir
             );
+            const allFields = await findAllFields(siteDir, modulesDir);
             console.log("creating server module in", modulesDir);
             const ProjectConfig = {
                 path: opts.dir,
                 ...infoFromManifest,
             };
-            await createServerModule(modulesDir, ProjectConfig);
+            await createServerModule(modulesDir, ProjectConfig, allFields);
         });
 };

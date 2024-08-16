@@ -21,12 +21,13 @@ class Identity {
         session: IdentityProviderSession,
         token: IdentityProviderToken,
     };
-
+    //eslint-disable-next-line no-unused-private-class-members
     static #primaryRoles = [
         DEFAULT_USER_ROLE_FOR_ROOT,
         DEFAULT_USER_ROLE_FOR_ADMIN,
         DEFAULT_USER_ROLE_FOR_GUEST,
     ];
+    //eslint-disable-next-line no-unused-private-class-members
     static #secondaryRoles = [];
 
     static setPrimaryRoles(list = []) {

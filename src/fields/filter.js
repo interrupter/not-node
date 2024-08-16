@@ -62,6 +62,7 @@ class notFieldsFilter {
     static #USER_DEFINED_SETS = {};
 
     static get userSets() {
+        //eslint-disable-next-line no-undef
         return structuredClone(this.#USER_DEFINED_SETS);
     }
 

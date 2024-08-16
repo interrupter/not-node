@@ -1,7 +1,9 @@
 import { firstLetterToLower } from "../../../src/common.js";
 import { resolve } from "node:path";
 import inquirer from "inquirer";
+import inquirerPrompt from "inquirer-autocomplete-prompt";
 
+inquirer.registerPrompt("autocomplete", inquirerPrompt);
 import * as Readers from "../readers/index.mjs";
 import * as Renderers from "../renderers/index.mjs";
 import Options from "../lib/opts.mjs";
@@ -91,7 +93,7 @@ async function createServerModule(modules_dir, config) {
         while (await Readers.isUserNeedCreateEntity(inquirer)) {
             const entityData = await Readers.entityData(
                 inquirer,
-                config,
+                moduleConfig,
                 layersList
             );
             entitiesList.push(entityData);

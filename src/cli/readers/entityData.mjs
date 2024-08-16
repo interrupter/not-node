@@ -28,27 +28,31 @@ function collectData(inquirer) {
 
 export default (inquirer, config, layersList) => {
     return collectData(inquirer).then(async (answer) => {
-        const result = {
-            ...answer,
-            modelName: firstLetterToLower(answer.ModelName),
-            actions: await actions(inquirer),
-            fields: await fields(inquirer),
-            layers: await entityLayers(inquirer, config, layersList),
-        };
-        if (result.layers.includes("models")) {
-            result.validators = await modelValidators(inquirer);
-            result.versioning = await modelVersioning(inquirer);
-            result.increment = await modelIncrement(inquirer, result);
-            result.ownage = await modelOwnage(inquirer);
-            result.dates = await modelDates(inquirer);
-        } else {
-            result.increment = false;
-            result.versioning = false;
-            result.validators = true;
-            result.ownage = false;
-            result.dates = false;
+        try {
+            const result = {
+                ...answer,
+                modelName: firstLetterToLower(answer.ModelName),
+                actions: await actions(inquirer),
+                fields: await fields(inquirer, config),
+                layers: await entityLayers(inquirer, config, layersList),
+            };
+            if (result.layers.includes("models")) {
+                result.validators = await modelValidators(inquirer);
+                result.versioning = await modelVersioning(inquirer);
+                result.increment = await modelIncrement(inquirer, result);
+                result.ownage = await modelOwnage(inquirer);
+                result.dates = await modelDates(inquirer);
+            } else {
+                result.increment = false;
+                result.versioning = false;
+                result.validators = true;
+                result.ownage = false;
+                result.dates = false;
+            }
+            console.log("Entity data", JSON.stringify(result));
+            return result;
+        } catch (e) {
+            console.error(e);
         }
-        console.log("Entity data", JSON.stringify(result));
-        return result;
     });
 };

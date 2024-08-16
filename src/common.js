@@ -31,7 +31,7 @@ module.exports.firstLetterToUpper = function (string) {
 module.exports.validateObjectId = (id) => {
     try {
         return id.toString().match(/^[0-9a-fA-F]{24}$/) ? true : false;
-    } catch (e) {
+    } catch {
         return false;
     }
 };
@@ -62,7 +62,7 @@ module.exports.compareObjectIds = (firstId, secondId) => {
             return false;
         }
         return a === b;
-    } catch (e) {
+    } catch {
         return false;
     }
 };
@@ -229,7 +229,7 @@ module.exports.tryFile = (filePath) => {
     try {
         const stat = fs.lstatSync(filePath);
         return stat && stat.isFile();
-    } catch (e) {
+    } catch {
         return false;
     }
 };
@@ -243,7 +243,7 @@ module.exports.tryFileAsync = async (filePath) => {
     try {
         const stat = await fs.promises.lstat(filePath);
         return stat && stat.isFile();
-    } catch (e) {
+    } catch {
         return false;
     }
 };
@@ -257,7 +257,7 @@ module.exports.tryDirAsync = async (dirPath) => {
     try {
         const stat = await fs.promises.lstat(dirPath);
         return stat && stat.isDirectory();
-    } catch (e) {
+    } catch {
         return false;
     }
 };
@@ -271,7 +271,7 @@ module.exports.tryDirAsync = async (dirPath) => {
 module.exports.tryParse = (input, def = undefined) => {
     try {
         return JSON.parse(input);
-    } catch (e) {
+    } catch {
         return def;
     }
 };

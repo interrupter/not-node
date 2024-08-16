@@ -47,7 +47,7 @@ class Form {
         form: [],
         forms: {},
     };
-    #MODEL_SCHEMA;
+    //#MODEL_SCHEMA;
     /**
      * @prop {string} name of form
      **/
@@ -272,7 +272,6 @@ class Form {
      * @param {import('../types').notNodeExpressRequest}    [req]
      * @return {Promise<import('../types').PreparedData>}
      */
-    //eslint-disable-next-line no-unused-vars
     async afterExtract(value, req) {
         if (this.#AFTER_EXTRACT_TRANSFORMERS) {
             this.#AFTER_EXTRACT_TRANSFORMERS.forEach((aeTransformer) => {
@@ -778,7 +777,7 @@ class Form {
                 (await this.#rateLimiter.consume(
                     this.#rateLimiterIdGetter(envs)
                 ));
-        } catch (_) {
+        } catch {
             throw new this.#rateLimiterException(envs);
         }
     }

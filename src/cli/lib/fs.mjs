@@ -11,13 +11,15 @@ import {
 import { ProjectSubStructures } from "./structures.mjs";
 
 import { spawn } from "node:child_process";
-import { resolve, join } from "node:path";
+import { resolve, join, parse } from "node:path";
 import {
     copyFile,
     constants,
     mkdir,
     writeFile,
     readFile,
+    readdir,
+    lstat,
 } from "node:fs/promises";
 
 import ejs from "ejs";
@@ -176,7 +178,103 @@ function buildClientSideScripts(siteDir) {
 
 async function readJSONFile(fname) {
     const rawdata = await readFile(fname);
-    return JSON.parse(rawdata);
+    return JSON.parse(rawdata.toString());
+}
+
+async function tryDirAsync(dirPath) {
+    try {
+        const stat = await lstat(dirPath);
+        return stat && stat.isDirectory();
+    } catch {
+        return false;
+    }
+}
+
+function isJSFilename(fname) {
+    return new RegExp(".+.(js|cjs|mjs)+$").test(fname);
+}
+
+function removeExtension(fname) {
+    return parse(fname).name;
+}
+
+async function findFieldsInDir(pathToDir) {
+    const fields = await readdir(pathToDir);
+    return fields.filter(isJSFilename).map(removeExtension);
+}
+
+async function findFieldsInModule(pathToModule) {
+    const variants = [
+        join(pathToModule, "src/core/fields"),
+        join(pathToModule, "src/fields"),
+        join(pathToModule, "fields"),
+    ];
+    try {
+        for (const nameVariants of variants) {
+            if (await tryDirAsync(nameVariants)) {
+                return await findFieldsInDir(nameVariants);
+            }
+        }
+        return [];
+    } catch (e) {
+        console.error(e);
+        return [];
+    }
+}
+
+/**
+ *
+ * @param {*} modulesDirPath
+ * @returns {Promise<Array>}
+ */
+async function findAllFieldsInModules(modulesDirPath) {
+    try {
+        const modulesNames = await readdir(modulesDirPath);
+        const result = [];
+        for (const moduleName of modulesNames) {
+            if (moduleName && moduleName.indexOf("not-") === 0) {
+                console.log("searchin in ", moduleName);
+                const listOfFieldsInModule = await findFieldsInModule(
+                    join(modulesDirPath, moduleName)
+                );
+                if (listOfFieldsInModule && listOfFieldsInModule.length) {
+                    const listOfFieldsDescriptions = listOfFieldsInModule.map(
+                        (fieldName) => {
+                            return {
+                                fieldName,
+                                moduleName,
+                                fullName: `${moduleName}//${fieldName}`,
+                            };
+                        }
+                    );
+                    console.log(listOfFieldsDescriptions);
+                    result.push(...listOfFieldsDescriptions);
+                }
+            }
+        }
+        return result;
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+}
+
+async function findAllFieldsInNodeModules(siteDirPath) {
+    const dirname = join(siteDirPath, "node_modules");
+    return await findAllFieldsInModules(dirname);
+}
+
+async function findAllFields(siteDirPath, modulesDir) {
+    try {
+        const fieldsInNodeModules = await findAllFieldsInNodeModules(
+            siteDirPath
+        );
+        const fieldsInProjectModules = await findAllFieldsInModules(modulesDir);
+        return [...fieldsInNodeModules, ...fieldsInProjectModules];
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
 }
 
 export {
@@ -190,4 +288,6 @@ export {
     installPackages,
     readJSONFile,
     getProjectSiteDir,
+    findAllFields,
+    findFieldsInModule,
 };
