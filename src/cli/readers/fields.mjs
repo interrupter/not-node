@@ -57,12 +57,15 @@ export default async (inquirer, config) => {
                     fieldname = answer.fieldname.trim();
                 });
             result.push([fieldname, fieldtype]);
+            const selectedFields = result.map(
+                (itm) => `${itm[1]} as ${itm[0]}`
+            );
             finished = await inquirer
                 .prompt([
                     {
                         type: "confirm",
                         name: "oneMore",
-                        message: `Add another one field to [${result.join(
+                        message: `Add another one field to [${selectedFields.join(
                             ","
                         )}] (default: true)?`,
                         default: true,
