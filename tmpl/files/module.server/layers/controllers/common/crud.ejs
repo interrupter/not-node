@@ -1,15 +1,16 @@
 import { MODULE_NAME } from "../../const.js";
 import Validators from "../common/validators.js";
-import { Frame } from "not-bulma";
+import { Frame, notCommon } from "not-bulma";
 import CRUDActionList from "not-bulma/src/frame/crud/actions/list";
 
 const { notCRUD } = Frame;
 
 const MODEL_NAME = "<%- ModelName %>";
+const modelName = notCommon.firstLetterToLower(MODEL_NAME);
 
 const LABELS = {
-    plural: `${MODULE_NAME}:${MODEL_NAME}_label_plural`,
-    single: `${MODULE_NAME}:${MODEL_NAME}_label_single`,
+    plural: `${MODULE_NAME}:${modelName}_label_plural`,
+    single: `${MODULE_NAME}:${modelName}_label_single`,
 };
 
 Object.freeze(LABELS);
