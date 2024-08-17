@@ -12,9 +12,21 @@ const LABELS = {
     single: `${MODULE_NAME}:${MODEL_NAME}_label_single`,
 };
 
+Object.freeze(LABELS);
+
 class nc<%- ModelName %>Common extends notCRUD {
-    static MODULE_NAME = MODULE_NAME;
-    static MODEL_NAME = MODEL_NAME;
+    static get MODULE_NAME(){
+        return MODULE_NAME;
+    }
+
+    static get MODEL_NAME(){
+        return MODEL_NAME;
+    }
+
+    static get LABELS(){
+        return LABELS;
+    }
+
     constructor(app, params) {
         super(app, `${MODULE_NAME}.${MODEL_NAME}`);
         this.setModuleName(MODULE_NAME);
@@ -71,6 +83,11 @@ class nc<%- ModelName %>Common extends notCRUD {
         });
         return newRecord;
     }
+
+    static getMenu(){
+        return notCRUD.getCommonMenu(nc<%- ModelName %>Common);
+    }
+
 }
 
 export default nc<%- ModelName %>Common;

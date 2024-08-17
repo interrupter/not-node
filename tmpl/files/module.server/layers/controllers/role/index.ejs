@@ -20,8 +20,17 @@ let manifest = {
             items: [],
         },
         side: {
-            sections: [],
-            items: [],
+            sections: [
+                {
+                    id: '<%- moduleName %>',
+                    title: '<%- moduleName %>:menu_section_title',
+                }
+            ],
+            items: [
+            <% for (let {ModelName} of entities){ %>
+            ...nc<%- ModelName %>.getMenu(),
+            <% } %>
+            ],
         },
     },
 };
