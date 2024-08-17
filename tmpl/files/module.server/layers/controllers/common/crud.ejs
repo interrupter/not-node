@@ -6,7 +6,7 @@ import CRUDActionList from "not-bulma/src/frame/crud/actions/list";
 const { notCRUD } = Frame;
 
 const MODEL_NAME = "<%- ModelName %>";
-const modelName = notCommon.firstLetterToLower(MODEL_NAME);
+const modelName = notCommon.lowerFirstLetter(MODEL_NAME);
 
 const LABELS = {
     plural: `${MODULE_NAME}:${modelName}_label_plural`,
