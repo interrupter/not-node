@@ -110,7 +110,8 @@ class Form {
         AFTER_EXTRACT_TRANSFORMERS = [],
         rate,
     }) {
-        this.#FORM_NAME = FORM_NAME ?? this.createName(MODULE_NAME, MODEL_NAME, actionName);
+        this.#FORM_NAME =
+            FORM_NAME ?? Form.createName(MODULE_NAME, MODEL_NAME, actionName);
         this.#MODEL_NAME = MODEL_NAME;
         this.#MODULE_NAME = MODULE_NAME;
         this.#PROTO_FIELDS = FIELDS;
@@ -135,7 +136,7 @@ class Form {
      * @param {string} actionName = 'data'
      * @returns {string}
      */
-    static createName(MODULE_NAME, MODEL_NAME, actionName = 'data') {
+    static createName(MODULE_NAME, MODEL_NAME, actionName = "data") {
         if (MODEL_NAME) {
             return `${MODULE_NAME}:${MODEL_NAME}:${firstLetterToUpper(
                 actionName
@@ -662,7 +663,10 @@ class Form {
         if (typeof schemaField === "undefined" || schemaField === null) {
             return [];
         }
-        if(schemaField.transformers && Array.isArray(schemaField.transformers)){
+        if (
+            schemaField.transformers &&
+            Array.isArray(schemaField.transformers)
+        ) {
             return schemaField.transformers;
         }
         switch (schemaField.type) {
