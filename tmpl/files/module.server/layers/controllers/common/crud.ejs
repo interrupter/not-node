@@ -6,29 +6,29 @@ import CRUDActionList from "not-bulma/src/frame/crud/actions/list";
 const { notCRUD } = Frame;
 
 const MODEL_NAME = "<%- ModelName %>";
-    const modelName = notCommon.lowerFirstLetter(MODEL_NAME);
+const modelName = notCommon.lowerFirstLetter(MODEL_NAME);
 
-    const LABELS = {
+const LABELS = {
     plural: `${MODULE_NAME}:${modelName}_label_plural`,
     single: `${MODULE_NAME}:${modelName}_label_single`,
-    };
+};
 
-    Object.freeze(LABELS);
+Object.freeze(LABELS);
 
-    class nc<%- ModelName %>Common extends notCRUD {
-        static get MODULE_NAME(){
+class nc<%- ModelName %>Common extends notCRUD {
+    static get MODULE_NAME(){
         return MODULE_NAME;
-        }
+    }
 
-        static get MODEL_NAME(){
+    static get MODEL_NAME(){
         return MODEL_NAME;
-        }
+    }
 
-        static get LABELS(){
+    static get LABELS(){
         return LABELS;
-        }
+    }
 
-        constructor(app, params) {
+    constructor(app, params) {
         super(app, `${MODULE_NAME}.${MODEL_NAME}`);
         this.setModuleName(MODULE_NAME);
         this.setModelName(MODEL_NAME);
@@ -36,59 +36,61 @@ const MODEL_NAME = "<%- ModelName %>";
         this.setValidators(Validators);
         this.setOptions("params", params);
         this.setOptions("list", {
-        interface: {
-        combined: true,
-        factory: this.make.<%- modelName %>,
+            interface: {
+                combined: true,
+                factory: this.make.<%- modelName %>,
             },
             endless: false,
             preload: {},
             sorter: {
-            id: -1,
+                id: -1,
             },
             showSearch: true,
             idField: "_id",
             fields: [
-            <% if (increment) { %>
+                <% if (increment) { %>
                 {
-                path: ":<%- modelName %>ID",
+                    path: ":<%- modelName %>ID",
                     title: "ID",
                     searchable: true,
                     sortable: true,
-                    },
-                    <% } %>
-                        <% for (let fieldName of fields){ %>
-                            {
-                            path: ":<%- fieldName[0] %>",
-                                title: `${MODULE_NAME}:<%- `${modelName}_field_${fieldName[0]}_label` %>`,
-                                    searchable: true,
-                                    sortable: true,
-                                    },
-                                    <% } %>
-                                        {
-                                        path: ":_id",
-                                        title: "Действия",
-                                        type: "button",
-                                        preprocessor: (value) => CRUDActionList.createActionsButtons(this, value),
-                                        },
-                                        ],
-                                        });
+                },
+                <% } %>
+                <% for (let fieldName of fields){ %>
+                {
+                    path: ":<%- fieldName[0] %>",
+                    title: `${MODULE_NAME}:<%- `${modelName}_field_${fieldName[0]}_label` %>`,
+                    searchable: true,
+                    sortable: true,
+                },
+                <% } %>
+                {
+                    path: ":_id",
+                    title: "Действия",
+                    type: "button",
+                    preprocessor: (value) => CRUDActionList.createActionsButtons(this, value),
+                },
+            ],
+        });
 
-                                        this.start();
-                                        return this;
-                                        }
+        this.start();
+        return this;
+    }
 
-                                        createDefault() {
-                                        let newRecord = this.getModel({
-                                        <% for (let fieldName of fields){ %><%- fieldName[0] %>: undefined,
-                                                <% } %>
-                                                    });
-                                                    return newRecord;
-                                                    }
+    createDefault() {
+        let newRecord = this.getModel({
+            <% for (let fieldName of fields){ %><%- fieldName[0] %>: undefined,
+            <% } %>
+        });
+        return newRecord;
+    }
 
-                                                    static getMenu(){
-                                                    return notCRUD.getCommonMenu(nc<%- ModelName %>Common);
-                                                        }
+    static getMenu(){
+        return notCRUD.getCommonMenu(nc<%- ModelName %>Common);
+    }
 
-                                                        }
+}
 
-                                                        export default nc<%- ModelName %>Common;
+export default nc<%- ModelName %>Common;
+
+
