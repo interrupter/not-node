@@ -24,6 +24,27 @@ module.exports.firstLetterToUpper = function (string) {
 };
 
 /**
+ * transforms not-module-name -> ModuleName
+ * @param {string} moduleName
+ * @return {string}
+ */
+function moduleNameTransformer(moduleName) {
+    //not-module-name -> [not,module,name]
+    const ModuleNameParts = moduleName.split("-");
+    //[not,module,name] -> [module,name]
+    const moduleNameSelectedParts =
+        ModuleNameParts[0] === "not"
+            ? ModuleNameParts.splice(1)
+            : ModuleNameParts;
+    //[module,name] -> ModuleName
+    return moduleNameSelectedParts
+        .map(module.exports.firstLetterToUpper)
+        .join("");
+}
+
+module.exports.moduleNameTransformer = moduleNameTransformer;
+
+/**
  *  Validates if string is a ObjectId
  *  @param  {string|import('mongoose').Schema.Types.ObjectId}  id   ObjectId string to validate
  *  @return {boolean}  true if check is not failed

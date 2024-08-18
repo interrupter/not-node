@@ -1,10 +1,13 @@
+import ns<%- ModuleNameHumanReadable %>Common from "../common/ns<%- ModuleNameHumanReadable %>Common.js";
 <% for (let {ModelName} of entities){ %>
 import nc<%- ModelName %> from "./nc<%- ModelName %>.js";
 <% } %>
 
 const wsc = {};
 const uis = {};
-const services = {};
+const services = {
+    ns<%- ModuleNameHumanReadable %>Common
+};
 
 let manifest = {
     router: {

@@ -7,8 +7,8 @@ export default async (
     config,
     createFileContent,
     PATH_TMPL
-) => {    
-    for (let entityData of entitiesList) {        
+) => {
+    for (let entityData of entitiesList) {
         const TMPL_FILE_PATH = resolve(PATH_TMPL, TEMPLATES_DIR, `crud.ejs`);
         const DEST_FILE_PATH = resolve(
             module_layer_dir,
@@ -21,6 +21,7 @@ export default async (
     }
 
     if (entitiesList.length) {
+        //common validators
         const TMPL_FILE_PATH_VALIDATORS = resolve(
             PATH_TMPL,
             TEMPLATES_DIR,
@@ -33,6 +34,24 @@ export default async (
         await createFileContent(
             TMPL_FILE_PATH_VALIDATORS,
             DEST_FILE_PATH_VALIDATORS,
+            {
+                ...config,
+                ...entitiesList[0],
+            }
+        );
+        //common service
+        const TMPL_FILE_PATH_COMMON_SERVICE = resolve(
+            PATH_TMPL,
+            TEMPLATES_DIR,
+            `service.ejs`
+        );
+        const DEST_FILE_PATH_COMMON_SERVICE = resolve(
+            module_layer_dir,
+            `ns${config.ModuleNameHumanReadable}Common.js`
+        );
+        await createFileContent(
+            TMPL_FILE_PATH_COMMON_SERVICE,
+            DEST_FILE_PATH_COMMON_SERVICE,
             {
                 ...config,
                 ...entitiesList[0],

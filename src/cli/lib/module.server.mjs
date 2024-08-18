@@ -1,4 +1,7 @@
-import { firstLetterToLower } from "../../../src/common.js";
+import {
+    firstLetterToLower,
+    moduleNameTransformer,
+} from "../../../src/common.js";
 import { join } from "node:path";
 import inquirer from "inquirer";
 import inquirerPrompt from "inquirer-autocomplete-prompt";
@@ -75,9 +78,16 @@ async function renderServerContollersIndexes(
 async function createServerModule(modules_dir, config, availableFields) {
     //read module name
     const ModuleName = await Readers.ModuleName(inquirer);
+    const ModuleNameHumanReadable = moduleNameTransformer(ModuleName);
     const moduleName = firstLetterToLower(ModuleName);
     const moduleDir = join(modules_dir, ModuleName);
-    const moduleConfig = { ...config, moduleName, ModuleName, availableFields };
+    const moduleConfig = {
+        ...config,
+        moduleName,
+        ModuleName,
+        ModuleNameHumanReadable,
+        availableFields,
+    };
     await createDir(moduleDir);
     //console.log(JSON.stringify(moduleConfig, null, 4));
     await createDirContent(

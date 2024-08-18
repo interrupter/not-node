@@ -1,0 +1,23 @@
+import { Builder } from "not-validation";
+import Validator from "validator";
+
+export default class ns<%- ModuleNameHumanReadable %>Common {
+    constructor(app) {
+        this.app = app;
+    }
+
+    destroy() {
+        delete this.app;
+    }
+
+    augmentValidators(validators) {
+        return Builder(validators, () => this.getValidatorEnv());
+    }
+
+    getValidatorEnv() {
+        return {
+            config: this.app.getConfigReaderForModule("<%- moduleName %>"),
+            validator: Validator,
+        };
+    }
+}
