@@ -277,7 +277,6 @@ describe("Fields/notFieldsFilter", function () {
             expect(result).to.be.deep.equal([
                 "id",
                 "name",
-                "name",
                 "username",
                 "country",
             ]);

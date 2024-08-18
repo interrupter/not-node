@@ -7,6 +7,10 @@ module.exports = {
     model: {
         type: String,
         required: true,
-        transformers: ['xss']
+        transformers: ["xss"],
+        safe: {
+            update: ["@owner", "root", "admin"],
+            read: ["@owner", "root", "admin"],
+        },
     },
 };

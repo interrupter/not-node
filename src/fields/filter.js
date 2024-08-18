@@ -302,6 +302,10 @@ class notFieldsFilter {
         return result;
     }
 
+    static clearFromDuplicated(fields) {
+        return [...new Set(fields)];
+    }
+
     /**
      * Creates plain fields list from fields list with fields, synonyms, fields sets
      * and exlude operations
@@ -320,7 +324,7 @@ class notFieldsFilter {
     static filter(fieldsSet, schema = {}, mods = { action: undefined }) {
         const fields = [...fieldsSet];
         this.specialsToPlain(fields, schema, mods);
-        return this.removeExcludedFields(fields);
+        return this.clearFromDuplicated(this.removeExcludedFields(fields));
     }
 }
 
