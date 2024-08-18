@@ -127,7 +127,12 @@ class notFieldsFilter {
             },
             [SPECIAL_SET_UNSAFE]: ["salt", "password"],
             [SPECIAL_SET_TIMESTAMPS]: ["createdAt", "updatedAt"],
-            [SPECIAL_SET_OWNAGE]: ["owner", "ownerId", "ownerModel"],
+            [SPECIAL_SET_OWNAGE]: (schema) => {
+                const inSchema = Object.keys(schema);
+                return ["owner", "ownerId", "ownerModel"].filter((itm) =>
+                    inSchema.includes(itm)
+                );
+            },
             [SPECIAL_SET_VERSIONING]: [
                 "__version",
                 "__versions",
