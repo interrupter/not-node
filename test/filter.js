@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const expect = require("chai").expect,
-    notFieldsFilter = require("../src/fields/filter");
+    notFieldsFilter = require("../src/fields/filter"),
+    { ACTION_SIGNATURES } = require("../src/auth/const"),
+    safetyProtocols = require("../src/core/safety.protocols");
 
 const SCHEMA = () => {
     return {
@@ -280,6 +282,39 @@ describe("Fields/notFieldsFilter", function () {
                 "username",
                 "country",
             ]);
+        });
+    });
+
+    describe("mergeSafetyProtocols", () => {
+        it("ownerRootAdmin + publicReadable", () => {
+            const result = notFieldsFilter.mergeSafetyProtocols(
+                safetyProtocols.ownerRootAdmin,
+                safetyProtocols.publicReadable
+            );
+            expect(result).to.be.deep.equal({
+                [ACTION_SIGNATURES.CREATE]: ["@owner", "root", "admin"],
+                [ACTION_SIGNATURES.READ]: ["@owner", "root", "admin", "@*"],
+                [ACTION_SIGNATURES.UPDATE]: ["@owner", "root", "admin"],
+                [ACTION_SIGNATURES.DELETE]: ["@owner", "root", "admin"],
+            });
+        });
+
+        it("ownerRootAdmin - @owner", () => {
+            const result = notFieldsFilter.mergeSafetyProtocols(
+                safetyProtocols.ownerRootAdmin,
+                {
+                    [ACTION_SIGNATURES.CREATE]: ["-@owner"],
+                    [ACTION_SIGNATURES.READ]: ["-@owner"],
+                    [ACTION_SIGNATURES.UPDATE]: ["-@owner"],
+                    [ACTION_SIGNATURES.DELETE]: ["-@owner"],
+                }
+            );
+            expect(result).to.be.deep.equal({
+                [ACTION_SIGNATURES.CREATE]: ["root", "admin"],
+                [ACTION_SIGNATURES.READ]: ["root", "admin"],
+                [ACTION_SIGNATURES.UPDATE]: ["root", "admin"],
+                [ACTION_SIGNATURES.DELETE]: ["root", "admin"],
+            });
         });
     });
 });

@@ -5,7 +5,10 @@ const {
     isNotEmptyString,
 } = require("../common");
 const { getSafeFieldsForRoleAction } = require("../auth/fields");
-const { DEFAULT_USER_ROLE_FOR_GUEST } = require("../auth/const");
+const {
+    DEFAULT_USER_ROLE_FOR_GUEST,
+    ACTION_SIGNATURES,
+} = require("../auth/const");
 /**
  * notFieldsFilter.filter(fields, getApp().getModelSchema(MODEL_NAME), {action});
  *
@@ -125,7 +128,7 @@ class notFieldsFilter {
                     system
                 );
             },
-            [SPECIAL_SET_UNSAFE]: ["salt", "password"],
+            [SPECIAL_SET_UNSAFE]: ["salt", "password", "session"],
             [SPECIAL_SET_TIMESTAMPS]: ["createdAt", "updatedAt"],
             [SPECIAL_SET_OWNAGE]: (schema) => {
                 const inSchema = Object.keys(schema);
@@ -330,6 +333,50 @@ class notFieldsFilter {
         const fields = [...fieldsSet];
         this.specialsToPlain(fields, schema, mods);
         return this.clearFromDuplicated(this.removeExcludedFields(fields));
+    }
+
+    /**
+     *
+     *
+     * @static
+     * @param {Object} base
+     * @param {Object} addition
+     * @return {Object}
+     * @memberof notFieldsFilter
+     */
+    static mergeSafetyProtocols(base, addition) {
+        const result = {
+            [ACTION_SIGNATURES.CREATE]: [
+                ...(base[ACTION_SIGNATURES.CREATE] || []),
+            ],
+            [ACTION_SIGNATURES.READ]: [...(base[ACTION_SIGNATURES.READ] || [])],
+            [ACTION_SIGNATURES.UPDATE]: [
+                ...(base[ACTION_SIGNATURES.UPDATE] || []),
+            ],
+            [ACTION_SIGNATURES.DELETE]: [
+                ...(base[ACTION_SIGNATURES.DELETE] || []),
+            ],
+        };
+        for (const type of Object.keys(addition)) {
+            if (Array.isArray(addition[type])) {
+                addition[type].forEach((rule) => {
+                    if (this.isExcludeOperation(rule)) {
+                        const ruleToDelete = this.unmarkFieldToExlude(rule);
+                        if (result[type].includes(ruleToDelete)) {
+                            result[type].splice(
+                                result[type].indexOf(ruleToDelete),
+                                1
+                            );
+                        }
+                    } else {
+                        if (!result[type].includes(rule)) {
+                            result[type].push(rule);
+                        }
+                    }
+                });
+            }
+        }
+        return Object.freeze(result);
     }
 }
 
