@@ -9,10 +9,7 @@ module.exports = {
         required: true,
         searchable: true,
         sortable: true,
-        safe: {
-            update: ["@owner", "root", "admin"],
-            read: ["@owner", "root", "admin"],
-        },
-        transformers: ['xss']
+        safe: require("../safety.protocols").ownerRootAdmin,
+        transformers: ["xss"],
     },
 };

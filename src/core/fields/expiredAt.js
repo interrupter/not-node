@@ -10,9 +10,6 @@ module.exports = {
         required: false,
         searchable: true,
         sortable: true,
-        safe: {
-            update: ["@owner", "root", "admin"],
-            read: ["@owner", "root", "admin"],
-        },
+        safe: require("../safety.protocols").ownerRootAdmin,
     },
 };

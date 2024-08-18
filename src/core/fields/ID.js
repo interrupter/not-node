@@ -8,5 +8,6 @@ module.exports = {
     model: {
         type: Number,
         required: true,
+        safe: require("../safety.protocols").ownerRootAdmin,
     },
 };

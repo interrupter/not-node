@@ -317,4 +317,63 @@ describe("Fields/notFieldsFilter", function () {
             });
         });
     });
+
+    describe("initSafetyProtocol", () => {
+        it("empty", () => {
+            const result = notFieldsFilter.initSafetyProtocol();
+            expect(result).to.be.deep.equal({
+                [ACTION_SIGNATURES.CREATE]: [],
+                [ACTION_SIGNATURES.READ]: [],
+                [ACTION_SIGNATURES.UPDATE]: [],
+                [ACTION_SIGNATURES.DELETE]: [],
+            });
+        });
+
+        it("all = user", () => {
+            const result = notFieldsFilter.initSafetyProtocol(
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                ["user"]
+            );
+            expect(result).to.be.deep.equal({
+                [ACTION_SIGNATURES.CREATE]: ["user"],
+                [ACTION_SIGNATURES.READ]: ["user"],
+                [ACTION_SIGNATURES.UPDATE]: ["user"],
+                [ACTION_SIGNATURES.DELETE]: ["user"],
+            });
+        });
+
+        it("CRUD - @owner", () => {
+            const result = notFieldsFilter.initSafetyProtocol(
+                ["@owner"],
+                ["@owner"],
+                ["@owner"],
+                ["@owner"]
+            );
+            expect(result).to.be.deep.equal({
+                [ACTION_SIGNATURES.CREATE]: ["@owner"],
+                [ACTION_SIGNATURES.READ]: ["@owner"],
+                [ACTION_SIGNATURES.UPDATE]: ["@owner"],
+                [ACTION_SIGNATURES.DELETE]: ["@owner"],
+            });
+        });
+
+        it("D - -@owner, ALL - @owner, root, admin", () => {
+            const result = notFieldsFilter.initSafetyProtocol(
+                undefined,
+                undefined,
+                undefined,
+                ["-@owner"],
+                ["@owner", "root", "admin"]
+            );
+            expect(result).to.be.deep.equal({
+                [ACTION_SIGNATURES.CREATE]: ["@owner", "root", "admin"],
+                [ACTION_SIGNATURES.READ]: ["@owner", "root", "admin"],
+                [ACTION_SIGNATURES.UPDATE]: ["@owner", "root", "admin"],
+                [ACTION_SIGNATURES.DELETE]: ["root", "admin"],
+            });
+        });
+    });
 });

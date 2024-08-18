@@ -5,4 +5,7 @@ module.exports = {
         label: "_id",
         readonly: true,
     },
+    model: {
+        safe: require("../safety.protocols").systemManageable,
+    },
 };

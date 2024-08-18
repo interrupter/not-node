@@ -11,9 +11,6 @@ module.exports = {
         default: Date.now,
         searchable: true,
         sortable: true,
-        safe: {
-            create: ["@system"],
-            read: ["@owner", "root", "admin"],
-        },
+        safe: require("../safety.protocols").systemManageable,
     },
 };

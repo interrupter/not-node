@@ -6,6 +6,7 @@ module.exports = {
     model: {
         type: Boolean,
         default: false,
-        required: true
+        required: true,
+        safe: require("../safety.protocols").ownerRootAdmin,
     },
 };

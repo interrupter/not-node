@@ -8,6 +8,7 @@ module.exports = {
         type: String,
         searchable: true,
         required: true,
-        transformers: ['xss']
+        safe: require("../safety.protocols").ownerRootAdmin,
+        transformers: ["xss"],
     },
 };

@@ -5,9 +5,6 @@ module.exports = {
         type: Schema.Types.Mixed,
         required: true,
         default: {},
-        safe: {
-            update: ["@owner", "root", "admin"],
-            read: ["@owner", "root", "admin"],
-        },
+        safe: require("../safety.protocols").ownerRootAdmin,
     },
 };

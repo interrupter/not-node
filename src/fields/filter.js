@@ -378,6 +378,29 @@ class notFieldsFilter {
         }
         return Object.freeze(result);
     }
+
+    static initSafetyProtocol(
+        create = [],
+        read = [],
+        update = [],
+        del = [],
+        all = []
+    ) {
+        return this.mergeSafetyProtocols(
+            {
+                [ACTION_SIGNATURES.CREATE]: [...all],
+                [ACTION_SIGNATURES.READ]: [...all],
+                [ACTION_SIGNATURES.UPDATE]: [...all],
+                [ACTION_SIGNATURES.DELETE]: [...all],
+            },
+            {
+                [ACTION_SIGNATURES.CREATE]: [...create],
+                [ACTION_SIGNATURES.READ]: [...read],
+                [ACTION_SIGNATURES.UPDATE]: [...update],
+                [ACTION_SIGNATURES.DELETE]: [...del],
+            }
+        );
+    }
 }
 
 module.exports = notFieldsFilter;

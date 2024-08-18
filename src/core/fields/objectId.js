@@ -6,9 +6,6 @@ module.exports = {
         required: true,
         default: {},
         transformers: ["xss", "__CLEAR__"],
-        safe: {
-            update: ["@owner", "root", "admin"],
-            read: ["@owner", "root", "admin"],
-        },
+        safe: require("../safety.protocols").ownerRootAdmin,
     },
 };

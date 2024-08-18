@@ -7,5 +7,6 @@ module.exports = {
         type: Boolean,
         default: true,
         required: true,
+        safe: require("../safety.protocols").ownerRootAdmin,
     },
 };

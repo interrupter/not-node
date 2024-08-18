@@ -7,6 +7,7 @@ module.exports = {
     model: {
         type: String,
         required: true,
-        transformers: ['xss']
+        transformers: ["xss"],
+        safe: require("../safety.protocols").ownerRootAdmin,
     },
 };

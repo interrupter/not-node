@@ -10,5 +10,6 @@ module.exports = {
         type: Schema.Types.ObjectId,
         ref: "User",
         required: false,
+        safe: require("../safety.protocols").ownerRootAdmin,
     },
 };

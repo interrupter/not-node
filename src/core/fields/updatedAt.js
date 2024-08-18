@@ -11,9 +11,6 @@ module.exports = {
         type: Date,
         required: true,
         default: Date.now,
-        safe: {
-            update: ["@owner", "root", "admin"],
-            read: ["@owner", "root", "admin"],
-        },
+        safe: require("../safety.protocols").ownerRootAdmin,
     },
 };
