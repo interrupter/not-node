@@ -37,7 +37,9 @@ const {
  * }
  */
 
+/** @type {string} */
 const OPERATOR_EXCLUDE = "-";
+/** @type {string} */
 const SPECIAL_SET_PREFIX = "@";
 
 //system special fields sets aka system specials
@@ -61,6 +63,20 @@ const SPECIAL_SET_ID_UUID = "id";
  * @property    {boolean}   [auth]      authenticated user initiated action
  */
 
+/**
+ * Fields lists definition and include/exclude operations
+ * Supported standart special sets:
+ *  - * - ID, id, keys(schema)
+ *  - safe - schema keys that is safe for user and action signature
+ *  - unsafe - salt, password, session
+ *  - timestamps - createdAt, updatedAt
+ *  - ownage - owner, ownerId, ownerModel if presented in schema
+ *  - versioning - __version, __versions, __closed, __latest, __v
+ *  - ID - {modelName}ID incremental universaly not unique
+ *  - id - UUID universaly "unique"
+ *
+ * @class notFieldsFilter
+ */
 class notFieldsFilter {
     static #USER_DEFINED_SETS = {};
 
