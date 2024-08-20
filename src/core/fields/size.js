@@ -3,6 +3,7 @@ module.exports = {
         component: "UITextfield",
         label: "not-node:field_size_label",
         placeholder: "not-node:field_size_placeholder",
+        default: 0.0,
     },
     model: {
         type: Number,

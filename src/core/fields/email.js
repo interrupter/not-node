@@ -3,6 +3,7 @@ module.exports = {
         component: "UIEmail",
         placeholder: "not-node:field_email_placeholder",
         label: "not-node:field_email_label",
+        default: "",
     },
     model: {
         type: String,

@@ -169,7 +169,7 @@ module.exports.initManifestFields = (
  * Returns mutation tuple for a field or false
  * @param {string} name  field name
  * @param {Array} list  fields description lists
- * @return {boolean|item}
+ * @return {boolean|Array<string|Object>}
  */
 function getMutationForField(name, list) {
     for (let item of list) {

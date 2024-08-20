@@ -3,6 +3,7 @@ module.exports = {
         component: "UITextfield",
         placeholder: "not-node:field_price_placeholder",
         label: "not-node:field_price_label",
+        default: 0.0,
     },
     model: {
         type: Number,

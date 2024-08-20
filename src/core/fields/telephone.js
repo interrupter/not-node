@@ -3,6 +3,7 @@ module.exports = {
         component: "UITelephone",
         placeholder: "not-node:field_telephone_placeholder",
         label: "not-node:field_telephone_label",
+        default: "",
     },
     model: {
         type: String,

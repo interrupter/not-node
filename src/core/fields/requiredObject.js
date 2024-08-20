@@ -7,4 +7,7 @@ module.exports = {
         default: {},
         safe: require("../safety.protocols").ownerRootAdmin,
     },
+    ui: {
+        default: {},
+    },
 };

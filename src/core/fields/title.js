@@ -3,6 +3,7 @@ module.exports = {
         component: "UITextfield",
         label: "not-node:field_title_label",
         placeholder: "not-node:field_title_placeholder",
+        default: "",
     },
     model: {
         type: String,

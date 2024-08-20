@@ -4,8 +4,11 @@ module.exports = {
     model: {
         type: ObjectId,
         required: true,
-        default: {},
+        default: null,
         transformers: ["xss", "__CLEAR__"],
         safe: require("../safety.protocols").ownerRootAdmin,
+    },
+    ui: {
+        default: null,
     },
 };

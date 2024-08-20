@@ -3,6 +3,7 @@ module.exports = {
         component: "UITextfield",
         label: "not-node:field_session_label",
         placeholder: "not-node:field_session_placeholder",
+        readonly: true,
     },
     model: {
         type: String,
