@@ -18,4 +18,16 @@ describe("Form//Transformers", () => {
             field3: [1, "string", false],
         });
     });
+
+    it("__CLEAR__ presented in input", () => {
+        const input = "__CLEAR__";
+        const result = transformers.__CLEAR__(input);
+        expect(result).to.be.null;
+    });
+
+    it("__CLEAR__ not presented in input", () => {
+        const input = "";
+        const result = transformers.__CLEAR__(input);
+        expect(result).to.be.not.null;
+    });
 });

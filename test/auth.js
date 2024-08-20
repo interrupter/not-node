@@ -91,27 +91,27 @@ describe("Auth", function () {
             role: "root",
             auth: true,
         };
-        it("rule (admin, root, authentificated),  auth - true, role - root, admin - true ", function () {
+        it("rule (admin, root, authentificated),  auth - true, role - root, root - true ", function () {
             const res = auth.checkCredentials(rule, true, "root", true);
             expect(res).to.deep.equal(true);
         });
 
-        it("rule (admin, root, authentificated),  auth - true, role - root, admin - false ", function () {
+        it("rule (admin, root, authentificated),  auth - true, role - root, root - false ", function () {
             const res = auth.checkCredentials(rule, true, "root", false);
             expect(res).to.deep.equal(false);
         });
 
-        it("rule - empty,  auth - true, role - root, admin - false ", function () {
+        it("rule - empty,  auth - true, role - root, root - false ", function () {
             const res = auth.checkCredentials({}, true, "root", false);
-            expect(res).to.deep.equal(true);
+            expect(res).to.deep.equal(false);
         });
 
-        it("rule - null,  auth - true, role - root, admin - false ", function () {
+        it("rule - null,  auth - true, role - root, root - false ", function () {
             const res = auth.checkCredentials(null, true, "root", false);
             expect(res).to.deep.equal(false);
         });
 
-        it("rule - (auth),  auth - true, role - root, admin - false ", function () {
+        it("rule - (auth),  auth - true, role - root, root - false ", function () {
             const res = auth.checkCredentials(
                 { auth: true },
                 true,
@@ -121,7 +121,7 @@ describe("Auth", function () {
             expect(res).to.deep.equal(true);
         });
 
-        it("rule - (role: 'notActivated'),  auth - true, role - root, admin - false ", function () {
+        it("rule - (role: 'notActivated'),  auth - true, role - root, root - false ", function () {
             const res = auth.checkCredentials(
                 { role: "notActivated" },
                 true,
@@ -131,7 +131,7 @@ describe("Auth", function () {
             expect(res).to.deep.equal(false);
         });
 
-        it("rule - (role: 'user', auth),  auth - true, role - user, admin - false ", function () {
+        it("rule - (role: 'user', auth),  auth - true, role - user, root - false ", function () {
             const res = auth.checkCredentials(
                 { role: "user", auth: true },
                 true,
@@ -141,7 +141,7 @@ describe("Auth", function () {
             expect(res).to.deep.equal(true);
         });
 
-        it("rule - (role: 'user', !auth),  auth - false, role - user, admin - false ", function () {
+        it("rule - (role: 'user', !auth),  auth - false, role - user, root - false ", function () {
             const res = auth.checkCredentials(
                 { role: "user", auth: false },
                 false,
@@ -151,7 +151,7 @@ describe("Auth", function () {
             expect(res).to.deep.equal(true);
         });
 
-        it("rule - (role: 'user'),  auth - false, role - user, admin - false ", function () {
+        it("rule - (role: 'user'),  auth - false, role - user, root - false ", function () {
             const res = auth.checkCredentials(
                 { role: "user" },
                 false,
@@ -161,7 +161,7 @@ describe("Auth", function () {
             expect(res).to.deep.equal(true);
         });
 
-        it("rule - (auth),  auth - true, role - user, admin - false ", function () {
+        it("rule - (auth),  auth - true, role - user, root - false ", function () {
             const res = auth.checkCredentials(
                 { auth: true },
                 true,
@@ -171,7 +171,7 @@ describe("Auth", function () {
             expect(res).to.deep.equal(true);
         });
 
-        it("rule - (!auth),  auth - false, role - user, admin - false ", function () {
+        it("rule - (!auth),  auth - false, role - user, root - false ", function () {
             const res = auth.checkCredentials(
                 { auth: false },
                 false,
@@ -181,7 +181,7 @@ describe("Auth", function () {
             expect(res).to.deep.equal(true);
         });
 
-        it("rule - (auth),  auth - false, role - user, admin - false ", function () {
+        it("rule - (auth),  auth - false, role - user, root - false ", function () {
             const res = auth.checkCredentials(
                 { auth: true },
                 false,
@@ -191,7 +191,7 @@ describe("Auth", function () {
             expect(res).to.deep.equal(false);
         });
 
-        it("rule - (!auth),  auth - false, role - user, admin - true ", function () {
+        it("rule - (!auth),  auth - false, role - user, root - true ", function () {
             const res = auth.checkCredentials(
                 { auth: false },
                 false,
@@ -201,7 +201,7 @@ describe("Auth", function () {
             expect(res).to.deep.equal(true);
         });
 
-        it("rule - (admin),  auth - false, role - user, admin - true ", function () {
+        it("rule - (admin),  auth - false, role - user, root - true ", function () {
             const res = auth.checkCredentials(
                 { admin: true },
                 false,
@@ -211,7 +211,7 @@ describe("Auth", function () {
             expect(res).to.deep.equal(true);
         });
 
-        it("rule - (!auth, 'notActivated', false),  auth - false, role - notActivated, admin - false ", function () {
+        it("rule - (!auth, 'notActivated', false),  auth - false, role - notActivated, root - false ", function () {
             const res = auth.checkCredentials(
                 { auth: false, role: "notActivated" },
                 false,
@@ -221,7 +221,7 @@ describe("Auth", function () {
             expect(res).to.deep.equal(true);
         });
 
-        it("rule - (!auth, 'notActivated', undefined),  auth - false, role - false, admin - false ", function () {
+        it("rule - (!auth, 'notActivated', undefined),  auth - false, role - false, root - false ", function () {
             const res = auth.checkCredentials(
                 { auth: false, role: "notActivated" },
                 false,
@@ -231,7 +231,7 @@ describe("Auth", function () {
             expect(res).to.deep.equal(false);
         });
 
-        it("rule - (admin),  auth - false, role - false, admin - true ", function () {
+        it("rule - (admin),  auth - false, role - false, root - true ", function () {
             const res = auth.checkCredentials(
                 { admin: true },
                 false,

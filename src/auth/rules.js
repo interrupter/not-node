@@ -94,7 +94,7 @@ function compareAuthStatus(rule, auth) {
  *	Check rule against presented credentials
  *	@param	{import('../types').notRouteRule}		        rule	        action rule
  *	@param  {boolean}		                                auth	        user state of auth
- *	@param  {Array<string>}	                        role	        user state of role
+ *	@param  {string|Array<string>}	                                role	        user state of role
  *	@param  {boolean}		                                root            user state of root
  *	@return {boolean}		                                                pass or not
  */
@@ -103,21 +103,30 @@ function checkCredentials(rule, auth, role, root) {
     if (typeof rule === "undefined" || rule === null) {
         return false;
     } else {
+        let directivesUsed = 0;
         //posting message about obsolete options keys if found
         postWarning.obsoleteRuleFields(rule);
-        //start comparing from top tier flags
-        //if we have root/admin(obsolete) field field in rule compare only it
+        //compare all three auth directives types
+        //if any presented not equal - return false
+        //if none of directives presented in rule - return false
+        //root
         if (ruleHasRootDirective(rule)) {
-            return compareWithRoot(rule, root);
-        } else {
-            //if we have roles in rule, then using role based aproach
-            if (objHas(rule, "role")) {
-                return compareRuleRoles(rule, role, auth);
-            } else {
-                //if no then just
-                return compareAuthStatus(rule, auth);
+            directivesUsed++;
+            if (!compareWithRoot(rule, root)) {
+                return false;
             }
         }
+        //role checks auth too, so straight return
+        if (objHas(rule, "role")) {
+            return compareRuleRoles(rule, role, auth);
+        }
+        //auth, last one, so straight return. if got to here and auth presented, it rules everything
+        //have to check this and root to have rules like {root:false, auth: true} - every user but root
+        if (objHas(rule, "auth")) {
+            return compareAuthStatus(rule, auth);
+        }
+        //if no directives in rule - no user authentication
+        return !!directivesUsed;
     }
 }
 
