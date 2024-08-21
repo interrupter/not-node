@@ -3,6 +3,8 @@ const { HttpExceptionForbidden } = require("../exceptions/http");
 module.exports = ({ getLogic, before, after }) => {
     class notGenericRoute {
         static restrictRootAccess = false;
+        static rootAsUser = false;
+
         static exceptionOnRootAccess = HttpExceptionForbidden;
         static exceptionParamsPacker = (prepared) => {
             return [{ params: prepared }];
@@ -22,7 +24,11 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            return await getLogic().create(prepared);
+            if (this.rootAsUser) {
+                return await getLogic().createOwn(prepared);
+            } else {
+                return await getLogic().create(prepared);
+            }
         }
 
         static async create(req, res, next, prepared) {
@@ -35,7 +41,11 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            return await getLogic().get(prepared);
+            if (this.rootAsUser) {
+                return await getLogic().getOwn(prepared);
+            } else {
+                return await getLogic().get(prepared);
+            }
         }
 
         static async get(req, res, next, prepared) {
@@ -48,7 +58,11 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            return await getLogic().getByID(prepared);
+            if (this.rootAsUser) {
+                return await getLogic().getByIDOwn(prepared);
+            } else {
+                return await getLogic().getByID(prepared);
+            }
         }
 
         static async getByID(req, res, next, prepared) {
@@ -61,7 +75,11 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            return await getLogic().getRaw(prepared);
+            if (this.rootAsUser) {
+                return await getLogic().getOwnRaw(prepared);
+            } else {
+                return await getLogic().getRaw(prepared);
+            }
         }
 
         static async getRaw(req, res, next, prepared) {
@@ -74,7 +92,11 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            return await getLogic().update(prepared);
+            if (this.rootAsUser) {
+                return await getLogic().updateOwn(prepared);
+            } else {
+                return await getLogic().update(prepared);
+            }
         }
 
         static async update(req, res, next, prepared) {
@@ -87,7 +109,11 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            return await getLogic().listAll(prepared);
+            if (this.rootAsUser) {
+                return await getLogic().listAllOwn(prepared);
+            } else {
+                return await getLogic().listAll(prepared);
+            }
         }
 
         static async listAll(req, res, next, prepared) {
@@ -100,7 +126,11 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            return await getLogic().listAndCount(prepared);
+            if (this.rootAsUser) {
+                return await getLogic().listAndCountOwn(prepared);
+            } else {
+                return await getLogic().listAndCount(prepared);
+            }
         }
 
         static async listAndCount(req, res, next, prepared) {
@@ -113,7 +143,11 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            return await getLogic().list(prepared);
+            if (this.rootAsUser) {
+                return await getLogic().listOwn(prepared);
+            } else {
+                return await getLogic().list(prepared);
+            }
         }
 
         static async list(req, res, next, prepared) {
@@ -126,7 +160,11 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            return await getLogic().count(prepared);
+            if (this.rootAsUser) {
+                return await getLogic().countOwn(prepared);
+            } else {
+                return await getLogic().count(prepared);
+            }
         }
 
         static async count(req, res, next, prepared) {
@@ -139,7 +177,11 @@ module.exports = ({ getLogic, before, after }) => {
                     ...this.exceptionParamsPacker(prepared)
                 );
             }
-            return await getLogic().delete(prepared);
+            if (this.rootAsUser) {
+                return await getLogic().deleteOwn(prepared);
+            } else {
+                return await getLogic().delete(prepared);
+            }
         }
 
         static async delete(req, res, next, prepared) {
