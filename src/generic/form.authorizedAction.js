@@ -15,14 +15,5 @@ module.exports = ({ MODULE_NAME, MODEL_NAME, actionName, FIELDS = [] }) => {
                 FIELDS: [...STANDART_FIELDS, ...FIELDS],
             });
         }
-
-        async extract(req) {
-            return this.afterExtract(
-                {
-                    ...this.extractRequestEnvs(req),
-                },
-                req
-            );
-        }
     };
 };

@@ -47,12 +47,9 @@ const FactoryFormList = ({ MODULE_NAME, MODEL_NAME, actionName = "list" }) => {
                 );
             }
 
-            return this.afterExtract(
-                {
-                    ...envs,
-                },
-                req
-            );
+            return {
+                ...envs,
+            };
         }
     };
 };

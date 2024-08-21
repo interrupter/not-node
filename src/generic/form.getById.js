@@ -12,15 +12,5 @@ module.exports = ({ MODULE_NAME, MODEL_NAME, actionName = "getById" }) => {
         constructor(params) {
             super({ ...params, MODULE_NAME, MODEL_NAME, actionName, FIELDS });
         }
-
-        async extract(req) {
-            const envs = this.extractRequestEnvs(req);
-            return this.afterExtract(
-                {
-                    ...envs,
-                },
-                req
-            );
-        }
     };
 };

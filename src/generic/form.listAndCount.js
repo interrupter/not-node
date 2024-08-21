@@ -22,8 +22,6 @@ const FactoryFormListAndCount = ({
     MODEL_NAME,
     actionName = "listAndCount",
 }) => {
-
-
     return class extends Form {
         constructor(params) {
             super({
@@ -31,7 +29,7 @@ const FactoryFormListAndCount = ({
                 FIELDS,
                 MODULE_NAME,
                 MODEL_NAME,
-                actionName
+                actionName,
             });
         }
 
@@ -52,12 +50,9 @@ const FactoryFormListAndCount = ({
                     }
                 );
             }
-            return this.afterExtract(
-                {
-                    ...envs,
-                },
-                req
-            );
+            return {
+                ...envs,
+            };
         }
     };
 };

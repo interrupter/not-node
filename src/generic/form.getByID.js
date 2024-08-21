@@ -10,18 +10,15 @@ const FIELDS = [
 module.exports = ({ MODULE_NAME, MODEL_NAME, actionName = "getByID" }) => {
     return class extends Form {
         constructor(params) {
-            super({ ...params, MODULE_NAME, MODEL_NAME,actionName, FIELDS });
+            super({ ...params, MODULE_NAME, MODEL_NAME, actionName, FIELDS });
         }
 
         async extract(req) {
             const envs = this.extractRequestEnvs(req);
-            return this.afterExtract(
-                {
-                    ...envs,
-                    targetId: envs.modelNameID,
-                },
-                req
-            );
+            return {
+                ...envs,
+                targetId: envs.modelNameID,
+            };
         }
     };
 };
