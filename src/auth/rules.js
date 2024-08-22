@@ -94,7 +94,7 @@ function compareAuthStatus(rule, auth) {
  *	Check rule against presented credentials
  *	@param	{import('../types').notRouteRule}		        rule	        action rule
  *	@param  {boolean}		                                auth	        user state of auth
- *	@param  {string|Array<string>}	                                role	        user state of role
+ *	@param  {string|Array<string>}	                        role	        user state of role
  *	@param  {boolean}		                                root            user state of root
  *	@return {boolean}		                                                pass or not
  */
