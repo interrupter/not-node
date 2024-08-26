@@ -1,6 +1,6 @@
 {
 	"name": "not-node",
-	"version": "6.4.7",
+	"version": "6.4.8",
 	"description": "node complimentary part for client side notFramework.",
 	"main": "index.js",
 	"scripts": {
@@ -55,7 +55,6 @@
 		"inquirer": "^10.1.8",
 		"inquirer-autocomplete-prompt": "^3.0.1",
 		"jsonwebtoken": "^9.0.2",
-		"lower-case": "*",
 		"method-override": "^3.0.0",
 		"mongoose-validator": "*",
 		"nconf": "*",

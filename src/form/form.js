@@ -256,6 +256,11 @@ class Form {
         };
         if (this.getActionDataDataTypes(req).includes(ACTION_DATA_TYPES.DATA)) {
             result.data = this.#extractByBestInstructions(req);
+        } else if (this.getActionDataDataTypes(req).includes("record")) {
+            getApp().warn(
+                'actionData.data = record is obsolete, use data instead aka data:["data"]'
+            );
+            result.data = this.#extractByBestInstructions(req);
         }
         return result;
     }
