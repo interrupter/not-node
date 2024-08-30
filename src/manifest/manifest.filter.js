@@ -16,6 +16,9 @@ const DIRTY_FIELDS = [
     "actionSignature",
 ];
 
+//allow access to safe (for a specific user auth status) fields only
+const DEFAULT_FIELDS_SET = ["@safe"];
+
 module.exports = class notManifestFilter {
     static schemaLoader = (name) => getApp().getModelSchema(name);
 
@@ -310,13 +313,22 @@ module.exports = class notManifestFilter {
         //this action
         const fullModelName = this.composeFullModelName(moduleName, modelName);
         const modelSchema = this.loadSchema(fullModelName);
-        if (notManifestFilter.ruleSetHasFieldsDirective(ruleSet)) {
-            copy.fields = notFieldsFilter.filter(
-                [...ruleSet.fields],
-                modelSchema,
-                { action: actionSignature, roles: role, auth, root, modelName }
-            );
+        const fields = notManifestFilter.ruleSetHasFieldsDirective(ruleSet)
+            ? [...ruleSet.fields]
+            : DEFAULT_FIELDS_SET;
+
+        copy.fields = notFieldsFilter.filter(fields, modelSchema, {
+            action: actionSignature,
+            roles: role,
+            auth,
+            root,
+            modelName,
+        });
+        //remove fields property if list is empty
+        if (copy.fields.length == 0) {
+            delete copy.fields;
         }
+
         if (ruleSet && ruleSet.return) {
             copy.return = notManifestFilter.filterReturnSet(
                 ruleSet.return,
