@@ -20,7 +20,7 @@ const extraActionsBuilder = (
 const POST_FIX_RECORD_ID = "/:record[_id]";
 const POST_FIX_ACTION_NAME = "/:actionName";
 
-module.exports = (MODULE_NAME, modelName, FIELDS, actions = {}) => {
+module.exports = (MODULE_NAME, modelName, FIELDS = [], actions = {}) => {
     return {
         model: modelName,
         url: "/api/:modelName",

@@ -151,7 +151,7 @@ module.exports.initManifestFields = (
             .filter((key) => !privateFields.includes(key))
             .forEach((key) => {
                 let mutation = getMutationForField(key, mutationsList);
-                if (mutation) {
+                if (mutation.length) {
                     list.push(mutation);
                     mutationsList.splice(mutationsList.indexOf(mutation), 1);
                 } else {
@@ -169,7 +169,7 @@ module.exports.initManifestFields = (
  * Returns mutation tuple for a field or false
  * @param {string} name  field name
  * @param {Array} list  fields description lists
- * @return {boolean|Array<string|Object>}
+ * @return {Array<string|Object>}
  */
 function getMutationForField(name, list) {
     for (let item of list) {
@@ -177,7 +177,7 @@ function getMutationForField(name, list) {
             return item;
         }
     }
-    return false;
+    return [];
 }
 module.exports.getMutationForField = getMutationForField;
 
