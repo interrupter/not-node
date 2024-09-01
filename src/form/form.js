@@ -11,6 +11,7 @@ const {
     isFunc,
     firstLetterToUpper,
     firstLetterToLower,
+    copyObj,
 } = require("../common");
 
 const ValidationBuilder = require("not-validation").Builder;
@@ -97,7 +98,7 @@ class Form {
      * @param   {import('../types.js').notAppFormRateLimiterOptions}    options.rate
      */
     constructor({
-        FIELDS,
+        FIELDS = [],
         FORM_NAME,
         MODEL_NAME,
         MODULE_NAME,
@@ -114,7 +115,7 @@ class Form {
             FORM_NAME ?? Form.createName(MODULE_NAME, MODEL_NAME, actionName);
         this.#MODEL_NAME = MODEL_NAME;
         this.#MODULE_NAME = MODULE_NAME;
-        this.#PROTO_FIELDS = FIELDS;
+        this.#setFields(app, FIELDS);
         this.#createValidationSchema(app);
         this.#augmentValidationSchema();
         this.#addInstructions(INSTRUCTIONS);
@@ -123,6 +124,42 @@ class Form {
         this.#addTransformers(TRANSFORMERS);
         this.#addAfterExtractTransformers(AFTER_EXTRACT_TRANSFORMERS);
         this.#createRateLimiter(rate);
+    }
+
+    #setFields(app, FIELDS = []) {
+        try {
+            const warning = () =>
+                app.logger.warn(`No PROTO_FIELDS for ${this.#FORM_NAME} form`);
+            if (FIELDS && Array.isArray(FIELDS) && FIELDS.length) {
+                this.#PROTO_FIELDS = FIELDS;
+            } else if (this.#MODEL_NAME) {
+                let modelPath = `${this.#MODEL_NAME}`;
+                if (this.#MODULE_NAME) {
+                    modelPath = `${this.#MODULE_NAME}//${this.#MODEL_NAME}`;
+                }
+                //no path to model - returning after warning
+                if (!modelPath) {
+                    warning();
+                    return;
+                }
+                const mod = app.getModelFile(modelPath);
+                //no module or fields in module exports - returning after warning
+                if (
+                    !(
+                        mod &&
+                        mod.FIELDS &&
+                        Array.isArray(mod.FIELDS) &&
+                        mod.FIELDS.length
+                    )
+                ) {
+                    warning();
+                    return;
+                }
+                this.#PROTO_FIELDS = copyObj(mod.FIELDS);
+            }
+        } catch (e) {
+            app.logger.error(e);
+        }
     }
 
     get FORM_NAME() {
