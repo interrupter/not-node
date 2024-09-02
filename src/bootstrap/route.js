@@ -37,8 +37,7 @@ module.exports = ({
     accessRuleBuilder = false, //universal will be used if no dedicated action builder was found
     defaultAccessRule = false, //if builder is not found, safe by default
     createForm = createDefaultFormInstance,
-    formValidators = {},
-    dataValidators = {},
+    formsProps = {},
 }) => {
     const Log = LogInit(target, `${MODEL_NAME}/Routes'`);
     const say = sayForModule(MODULE_NAME);
@@ -90,25 +89,39 @@ module.exports = ({
         MODULE_NAME,
         MODEL_NAME,
         actionName,
-        validators,
-        dataValidators,
+        formProps,
     }) => {
         if (Object.keys(genericFormsGenerators).includes(actionName)) {
-            return new genericFormsGenerators[actionName]({
+            const formConstructor = genericFormsGenerators[actionName]({
                 app,
                 MODULE_NAME,
                 MODEL_NAME,
                 actionName,
-                validators,
-                dataValidators,
-            })(app);
+                ...formProps,
+            });
+            return new formConstructor({
+                app,
+                MODULE_NAME,
+                MODEL_NAME,
+                actionName,
+                ...formProps,
+            });
         } else {
             createForm({
                 app: getApp(),
                 MODULE_NAME,
                 MODEL_NAME,
                 actionName,
+                ...formProps,
             });
+        }
+    };
+
+    const selectActionFormProps = (formProps, actionName) => {
+        if (Object.hasOwn(formProps, actionName)) {
+            return formProps[actionName];
+        } else {
+            return {};
         }
     };
 
@@ -132,13 +145,13 @@ module.exports = ({
             return form2;
         }
         //creating new from generics lib
+
         const newelyCreatedForm = initGenericActionForm({
             MODULE_NAME,
             MODEL_NAME,
             actionName,
             app: getApp(),
-            validators: formValidators,
-            dataValidators,
+            formProps: selectActionFormProps(formsProps, actionName),
         });
         //caching
         getApp()
