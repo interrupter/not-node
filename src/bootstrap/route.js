@@ -4,7 +4,10 @@ const getApp = require("../getApp.js"),
     configInit = require("not-config"),
     { sayForModule } = require("not-locale"),
     { objHas, isFunc, executeFunctionAsAsync } = require("../common"),
-    LogInit = require("not-log");
+    LogInit = require("not-log"),
+    genericFormsGenerators = require("../generic/forms"),
+    createDefaultFormInstance = require("../generic/form.js");
+
 module.exports = ({
     target,
     MODULE_NAME,
@@ -33,7 +36,9 @@ module.exports = ({
     accessRulesBuilders = {}, //per action builders, {actionName: (preapared: any, req: ExpressRequest)=>{/** pass or throw an exception **/ */}}
     accessRuleBuilder = false, //universal will be used if no dedicated action builder was found
     defaultAccessRule = false, //if builder is not found, safe by default
-    createForm = Form.createDefaultInstance,
+    createForm = createDefaultFormInstance,
+    formValidators = {},
+    dataValidators = {},
 }) => {
     const Log = LogInit(target, `${MODEL_NAME}/Routes'`);
     const say = sayForModule(MODULE_NAME);
@@ -80,26 +85,66 @@ module.exports = ({
         }
     };
 
+    const initGenericActionForm = ({
+        app,
+        MODULE_NAME,
+        MODEL_NAME,
+        actionName,
+        validators,
+        dataValidators,
+    }) => {
+        if (Object.keys(genericFormsGenerators).includes(actionName)) {
+            return new genericFormsGenerators[actionName]({
+                app,
+                MODULE_NAME,
+                MODEL_NAME,
+                actionName,
+                validators,
+                dataValidators,
+            })(app);
+        } else {
+            createForm({
+                app: getApp(),
+                MODULE_NAME,
+                MODEL_NAME,
+                actionName,
+            });
+        }
+    };
+
     const getForm = (actionName) => {
-        const form = getApp().getForm(
-            Form.createPath(MODULE_NAME, MODEL_NAME, actionName)
+        //trying inited and cached
+        const fullFormPath = Form.createPath(
+            MODULE_NAME,
+            MODEL_NAME,
+            actionName
         );
+        const form = getApp().getForm(fullFormPath);
         if (form) {
             return form;
         }
+
         const form2 = getApp().getForm(
             Form.createPath(MODULE_NAME, undefined, actionName)
         );
+
         if (form2) {
             return form2;
         }
-
-        return createForm({
-            app: getApp(),
+        //creating new from generics lib
+        const newelyCreatedForm = initGenericActionForm({
             MODULE_NAME,
             MODEL_NAME,
             actionName,
+            app: getApp(),
+            validators: formValidators,
+            dataValidators,
         });
+        //caching
+        getApp()
+            .getModule(MODULE_NAME)
+            .setForm(fullFormPath.split("//")[1], newelyCreatedForm);
+        return newelyCreatedForm;
     };
 
     const beforeDecorator = async (req, res, next) => {

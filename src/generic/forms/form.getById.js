@@ -1,5 +1,5 @@
 //DB related validation tools
-const Form = require("../form/form");
+const Form = require("../../form/form");
 
 //form
 const FIELDS = [

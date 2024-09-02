@@ -1,7 +1,7 @@
 const Schema = require("mongoose").Schema;
 const getApp = require("../getApp");
 const { firstLetterToLower } = require("../common");
-const genericDataForm = require("./form._data");
+const genericDataForm = require("./forms/form._data");
 const Form = require("../form/form");
 
 const initGenericDataForm = ({

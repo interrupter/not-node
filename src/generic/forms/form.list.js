@@ -1,7 +1,7 @@
-const Form = require("../form/form");
+const Form = require("../../form/form");
 
 const notFilter = require("not-filter");
-const notAppIdentity = require("../identity");
+const notAppIdentity = require("../../identity");
 
 const FIELDS = [
     ["query", `not-filter//_filterQuery`],
@@ -9,7 +9,7 @@ const FIELDS = [
 ];
 
 /**
- * Generates generic form to get perform list and count action
+ * Generates generic form to get perform list action
  *
  * @param {object}  params
  * @param {string}  params.MODULE_NAME  //module name
@@ -17,27 +17,23 @@ const FIELDS = [
  * @param {string}  params.actionName   //action name
  * @return {Form}   form class definition
  */
-const FactoryFormListAndCount = ({
-    MODULE_NAME,
-    MODEL_NAME,
-    actionName = "listAndCount",
-}) => {
+const FactoryFormList = ({ MODULE_NAME, MODEL_NAME, actionName = "list" }) => {
     return class extends Form {
         constructor(params) {
             super({
                 ...params,
                 FIELDS,
+                actionName,
                 MODULE_NAME,
                 MODEL_NAME,
-                actionName,
             });
         }
 
         /**
          *
          *
-         * @param {import('../types').notNodeExpressRequest} req
-         * @return {Promise<import('../types').PreparedData>}
+         * @param {import('../../types').notNodeExpressRequest} req
+         * @return {Promise<import('../../types').PreparedData>}
          */
         async extract(req) {
             const envs = this.extractRequestEnvs(req);
@@ -53,6 +49,7 @@ const FactoryFormListAndCount = ({
                     }
                 );
             }
+
             return {
                 ...envs,
             };
@@ -60,4 +57,4 @@ const FactoryFormListAndCount = ({
     };
 };
 
-module.exports = FactoryFormListAndCount;
+module.exports = FactoryFormList;

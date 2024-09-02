@@ -1,4 +1,4 @@
-const Form = require("../form/form");
+const Form = require("../../form/form");
 
 module.exports = ({
     MODULE_NAME,

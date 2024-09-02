@@ -116,6 +116,7 @@ class Form {
         this.#MODEL_NAME = MODEL_NAME;
         this.#MODULE_NAME = MODULE_NAME;
         this.#setFields(app, FIELDS);
+
         this.#createValidationSchema(app);
         this.#augmentValidationSchema();
         this.#addInstructions(INSTRUCTIONS);
@@ -200,24 +201,6 @@ class Form {
         } else {
             return `${MODULE_NAME}//${actionName}`;
         }
-    }
-
-    /**
-     *
-     * @param   {object} options
-     * @param   {import('../app.js')}   options.app
-     * @param   {string}   options.MODULE_NAME
-     * @param   {string}   options.MODEL_NAME
-     * @param   {string}   options.actionName
-     * @returns {object}    instance of Form
-     */
-    static createDefaultInstance({ app, MODULE_NAME, MODEL_NAME, actionName }) {
-        const FIELDS = [
-            ["identity", "not-node//identity"],
-            ["data", `${MODULE_NAME}//_${firstLetterToLower(MODEL_NAME)}`],
-        ];
-        const FORM_NAME = Form.createName(MODULE_NAME, MODEL_NAME, actionName);
-        return new Form({ FIELDS, FORM_NAME, app, MODULE_NAME });
     }
 
     /**
