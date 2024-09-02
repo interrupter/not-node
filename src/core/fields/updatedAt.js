@@ -11,6 +11,7 @@ module.exports = {
         type: Date,
         required: true,
         default: Date.now,
-        safe: require("../safety.protocols").ownerRootAdmin,
+
+        safe: require("../safety.protocols").systemManageable,
     },
 };

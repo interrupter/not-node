@@ -5,7 +5,6 @@ const getApp = require("../getApp.js"),
     { sayForModule } = require("not-locale"),
     { objHas, isFunc, executeFunctionAsAsync } = require("../common"),
     LogInit = require("not-log");
-
 module.exports = ({
     target,
     MODULE_NAME,
@@ -94,6 +93,7 @@ module.exports = ({
         if (form2) {
             return form2;
         }
+
         return createForm({
             app: getApp(),
             MODULE_NAME,
@@ -109,6 +109,7 @@ module.exports = ({
             JSON.stringify(req.notRouteData, null, 4)
         );
         const actionName = req.notRouteData.actionName;
+
         const trimmedActionName = actionName.replace("_", "");
         const FormValidator = getForm(trimmedActionName);
         const prepared = FormValidator

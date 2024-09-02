@@ -10,6 +10,6 @@ module.exports = {
         searchable: true,
         required: true,
         transformers: ["xss"],
-        safe: require("../safety.protocols").ownerRootAdmin,
+        safe: require("../safety.protocols").systemManageable,
     },
 };
