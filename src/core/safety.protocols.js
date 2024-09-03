@@ -1,4 +1,26 @@
 const { ACTION_SIGNATURES } = require("../auth/const");
+
+module.exports.rootAdmin = Object.freeze({
+    [ACTION_SIGNATURES.CREATE]: ["root", "admin"],
+    [ACTION_SIGNATURES.READ]: ["root", "admin"],
+    [ACTION_SIGNATURES.UPDATE]: ["root", "admin"],
+    [ACTION_SIGNATURES.DELETE]: ["root", "admin"],
+});
+
+module.exports.rootAdminCRUD_ownerR = Object.freeze({
+    [ACTION_SIGNATURES.CREATE]: ["root", "admin"],
+    [ACTION_SIGNATURES.READ]: ["root", "admin", "@owner"],
+    [ACTION_SIGNATURES.UPDATE]: ["root", "admin"],
+    [ACTION_SIGNATURES.DELETE]: ["root", "admin"],
+});
+
+module.exports.rootAdminCRUD_allR = Object.freeze({
+    [ACTION_SIGNATURES.CREATE]: ["root", "admin"],
+    [ACTION_SIGNATURES.READ]: ["root", "admin", "@*"],
+    [ACTION_SIGNATURES.UPDATE]: ["root", "admin"],
+    [ACTION_SIGNATURES.DELETE]: ["root", "admin"],
+});
+
 /**
  * owner can manage own documents
  * root, admin - any own and any of client, user, guest
@@ -27,6 +49,13 @@ module.exports.ownerRootAdminCRUD_clientC = Object.freeze({
 module.exports.systemManageable = Object.freeze({
     [ACTION_SIGNATURES.CREATE]: ["@system"],
     [ACTION_SIGNATURES.READ]: ["@system", "@owner", "root", "admin"],
+    [ACTION_SIGNATURES.UPDATE]: ["@system"],
+    [ACTION_SIGNATURES.DELETE]: ["@system"],
+});
+
+module.exports.systemManageableSecret = Object.freeze({
+    [ACTION_SIGNATURES.CREATE]: ["@system"],
+    [ACTION_SIGNATURES.READ]: ["@system"],
     [ACTION_SIGNATURES.UPDATE]: ["@system"],
     [ACTION_SIGNATURES.DELETE]: ["@system"],
 });
