@@ -191,7 +191,7 @@ class Init {
             });
             log?.info("Application initalization finished");
         } catch (e) {
-            Init.throwError(e.message, 1);
+            log?.error(e.message, 1);
         }
     }
 
