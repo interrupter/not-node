@@ -1,7 +1,7 @@
 const Auth = require("./auth"),
     notAppIdentity = require("./identity"),
     notStyler = require("./styler"),
-    config = require("not-config").createReader();
+    notEnv = require("./env");
 
 function getRole(req) {
     const identity = new notAppIdentity(req);
@@ -14,7 +14,7 @@ function getRole(req) {
 
 const DEFAULT_STYLER = (req, res) => {
     const role = getRole(req);
-    const host = config.get("fullServerName");
+    const host = notEnv.get("fullServerName");
     const canonical = host + req.originalUrl;
 
     return {
@@ -22,6 +22,7 @@ const DEFAULT_STYLER = (req, res) => {
         desription: res?.options?.APP_DESCRIPTION,
         canonical,
         rand: Math.random(),
+        env: process.env.NODE_ENV,
         host,
         role,
         authenticated: role !== Auth.DEFAULT_USER_ROLE_FOR_GUEST,

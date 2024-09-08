@@ -158,6 +158,7 @@ describe("initialization", function () {
                                 "manifest",
                                 "additional",
                                 "initSequence",
+                                "log",
                             ]);
                             expect(params.config).to.be.deep.equal(config);
                             expect(params.options).to.be.deep.equal(options);
@@ -188,6 +189,7 @@ describe("initialization", function () {
                                 "manifest",
                                 "additional",
                                 "initSequence",
+                                "log",
                             ]);
                             expect(params.config).to.be.deep.equal(config);
                             expect(params.options).to.be.deep.equal(options);

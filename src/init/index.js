@@ -13,25 +13,59 @@ const STANDART_INIT_SEQUENCE = require("./sequence.standart.js");
 
 /**
  *	@example <caption>Application initialization</caption>
- *	let App = new notApp({
- *		mongoose: mongooseLink
- *		modulesCollectionPaths: [__dirname + '/modules'], //each path to folder with modules
- *		modulesPaths: [],	//each path to module
- *		modules: {
- *			filestore: require('not-filestore') //each npm not-* module with custom overriden name as key
- *		}
- *	})
- *		.importModuleFrom(__dirname+'/anotherModule', 'anotherCustomModuleName')	//import module from path
- *		.importModulesFrom(__dirname+'/directoryOfUsefullessModules')
- *		.importModule(require('notModule'), 'notModule')
- *		.expose(ExpressApp);
+ *
+ * const sharp = require("sharp");
+ * const InitIdentityTokens = require("not-user").InitIdentityTokens;
+ *
+ * const notNode = require("not-node"),
+ *   Init = notNode.Init,
+ *   path = require("path"),
+ *   manifest = require("./../../project.manifest.json")
+ *
+ * const options = {
+ *       pathToApp: path.join(__dirname),
+ *      pathToNPM: path.join(__dirname, "../../node_modules"),
+ *      routesPath: path.join(__dirname, "./routes"),
+ *      indexRoute: require("./routes/site.js").index,
+ *  };
+ *  //fix error on some images
+ *  sharp.simd(false);
+ *  notNode.Env.set("extractVariants", 1);
+ *  const additional = {
+ *      pre({ initSequence }) {
+ *          initSequence.remove("InitMonitoring");    //no resource usage monitoring needed, removing initializer by its class name
+ *          initSequence.insert(InitIdentityTokens);  //initializing usage of identity tokens
+ *      },
+ *  };
+ *  //starting everything
+ *  await Init.run({ options, manifest, additional });
+ *  //sending message to error reporting server that we restarted
+ *  Init.notApp.reporter.report(new Error("server started"));
  **/
 class Init {
-    static options = false;
+    /**
+     * @type {Object}
+     *
+     * @static
+     * @memberof Init
+     */
+    static options = null;
     static manifest = false;
-    static config = false;
+    /**
+     * @type {Object}
+     *
+     * @static
+     * @memberof Init
+     */
+    static config = null;
     static mongoose = false;
-    static notApp = false;
+    /**
+     * @type {import('../app.js')|null}
+     *
+     * @static
+     * @memberof Init
+     */
+    static notApp = null;
     static server = false;
     static httpServer = false;
     static WSServer = false;
@@ -107,7 +141,7 @@ class Init {
 
     static printOutManifest = () => {
         log?.debug("Manifest:");
-        log?.debug(JSON.stringify(Init.notApp.getManifest(), null, 4));
+        log?.debug(JSON.stringify(Init.notApp?.getManifest(), null, 4));
     };
 
     /**
@@ -131,6 +165,7 @@ class Init {
                 manifest,
                 additional,
                 initSequence, //giving a chance to change init sequence
+                log,
             });
             //setting basic resources
             Init.options = options; // pathToApp, pathToNPM
@@ -143,6 +178,7 @@ class Init {
                 options, //options
                 master: Init, //this class
                 emit: ADDS.run.bind(ADDS),
+                log,
             };
             //running all prepared initalizers with current context
             await initSequence.run(context);
@@ -151,8 +187,9 @@ class Init {
                 options,
                 manifest,
                 master: Init,
+                log,
             });
-            log.info("Application initalization finished");
+            log?.info("Application initalization finished");
         } catch (e) {
             Init.throwError(e.message, 1);
         }

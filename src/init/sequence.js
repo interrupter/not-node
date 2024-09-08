@@ -13,19 +13,19 @@ module.exports = class InitSequence {
      * Insert initalizator after and before specified modules or at the end
      * @param  {Object}  what    initializator class constructor
      * @param  {Object}  where   specification where to insert
-     * @param  {Array.String}  where.after   list of constructor names of
+     * @param  {string}  where.after   list of constructor names of
      *                       initalizators after which item should be inserted
-     * @param  {Array.String}  where.before   list of constructor names of
+     * @param  {string}  where.before   list of constructor names of
      *                       initalizators before which item should be inserted
      **/
-    insert(what, where = {}) {
+    insert(what, where = { after: "", before: "" }) {
         if (where && this.list.length > 0) {
             let start = -1,
                 end = this.list.length;
-            if (objHas(where, "after")) {
+            if (objHas(where, "after") && where.after) {
                 start = this.highestPos(where.after);
             }
-            if (objHas(where, "before")) {
+            if (objHas(where, "before") && where.before) {
                 end = this.lowestPos(where.before);
             }
             if (start > end) {
