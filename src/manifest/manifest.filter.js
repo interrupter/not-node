@@ -41,21 +41,22 @@ module.exports = class notManifestFilter {
         if (!route || !route.actions) {
             return result;
         }
+        console.log("actions", JSON.stringify(route.actions));
         for (let actionName in route.actions) {
             if (!route.actions[actionName]) {
                 continue;
             }
-            let actionSet = route.actions[actionName];
-            notManifestFilter.filterRouteAction(
-                actionName,
-                actionSet,
+            const resultActionData = notManifestFilter.filterRouteAction(
+                route.actions[actionName],
                 auth,
                 role,
                 root,
-                result,
                 modelName,
                 moduleName
             );
+            if (resultActionData) {
+                result.actions[actionName] = resultActionData;
+            }
         }
         return result;
     }
@@ -64,22 +65,18 @@ module.exports = class notManifestFilter {
      *
      *
      * @static
-     * @param {string}                              actionName
      * @param {import('../types').notActionData}    actionSet
      * @param {boolean}                             auth
      * @param {Array<string>}                       role
      * @param {boolean}                             root
-     * @param {any}                                 result
      * @param {string}                              [modelName=""]
      * @param {string}                              [moduleName=""]
      */
     static filterRouteAction(
-        actionName,
         actionSet,
         auth,
         role,
         root,
-        result,
         modelName = "",
         moduleName = ""
     ) {
@@ -88,31 +85,8 @@ module.exports = class notManifestFilter {
                 if (
                     Auth.checkCredentials(actionSet.rules[i], auth, role, root)
                 ) {
-                    result.actions[actionName] =
-                        notManifestFilter.clearActionFromRules(
-                            actionSet,
-                            actionSet.rules[i],
-                            {
-                                auth,
-                                role,
-                                root,
-                                modelName,
-                                moduleName,
-                                actionSignature:
-                                    notManifestFilter.detectActionSignature(
-                                        actionSet
-                                    ),
-                            }
-                        );
-                    break;
-                }
-            }
-        } else {
-            if (Auth.checkCredentials(actionSet, auth, role, root)) {
-                result.actions[actionName] =
-                    notManifestFilter.clearActionFromRules(
+                    return notManifestFilter.clearActionFromRules(
                         actionSet,
-                        undefined,
                         {
                             auth,
                             role,
@@ -123,10 +97,29 @@ module.exports = class notManifestFilter {
                                 notManifestFilter.detectActionSignature(
                                     actionSet
                                 ),
-                        }
+                        },
+                        actionSet.rules[i]
                     );
+                }
+            }
+        } else {
+            if (Auth.checkCredentials(actionSet, auth, role, root)) {
+                return notManifestFilter.clearActionFromRules(
+                    actionSet,
+                    {
+                        auth,
+                        role,
+                        root,
+                        modelName,
+                        moduleName,
+                        actionSignature:
+                            notManifestFilter.detectActionSignature(actionSet),
+                    },
+                    undefined
+                );
             }
         }
+        return undefined;
     }
 
     /**
@@ -223,14 +216,11 @@ module.exports = class notManifestFilter {
             switch (action?.method?.toLocaleLowerCase()) {
                 case "get":
                     return Auth.ACTION_SIGNATURES.READ;
-
                 case "post":
                 case "patch":
                     return Auth.ACTION_SIGNATURES.UPDATE;
-
                 case "put":
                     return Auth.ACTION_SIGNATURES.CREATE;
-
                 case "delete":
                     return Auth.ACTION_SIGNATURES.DELETE;
 
@@ -274,10 +264,50 @@ module.exports = class notManifestFilter {
         return returnSet;
     }
 
+    static filterFieldsPropOfActionRule(
+        actionRule,
+        { modelSchema, modelName, ruleSet, actionSignature, role, auth, root }
+    ) {
+        const fields = notManifestFilter.ruleSetHasFieldsDirective(ruleSet)
+            ? [...ruleSet.fields]
+            : DEFAULT_FIELDS_SET;
+
+        actionRule.fields = notFieldsFilter.filter(fields, modelSchema, {
+            action: actionSignature,
+            roles: role,
+            auth,
+            root,
+            modelName,
+        });
+
+        //remove fields property if list is empty
+        if (actionRule.fields.length == 0) {
+            delete actionRule.fields;
+        }
+    }
+
+    static filterReturnPropOfActionRule(
+        actionRule,
+        { modelSchema, modelName, ruleSet, actionSignature, role, auth, root }
+    ) {
+        if (ruleSet && ruleSet.return) {
+            actionRule.return = notManifestFilter.filterReturnSet(
+                ruleSet.return,
+                modelSchema,
+                {
+                    auth,
+                    role,
+                    root,
+                    modelName,
+                    actionSignature,
+                }
+            );
+        }
+    }
+
     /**
      *  Clear action definition from rules of access
      *  @param      {object}                action   action data
-     *  @param      {object}                [ruleSet] specific set of rules for this action
      *  @param      {object}                mods specific set of rules for this action
      *  @param      {boolean}               mods.auth
      *  @param      {boolean}               mods.root
@@ -285,11 +315,11 @@ module.exports = class notManifestFilter {
      *  @param      {string}                mods.modelName
      *  @param      {string}                mods.moduleName
      *  @param      {string|undefined}      mods.actionSignature    create/read/update/delete
+     *  @param      {object}                [ruleSet] specific set of rules for this action
      *  @return     {object}               clean action data
      **/
     static clearActionFromRules(
         action,
-        ruleSet = null,
         {
             auth = false,
             role = [Auth.DEFAULT_USER_ROLE_FOR_GUEST],
@@ -304,46 +334,39 @@ module.exports = class notManifestFilter {
             modelName: "",
             moduleName: "",
             actionSignature: undefined,
-        }
+        },
+        ruleSet = null
     ) {
-        let copy = merge({}, action);
-        notManifestFilter.clearFromDirtyFields(copy);
+        //full copy
+        let actionRule = merge({}, action);
+        //removes server side or secret information (full list of access rules)
+        notManifestFilter.clearFromDirtyFields(actionRule);
+        //retrives model schema
+        const fullModelName = this.composeFullModelName(moduleName, modelName);
+        const modelSchema = this.loadSchema(fullModelName);
         //copy fields list from rule to action if it exists
         //fields list is used to restrict fields of data that could be accessed via
         //this action
-        const fullModelName = this.composeFullModelName(moduleName, modelName);
-        const modelSchema = this.loadSchema(fullModelName);
-        const fields = notManifestFilter.ruleSetHasFieldsDirective(ruleSet)
-            ? [...ruleSet.fields]
-            : DEFAULT_FIELDS_SET;
-
-        copy.fields = notFieldsFilter.filter(fields, modelSchema, {
-            action: actionSignature,
-            roles: role,
+        this.filterFieldsPropOfActionRule(actionRule, {
+            modelName,
+            modelSchema,
+            ruleSet,
+            actionSignature,
+            role,
             auth,
             root,
-            modelName,
         });
-        //remove fields property if list is empty
-        if (copy.fields.length == 0) {
-            delete copy.fields;
-        }
-
-        if (ruleSet && ruleSet.return) {
-            copy.return = notManifestFilter.filterReturnSet(
-                ruleSet.return,
-                modelSchema,
-                {
-                    auth,
-                    role,
-                    root,
-                    modelName,
-                    moduleName,
-                    actionSignature,
-                }
-            );
-        }
-        return copy;
+        //
+        this.filterReturnPropOfActionRule(actionRule, {
+            modelName,
+            modelSchema,
+            ruleSet,
+            actionSignature,
+            role,
+            auth,
+            root,
+        });
+        return actionRule;
     }
 
     /**

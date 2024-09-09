@@ -1,5 +1,6 @@
 const expect = require("chai").expect,
     notManifest = require("../src/manifest/manifest"),
+    notManifestFilter = require("../src/manifest/manifest.filter"),
     manifest = new notManifest();
 
 const rawRoutesManifest = {
@@ -25,15 +26,16 @@ const rawRoutesManifest = {
                 method: "get",
                 rules: [
                     {
-                        auth: false,
+                        root: true,
+                        actionName: "listForAdmin",
                     },
                     {
                         auth: true,
                         actionPrefix: "user",
                     },
+
                     {
-                        root: true,
-                        actionName: "listForAdmin",
+                        auth: false,
                     },
                 ],
             },
@@ -41,14 +43,14 @@ const rawRoutesManifest = {
                 method: "get",
                 rules: [
                     {
-                        auth: true,
-                        role: ["manager"],
-                        actionName: "managerListAll",
-                    },
-                    {
                         root: true,
                         actionPrefix: "__",
                         actionName: "listForAdmin",
+                    },
+                    {
+                        auth: true,
+                        role: ["manager"],
+                        actionName: "managerListAll",
                     },
                 ],
             },
@@ -70,10 +72,10 @@ const rawRoutesManifest = {
                 method: "get",
                 rules: [
                     {
-                        auth: true,
+                        root: true,
                     },
                     {
-                        root: true,
+                        auth: true,
                     },
                 ],
             },

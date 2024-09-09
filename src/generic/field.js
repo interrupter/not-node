@@ -2,13 +2,13 @@ const getApp = require("../getApp");
 const genericDataField = require("./field._data");
 const Form = require("../form/form");
 
-const initGenericDataField = (
+const initGenericDataField = ({
     MODULE_NAME,
     MODEL_NAME,
     actionName = "_data",
     validators = [],
-    afterExtract = async (input /*, req = null*/) => input
-) => {
+    afterExtract = async (input /*, req = null*/) => input,
+}) => {
     //not-module//modelName._data
     const fieldGenericPath = Form.createPath(
         MODULE_NAME,

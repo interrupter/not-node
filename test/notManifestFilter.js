@@ -1,4 +1,5 @@
 const { notFieldsFilter } = require("..");
+
 const {
     DEFAULT_USER_ROLE_FOR_GUEST,
     ACTION_SIGNATURES,
@@ -31,15 +32,15 @@ const rawRoutesManifest = {
                 method: "get",
                 rules: [
                     {
-                        auth: false,
+                        root: true,
+                        actionName: "listForAdmin",
                     },
                     {
                         auth: true,
                         actionPrefix: "user",
                     },
                     {
-                        root: true,
-                        actionName: "listForAdmin",
+                        auth: false,
                     },
                 ],
             },
@@ -47,14 +48,14 @@ const rawRoutesManifest = {
                 method: "get",
                 rules: [
                     {
-                        auth: true,
-                        role: ["manager"],
-                        actionName: "managerListAll",
-                    },
-                    {
                         root: true,
                         actionPrefix: "__",
                         actionName: "listForAdmin",
+                    },
+                    {
+                        auth: true,
+                        role: ["manager"],
+                        actionName: "managerListAll",
                     },
                 ],
             },
@@ -76,10 +77,10 @@ const rawRoutesManifest = {
                 method: "get",
                 rules: [
                     {
-                        auth: true,
+                        root: true,
                     },
                     {
-                        root: true,
+                        auth: true,
                     },
                 ],
             },
@@ -96,27 +97,73 @@ const rawRoutesManifest = {
 
 describe("notManifestFilter", function () {
     describe("clearActionFromRules", function () {
+        const spGuestC = Object.freeze({
+            [ACTION_SIGNATURES.CREATE]: ["root", "admin", "@*"],
+            [ACTION_SIGNATURES.READ]: ["root", "admin"],
+            [ACTION_SIGNATURES.UPDATE]: ["root", "admin"],
+            [ACTION_SIGNATURES.DELETE]: ["root", "admin"],
+        });
+
+        const spSystem = Object.freeze({
+            [ACTION_SIGNATURES.CREATE]: ["@system"],
+            [ACTION_SIGNATURES.READ]: ["@system"],
+            [ACTION_SIGNATURES.UPDATE]: ["@system"],
+            [ACTION_SIGNATURES.DELETE]: ["@system"],
+        });
+
         it("with rules", function () {
+            notManifestFilter.schemaLoader = (schemaName) => {
+                console.log("schema getter", schemaName);
+                switch (schemaName) {
+                    case "Jelly":
+                        return {
+                            name: {
+                                type: String,
+                                safe: spGuestC,
+                            },
+                            email: {
+                                type: String,
+                                safe: spGuestC,
+                            },
+                            __version: {
+                                type: String,
+                                safe: spSystem,
+                            },
+                        };
+                    case "Post":
+                        return [];
+                }
+                return undefined;
+            };
             const input = {
                 modelName: "jelly",
                 rules: [
                     {
-                        auth: true,
-                        fields: ["name"],
+                        root: true,
                     },
                     {
-                        root: true,
-                        fields: ["name", "email"],
+                        auth: true,
                     },
                 ],
             };
-            const result = notManifestFilter.clearActionFromRules(input, {
-                root: true,
-                fields: ["name", "email"],
-            });
+            const result = notManifestFilter.clearActionFromRules(
+                //raw actionData
+                input,
+                //current user statem model name, action  name and action signature - minimum if you want to filter
+                {
+                    root: true,
+                    role: ["root"],
+                    modelName: "Jelly",
+                    actionSignature: ACTION_SIGNATURES.READ,
+                },
+                {
+                    //what earlier were selected as best suited rule
+                    root: true,
+                }
+            );
             expect(result).to.deep.equal({
                 modelName: "jelly",
-                fields: ["name", "email"],
+                fields: ["name", "email"], //if fields ommited, it replaced by ["@safe"], __version is not safe to everyone but system invoked operations
             });
         });
 
@@ -491,7 +538,6 @@ describe("notManifestFilter", function () {
         });
 
         it("filterRouteAction @safe for READ", () => {
-            const actionName = "get";
             const actionData = {
                 actionSignature: ACTION_SIGNATURES.READ,
                 method: "get",
@@ -505,32 +551,23 @@ describe("notManifestFilter", function () {
             const auth = false;
             const root = false;
             const roles = [DEFAULT_USER_ROLE_FOR_GUEST];
-            const routeMan = {
-                actions: {},
-            };
+
             const targetResult = {
-                actions: {
-                    get: {
-                        method: "get",
-                        fields: ["name", "username", "country"],
-                    },
-                },
+                method: "get",
+                fields: ["name", "username", "country"],
             };
-            notManifestFilter.filterRouteAction(
-                actionName,
+            const result = notManifestFilter.filterRouteAction(
                 actionData,
                 auth,
                 roles,
                 root,
-                routeMan,
                 modelName,
                 moduleName
             );
-            expect(routeMan).to.be.deep.equal(targetResult);
+            expect(result).to.be.deep.equal(targetResult);
         });
 
         it("filterRouteAction @* for READ", () => {
-            const actionName = "get";
             const actionData = {
                 actionSignature: ACTION_SIGNATURES.READ,
                 method: "get",
@@ -544,44 +581,34 @@ describe("notManifestFilter", function () {
             const auth = false;
             const root = false;
             const roles = [DEFAULT_USER_ROLE_FOR_GUEST];
-            const routeMan = {
-                actions: {},
-            };
             const targetResult = {
-                actions: {
-                    get: {
-                        method: "get",
-                        fields: [
-                            "_id",
-                            "userID",
-                            "role",
-                            "name",
-                            "salt",
-                            "telephone",
-                            "username",
-                            "confirm",
-                            "code",
-                            "country",
-                            "email",
-                        ],
-                    },
-                },
+                method: "get",
+                fields: [
+                    "_id",
+                    "userID",
+                    "role",
+                    "name",
+                    "salt",
+                    "telephone",
+                    "username",
+                    "confirm",
+                    "code",
+                    "country",
+                    "email",
+                ],
             };
-            notManifestFilter.filterRouteAction(
-                actionName,
+            const result = notManifestFilter.filterRouteAction(
                 actionData,
                 auth,
                 roles,
                 root,
-                routeMan,
                 modelName,
                 moduleName
             );
-            expect(routeMan).to.be.deep.equal(targetResult);
+            expect(result).to.be.deep.equal(targetResult);
         });
 
         it("filterRouteAction @*,-@safe for READ", () => {
-            const actionName = "get";
             const actionData = {
                 actionSignature: ACTION_SIGNATURES.READ,
                 method: "get",
@@ -595,41 +622,32 @@ describe("notManifestFilter", function () {
             const auth = false;
             const root = false;
             const roles = [DEFAULT_USER_ROLE_FOR_GUEST];
-            const routeMan = {
-                actions: {},
-            };
+
             const targetResult = {
-                actions: {
-                    get: {
-                        method: "get",
-                        fields: [
-                            "_id",
-                            "userID",
-                            "role",
-                            "salt",
-                            "telephone",
-                            "confirm",
-                            "code",
-                            "email",
-                        ],
-                    },
-                },
+                method: "get",
+                fields: [
+                    "_id",
+                    "userID",
+                    "role",
+                    "salt",
+                    "telephone",
+                    "confirm",
+                    "code",
+                    "email",
+                ],
             };
-            notManifestFilter.filterRouteAction(
-                actionName,
+            const result = notManifestFilter.filterRouteAction(
                 actionData,
                 auth,
                 roles,
                 root,
-                routeMan,
                 modelName,
                 moduleName
             );
-            expect(routeMan).to.be.deep.equal(targetResult);
+            expect(result).to.be.deep.equal(targetResult);
         });
 
         it("filterRouteAction @* for UPDATE as guest", () => {
-            const actionName = "update";
             const actionData = {
                 actionSignature: ACTION_SIGNATURES.UPDATE,
                 method: "post",
@@ -643,27 +661,18 @@ describe("notManifestFilter", function () {
             const auth = false;
             const root = false;
             const roles = [DEFAULT_USER_ROLE_FOR_GUEST];
-            const routeMan = {
-                actions: {},
-            };
-            const targetResult = {
-                actions: {},
-            };
-            notManifestFilter.filterRouteAction(
-                actionName,
+            const result = notManifestFilter.filterRouteAction(
                 actionData,
                 auth,
                 roles,
                 root,
-                routeMan,
                 modelName,
                 moduleName
             );
-            expect(routeMan).to.be.deep.equal(targetResult);
+            expect(result).to.be.undefined;
         });
 
         it("filterRouteAction @safe for CREATE as guest", () => {
-            const actionName = "create";
             const actionData = {
                 actionSignature: ACTION_SIGNATURES.CREATE,
                 method: "put",
@@ -677,27 +686,18 @@ describe("notManifestFilter", function () {
             const auth = false;
             const root = false;
             const roles = [DEFAULT_USER_ROLE_FOR_GUEST];
-            const routeMan = {
-                actions: {},
-            };
-            const targetResult = {
-                actions: {},
-            };
-            notManifestFilter.filterRouteAction(
-                actionName,
+            const result = notManifestFilter.filterRouteAction(
                 actionData,
                 auth,
                 roles,
                 root,
-                routeMan,
                 modelName,
                 moduleName
             );
-            expect(routeMan).to.be.deep.equal(targetResult);
+            expect(result).to.be.undefined;
         });
 
         it("filterRouteAction @listFields for READ", () => {
-            const actionName = "list";
             notFieldsFilter.addSet("listFields", ["@ID", "@safe"]);
             const actionData = {
                 actionSignature: ACTION_SIGNATURES.READ,
@@ -712,28 +712,19 @@ describe("notManifestFilter", function () {
             const auth = false;
             const root = false;
             const roles = [DEFAULT_USER_ROLE_FOR_GUEST];
-            const routeMan = {
-                actions: {},
-            };
             const targetResult = {
-                actions: {
-                    list: {
-                        method: "get",
-                        fields: ["userID", "name", "username", "country"],
-                    },
-                },
+                method: "get",
+                fields: ["userID", "name", "username", "country"],
             };
-            notManifestFilter.filterRouteAction(
-                actionName,
+            const result = notManifestFilter.filterRouteAction(
                 actionData,
                 auth,
                 roles,
                 root,
-                routeMan,
                 modelName,
                 moduleName
             );
-            expect(routeMan).to.be.deep.equal(targetResult);
+            expect(result).to.be.deep.equal(targetResult);
         });
     });
 });
