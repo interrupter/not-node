@@ -27,21 +27,23 @@ describe("notRoute", function () {
 
     describe("selectRule", function () {
         it("User(auth) request, post.list action", function () {
-            notAppIdentity.identity = require("./fakes").fakeIdentity({
+            const authData = require("./fakes").fakeAuthData({
                 auth: true,
+                role: ["user"],
+                primaryRole: "user",
             });
             let req = {},
                 actionData = {
                     method: "get",
                     rules: [
                         {
-                            auth: false,
+                            root: true,
                         },
                         {
                             auth: true,
                         },
                         {
-                            root: true,
+                            auth: false,
                         },
                     ],
                 },
@@ -52,12 +54,12 @@ describe("notRoute", function () {
                     "list",
                     actionData
                 );
-            expect(routerAction.selectRule(req)).to.deep.equal({
+            expect(routerAction.selectRule(authData)).to.deep.equal({
                 auth: true,
             });
         });
         it("User(!auth) request, post.list action", function () {
-            notAppIdentity.identity = require("./fakes").fakeIdentity({
+            const authData = require("./fakes").fakeAuthData({
                 auth: false,
             });
             let req = {},
@@ -82,7 +84,7 @@ describe("notRoute", function () {
                     "list",
                     actionData
                 );
-            expect(routerAction.selectRule(req)).to.deep.equal({
+            expect(routerAction.selectRule(authData)).to.deep.equal({
                 auth: false,
             });
         });
@@ -112,9 +114,10 @@ describe("notRoute", function () {
         });
 
         it("User(auth, manager) request, post.listAll action", function () {
-            notAppIdentity.identity = require("./fakes").fakeIdentity({
+            const authData = require("./fakes").fakeAuthData({
                 auth: true,
                 role: ["manager"],
+                primaryRole: "admin",
             });
             let req = {},
                 actionData = {
@@ -136,14 +139,14 @@ describe("notRoute", function () {
                     "listAll",
                     actionData
                 );
-            expect(routerAction.selectRule(req)).to.deep.equal({
+            expect(routerAction.selectRule(authData)).to.deep.equal({
                 auth: true,
                 role: ["manager"],
             });
         });
 
         it("Admin request, post.listAll action", function () {
-            notAppIdentity.identity = require("./fakes").fakeIdentity({
+            const authData = require("./fakes").fakeAuthData({
                 auth: true,
                 root: true,
                 primaryRole: DEFAULT_USER_ROLE_FOR_ROOT,
@@ -169,7 +172,7 @@ describe("notRoute", function () {
                     "listAll",
                     actionData
                 );
-            expect(routerAction.selectRule(req)).to.deep.equal({
+            expect(routerAction.selectRule(authData)).to.deep.equal({
                 root: true,
             });
         });

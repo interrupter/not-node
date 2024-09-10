@@ -10,6 +10,27 @@ module.exports = {
             }
         };
     },
+    fakeAuthData: ({
+        root = false,
+        admin = false,
+        auth = false,
+        role = [DEFAULT_USER_ROLE_FOR_GUEST],
+        primaryRole = DEFAULT_USER_ROLE_FOR_GUEST,
+        uid = undefined,
+        sid = undefined,
+        ip = undefined,
+    }) => {
+        return {
+            root,
+            admin,
+            auth,
+            role,
+            primaryRole,
+            uid,
+            sid,
+            ip,
+        };
+    },
     fakeIdentity: (
         id = {
             root: false,

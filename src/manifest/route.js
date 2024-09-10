@@ -80,10 +80,9 @@ class notRoute {
      *	@param	{import('../types').notNodeExpressRequest}	req 	Express Request Object
      *	@return	{import('../types').notRouteRule | null}	rule or null
      */
-    selectRule(req) {
-        const user = notAppIdentity.extractAuthData(req);
+    selectRule(identity) {
         if (this.actionData) {
-            return notRoute.actionAvailableByRule(this.actionData, user);
+            return notRoute.actionAvailableByRule(this.actionData, identity);
         }
         return null;
     }
@@ -107,7 +106,15 @@ class notRoute {
      * @return {import('../types').notRouteData}
      * @memberof notRoute
      */
-    createRequestRouteData(actionName, rule) {
+    createRequestRouteData(actionName, rule, identity) {
+        const actionRule = notManifestFilter.filterRouteAction(
+            this.actionData,
+            identity.auth,
+            identity.role,
+            identity.root,
+            this.routeName,
+            this.moduleName
+        );
         return {
             actionName,
             modelName: this.routeName,
@@ -116,7 +123,7 @@ class notRoute {
                 this.routeName
             )}`,
             rule: copyObj(rule),
-            actionData: copyObj(this.actionData),
+            actionData: actionRule,
             actionSignature: notManifestFilter.detectActionSignature(
                 this.actionData
             ),
@@ -132,7 +139,8 @@ class notRoute {
      **/
     exec(req, res, next) {
         try {
-            let rule = this.selectRule(req);
+            const identity = notAppIdentity.extractAuthData(req);
+            const rule = this.selectRule(identity);
             if (!rule) {
                 return next(
                     new HttpError(
@@ -166,7 +174,7 @@ class notRoute {
             const modRoute = mod.getRoute(this.routeName);
             this.setRequestRouteData(
                 req,
-                this.createRequestRouteData(actionName, rule)
+                this.createRequestRouteData(actionName, rule, identity)
             );
             if (this.routeIsRunnable(modRoute, actionName)) {
                 return this.executeRoute(modRoute, actionName, {

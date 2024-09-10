@@ -12,13 +12,7 @@ module.exports = class notAppIdentity {
         return this.#identity;
     }
 
-    /**
-     *  Collects various authentification and authorization data from request object
-     *  @param {import('../types').notNodeExpressRequest}  req       ExpressRequest
-     *  @return {import('../types').notAppIdentityData}  various authentification data for actor { root:boolean, auth: boolean, role: [string], uid: ObjectId, sid: string, ip:string }
-     */
-    static extractAuthData(req) {
-        const identity = this.#identity.of(req);
+    static identityToAuthData(identity, req) {
         return {
             root: identity.isRoot(),
             admin: identity.isAdmin(),
@@ -27,9 +21,19 @@ module.exports = class notAppIdentity {
             primaryRole: identity.getPrimaryRole(),
             uid: identity.getUserId(),
             sid: identity.getSessionId(),
-            ip: getIP(req),
+            ip: req ? getIP(req) : undefined,
             provider: identity.constructor.name,
         };
+    }
+
+    /**
+     *  Collects various authentification and authorization data from request object
+     *  @param {import('../types').notNodeExpressRequest}  req       ExpressRequest
+     *  @return {import('../types').notAppIdentityData}  various authentification data for actor { root:boolean, auth: boolean, role: [string], uid: ObjectId, sid: string, ip:string }
+     */
+    static extractAuthData(req) {
+        const identity = this.#identity.of(req);
+        return this.identityToAuthData(identity, req);
     }
 
     /**

@@ -22,7 +22,7 @@ const initGenericDataForm = ({
         });
         const App = getApp();
         App.getModule(MODULE_NAME).setFormConstructor(formName, cls);
-        App.getModule(MODULE_NAME).setForm(formName, new cls(App));
+        App.getModule(MODULE_NAME).setForm(formName, new cls({ app: App }));
         return true;
     } catch (e) {
         getApp().logger.error(e);

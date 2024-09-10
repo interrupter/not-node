@@ -41,7 +41,6 @@ module.exports = class notManifestFilter {
         if (!route || !route.actions) {
             return result;
         }
-        console.log("actions", JSON.stringify(route.actions));
         for (let actionName in route.actions) {
             if (!route.actions[actionName]) {
                 continue;
@@ -136,7 +135,7 @@ module.exports = class notManifestFilter {
      **/
 
     static filter(manifest, auth, role, root, moduleName = "") {
-        var result = {};
+        const result = {};
         for (let routeName in manifest) {
             let routeMan = notManifestFilter.filterRoute(
                 manifest[routeName],
@@ -338,7 +337,7 @@ module.exports = class notManifestFilter {
         ruleSet = null
     ) {
         //full copy
-        let actionRule = merge({}, action);
+        const actionRule = merge({}, action);
         //removes server side or secret information (full list of access rules)
         notManifestFilter.clearFromDirtyFields(actionRule);
         //retrives model schema
