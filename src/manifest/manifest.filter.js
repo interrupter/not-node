@@ -18,6 +18,7 @@ const DIRTY_FIELDS = [
 
 //allow access to safe (for a specific user auth status) fields only
 const DEFAULT_FIELDS_SET = ["@safe"];
+const DEFAULT_RETURN_SET = ["@id", "@ID", "@safe"];
 
 module.exports = class notManifestFilter {
     static schemaLoader = (name) => getApp().getModelSchema(name);
@@ -263,14 +264,17 @@ module.exports = class notManifestFilter {
         return returnSet;
     }
 
+    static getFieldsPropertyFromRuleSet(ruleSet) {
+        return notManifestFilter.ruleSetHasFieldsDirective(ruleSet)
+            ? [...ruleSet.fields]
+            : DEFAULT_FIELDS_SET;
+    }
+
     static filterFieldsPropOfActionRule(
         actionRule,
         { modelSchema, modelName, ruleSet, actionSignature, role, auth, root }
     ) {
-        const fields = notManifestFilter.ruleSetHasFieldsDirective(ruleSet)
-            ? [...ruleSet.fields]
-            : DEFAULT_FIELDS_SET;
-
+        const fields = notManifestFilter.getFieldsPropertyFromRuleSet(ruleSet);
         actionRule.fields = notFieldsFilter.filter(fields, modelSchema, {
             action: actionSignature,
             roles: role,
@@ -285,23 +289,27 @@ module.exports = class notManifestFilter {
         }
     }
 
+    static getReturnPropertyFromRuleSet(ruleSet) {
+        return ruleSet && Object.hasOwn(ruleSet, "return") && ruleSet.return
+            ? ruleSet.return
+            : DEFAULT_RETURN_SET;
+    }
+
     static filterReturnPropOfActionRule(
         actionRule,
         { modelSchema, modelName, ruleSet, actionSignature, role, auth, root }
     ) {
-        if (ruleSet && ruleSet.return) {
-            actionRule.return = notManifestFilter.filterReturnSet(
-                ruleSet.return,
-                modelSchema,
-                {
-                    auth,
-                    role,
-                    root,
-                    modelName,
-                    actionSignature,
-                }
-            );
-        }
+        actionRule.return = notManifestFilter.filterReturnSet(
+            notManifestFilter.getReturnPropertyFromRuleSet(ruleSet),
+            modelSchema,
+            {
+                auth,
+                role,
+                root,
+                modelName,
+                actionSignature,
+            }
+        );
     }
 
     /**

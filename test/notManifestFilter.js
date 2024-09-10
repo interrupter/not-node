@@ -164,6 +164,7 @@ describe("notManifestFilter", function () {
             expect(result).to.deep.equal({
                 modelName: "jelly",
                 fields: ["name", "email"], //if fields ommited, it replaced by ["@safe"], __version is not safe to everyone but system invoked operations
+                return: ["_id", "jellyID", "name", "email"],
             });
         });
 
@@ -177,6 +178,7 @@ describe("notManifestFilter", function () {
             const result = notManifestFilter.clearActionFromRules(input);
             expect(result).to.deep.equal({
                 modelName: "jelly",
+                return: ["_id", "ID"],
             });
         });
     });
@@ -224,6 +226,7 @@ describe("notManifestFilter", function () {
                 actions: {
                     list: {
                         postFix: ":actionName",
+                        return: ["_id", "ID"],
                     },
                 },
             });
@@ -240,9 +243,11 @@ describe("notManifestFilter", function () {
                 actions: {
                     list: {
                         postFix: ":actionName",
+                        return: ["_id", "ID"],
                     },
                     get: {
                         formData: true,
+                        return: ["_id", "ID"],
                     },
                 },
             });
@@ -259,6 +264,7 @@ describe("notManifestFilter", function () {
                 actions: {
                     list: {
                         postFix: ":actionName",
+                        return: ["_id", "ID"],
                     },
                 },
             });
@@ -275,9 +281,11 @@ describe("notManifestFilter", function () {
                 actions: {
                     list: {
                         postFix: ":actionName",
+                        return: ["_id", "ID"],
                     },
                     update: {
                         formData: false,
+                        return: ["_id", "ID"],
                     },
                 },
             });
@@ -293,9 +301,11 @@ describe("notManifestFilter", function () {
                     actions: {
                         list: {
                             method: "get",
+                            return: ["_id", "userID"],
                         },
                         profile: {
                             method: "get",
+                            return: ["_id", "userID"],
                         },
                     },
                 },
@@ -305,9 +315,11 @@ describe("notManifestFilter", function () {
                     actions: {
                         list: {
                             method: "get",
+                            return: ["_id", "postID"],
                         },
                         listAll: {
                             method: "get",
+                            return: ["_id", "postID"],
                         },
                     },
                 },
@@ -317,6 +329,7 @@ describe("notManifestFilter", function () {
                     actions: {
                         reboot: {
                             method: "post",
+                            return: ["_id", "adminID"],
                         },
                     },
                 },
@@ -328,6 +341,7 @@ describe("notManifestFilter", function () {
                     actions: {
                         profile: {
                             method: "get",
+                            return: ["_id", "userID"],
                         },
                     },
                 },
@@ -337,6 +351,7 @@ describe("notManifestFilter", function () {
                     actions: {
                         list: {
                             method: "get",
+                            return: ["_id", "postID"],
                         },
                     },
                 },
@@ -348,6 +363,7 @@ describe("notManifestFilter", function () {
                     actions: {
                         list: {
                             method: "get",
+                            return: ["_id", "postID"],
                         },
                     },
                 },
@@ -359,6 +375,7 @@ describe("notManifestFilter", function () {
                     actions: {
                         activate: {
                             method: "get",
+                            return: ["_id", "userID"],
                         },
                     },
                 },
@@ -368,6 +385,7 @@ describe("notManifestFilter", function () {
                     actions: {
                         list: {
                             method: "get",
+                            return: ["_id", "postID"],
                         },
                     },
                 },
@@ -379,6 +397,7 @@ describe("notManifestFilter", function () {
                     actions: {
                         profile: {
                             method: "get",
+                            return: ["_id", "userID"],
                         },
                     },
                 },
@@ -388,9 +407,11 @@ describe("notManifestFilter", function () {
                     actions: {
                         list: {
                             method: "get",
+                            return: ["_id", "postID"],
                         },
                         listAll: {
                             method: "get",
+                            return: ["_id", "postID"],
                         },
                     },
                 },
@@ -555,6 +576,7 @@ describe("notManifestFilter", function () {
             const targetResult = {
                 method: "get",
                 fields: ["name", "username", "country"],
+                return: ["_id", "userID", "name", "username", "country"],
             };
             const result = notManifestFilter.filterRouteAction(
                 actionData,
@@ -596,6 +618,7 @@ describe("notManifestFilter", function () {
                     "country",
                     "email",
                 ],
+                return: ["_id", "userID", "name", "username", "country"],
             };
             const result = notManifestFilter.filterRouteAction(
                 actionData,
@@ -635,6 +658,7 @@ describe("notManifestFilter", function () {
                     "code",
                     "email",
                 ],
+                return: ["_id", "userID", "name", "username", "country"],
             };
             const result = notManifestFilter.filterRouteAction(
                 actionData,
@@ -715,6 +739,7 @@ describe("notManifestFilter", function () {
             const targetResult = {
                 method: "get",
                 fields: ["userID", "name", "username", "country"],
+                return: ["_id", "userID", "name", "username", "country"],
             };
             const result = notManifestFilter.filterRouteAction(
                 actionData,

@@ -1,4 +1,5 @@
 const ACTION_SIGNATURES = require("../auth/const").ACTION_SIGNATURES;
+const notManifestRouteResultFilter = require("../manifest/result.filter");
 
 const extraActionsBuilder = (
     MODULE_NAME,
@@ -72,6 +73,8 @@ module.exports = (MODULE_NAME, modelName, FIELDS = [], actions = {}) => {
                 rules: [
                     {
                         root: true,
+                        [notManifestRouteResultFilter.PROP_NAME_RETURN_ROOT]:
+                            "list",
                     },
                 ],
             },

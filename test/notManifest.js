@@ -230,6 +230,7 @@ describe("Manifest", function () {
                     actions: {
                         list: {
                             method: "get",
+                            return: ["_id", "postID"],
                         },
                     },
                 },
@@ -239,6 +240,7 @@ describe("Manifest", function () {
                     actions: {
                         profile: {
                             method: "get",
+                            return: ["_id", "userID"],
                         },
                     },
                 },
