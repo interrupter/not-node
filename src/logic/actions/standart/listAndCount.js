@@ -13,6 +13,7 @@ module.exports = class ListAndCountAction {
             const result = await logic
                 .getModel()
                 .listAndCount(skip, size, sorter, filter, search, populate);
+            result.list = result.list.map((item) => item.toObject());
             logic.logAction(actionName, identity, {});
             return result;
         } catch (e) {

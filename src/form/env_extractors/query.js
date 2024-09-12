@@ -13,8 +13,13 @@ const extractors = Object.freeze({
     [ACTION_DATA_TYPES.SORTER]: (result, req, thisSchema) => {
         result.sorter = notFilter.sorter.process(req, thisSchema);
     },
-    [ACTION_DATA_TYPES.SEARCH]: (result, req, thisSchema) => {
-        result.search = notFilter.search.process(req, thisSchema);
+    [ACTION_DATA_TYPES.SEARCH]: (result, req, thisSchema, formOptions) => {
+        result.search = notFilter.search.process(
+            req,
+            thisSchema,
+            {},
+            formOptions
+        );
     },
     [ACTION_DATA_TYPES.FILTER]: (result, req, thisSchema) => {
         result.filter = notFilter.filter.process(req, thisSchema);
@@ -44,13 +49,14 @@ module.exports = (form, req) => {
     }
     if (thisSchema) {
         let result = {};
+        const formOptions = form.getExtractorsOptions();
         const routeActionDataTypes = form.getActionDataDataTypes(req);
         Object.values(ACTION_DATA_TYPES).forEach((dataType) => {
             if (
                 routeActionDataTypes.includes(dataType) &&
                 Object.hasOwn(extractors, dataType)
             ) {
-                extractors[dataType](result, req, thisSchema);
+                extractors[dataType](result, req, thisSchema, formOptions);
             }
         });
 

@@ -203,6 +203,10 @@ class Form {
         }
     }
 
+    getExtractorsOptions() {
+        return {};
+    }
+
     /**
      *
      *
