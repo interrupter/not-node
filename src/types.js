@@ -1,6 +1,6 @@
 /**
  * @typedef     {object}    notAppResponse
- * @property    {string}            status      ok or error
+ * @property    {string}            status      'ok' or 'error'
  * @property    {string}            message
  * @property    {Array<string>|Object<string, Array<string>>}     [errors]
  * @property    {object}            [result]

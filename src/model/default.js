@@ -283,6 +283,14 @@ function listAllAndPopulate(populate) {
     return query.exec();
 }
 
+const getPageNumber = (skip, size) => {
+    if (skip === 0) {
+        return 0;
+    } else {
+        return Math.floor(skip / size); //
+    }
+};
+
 /**
  *	List record in collection and populates, with count of total founded records
  *	By default sorts by _id in DESC
@@ -305,11 +313,12 @@ async function listAndCount(skip, size, sorter, filter, search, populate = []) {
         ),
         countQuery = this.countWithFilter(search || filter);
     const [list, count] = await Promise.all([listQuery, countQuery]);
+
     return {
         list,
         skip,
         count,
-        page: Math.floor(skip / size) + (skip % size === 0 ? 1 : 0),
+        page: getPageNumber(skip, size),
         pages: Math.ceil(count / size),
     };
 }

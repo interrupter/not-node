@@ -907,7 +907,7 @@ module.exports = ({
                 expect(res.list).to.be.deep.equal([1, 2, 3, 4]);
                 expect(res.count).to.be.equal(24);
                 expect(res.skip).to.be.equal(skip);
-                expect(res.page).to.be.equal(2);
+                expect(res.page).to.be.equal(1);
                 expect(res.pages).to.be.equal(2);
             });
         });

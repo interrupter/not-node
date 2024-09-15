@@ -54,6 +54,7 @@ module.exports = (form, req) => {
         Object.values(ACTION_DATA_TYPES).forEach((dataType) => {
             if (
                 routeActionDataTypes.includes(dataType) &&
+                // @ts-ignore
                 Object.hasOwn(extractors, dataType)
             ) {
                 extractors[dataType](result, req, thisSchema, formOptions);
