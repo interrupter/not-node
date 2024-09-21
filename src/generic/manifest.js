@@ -21,8 +21,28 @@ const extraActionsBuilder = (
 const POST_FIX_RECORD_ID = "/:record[_id]";
 const POST_FIX_ACTION_NAME = "/:actionName";
 
-module.exports = (MODULE_NAME, modelName, FIELDS = [], actions = {}) => {
-    return {
+const DEFAULT_LOCALES_STRINGS = ["title", "description"];
+
+const getFormActionLocaleString = (
+    strName,
+    MODULE_NAME,
+    modelName,
+    actionName,
+    commonFormTitles = false
+) => {
+    return commonFormTitles
+        ? `not-node:crud_${actionName}_action_form_${strName}`
+        : `${MODULE_NAME}:${modelName}_form_${actionName}_${strName}`;
+};
+
+module.exports = (
+    MODULE_NAME,
+    modelName,
+    FIELDS = [],
+    actions = {},
+    options = {}
+) => {
+    const resultManifest = {
         model: modelName,
         url: "/api/:modelName",
         fields: FIELDS,
@@ -37,7 +57,6 @@ module.exports = (MODULE_NAME, modelName, FIELDS = [], actions = {}) => {
                         root: true,
                     },
                 ],
-                title: `${MODULE_NAME}:${modelName}_form_create_title`,
             },
             update: {
                 method: "POST",
@@ -53,7 +72,6 @@ module.exports = (MODULE_NAME, modelName, FIELDS = [], actions = {}) => {
                         root: true,
                     },
                 ],
-                title: `${MODULE_NAME}:${modelName}_form_update_title`,
             },
             list: {
                 method: "GET",
@@ -108,7 +126,6 @@ module.exports = (MODULE_NAME, modelName, FIELDS = [], actions = {}) => {
                         root: true,
                     },
                 ],
-                title: `${MODULE_NAME}:${modelName}_form_details_title`,
             },
             getByID: {
                 method: "GET",
@@ -146,4 +163,22 @@ module.exports = (MODULE_NAME, modelName, FIELDS = [], actions = {}) => {
             ...extraActionsBuilder(MODULE_NAME, modelName, FIELDS, actions),
         },
     };
+
+    Object.keys(resultManifest.actions).forEach((actionName) => {
+        const actionData = resultManifest.actions[actionName];
+        const lst = options?.localesStrings ?? DEFAULT_LOCALES_STRINGS;
+        lst.forEach((strName) => {
+            if (!Object.hasOwn(actionData, strName)) {
+                actionData[strName] = getFormActionLocaleString(
+                    strName,
+                    MODULE_NAME,
+                    modelName,
+                    actionName,
+                    options?.commonFormTitles
+                );
+            }
+        });
+    });
+
+    return resultManifest;
 };
