@@ -135,9 +135,6 @@ module.exports = (
                     {
                         root: true,
                     },
-                    {
-                        auth: false,
-                    },
                 ],
             },
             getRaw: {
