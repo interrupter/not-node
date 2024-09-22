@@ -24,7 +24,7 @@ function getOwnerId(data, ownerFieldName = CONST.DOCUMENT_OWNER_FIELD_NAME) {
 /**
  * Check if data is belongs to user
  * @param {Object}   data      object
- * @param {import('mongoose').Schema.Types.ObjectId} user_id   possible owner
+ * @param {import('mongoose').Schema.Types.ObjectId|string} user_id   possible owner
  * @return {boolean}           true - belongs, false - not belongs
  **/
 
