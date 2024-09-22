@@ -1,5 +1,5 @@
 /**
- * @typedef     {object}    notAppResponse
+ * @typedef     {object}            notAppResponse
  * @property    {string}            status      'ok' or 'error'
  * @property    {string}            message
  * @property    {Array<string>|Object<string, Array<string>>}     [errors]
@@ -18,9 +18,9 @@
 
 /**
  * @typedef    {Object}    PreparedData
- * @property    {notAppIdentityData}    [identity]  user identity information
+ * @property   {notAppIdentityData}    [identity]  user identity information
  * @property   {Object}    [data]
- * @property   {string}     [action]
+ * @property   {string}    [action]
  * @property   {Query}     [query]
  * @property   {number}    [targetID]       target item ID
  * @property   {Object}    [activeUser]     current user info
@@ -149,8 +149,9 @@
 /**
  * @typedef {object}    notFieldSafety
  * @property    {Array<string>} create
- * @property    {Array<string>} update
  * @property    {Array<string>} read
+ * @property    {Array<string>} update
+ * @property    {Array<string>} delete
  */
 
 /**
@@ -229,6 +230,12 @@
 
 /**
  * @typedef     {import('mongoose').Document & notAppDocumentMethods}    notAppDocument
+ **/
+
+/**
+ * @typedef      {object}    notAppConfigReader
+ * @property    {function(string, [any]):string|number|object|undefined}                    get
+ * @property    {function(string, string|number|object|undefined):notAppConfigReader}       set
  **/
 
 module.exports = {};

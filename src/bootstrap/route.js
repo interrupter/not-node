@@ -89,6 +89,7 @@ module.exports = ({
         MODULE_NAME,
         MODEL_NAME,
         actionName,
+        config,
         formProps,
     }) => {
         if (Object.keys(genericFormsGenerators).includes(actionName)) {
@@ -97,6 +98,7 @@ module.exports = ({
                 MODULE_NAME,
                 MODEL_NAME,
                 actionName,
+                config,
                 ...formProps,
             });
             return new formConstructor({
@@ -104,6 +106,7 @@ module.exports = ({
                 MODULE_NAME,
                 MODEL_NAME,
                 actionName,
+                config,
                 ...formProps,
             });
         } else {
@@ -112,6 +115,7 @@ module.exports = ({
                 MODULE_NAME,
                 MODEL_NAME,
                 actionName,
+                config,
                 ...formProps,
             });
         }
@@ -151,6 +155,7 @@ module.exports = ({
             MODEL_NAME,
             actionName,
             app: getApp(),
+            config,
             formProps: selectActionFormProps(formsProps, actionName),
         });
         //caching

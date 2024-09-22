@@ -1,6 +1,7 @@
 const Schema = require("mongoose").Schema;
 const validator = require("validator");
 const notPath = require("not-path");
+const notConfig = require("not-config");
 const FormFabric = require("./fabric");
 const Auth = require("../auth");
 const { createSchemaFromFields } = require("../fields");
@@ -80,6 +81,10 @@ class Form {
     };
 
     #INSTRUCTIONS = undefined;
+    /**
+     * @prop {import('../types.js').notAppConfigReader} name of model
+     **/
+    #CONFIG;
 
     #rateLimiter = undefined;
     #rateLimiterIdGetter = (data) => data.identity.sid;
@@ -87,7 +92,7 @@ class Form {
     #rateLimiterClientName = InitRateLimiter.DEFAULT_CLIENT;
 
     /**
-     *
+     * @memberof Form
      * @param {Object} options
      * @param {Array<string|Array<string>>} [options.FIELDS]
      * @param {string} [options.FORM_NAME]
@@ -95,6 +100,7 @@ class Form {
      * @param {string} options.MODULE_NAME
      * @param {string} options.actionName
      * @param {import('../app.js')} options.app
+     * @param {import('../types.js').notAppConfigReader} [options.config]
      * @param {Object.<string, Function>} [options.EXTRACTORS]
      * @param {Object.<string, Function>} [options.TRANSFORMERS]
      * @param {import('../types.js').notAppFormProcessingPipe} [options.INSTRUCTIONS]
@@ -109,6 +115,7 @@ class Form {
         MODULE_NAME,
         actionName,
         app,
+        config,
         EXTRACTORS = {},
         ENV_EXTRACTORS = {},
         TRANSFORMERS = {},
@@ -120,8 +127,8 @@ class Form {
             FORM_NAME ?? Form.createName(MODULE_NAME, MODEL_NAME, actionName);
         this.#MODEL_NAME = MODEL_NAME;
         this.#MODULE_NAME = MODULE_NAME;
+        config && this.#setConfig(config);
         this.#setFields(app, FIELDS);
-
         this.#createValidationSchema(app);
         this.#augmentValidationSchema();
         INSTRUCTIONS && this.#addInstructions(INSTRUCTIONS);
@@ -132,6 +139,34 @@ class Form {
         this.#createRateLimiter(rate);
     }
 
+    /**
+     *
+     * @param {import('../types.js').notAppConfigReader} config
+     * @memberof Form
+     */
+    #setConfig(config) {
+        this.#CONFIG = config;
+    }
+
+    /**
+     * Returns module config reader
+     * @readonly
+     * @returns {import('../types.js').notAppConfigReader}
+     * @memberof Form
+     */
+    get config() {
+        if (!this.#CONFIG) {
+            this.#CONFIG = notConfig.forModule(this.#MODULE_NAME);
+        }
+        return this.#CONFIG;
+    }
+
+    /**
+     *
+     * @param {import('../app.js')} app
+     * @param {Array<string|Array<string>>} FIELDS
+     * @returns
+     */
     #setFields(app, FIELDS = []) {
         try {
             const warning = () =>
