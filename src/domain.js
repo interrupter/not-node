@@ -59,7 +59,6 @@ class notDomain extends EventEmitter {
     constructor(options) {
         super();
         this.#options = options;
-
         return this;
     }
 
@@ -138,8 +137,8 @@ class notDomain extends EventEmitter {
 
     /**
      *  Returns route
-     *  @param   {string}  name   'moduleName//routeName//functionName' ('not-user//user//add')
-     *  @return {function}      route
+     *  @param      {string}  name   'moduleName//routeName//functionName' ('not-user//user//add')
+     *  @return     {function}      route
      **/
     getRoute(name) {
         if (name.indexOf("//") > 0) {

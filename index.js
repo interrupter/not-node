@@ -37,6 +37,8 @@ module.exports.Enrich = require("./src/model/enrich");
 module.exports.Routine = require("./src/model/routine");
 /** Common functions */
 module.exports.Common = require("./src/common");
+/** Task Runner */
+module.exports.TaskRunner = require("./src/task.runner.js");
 /** Fields library manager */
 module.exports.Fields = require("./src/fields");
 /** Application generic helpers */
