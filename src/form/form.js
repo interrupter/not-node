@@ -38,7 +38,7 @@ const { ACTION_DATA_TYPES } = require("../const.js");
 /**
  * Generic form validation class
  * @class Form
- */
+ **/
 class Form {
     /**
      * @prop {import('not-validation/src/builder').notValidationSchema} validation schema
@@ -53,8 +53,13 @@ class Form {
      * @prop {string} name of form
      **/
     #FORM_NAME;
-
+    /**
+     * @prop {string} name of model
+     **/
     #MODEL_NAME;
+    /**
+     * @prop {string} name of module
+     **/
     #MODULE_NAME;
     #PROTO_FIELDS;
 
@@ -74,9 +79,9 @@ class Form {
         ...DEFAULT_AFTER_EXTRACT_TRANSFORMERS,
     };
 
-    #INSTRUCTIONS = null;
+    #INSTRUCTIONS = undefined;
 
-    #rateLimiter = null;
+    #rateLimiter = undefined;
     #rateLimiterIdGetter = (data) => data.identity.sid;
     #rateLimiterException = FormExceptionTooManyRequests;
     #rateLimiterClientName = InitRateLimiter.DEFAULT_CLIENT;
@@ -84,18 +89,18 @@ class Form {
     /**
      *
      * @param {Object} options
-     * @param {Array<string|Array<string>>} options.FIELDS
-     * @param {string} options.FORM_NAME
+     * @param {Array<string|Array<string>>} [options.FIELDS]
+     * @param {string} [options.FORM_NAME]
      * @param {string} options.MODEL_NAME
      * @param {string} options.MODULE_NAME
      * @param {string} options.actionName
      * @param {import('../app.js')} options.app
-     * @param {Object.<string, Function>} options.EXTRACTORS
-     * @param {Object.<string, Function>} options.TRANSFORMERS
-     * @param {import('../types.js').notAppFormProcessingPipe|null} options.INSTRUCTIONS
-     * @param {Array<Function>} options.AFTER_EXTRACT_TRANSFORMERS
-     * @param {Object.<string, import('../types.js').notAppFormEnvExtractor>} options.ENV_EXTRACTORS
-     * @param   {import('../types.js').notAppFormRateLimiterOptions}    options.rate
+     * @param {Object.<string, Function>} [options.EXTRACTORS]
+     * @param {Object.<string, Function>} [options.TRANSFORMERS]
+     * @param {import('../types.js').notAppFormProcessingPipe} [options.INSTRUCTIONS]
+     * @param {Array<Function>} [options.AFTER_EXTRACT_TRANSFORMERS]
+     * @param {Object.<string, import('../types.js').notAppFormEnvExtractor>} [options.ENV_EXTRACTORS]
+     * @param   {import('../types.js').notAppFormRateLimiterOptions}    [options.rate]
      */
     constructor({
         FIELDS = [],
@@ -107,9 +112,9 @@ class Form {
         EXTRACTORS = {},
         ENV_EXTRACTORS = {},
         TRANSFORMERS = {},
-        INSTRUCTIONS = null,
+        INSTRUCTIONS = undefined,
         AFTER_EXTRACT_TRANSFORMERS = [],
-        rate,
+        rate = undefined,
     }) {
         this.#FORM_NAME =
             FORM_NAME ?? Form.createName(MODULE_NAME, MODEL_NAME, actionName);
@@ -119,7 +124,7 @@ class Form {
 
         this.#createValidationSchema(app);
         this.#augmentValidationSchema();
-        this.#addInstructions(INSTRUCTIONS);
+        INSTRUCTIONS && this.#addInstructions(INSTRUCTIONS);
         this.#addExtractors(EXTRACTORS);
         this.#addEnvExtractors(ENV_EXTRACTORS);
         this.#addTransformers(TRANSFORMERS);
@@ -374,9 +379,10 @@ class Form {
         }
     }
 
-    //should be overriden
     /**
      * Returns form specified rules of validation
+     * should be overriden
+     * @return {Array<function>}
      **/
     getFormValidationRules() {
         return [];
@@ -488,9 +494,9 @@ class Form {
     }
     /**
      *  Object with named extractor functions
-     * @param {import('../types.js').notAppFormProcessingPipe|null} instructions
+     * @param {import('../types.js').notAppFormProcessingPipe|undefined} [instructions]
      */
-    #addInstructions(instructions = null) {
+    #addInstructions(instructions = undefined) {
         if (instructions) {
             this.#INSTRUCTIONS = { ...instructions };
         }
