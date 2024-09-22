@@ -20,8 +20,8 @@ function genericUpdateForm({
     dataFieldName = "_data",
     validators = [],
     dataValidators = [],
-    afterExtract = async (input /*, req*/) => input,
-    afterDataExtract = async (input /*, req*/) => input,
+    afterExtract = async (input, req) => input || req,
+    afterDataExtract = async (input, req) => input || req,
 }) {
     const defaultDataFieldPath = Form.createPath(
         MODULE_NAME,
