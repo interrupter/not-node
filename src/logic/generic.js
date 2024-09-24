@@ -8,7 +8,7 @@ module.exports = ({
     MODEL_NAME,
     USER_MODEL_NAME = "not-user//User",
     actionRunner = undefined,
-    actionsSets = ["standart"],
+    actionsSets = ["standart", "standartOwn"],
     actions = {},
     beforeActions = {},
     beforeActionsOnCondition = [

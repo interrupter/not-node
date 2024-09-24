@@ -321,12 +321,12 @@ module.exports = ({
          * @param {import('../types').PreparedData}  prepared
          * @returns {Promise<Object>}               requested document
          **/
-        static async getOwnRaw({ targetId, identity }) {
+        static async getRawOwn({ targetId, identity }) {
             return await this._getOneRaw({
                 targetId,
                 identity,
                 shouldOwn: true,
-                action: "getOwnRaw",
+                action: "getRawOwn",
             });
         }
 

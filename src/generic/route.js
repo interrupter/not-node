@@ -76,14 +76,14 @@ module.exports = ({ getLogic, before, after }) => {
                 );
             }
             if (this.rootAsUser) {
-                return await getLogic(prepared).getOwnRaw(prepared);
+                return await getLogic(prepared).getRawOwn(prepared);
             } else {
                 return await getLogic(prepared).getRaw(prepared);
             }
         }
 
         static async getRaw(req, res, next, prepared) {
-            return await getLogic(prepared).getOwnRaw(prepared);
+            return await getLogic(prepared).getRawOwn(prepared);
         }
 
         static async _update(req, res, next, prepared) {
