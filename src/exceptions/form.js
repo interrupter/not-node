@@ -34,3 +34,16 @@ class FormExceptionTooManyRequests extends HttpExceptionTooManyRequests {
 }
 
 module.exports.FormExceptionTooManyRequests = FormExceptionTooManyRequests;
+
+Error("no prepared identity or query");
+
+class FormExceptionIdentityOrQueryIsUndefined extends notRequestError {
+    constructor(formName) {
+        super("not-node:form_exception_identity_or_query_is_undefined", {
+            params: { formName },
+        });
+    }
+}
+
+module.exports.FormExceptionIdentityOrQueryIsUndefined =
+    FormExceptionIdentityOrQueryIsUndefined;

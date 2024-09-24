@@ -76,5 +76,6 @@
   "select_from_list_label": "Выберите из списка...",
   "field_actions_label": "Действия",
   "form_exception_field_extractor_is_undefined": "Экстрактор для поля входных данных отсутствует",
+  "form_exception_identity_or_query_is_undefined": "Identity или Query отсутствуют",
   "versioning_error_same_old_data": "Данные не изменились, сохранение отклонено."
 }

@@ -1,8 +1,10 @@
 const Form = require("../../form/form");
-
+const {
+    DOCUMENT_OWNER_FIELD_NAME,
+    DOCUMENT_SESSION_FIELD_NAME,
+} = require("../../auth/const");
 const notFilter = require("not-filter");
-const notAppIdentity = require("../../identity");
-
+const FormExceptions = require("../../exceptions/form");
 const FIELDS = [
     ["query", `not-filter//_filterQuery`],
     ["identity", "not-node//identity"],
@@ -30,29 +32,41 @@ const FactoryFormList = ({ MODULE_NAME, MODEL_NAME, actionName = "list" }) => {
         }
 
         /**
-         *
-         *
+         * Adds owner id or session to query.filter
+         * @param {import('../../types').PreparedData}  prepared
          * @param {import('../../types').notNodeExpressRequest} req
          * @return {Promise<import('../../types').PreparedData>}
          */
-        async extract(req) {
-            const envs = this.extractRequestEnvs(req);
-            const user = notAppIdentity.extractAuthData(req);
-            if (user.auth && !user.root && !user.admin) {
-                if (!envs.query.filter) {
-                    envs.query.filter = notFilter.filter.createFilter();
-                }
-                envs.query.filter = notFilter.filter.modifyRules(
-                    envs.query.filter,
+        async afterExtract(prepared, req) {
+            prepared = await super.afterExtract(prepared, req);
+            if (!prepared.identity || !prepared.query) {
+                throw new FormExceptions.FormExceptionIdentityOrQueryIsUndefined(
+                    this.FORM_NAME
+                );
+            }
+            if (!prepared.query.filter) {
+                prepared.query.filter = notFilter.filter.createANDFilter();
+            }
+            if (
+                prepared.identity.auth &&
+                !prepared.identity.root &&
+                !prepared.identity.admin
+            ) {
+                prepared.query.filter = notFilter.filter.modifyRules(
+                    prepared.query.filter,
                     {
-                        owner: user.uid,
+                        [DOCUMENT_OWNER_FIELD_NAME]: prepared.identity.uid,
+                    }
+                );
+            } else if (!prepared.identity.auth && prepared.identity.sid) {
+                prepared.query.filter = notFilter.filter.modifyRules(
+                    prepared.query.filter,
+                    {
+                        [DOCUMENT_SESSION_FIELD_NAME]: prepared.identity.sid,
                     }
                 );
             }
-
-            return {
-                ...envs,
-            };
+            return prepared;
         }
     };
 };

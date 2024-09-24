@@ -19,9 +19,9 @@ module.exports = [
         ],
     },
     ...compat.extends(
-        "eslint:recommended",
+        "eslint:recommended"
         //"plugin:node/recommended",
-        "plugin:sonarjs/recommended-legacy"
+        //"plugin:sonarjs/recommended-legacy"
     ),
     {
         languageOptions: {

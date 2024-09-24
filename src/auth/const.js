@@ -29,7 +29,10 @@ const METHOD_SIGNAURES = {
 
 const OBJECT_STRING = "[object String]";
 
+//document owned by registered user
 const DOCUMENT_OWNER_FIELD_NAME = "owner";
+//document owned by guest user
+const DOCUMENT_SESSION_FIELD_NAME = "session";
 const TOKEN_TTL = 3600;
 
 module.exports = {
@@ -39,6 +42,7 @@ module.exports = {
     DEFAULT_USER_ROLE_FOR_ROOT,
     DEFAULT_USER_ROLE_FOR_ADMIN,
     DOCUMENT_OWNER_FIELD_NAME,
+    DOCUMENT_SESSION_FIELD_NAME,
     ACTION_SIGNATURES,
     METHOD_SIGNAURES,
 };

@@ -15,6 +15,7 @@ function createDefaultInstance({
     MODULE_NAME,
     MODEL_NAME,
     actionName,
+    config,
     /* validators = [],
     dataValidators = [],*/
 }) {
@@ -23,7 +24,7 @@ function createDefaultInstance({
         ["data", `${MODULE_NAME}//_${Common.firstLetterToLower(MODEL_NAME)}`],
     ];
     const FORM_NAME = Form.createName(MODULE_NAME, MODEL_NAME, actionName);
-    return new Form({ FIELDS, FORM_NAME, app, MODULE_NAME });
+    return new Form({ FIELDS, FORM_NAME, app, MODULE_NAME, config });
 }
 
 module.exports = createDefaultInstance;

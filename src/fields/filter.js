@@ -8,6 +8,7 @@ const { getSafeFieldsForRoleAction } = require("../auth/fields");
 const {
     DEFAULT_USER_ROLE_FOR_GUEST,
     ACTION_SIGNATURES,
+    DOCUMENT_SESSION_FIELD_NAME,
 } = require("../auth/const");
 /**
  * notFieldsFilter.filter(fields, getApp().getModelSchema(MODEL_NAME), {action});
@@ -144,7 +145,11 @@ class notFieldsFilter {
                     system
                 );
             },
-            [SPECIAL_SET_UNSAFE]: ["salt", "password", "session"],
+            [SPECIAL_SET_UNSAFE]: [
+                "salt",
+                "password",
+                DOCUMENT_SESSION_FIELD_NAME,
+            ],
             [SPECIAL_SET_TIMESTAMPS]: ["createdAt", "updatedAt"],
             [SPECIAL_SET_OWNAGE]: (schema) => {
                 const inSchema = Object.keys(schema);
