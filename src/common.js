@@ -486,3 +486,13 @@ const findSignature = (obj, signatures, strict = true, typeStrict = true) => {
     });
 };
 module.exports.findSignature = findSignature;
+
+const isAction = (action) =>
+    action &&
+    (typeof action.run === "function" || typeof action === "function");
+
+module.exports.isAction = isAction;
+
+const isArrayOfActions = (list) => list.every(isAction);
+
+module.exports.isArrayOfActions = isArrayOfActions;

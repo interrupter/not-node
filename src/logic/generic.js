@@ -11,11 +11,15 @@ module.exports = ({
     actionsSets = ["standart"],
     actions = {},
     beforeActions = {},
+    beforeActionsOnCondition = [
+        require("./actions.before/ownage/ownage.js").ifActionNameEndsWith_Own(),
+    ], //each item = {condition: (actionName)=>boolean, action}
     beforeActionsAll = [
         require("./actions.before/standart.queries.js"),
         require("./actions.before/populate/populate.js"),
     ],
     afterActions = {},
+    afterActionsOnCondition = [], //each item = {condition: (actionName)=>boolean, action}
     populateBuilders = {},
     afterActionsAll = [],
     defaultPopulate = [],
@@ -39,11 +43,28 @@ module.exports = ({
         defaultPopulate,
     });
 
+    //adds before/after to all
     beforeActionsAll.forEach((action) => {
         Logic.onBefore(undefined, action);
     });
+
     afterActionsAll.forEach((action) => Logic.onAfter(undefined, action));
 
+    //adds before/after to as many as satisfies condition
+    Object.keys(ACTIONS).forEach((actionName) => {
+        beforeActionsOnCondition.forEach(({ condition, action }) => {
+            if (condition(actionName)) {
+                Logic.onBefore(actionName, action);
+            }
+        });
+        afterActionsOnCondition.forEach(({ condition, action }) => {
+            if (condition(actionName)) {
+                Logic.onAfter(actionName, action);
+            }
+        });
+    });
+
+    //adds before/after per actionName
     Object.keys(beforeActions).forEach((actionName) =>
         beforeActions[actionName].forEach((action) =>
             Logic.onBefore(actionName, action)

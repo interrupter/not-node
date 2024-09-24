@@ -107,4 +107,11 @@ module.exports = class OwnageBeforeAction {
         }
         OwnageBeforeAction.setOwnage(logic, actionName, args, ownageFilter);
     }
+
+    static ifActionNameEndsWith_Own() {
+        return Object.freeze({
+            condition: (actionName) => actionName.endsWith("Own"),
+            action: OwnageBeforeAction,
+        });
+    }
 };
