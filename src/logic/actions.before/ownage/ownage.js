@@ -1,4 +1,3 @@
-const notFilter = require("not-filter");
 const {
     DOCUMENT_OWNER_FIELD_NAME,
     DOCUMENT_SESSION_FIELD_NAME,
@@ -6,7 +5,8 @@ const {
 const {
     OwnageExceptionIdentityUserIdIsNotDefined,
 } = require("../../../exceptions/action.js");
-const ModelRoutine = require("../../../model/routine.js");
+
+const StandartQueriesBeforeAction = require("../standart.queries.js");
 
 //checks that
 module.exports = class OwnageBeforeAction {
@@ -19,37 +19,6 @@ module.exports = class OwnageBeforeAction {
 
     static get sessionFieldName() {
         return this.#sessionFieldName;
-    }
-
-    static setOwnage(logic, actionName, args, ownageFilter) {
-        const { query, targetId, targetID } = args;
-        let { filter, search } = query;
-        if (filter) {
-            filter = notFilter.filter.modifyRules(filter, ownageFilter);
-            if (search) {
-                search = notFilter.filter.modifyRules(search, filter);
-            }
-        }
-        args.defaultQueryById = {
-            _id: targetId,
-            ...ownageFilter,
-        };
-        const Model = logic.getModel();
-        const incFieldName = ModelRoutine.incremental(Model);
-        if (incFieldName) {
-            args.defaultQueryByID = {
-                [incFieldName]: targetID,
-                ...ownageFilter,
-            };
-        }
-
-        args.defaultQueryMany = {
-            ...ownageFilter,
-        };
-        //mark data as owned by
-        if (typeof args.data == "object" && args.data) {
-            Object.assign(args.data, ownageFilter);
-        }
     }
 
     static createOwnageFilterForUser(identity) {
@@ -105,7 +74,7 @@ module.exports = class OwnageBeforeAction {
                 args.identity
             );
         }
-        OwnageBeforeAction.setOwnage(logic, actionName, args, ownageFilter);
+        StandartQueriesBeforeAction.modifyQueries(args, ownageFilter);
     }
 
     static ifActionNameEndsWith_Own() {
