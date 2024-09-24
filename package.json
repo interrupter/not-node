@@ -12,7 +12,7 @@
 		"watch:build:cover:dev": "npm-run-all --parallel js-watch",
 		"cover": "nyc npm test",
 		"clear:playground": "rm -rf ./playground",
-		"prepare": "husky init"
+		"prepare": "husky"
 	},
 	"bin": {
 		"not-node": "bin/not-node.js",

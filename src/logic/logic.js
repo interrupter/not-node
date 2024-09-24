@@ -17,8 +17,8 @@ class LogicProxied {
     actions = new Map();
     actionRunner = ActionRunner;
 
-    populateBuilders = {};
-    defaultPopulate = [];
+    #populateBuilders = {};
+    #defaultPopulate = [];
 
     MODEL_NAME;
     MODULE_NAME;
@@ -32,7 +32,6 @@ class LogicProxied {
     logAction;
     logDebugAction;
 
-    
     constructor(
         actions = {},
         actionRunner = ActionRunner,
@@ -48,9 +47,15 @@ class LogicProxied {
         this.MODEL_NAME = MODEL_NAME;
         this.MODULE_NAME = MODULE_NAME;
         this.USER_MODEL_NAME = USER_MODEL_NAME;
+        if (defaultPopulate) {
+            this.#defaultPopulate = defaultPopulate;
+        }
+        Object.freeze(this.#defaultPopulate);
 
-        defaultPopulate && (this.defaultPopulate = defaultPopulate);
-        populateBuilders && (this.populateBuilders = populateBuilders);
+        if (populateBuilders) {
+            this.#populateBuilders = populateBuilders;
+        }
+        Object.freeze(this.#populateBuilders);
 
         actionRunner && (this.actionRunner = actionRunner);
         this.afterPipes = new NamedActionPipes(
@@ -70,7 +75,7 @@ class LogicProxied {
 
         // proxy logic, do something before each call of all methods inside class
         // like if arg passed is 3, print something additionally
-        return  this.#proxy = new Proxy(this, {
+        return (this.#proxy = new Proxy(this, {
             get(target, prop) {
                 if (target.actions.has(prop)) {
                     return target.#getActionRunner(prop);
@@ -78,7 +83,7 @@ class LogicProxied {
                     return target[prop];
                 }
             },
-        });
+        }));
     }
 
     #initTools(target) {
@@ -105,9 +110,7 @@ class LogicProxied {
             this.log &&
                 this.log.debug(
                     new Date(),
-                    `${this.MODULE_NAME}//Logic//${
-                        this.MODEL_NAME
-                    }//${action}`,
+                    `${this.MODULE_NAME}//Logic//${this.MODEL_NAME}//${action}`,
                     identity?.ip,
                     identity?.root
                 );
@@ -132,16 +135,16 @@ class LogicProxied {
 
     async getPopulate(actionName, prepared) {
         if (
-            this.populateBuilders &&
-            objHas(this.populateBuilders, actionName) &&
-            isFunc(this.populateBuilders[actionName])
+            this.#populateBuilders &&
+            objHas(this.#populateBuilders, actionName) &&
+            isFunc(this.#populateBuilders[actionName])
         ) {
             return await executeFunctionAsAsync(
-                this.populateBuilders[actionName],
+                this.#populateBuilders[actionName],
                 [prepared]
             );
         }
-        return this.defaultPopulate;
+        return [...this.#defaultPopulate];
     }
 
     #getActionRunner(actionName) {

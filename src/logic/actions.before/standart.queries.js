@@ -5,9 +5,11 @@ module.exports = class StandartQueriesBeforeAction {
     static async run(logic, actionName, args) {
         try {
             const { targetId, targetID } = args;
-            args.defaultQueryById = {
-                _id: targetId,
-            };
+            if (targetId) {
+                args.defaultQueryById = {
+                    _id: targetId,
+                };
+            }
             const Model = logic.getModel();
             const incFieldName = ModelRoutine.incremental(Model);
             if (

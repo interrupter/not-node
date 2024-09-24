@@ -1,5 +1,8 @@
 const notFilter = require("not-filter");
-const { DOCUMENT_OWNER_FIELD_NAME } = require("../../../auth/const.js");
+const {
+    DOCUMENT_OWNER_FIELD_NAME,
+    DOCUMENT_SESSION_FIELD_NAME,
+} = require("../../../auth/const.js");
 const {
     OwnageExceptionIdentityUserIdIsNotDefined,
 } = require("../../../exceptions/action.js");
@@ -8,50 +11,100 @@ const ModelRoutine = require("../../../model/routine.js");
 //checks that
 module.exports = class OwnageBeforeAction {
     static #ownerFieldName = DOCUMENT_OWNER_FIELD_NAME;
+    static #sessionFieldName = DOCUMENT_SESSION_FIELD_NAME;
 
     static get ownerFieldName() {
         return this.#ownerFieldName;
     }
 
-    static async run(logic, actionName, args) {
-        const { identity, data, query, targetId, targetID } = args;
-        if (identity.uid) {
-            //if searching, counting, listing and so on
-            //adding condition of ownership by this excat user
-            let { filter, search } = query;
-            if (filter) {
-                filter = notFilter.filter.modifyRules(filter, {
-                    [OwnageBeforeAction.ownerFieldName]: identity?.uid,
-                });
-                if (search) {
-                    search = notFilter.filter.modifyRules(search, filter);
-                }
-            }
-            args.defaultQueryById = {
-                _id: targetId,
-                [OwnageBeforeAction.ownerFieldName]: identity?.uid,
-            };
-            const Model = logic.getModel();
-            const incFieldName = ModelRoutine.incremental(Model);
-            if (incFieldName) {
-                args.defaultQueryByID = {
-                    [incFieldName]: targetID,
-                    [OwnageBeforeAction.ownerFieldName]: identity?.uid,
-                };
-            }
+    static get sessionFieldName() {
+        return this.#sessionFieldName;
+    }
 
-            args.defaultQueryMany = {
-                [OwnageBeforeAction.ownerFieldName]: identity?.uid,
-            };
-            //mark data as owned by
-            if (data) {
-                data[OwnageBeforeAction.ownerFieldName] = identity.uid;
+    static setOwnage(logic, actionName, args, ownageFilter) {
+        const { query, targetId, targetID } = args;
+        let { filter, search } = query;
+        if (filter) {
+            filter = notFilter.filter.modifyRules(filter, ownageFilter);
+            if (search) {
+                search = notFilter.filter.modifyRules(search, filter);
             }
+        }
+        args.defaultQueryById = {
+            _id: targetId,
+            ...ownageFilter,
+        };
+        const Model = logic.getModel();
+        const incFieldName = ModelRoutine.incremental(Model);
+        if (incFieldName) {
+            args.defaultQueryByID = {
+                [incFieldName]: targetID,
+                ...ownageFilter,
+            };
+        }
+
+        args.defaultQueryMany = {
+            ...ownageFilter,
+        };
+        //mark data as owned by
+        if (typeof args.data == "object" && args.data) {
+            Object.assign(args.data, ownageFilter);
+        }
+    }
+
+    static createOwnageFilterForUser(identity) {
+        return Object.freeze({
+            [OwnageBeforeAction.ownerFieldName]: identity.uid,
+        });
+    }
+
+    static createOwnageFilterForSession(identity) {
+        return Object.freeze({
+            [OwnageBeforeAction.sessionFieldName]: identity.sid,
+        });
+    }
+
+    /**
+     * Returns object with filtering conditions to restrict access by owner or session
+     *
+     * @static
+     * @param {import('../../../types.js').notAppIdentityData} identity
+     * @return {object}
+     */
+    static getOwnageFilterForIdentity(identity) {
+        if (identity.uid) {
+            return OwnageBeforeAction.createOwnageFilterForUser(identity);
+        } else if (identity.sid) {
+            return OwnageBeforeAction.createOwnageFilterForSession(identity);
         } else {
+            return null;
+        }
+    }
+
+    /**
+     *
+     *
+     * @static
+     * @param {import('../../logic.js')} logic
+     * @param {String} actionName
+     * @param {import('../../../types.js').PreparedData} args
+     */
+    static async run(logic, actionName, args) {
+        if (!args.identity) {
             throw new OwnageExceptionIdentityUserIdIsNotDefined(
                 actionName,
-                identity
+                undefined
             );
         }
+        const ownageFilter = OwnageBeforeAction.getOwnageFilterForIdentity(
+            args.identity
+        );
+        if (ownageFilter === null) {
+            throw new OwnageExceptionIdentityUserIdIsNotDefined(
+                actionName,
+                args.identity
+            );
+        }
+        OwnageBeforeAction.setOwnage(logic, actionName, args, ownageFilter);
     }
 };

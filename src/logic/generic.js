@@ -11,7 +11,10 @@ module.exports = ({
     actionsSets = ["standart"],
     actions = {},
     beforeActions = {},
-    beforeActionsAll = [require("./actions.before/standart.queries.js")],
+    beforeActionsAll = [
+        require("./actions.before/standart.queries.js"),
+        require("./actions.before/populate/populate.js"),
+    ],
     afterActions = {},
     populateBuilders = {},
     afterActionsAll = [],
