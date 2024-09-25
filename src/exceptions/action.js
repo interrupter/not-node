@@ -20,6 +20,18 @@ class ActionExceptionPipeExecutionError extends notRequestError {
 module.exports.ActionExceptionPipeExecutionError =
     ActionExceptionPipeExecutionError;
 
+class ActionExceptionIdentitySessionIsNotDefined extends notRequestError {
+    constructor(actionName, identity) {
+        super(
+            "User identity `sid` is not defined",
+            { code: 505, params: { actionName, identity } },
+            null
+        );
+    }
+}
+module.exports.ActionExceptionIdentitySessionIsNotDefined =
+    ActionExceptionIdentitySessionIsNotDefined;
+
 class OwnageExceptionIdentityUserIdIsNotDefined extends notRequestError {
     constructor(actionName, identity) {
         super(
