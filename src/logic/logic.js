@@ -18,7 +18,14 @@ class LogicProxied {
     actionRunner = ActionRunner;
 
     #populateBuilders = {};
+    get populateBuilders() {
+        return this.#populateBuilders;
+    }
+
     #defaultPopulate = [];
+    get defaultPopulate() {
+        return this.#defaultPopulate;
+    }
 
     MODEL_NAME;
     MODULE_NAME;
@@ -135,16 +142,16 @@ class LogicProxied {
 
     async getPopulate(actionName, prepared) {
         if (
-            this.#populateBuilders &&
-            objHas(this.#populateBuilders, actionName) &&
-            isFunc(this.#populateBuilders[actionName])
+            this.populateBuilders &&
+            objHas(this.populateBuilders, actionName) &&
+            isFunc(this.populateBuilders[actionName])
         ) {
             return await executeFunctionAsAsync(
-                this.#populateBuilders[actionName],
+                this.populateBuilders[actionName],
                 [prepared]
             );
         }
-        return [...this.#defaultPopulate];
+        return [...this.defaultPopulate];
     }
 
     #getActionRunner(actionName) {
