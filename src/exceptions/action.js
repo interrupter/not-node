@@ -32,6 +32,18 @@ class OwnageExceptionIdentityUserIdIsNotDefined extends notRequestError {
 module.exports.OwnageExceptionIdentityUserIdIsNotDefined =
     OwnageExceptionIdentityUserIdIsNotDefined;
 
+class OwnageExceptionIdentityUserIdAndSessionIsNotDefined extends notRequestError {
+    constructor(actionName, identity) {
+        super(
+            "User identity `uid` and `sid` is not defined, ownage couldnt be determined",
+            { code: 505, params: { actionName, identity } },
+            null
+        );
+    }
+}
+module.exports.OwnageExceptionIdentityUserIdAndSessionIsNotDefined =
+    OwnageExceptionIdentityUserIdAndSessionIsNotDefined;
+
 class LogicDeleteActionException extends notRequestError {
     constructor(params, cause) {
         super("Logic Delete Action exception", { code: 505, params }, cause);
