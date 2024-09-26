@@ -80,7 +80,7 @@ module.exports = class InitApp {
     }
 
     printReportByPostponedFieldsRegistrator() {
-        const report = notAppPostponedFieldsRegistrator.report();
+        const report = notAppPostponedFieldsRegistrator.state();
         if (Object.keys(report).length) {
             log?.error(report);
         }
