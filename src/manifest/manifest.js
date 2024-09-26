@@ -8,8 +8,8 @@ const notManifestFilter = require("./manifest.filter.js");
 /**
  *  API manifest
  *  @class
- *  @param  {object}   app      express application instance
- *  @param  {object}  notApp    notApplication instance
+ *  @param  {import('express').Application}   app      express application instance
+ *  @param  {import('../app.js')}  notApp    notApplication instance
  *  @param  {string}  moduleName  name of owner module
  **/
 class notManifest {
@@ -80,8 +80,7 @@ class notManifest {
 
     /**
      * Check if manifest file has url and actions, so we could register routes
-     * @param  {object}  moduleManifest    library of .manifest.js files
-     * @param  {string}  routeName         name of
+     * @param  {object}  route    library of .manifest.js files
      **/
     registerRoute(route) {
         if (!this.routeHasRoutes(route)) {

@@ -24,7 +24,7 @@ module.exports = class BatchRunner {
      * Searching for content of module and registering it.
      * @static
      * @param {Object}      input
-     * @param {notModule}   input.nModule
+     * @param {import('./module')}   input.nModule
      * @return {boolean}                       true - executed, false - no paths
      **/
     exec({ nModule }) {
@@ -32,7 +32,7 @@ module.exports = class BatchRunner {
             return false;
         }
         //starting from simpliest forms and moving upwards
-        this.#processors.forEach((processor) => new processor({ nModule }));
+        this.#processors.forEach((processor) => processor.run({ nModule }));
         return true;
     }
 };

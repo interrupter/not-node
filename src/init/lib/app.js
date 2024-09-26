@@ -5,6 +5,8 @@ const logger = require("not-log");
 const log = logger(module, "not-node//init//app");
 const { notErrorReporter } = require("not-error/src/index.cjs");
 
+const notAppPostponedFieldsRegistrator = require("../../manifest/registrator/fields.postponed.js");
+
 const CONST_CORE_PATH = path.join(__dirname, "../../core");
 
 module.exports = class InitApp {
@@ -57,7 +59,7 @@ module.exports = class InitApp {
             });
             master.getApp().logger = logger(module, "notApplication");
         } catch (e) {
-            log.error(e);
+            log?.error(e);
         }
     }
 
@@ -70,9 +72,17 @@ module.exports = class InitApp {
             await InitApp.initCore({ config, options, master, emit });
             await InitApp.importModules({ config, options, master, emit });
             await InitApp.createReporter({ config, master });
+            this.printReportByPostponedFieldsRegistrator();
             await emit("app.post", { config, options, master });
         } catch (e) {
-            master.throwError(e.message, 1);
+            log?.error(e);
+        }
+    }
+
+    printReportByPostponedFieldsRegistrator() {
+        const report = notAppPostponedFieldsRegistrator.report();
+        if (Object.keys(report).length) {
+            log?.error(report);
         }
     }
 };

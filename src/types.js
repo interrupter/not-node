@@ -180,6 +180,7 @@
 
 /**
  * @typedef     {object} notField
+ * @property    {string}            [parent]    field name in full form not-module-name//field-name
  * @property    {notFieldUI}        [ui]
  * @property    {notFieldModel}     [model]
  */

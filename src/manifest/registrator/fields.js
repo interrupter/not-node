@@ -3,15 +3,18 @@ const fs = require("fs");
 const { tryFile, objHas } = require("../../common");
 const Fields = require("../../fields");
 const { log } = require("not-log")(module, "register//fields");
+const notAppPostponedFieldsRegistrator = require("./fields.postponed");
+
 module.exports = class notModuleRegistratorFields {
     static openFile = require;
     static fieldsManager = Fields;
 
-    constructor({ nModule }) {
-        this.run({ nModule });
+    static reopenCached(pathToModule) {
+        delete this.openFile.cache[this.openFile.resolve(pathToModule)];
+        return this.openFile(pathToModule);
     }
 
-    run({ nModule }) {
+    static run({ nModule }) {
         const srcDir = notModuleRegistratorFields.getPath(nModule);
         if (!srcDir) {
             return false;
@@ -27,7 +30,7 @@ module.exports = class notModuleRegistratorFields {
         return nModule.module.paths.fields;
     }
 
-    registerFields({ nModule, lib, fromPath }) {
+    static registerFields({ nModule, lib, fromPath }) {
         for (let t in lib) {
             this.registerField({
                 nModule,
@@ -38,18 +41,44 @@ module.exports = class notModuleRegistratorFields {
         }
     }
 
-    registerField({ nModule, name, field, fromPath }) {
+    /**
+     *
+     *
+     * @param {object}  param { nModule, name, field, fromPath }
+     * @param {import('../module')}     param.nModule
+     * @param {string}                  param.name
+     * @param {object}                  param.field
+     * @param {string}                  param.fromPath
+     */
+    static registerField({ nModule, name, field, fromPath }) {
+        const MODULE_NAME = nModule.getName();
+        if (notAppPostponedFieldsRegistrator.fieldShouldBePostponed(field)) {
+            notAppPostponedFieldsRegistrator.add(
+                field.parent,
+                MODULE_NAME,
+                fromPath
+            );
+            return;
+        }
         const fieldValidatorsCount = this.extendByFrontValidators({
             name,
             field,
             fromPath: path.dirname(fromPath),
         });
         nModule.setField(name, field);
-        const MODULE_NAME = nModule.getName();
         log(`${MODULE_NAME}//${name} with ${fieldValidatorsCount} validators`);
+        notAppPostponedFieldsRegistrator.registerPostponedChildren(
+            this,
+            MODULE_NAME,
+            `${MODULE_NAME}//${name}`
+        );
     }
 
-    findValidatorsFile(name, fromPath, possible_extensions = [".js", ".cjs"]) {
+    static findValidatorsFile(
+        name,
+        fromPath,
+        possible_extensions = [".js", ".cjs", ".mjs"]
+    ) {
         for (let ext of possible_extensions) {
             const validatorName = path.join(fromPath, "validators", name + ext);
             if (tryFile(validatorName)) {
@@ -62,14 +91,14 @@ module.exports = class notModuleRegistratorFields {
     /**
      *
      **/
-    extendByFrontValidators({ name, field, fromPath }) {
+    static extendByFrontValidators({ name, field, fromPath }) {
         if (!(field && objHas(field, "model"))) {
             return;
         }
         //load validators
         const validatorName = this.findValidatorsFile(name, fromPath);
         if (!validatorName) {
-            return;
+            return field?.model?.validate?.length;
         }
         const validators = notModuleRegistratorFields.openFile(validatorName);
         //inject into field.model
@@ -86,7 +115,7 @@ module.exports = class notModuleRegistratorFields {
      * @param {import('../module')}  input.nModule
      * @param {string}     input.srcDir
      **/
-    findAll({ nModule, srcDir }) {
+    static findAll({ nModule, srcDir }) {
         fs.readdirSync(srcDir).forEach((file) => {
             let fromPath = path.join(srcDir, file);
             if (!tryFile(fromPath)) {
@@ -103,7 +132,7 @@ module.exports = class notModuleRegistratorFields {
      * @param {import('../module')}  input.nModule
      * @param {string}     input.fromPath
      */
-    register({ nModule, fromPath }) {
+    static register({ nModule, fromPath }) {
         let file = notModuleRegistratorFields.openFile(fromPath);
         if (file && objHas(file, "FIELDS")) {
             //collection

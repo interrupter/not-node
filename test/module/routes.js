@@ -29,10 +29,7 @@ module.exports = ({ expect }) => {
                         module: { paths: {} },
                     },
                 };
-                const res = notModuleRegistratorRoutes.prototype.run.call(
-                    ctx,
-                    param
-                );
+                const res = notModuleRegistratorRoutes.run.call(ctx, param);
                 expect(res).to.be.false;
             });
 
@@ -45,10 +42,7 @@ module.exports = ({ expect }) => {
                         module: { paths: { routes: "path_to_routes" } },
                     },
                 };
-                const res = notModuleRegistratorRoutes.prototype.run.call(
-                    ctx,
-                    param
-                );
+                const res = notModuleRegistratorRoutes.run.call(ctx, param);
                 expect(res).to.be.true;
             });
         });
@@ -91,10 +85,7 @@ module.exports = ({ expect }) => {
                     srcDir: routesPath,
                     file: "mangle.manifest.js",
                 };
-                const res = notModuleRegistratorRoutes.prototype.findOne.call(
-                    ctx,
-                    param
-                );
+                const res = notModuleRegistratorRoutes.findOne.call(ctx, param);
                 expect(res).to.be.false;
             });
 
@@ -105,10 +96,7 @@ module.exports = ({ expect }) => {
                     srcDir: routesPath,
                     file: "jingle.manifest.js",
                 };
-                const res = notModuleRegistratorRoutes.prototype.findOne.call(
-                    ctx,
-                    param
-                );
+                const res = notModuleRegistratorRoutes.findOne.call(ctx, param);
                 expect(res).to.be.false;
             });
 
@@ -119,10 +107,7 @@ module.exports = ({ expect }) => {
                     srcDir: routesPath,
                     file: "icon.manifest.js",
                 };
-                const res = notModuleRegistratorRoutes.prototype.findOne.call(
-                    ctx,
-                    param
-                );
+                const res = notModuleRegistratorRoutes.findOne.call(ctx, param);
                 expect(res).to.be.false;
             });
 
@@ -142,10 +127,7 @@ module.exports = ({ expect }) => {
                     srcDir: routesPath,
                     file: "logo.manifest.js",
                 };
-                const res = notModuleRegistratorRoutes.prototype.findOne.call(
-                    ctx,
-                    param
-                );
+                const res = notModuleRegistratorRoutes.findOne.call(ctx, param);
                 expect(res).to.be.true;
             });
         });
@@ -153,7 +135,7 @@ module.exports = ({ expect }) => {
         describe("registerManifestAndRoutes", function () {
             it("route not exists, ws end-points exists", function () {
                 let i = 0;
-                notModuleRegistratorRoutes.prototype.registerManifestAndRoutes.call(
+                notModuleRegistratorRoutes.registerManifestAndRoutes.call(
                     {
                         registerRoute() {
                             i++;
@@ -175,7 +157,7 @@ module.exports = ({ expect }) => {
 
             it("route exists, ws end-points not exists", function () {
                 let i = 0;
-                notModuleRegistratorRoutes.prototype.registerManifestAndRoutes.call(
+                notModuleRegistratorRoutes.registerManifestAndRoutes.call(
                     {
                         registerRoute() {
                             i++;
@@ -197,7 +179,7 @@ module.exports = ({ expect }) => {
 
             it("route exists, ws end-points exists", function () {
                 let i = 0;
-                notModuleRegistratorRoutes.prototype.registerManifestAndRoutes.call(
+                notModuleRegistratorRoutes.registerManifestAndRoutes.call(
                     {
                         registerRoute() {
                             i++;
@@ -249,10 +231,7 @@ module.exports = ({ expect }) => {
                         },
                     },
                 };
-                notModuleRegistratorRoutes.prototype.registerRoute.call(
-                    ctx,
-                    param
-                );
+                notModuleRegistratorRoutes.registerRoute.call(ctx, param);
                 expect(typeof route.getLogic).to.be.equal("function");
                 expect(typeof route.getLogicFile).to.be.equal("function");
                 expect(typeof route.getModel).to.be.equal("function");
@@ -308,10 +287,7 @@ module.exports = ({ expect }) => {
                         },
                     },
                 };
-                notModuleRegistratorRoutes.prototype.registerRoute.call(
-                    ctx,
-                    param
-                );
+                notModuleRegistratorRoutes.registerRoute.call(ctx, param);
 
                 expect(typeof route.log.log).to.be.equal("function");
                 expect(typeof route.log.error).to.be.equal("function");

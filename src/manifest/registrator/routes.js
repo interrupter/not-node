@@ -45,11 +45,7 @@ const ROUTE_BINDINGS_LIST = [
 module.exports = class notModuleRegistratorRoutes {
     static openFile = require;
 
-    constructor({ nModule }) {
-        this.run({ nModule });
-    }
-
-    run({ nModule }) {
+    static run({ nModule }) {
         const srcDir = notModuleRegistratorRoutes.getPath(nModule);
         if (!srcDir) {
             return false;
@@ -72,13 +68,13 @@ module.exports = class notModuleRegistratorRoutes {
      * @param {import('../module')}     input.nModule
      * @param {string}                  input.srcDir
      **/
-    findAll({ nModule, srcDir }) {
+    static findAll({ nModule, srcDir }) {
         fs.readdirSync(srcDir).forEach((file) =>
             this.findOne({ nModule, file, srcDir })
         );
     }
 
-    getFileBasename(file, possible_extensions = []) {
+    static getFileBasename(file, possible_extensions = []) {
         for (let ext of possible_extensions) {
             if (file.indexOf(ext) !== -1) {
                 return file.substr(0, file.indexOf(ext));
@@ -87,7 +83,7 @@ module.exports = class notModuleRegistratorRoutes {
         return false;
     }
 
-    findOne({ nModule, srcDir, file }) {
+    static findOne({ nModule, srcDir, file }) {
         try {
             //если имя похоже на название манифеста
             const routeBasename = this.getFileBasename(
@@ -171,7 +167,7 @@ module.exports = class notModuleRegistratorRoutes {
         return false;
     }
 
-    registerManifestAndRoutes({
+    static registerManifestAndRoutes({
         nModule,
         routeName,
         routeManifest,
@@ -195,7 +191,7 @@ module.exports = class notModuleRegistratorRoutes {
         }
     }
 
-    registerRoute({ nModule, route, routeName }) {
+    static registerRoute({ nModule, route, routeName }) {
         nModule.setRoute(route.thisRouteName, route);
         if (nModule.appIsSet()) {
             mapBind(nModule.getApp(), route, ROUTE_BINDINGS_LIST);
@@ -204,8 +200,8 @@ module.exports = class notModuleRegistratorRoutes {
         route.getThisModule = () => nModule;
     }
 
-    registerWSRoute({ nModule, wsRoute }) {
-        new notModuleRegistratorRoutesWS({
+    static registerWSRoute({ nModule, wsRoute }) {
+        notModuleRegistratorRoutesWS.run({
             nModule,
             wsRoute: wsRoute,
             wsRouteName: wsRoute.thisRouteName,

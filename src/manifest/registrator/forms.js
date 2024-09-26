@@ -5,11 +5,7 @@ const { tryFile } = require("../../common");
 module.exports = class notModuleRegistratorForms {
     static openFile = require;
 
-    constructor({ nModule }) {
-        this.run({ nModule });
-    }
-
-    run({ nModule }) {
+    static run({ nModule }) {
         const srcDir = notModuleRegistratorForms.getPath(nModule);
         if (!srcDir) {
             return false;
@@ -31,7 +27,7 @@ module.exports = class notModuleRegistratorForms {
      * @param {string}     input.srcDir
      * @param {import('../module')} input.nModule
      **/
-    findAll({ nModule, srcDir }) {
+    static findAll({ nModule, srcDir }) {
         fs.readdirSync(srcDir).forEach((file) => {
             let fromPath = path.join(srcDir, file);
             if (!tryFile(fromPath)) {
@@ -41,7 +37,7 @@ module.exports = class notModuleRegistratorForms {
         });
     }
 
-    register({ nModule, fromPath }) {
+    static register({ nModule, fromPath }) {
         const Form = notModuleRegistratorForms.openFile(fromPath);
         const parts = path.parse(fromPath);
         nModule.setFormConstructor(parts.name, Form);

@@ -20,11 +20,7 @@ const LOGIC_BINDINGS_LIST = [
 module.exports = class notModuleRegistratorLogics {
     static openFile = require;
 
-    constructor({ nModule }) {
-        this.run({ nModule });
-    }
-
-    run({ nModule }) {
+    static run({ nModule }) {
         const srcDir = notModuleRegistratorLogics.getPath(nModule);
         if (!srcDir) {
             return false;
@@ -47,7 +43,7 @@ module.exports = class notModuleRegistratorLogics {
      * @param {import('../module')}  input.nModule
      * @param {string}     input.srcDir
      **/
-    findAll({ nModule, srcDir }) {
+    static findAll({ nModule, srcDir }) {
         fs.readdirSync(srcDir).forEach((file) => {
             let fromPath = path.join(srcDir, file);
             //log.info(`Checking logic in ${fromPath}`);
@@ -58,7 +54,7 @@ module.exports = class notModuleRegistratorLogics {
         });
     }
 
-    register({ nModule, fromPath, file }) {
+    static register({ nModule, fromPath, file }) {
         const logic = notModuleRegistratorLogics.openFile(fromPath);
         const logicName = notModuleRegistratorLogics.getName({ logic, file });
         this.extend({ nModule, logic, logicName, fromPath });
@@ -66,7 +62,7 @@ module.exports = class notModuleRegistratorLogics {
         //log.info(`${logicName}`);
     }
 
-    extend({ nModule, logic, logicName, fromPath }) {
+    static extend({ nModule, logic, logicName, fromPath }) {
         logic.filename = fromPath;
         if (nModule.appIsSet()) {
             mapBind(nModule.getApp(), logic, LOGIC_BINDINGS_LIST);

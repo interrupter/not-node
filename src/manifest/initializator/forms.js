@@ -4,11 +4,8 @@ const { error } = require("not-log")(module, "initializator");
 module.exports = class notModuleInitializatorForms {
     static openFile = require;
 
-    constructor({ nModule }) {
-        this.run({ nModule, app: nModule.getApp() });
-    }
-
-    run({ app, nModule }) {
+    static run({ nModule }) {
+        const app = nModule.getApp();
         const moduleName = nModule.getName();
         for (let formName in nModule.getFormsConstructors()) {
             try {

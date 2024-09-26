@@ -20,10 +20,7 @@ module.exports = ({ expect }) => {
 
         describe("run", function () {
             it("path to fields is not defined", function () {
-                const ctx = {
-                    findAll() {},
-                    extendByFrontValidators() {},
-                };
+                const ctx = {};
                 const param = {
                     nModule: {
                         module: {
@@ -31,10 +28,7 @@ module.exports = ({ expect }) => {
                         },
                     },
                 };
-                const res = notModuleRegistratorFields.prototype.run.call(
-                    ctx,
-                    param
-                );
+                const res = notModuleRegistratorFields.run.call(ctx, param);
                 expect(res).to.be.false;
             });
 
@@ -52,10 +46,7 @@ module.exports = ({ expect }) => {
                         },
                     },
                 };
-                const res = notModuleRegistratorFields.prototype.run.call(
-                    ctx,
-                    param
-                );
+                const res = notModuleRegistratorFields.run.call(ctx, param);
                 expect(res).to.be.true;
             });
         });
@@ -79,7 +70,7 @@ module.exports = ({ expect }) => {
                 nModule: {},
                 srcDir: logicsPath,
             };
-            notModuleRegistratorFields.prototype.findAll.call(ctx, param);
+            notModuleRegistratorFields.findAll.call(ctx, param);
             result.sort();
             expect(result).to.be.deep.equal(list);
         });
@@ -108,7 +99,7 @@ module.exports = ({ expect }) => {
                     },
                     fromPath: libPath,
                 };
-                notModuleRegistratorFields.prototype.register.call(ctx, param);
+                notModuleRegistratorFields.register.call(ctx, param);
             });
 
             it("file is single field", (done) => {
@@ -133,7 +124,7 @@ module.exports = ({ expect }) => {
                         "../testies/module/fields/single.js"
                     ),
                 };
-                notModuleRegistratorFields.prototype.register.call(ctx, param);
+                notModuleRegistratorFields.register.call(ctx, param);
             });
         });
 
@@ -165,10 +156,7 @@ module.exports = ({ expect }) => {
                         "../testies/module/fields/collection.js"
                     )).FIELDS,
                 };
-                notModuleRegistratorFields.prototype.registerFields.call(
-                    ctx,
-                    param
-                );
+                notModuleRegistratorFields.registerFields.call(ctx, param);
             });
         });
 
@@ -195,10 +183,7 @@ module.exports = ({ expect }) => {
                         },
                     },
                 };
-                notModuleRegistratorFields.prototype.registerField.call(
-                    ctx,
-                    param
-                );
+                notModuleRegistratorFields.registerField.call(ctx, param);
                 expect(Object.keys(FIELDS).includes("single")).to.be.true;
             });
         });

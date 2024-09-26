@@ -2,17 +2,13 @@ const log = require("not-log")(module, "registrator");
 const notLocale = require("not-locale");
 
 module.exports = class notModuleRegistratorLocales {
-    constructor({ nModule }) {
-        this.run({ nModule });
-    }
-
     /**
      *
      * @param {object}                  input
      * @param {import('../module')}     input.nModule
      * @return {boolean}
      */
-    run({ nModule }) {
+    static run({ nModule }) {
         const srcDir = notModuleRegistratorLocales.getPath(nModule);
         if (!srcDir) {
             return false;

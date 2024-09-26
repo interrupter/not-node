@@ -9,11 +9,8 @@ const extractPrivateFields = (mod) =>
 
 module.exports = class notModuleInitializatorManifests {
     static openFile = require;
-    constructor({ nModule }) {
-        this.run({ nModule });
-    }
 
-    run({ nModule }) {
+    static run({ nModule }) {
         const moduleName = nModule.getName();
         for (let routeName in nModule.getRoutesManifests()) {
             try {

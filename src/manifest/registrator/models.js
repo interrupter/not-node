@@ -17,11 +17,8 @@ const MODEL_BINDINGS_LIST = [
 
 module.exports = class notModuleRegistratorModels {
     static openFile = require;
-    constructor({ nModule }) {
-        this.run({ nModule });
-    }
 
-    run({ nModule }) {
+    static run({ nModule }) {
         const srcDir = notModuleRegistratorModels.getPath(nModule);
         if (!srcDir) {
             return false;
@@ -44,7 +41,7 @@ module.exports = class notModuleRegistratorModels {
      * @param {import('../module')}  input.nModule
      * @param {string}     input.srcDir
      **/
-    findAll({ nModule, srcDir }) {
+    static findAll({ nModule, srcDir }) {
         fs.readdirSync(srcDir).forEach((file) => {
             let fromPath = path.join(srcDir, file);
             //log.info(`Checking model in ${fromPath}`);
@@ -55,7 +52,7 @@ module.exports = class notModuleRegistratorModels {
         });
     }
 
-    register({ nModule, fromPath, file }) {
+    static register({ nModule, fromPath, file }) {
         const model = notModuleRegistratorModels.openFile(fromPath);
         const modelName = notModuleRegistratorModels.getName({ model, file });
         this.extend({ nModule, model, modelName, fromPath });
@@ -63,7 +60,7 @@ module.exports = class notModuleRegistratorModels {
         //log.info(`${modelName}`);
     }
 
-    extend({ nModule, model, modelName, fromPath }) {
+    static extend({ nModule, model, modelName, fromPath }) {
         model.filename = fromPath;
         if (nModule.appIsSet()) {
             mapBind(nModule.getApp(), model, MODEL_BINDINGS_LIST);

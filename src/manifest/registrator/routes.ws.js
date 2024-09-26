@@ -3,7 +3,7 @@ const { mapBind, objHas } = require("../../common");
 /**
  * List of methods to be binded from notApp to routes and WS end-points
  * @constant
- * @type {string}
+ * @type {Array<string>}
  */
 const WS_ROUTE_BINDINGS_LIST = [
     "getLogic",
@@ -15,15 +15,7 @@ const WS_ROUTE_BINDINGS_LIST = [
 ];
 
 module.exports = class notModuleRegistratorRoutesWS {
-    constructor({ nModule, wsRoute, wsRouteName }) {
-        this.run({
-            nModule,
-            wsRoute,
-            wsRouteName,
-        });
-    }
-
-    run({ nModule, wsRoute, wsRouteName }) {
+    static run({ nModule, wsRoute, wsRouteName }) {
         if (nModule.appIsSet()) {
             const input = {
                 nModule,
@@ -35,21 +27,26 @@ module.exports = class notModuleRegistratorRoutesWS {
         }
     }
 
-    registerServers(input) {
+    static registerServers(input) {
         this.registerCollectionType({
             ...input,
             collectionType: "servers",
         });
     }
 
-    registerClients(input) {
+    static registerClients(input) {
         this.registerCollectionType({
             ...input,
             collectionType: "clients",
         });
     }
 
-    registerCollectionType({ nModule, wsRoute, wsRouteName, collectionType }) {
+    static registerCollectionType({
+        nModule,
+        wsRoute,
+        wsRouteName,
+        collectionType,
+    }) {
         if (!objHas(wsRoute, collectionType)) {
             return false;
         }
@@ -65,7 +62,7 @@ module.exports = class notModuleRegistratorRoutesWS {
         return true;
     }
 
-    registerCollectionItem({
+    static registerCollectionItem({
         nModule,
         wsRoute,
         wsRouteName,
@@ -84,7 +81,7 @@ module.exports = class notModuleRegistratorRoutesWS {
         });
     }
 
-    registerEndPoints({
+    static registerEndPoints({
         nModule,
         wsRouteName,
         collectionType,
