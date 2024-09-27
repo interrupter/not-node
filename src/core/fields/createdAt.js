@@ -12,5 +12,6 @@ module.exports = {
         searchable: true,
         sortable: true,
         safe: require("../safety.protocols").systemManageable,
+        validate: require('./validators/date')
     },
 };

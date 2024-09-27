@@ -11,7 +11,7 @@ module.exports = {
         type: Date,
         required: true,
         default: Date.now,
-
+        validate: require('./validators/date'),
         safe: require("../safety.protocols").systemManageable,
     },
 };

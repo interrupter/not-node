@@ -1,16 +1,15 @@
-const Schema = require("mongoose").Schema;
 
 module.exports = {
+    parent: 'not-node//objectId',
     ui: {
         component: "UITextfield",
         label: "not-node:field_userId_label",
         placeholder: "not-node:field_userId_placeholder",
         readonly: true,
     },
-    model: {
-        type: Schema.Types.ObjectId,
+    model: {        
         ref: "User",
         required: false,
-        safe: require("../safety.protocols").ownerRootAdmin,
+        default: undefined,        
     },
 };

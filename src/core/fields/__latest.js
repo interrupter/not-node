@@ -1,8 +1,6 @@
 module.exports = {
-    ui: {
-        component: "UIHidden",
-    },
-    model: {
-        safe: require("../safety.protocols").systemManageable,
-    },
+    parent: 'not-node//boolean.system',
+    model:{
+        default: true
+    }
 };

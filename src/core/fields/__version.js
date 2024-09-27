@@ -4,5 +4,9 @@ module.exports = {
     },
     model: {
         safe: require("../safety.protocols").systemManageable,
+        type: Number,
+        default: 0,
+        required: true,
+        validate: require('./validators/ID')
     },
 };

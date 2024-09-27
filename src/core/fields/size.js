@@ -11,5 +11,6 @@ module.exports = {
         searchable: true,
         sortable: true,
         safe: require("../safety.protocols").ownerRootAdmin,
+        validate: require('./validators/positive.or.zero.number')
     },
 };

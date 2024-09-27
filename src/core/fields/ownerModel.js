@@ -4,6 +4,7 @@ module.exports = {
         required: false,
         safe: require("../safety.protocols").ownerRootAdmin,
         transformers: ["xss"],
+        validate: require('./validators/modelName')
     },
     ui: {
         component: "UIHidden",

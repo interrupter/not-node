@@ -1,3 +1,5 @@
+const ObjectId = require('mongoose').SchemaTypes.ObjectId;
+
 module.exports = {
     ui: {
         component: "UIHidden",
@@ -6,6 +8,8 @@ module.exports = {
         readonly: true,
     },
     model: {
+        type: ObjectId,
         safe: require("../safety.protocols").systemManageable,
+        validate: require('./validators/objectId')
     },
 };

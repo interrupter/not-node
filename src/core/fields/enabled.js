@@ -1,13 +1,11 @@
+const { MODULE_NAME } = require("../const");
+
 module.exports = {
-    ui: {
-        component: "UISwitch",
-        label: "not-node:field_enabled_label",
-        default: false,
+    parent: `${MODULE_NAME}//boolean`,
+    ui: {        
+        label: "not-node:field_enabled_label",        
     },
-    model: {
-        type: Boolean,
+    model: {        
         default: true,
-        required: true,
-        safe: require("../safety.protocols").ownerRootAdmin,
     },
 };
