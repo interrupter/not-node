@@ -81,8 +81,11 @@ module.exports = class InitApp {
 
     printReportByPostponedFieldsRegistrator() {
         const report = notAppPostponedFieldsRegistrator.state();
-        if (Object.keys(report).length) {
-            log?.error(report);
+        if (Object.keys(report.unresolved).length) {
+            log?.error(report.unresolved);
+        }
+        if (report.insecure.length) {
+            log?.error(`List of insecure fields (${report.insecure.length}): `, report.insecure.join(', '));
         }
     }
 };

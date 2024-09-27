@@ -52,13 +52,27 @@ module.exports = class notModuleRegistratorFields {
      */
     static registerField({ nModule, name, field, fromPath }) {
         const MODULE_NAME = nModule.getName();
-        if (notAppPostponedFieldsRegistrator.fieldShouldBePostponed(field)) {
+        if (
+            notAppPostponedFieldsRegistrator.fieldShouldBePostponed(
+                field,
+                nModule
+            )
+        ) {
             notAppPostponedFieldsRegistrator.add(
                 field.parent,
                 MODULE_NAME,
                 fromPath
             );
             return;
+        } else if (field.parent) {
+            const parentFieldValue =
+                notAppPostponedFieldsRegistrator.findParentField(
+                    field.parent,
+                    nModule
+                );
+            if (parentFieldValue) {
+                field = Fields.mutateField(parentFieldValue, field);
+            }
         }
         const fieldValidatorsCount = this.extendByFrontValidators({
             name,
@@ -66,12 +80,29 @@ module.exports = class notModuleRegistratorFields {
             fromPath: path.dirname(fromPath),
         });
         nModule.setField(name, field);
-        log(`${MODULE_NAME}//${name} with ${fieldValidatorsCount} validators`);
+        log(
+            `${MODULE_NAME}//${name} with ${fieldValidatorsCount ?? 0}/${
+                field?.model?.validate?.length ?? 0
+            } validators`
+        );
+        this.registerFieldIfInsecure(field, nModule, name);
         notAppPostponedFieldsRegistrator.registerPostponedChildren(
+            nModule,
             this,
             MODULE_NAME,
             `${MODULE_NAME}//${name}`
         );
+    }
+
+    static registerFieldIfInsecure(field, nModule, name) {
+        if (
+            field.model &&
+            (!field.model.validate || field.model.validate.length === 0)
+        ) {
+            notAppPostponedFieldsRegistrator.registerInsecureField(
+                `${nModule.getName()}//${name}`
+            );
+        }
     }
 
     static findValidatorsFile(

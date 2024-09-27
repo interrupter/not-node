@@ -1,5 +1,7 @@
 const path = require("path");
 const getApp = require("../../getApp");
+const { mutateField } = require("../../fields");
+const { log } = require("not-log")(module, "register//fields.postponed");
 
 /**
  * @typedef     {object}    WaitingField
@@ -15,6 +17,7 @@ class notAppPostponedFieldsRegistrator {
      * @memberof notModuleRegistratorFields
      */
     static #waitingList = {};
+    static #insecureList = [];
 
     /**
      *
@@ -26,6 +29,10 @@ class notAppPostponedFieldsRegistrator {
      * @memberof notModuleRegistratorFields
      */
     static add(parentFieldName, moduleName, pathToField) {
+        const parts = path.parse(pathToField);
+        log(
+            `field ${parentFieldName} not registered yet, field ${moduleName}//${parts.name} postponed`
+        );
         if (!Object.hasOwn(this.#waitingList, parentFieldName)) {
             this.#waitingList[parentFieldName] = [];
         }
@@ -63,6 +70,15 @@ class notAppPostponedFieldsRegistrator {
         }
     }
 
+    static findParentField(fielName, nModule) {
+        const [parentFieldModule, parentFieldName] = fielName.split("//");
+        if (parentFieldModule === nModule.getName()) {
+            return nModule.getField(parentFieldName);
+        } else {
+            return getApp().getField(fielName);
+        }
+    }
+
     /**
      * If parent fields exists in childField description and
      * parent field is not registered yet - returns true
@@ -72,7 +88,7 @@ class notAppPostponedFieldsRegistrator {
      * @return {boolean}
      * @memberof notAppPostponedFieldsRegistrator
      */
-    static fieldShouldBePostponed(childField) {
+    static fieldShouldBePostponed(childField, nModule) {
         if (Object.hasOwn(childField, "parent")) {
             if (
                 childField.parent &&
@@ -80,8 +96,13 @@ class notAppPostponedFieldsRegistrator {
                 childField.parent.length > 4 &&
                 childField.parent.indexOf("//") > 0
             ) {
-                const parentField = getApp().getField(childField.parent);
-                return !parentField;
+                const parentField = this.findParentField(
+                    childField.parent,
+                    nModule
+                );
+                if (!parentField) {
+                    return true;
+                }
             }
         }
         return false;
@@ -95,13 +116,28 @@ class notAppPostponedFieldsRegistrator {
      * @memberof notAppPostponedFieldsRegistrator
      */
     static state() {
+        return {
+            unresolved: this.getStateUnresolved(),
+            insecure: this.getStateInsecure(),
+        };
+    }
+
+    static getStateUnresolved() {
         const result = {};
         Object.keys(this.#waitingList).forEach((parentField) => {
-            result[parentField] = this.#waitingList.map(
+            result[parentField] = this.#waitingList[parentField].map(
                 (itm) => itm.pathToField
             );
         });
         return result;
+    }
+
+    static getStateInsecure() {
+        return this.#insecureList;
+    }
+
+    static registerInsecureField(fullFieldName) {
+        this.#insecureList.push(fullFieldName);
     }
 
     /**
@@ -113,20 +149,45 @@ class notAppPostponedFieldsRegistrator {
      * @param {string} fullFieldName
      * @memberof notAppPostponedFieldsRegistrator
      */
-    static registerPostponedChildren(registrator, MODULE_NAME, fullFieldName) {
+    static registerPostponedChildren(
+        nModuleNotRegistred,
+        registrator,
+        MODULE_NAME,
+        fullFieldName
+    ) {
         const list = this.getChildren(fullFieldName);
-        list.forEach((childField) => {
-            const nModule = getApp().getModule(MODULE_NAME);
-            const fieldFile = registrator.reopenCached(childField.pathToField);
-            const parts = path.parse(childField.pathToField);
-            registrator.registerField({
-                nModule,
-                name: parts.name, //fields name
-                field: fieldFile, //field description
-                fromPath: childField.pathToField,
+
+        if (list.length) {
+            const nModule =
+                (getApp && getApp().getModule(MODULE_NAME)) ||
+                nModuleNotRegistred;
+            log(
+                `running registration of fields (${list.length}) derived from ${fullFieldName}`
+            );
+            list.forEach((childField) => {
+                const fieldFile = registrator.reopenCached(
+                    childField.pathToField
+                );
+                const resultedField = this.mutateOriginal(
+                    fullFieldName,
+                    nModule,
+                    fieldFile
+                );
+                const parts = path.parse(childField.pathToField);
+                registrator.registerField({
+                    nModule,
+                    name: parts.name, //fields name
+                    field: resultedField, //field description
+                    fromPath: childField.pathToField,
+                });
             });
-        });
+        }
         this.clearList(fullFieldName);
+    }
+
+    static mutateOriginal(fullFieldName, nModule, mutator) {
+        const parentField = this.findParentField(fullFieldName, nModule);
+        return mutateField(parentField, mutator);
     }
 }
 

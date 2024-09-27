@@ -169,6 +169,7 @@ module.exports = ({ expect }) => {
                 let FIELDS = {};
                 const ctx = {
                     extendByFrontValidators() {},
+                    registerFieldIfInsecure() {},
                 };
                 const param = {
                     name: "single",
