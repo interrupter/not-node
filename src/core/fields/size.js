@@ -1,6 +1,6 @@
 module.exports = {
     ui: {
-        component: "UITextfield",
+        component: "UINumber",
         label: "not-node:field_size_label",
         placeholder: "not-node:field_size_placeholder",
         default: 0.0,
@@ -11,6 +11,6 @@ module.exports = {
         searchable: true,
         sortable: true,
         safe: require("../safety.protocols").ownerRootAdmin,
-        validate: require('./validators/positive.or.zero.number')
+        validate: require("./validators/positive.or.zero.number"),
     },
 };
