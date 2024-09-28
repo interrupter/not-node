@@ -171,6 +171,14 @@ class notModule {
         return null;
     }
 
+    getModelFields(modelName) {
+        const modelFile = this.getModelFile(modelName);
+        if (modelFile && objHas(modelFile, 'FIELDS') && modelFile.FIELDS) {
+            return modelFile.FIELDS;
+        }
+        return null;
+    }
+
     expose(expressApp, moduleName) {
         if (this.manifests && expressApp) {
             notModuleInitializator.exec({ nModule: this });

@@ -4,34 +4,48 @@ const { initManifestFields } = require("../../fields");
 const { firstLetterToUpper } = require("../../common");
 
 const fieldsIsArray = (mod) => mod && Array.isArray(mod.fields);
-const extractPrivateFields = (mod) =>
-    Array.isArray(mod.privateFields) ? [...mod.privateFields] : [];
+
+
+const getModelName = (routeManifest)=>firstLetterToUpper(routeManifest.model);
 
 module.exports = class notModuleInitializatorManifests {
     static openFile = require;
+
+    static getMutationsFromManifest(nModule,routeName){
+        const routeManifest = nModule.getRouteManifest(routeName);
+        if(fieldsIsArray(routeManifest)){
+            return [...routeManifest.fields];
+        }
+        return [];
+    }
+
+    static extractPrivateFields(routeManifest){
+        const privateFields = [];
+        if (routeManifest.privateFields) {
+            privateFields.push(...(Array.isArray(routeManifest.privateFields) ? [...routeManifest.privateFields] : []));
+            delete routeManifest.privateFields;
+        }
+        return privateFields;
+    }    
 
     static run({ nModule }) {
         const moduleName = nModule.getName();
         for (let routeName in nModule.getRoutesManifests()) {
             try {
-                const mod = nModule.getRouteManifest(routeName);
-                if (fieldsIsArray(mod)) {
-                    const rawMutationsList = [...mod.fields];
-                    const ModelName = firstLetterToUpper(mod.model);
-                    const schema = nModule.getModelSchema(ModelName);
-                    let privateFields = [];
-                    if (mod.privateFields) {
-                        privateFields = extractPrivateFields(mod);
-                        delete mod.privateFields;
-                    }
-                    mod.fields = initManifestFields(
-                        nModule.getApp(),
-                        schema,
-                        rawMutationsList,
-                        privateFields,
-                        moduleName
-                    );
-                }
+                const routeManifest = nModule.getRouteManifest(routeName);
+                const rawMutationsList = notModuleInitializatorManifests.getMutationsFromManifest(nModule, routeName);
+                const ModelName = getModelName(routeManifest);
+                const rawFieldsList = nModule.getModelFields(ModelName);
+                const privateFields = notModuleInitializatorManifests.extractPrivateFields(routeManifest);
+
+                routeManifest.fields = initManifestFields(
+                    nModule.getApp(),
+                    rawFieldsList,
+                    rawMutationsList,
+                    privateFields,
+                    moduleName
+                );                
+                
             } catch (e) {
                 error(
                     `Error while initialization of route: ${moduleName}//${routeName}`

@@ -21,7 +21,7 @@ module.exports.initFileSchemaFromFields = ({
     if (FIELDS && Array.isArray(FIELDS)) {
         const schema = module.exports.createSchemaFromFields(
             app,
-            FIELDS,
+            normalizeFieldsDescriptionsList(FIELDS),
             type,
             moduleName
         );
@@ -30,11 +30,11 @@ module.exports.initFileSchemaFromFields = ({
 };
 
 /**
-fields = [
-  'title', //for standart only name
-  ['titleNonStandart', {component: 'UITextforBlind'}] //arrays of [name, mutation]
-  ['someID', {}, 'ID'],  //copy of standart ID field under name as someID
-]
+fields = [{
+    srcName:string,
+    destName:string,
+    mutation:object,
+}]
 **/
 module.exports.createSchemaFromFields = (
     app,
@@ -43,9 +43,15 @@ module.exports.createSchemaFromFields = (
     moduleName
 ) => {
     let schema = {};
-    fields.forEach((field) => {
+    fields.forEach((fieldDescription) => {
         let [schemaFieldName, schemaFieldValue] =
-            module.exports.initSchemaField(app, field, false, type, moduleName);
+            module.exports.initSchemaField(
+                app,
+                fieldDescription,
+                false,
+                type,
+                moduleName
+            );
         schema[schemaFieldName] = schemaFieldValue;
     });
     return schema;
@@ -53,13 +59,13 @@ module.exports.createSchemaFromFields = (
 
 module.exports.initSchemaField = (
     app,
-    field,
+    fieldDescription,
     resultOnly = true,
     type = "ui",
     moduleName
 ) => {
     //log(field);
-    let { srcName, destName, mutation } = parseFieldDescription(field);
+    let { srcName, destName, mutation } = fieldDescription;
     let proto = findFieldPrototype(app, srcName, type);
     if (!proto) {
         error(
@@ -124,11 +130,24 @@ const findFieldPrototype = (app, name, type) => {
     }
 };
 
+const filterOutPrivateFieldsFromNormalizedFieldDescription = (
+    privateFields
+) => {
+    return ({ destName }) => {
+        return !privateFields.includes(destName);
+    };
+};
+
+const normalizeFieldsDescriptionsList = (list) => {
+    return list.map(parseFieldDescription);
+};
+module.exports.normalizeFieldsDescriptionsList =
+    normalizeFieldsDescriptionsList;
 /**
  * Creates fields UI representation schema from list of fields in DB model
  * and library of fields
  * @param {object} app     notApplication instance
- * @param {object} schema  model db schema
+ * @param {object} rawFieldsList  model db schema
  * @param {Array<string|Array>} rawMutationsList     fields mutations, for little tuning
  * @param {Array<string>} privateFields     fields to omit from result
  * @param {string} moduleName     for detailed reports on issues, in which module and what field is faulty
@@ -137,47 +156,82 @@ const findFieldPrototype = (app, name, type) => {
 
 module.exports.initManifestFields = (
     app, //notApplication
-    schema, //schema of model
+    rawFieldsList, //raw fields list of model
     rawMutationsList = [], //fields mutations
     privateFields = [], //fields to omit
     moduleName //module name for reporting
 ) => {
-    let //shallow copy of array
-        mutationsList = [...rawMutationsList],
-        list = [];
-    if (schema && Object.keys(schema).length > 0) {
-        let rawKeys = Object.keys(schema);
-        rawKeys
-            .filter((key) => !privateFields.includes(key))
-            .forEach((key) => {
-                let mutation = getMutationForField(key, mutationsList);
-                if (mutation.length) {
-                    list.push(mutation);
-                    mutationsList.splice(mutationsList.indexOf(mutation), 1);
+    const //shallow copy of array
+        normalizedMutationsList = [
+            ...normalizeFieldsDescriptionsList(rawMutationsList),
+        ],
+        resultFields = [];
+
+    if (
+        rawFieldsList &&
+        Array.isArray(rawFieldsList) &&
+        rawFieldsList.length > 0
+    ) {
+        const normalizedFieldsList =
+            normalizeFieldsDescriptionsList(rawFieldsList);
+        normalizedFieldsList
+            .filter(
+                filterOutPrivateFieldsFromNormalizedFieldDescription(
+                    privateFields
+                )
+            )
+            .forEach((fieldDescription) => {
+                const { srcName, destName } = fieldDescription;
+                const fieldMutationDescription = getMutationForField(
+                    destName,
+                    normalizedMutationsList
+                );
+                if (fieldMutationDescription) {
+                    resultFields.push({
+                        srcName,
+                        destName,
+                        mutation: fieldMutationDescription.mutation,
+                    });
+                    normalizedMutationsList.splice(
+                        normalizedMutationsList.indexOf(
+                            fieldMutationDescription
+                        ),
+                        1
+                    );
                 } else {
-                    list.push(key);
+                    resultFields.push({
+                        srcName,
+                        destName,
+                        mutation: {},
+                    });
                 }
             });
-        list.push(...mutationsList);
+        resultFields.push(...normalizedMutationsList);
     } else {
-        list = mutationsList;
+        resultFields.push(...normalizedMutationsList);
     }
-    return module.exports.createSchemaFromFields(app, list, "ui", moduleName);
+    return module.exports.createSchemaFromFields(
+        app,
+        resultFields,
+        "ui",
+        moduleName
+    );
 };
 
 /**
  * Returns mutation tuple for a field or false
- * @param {string} name  field name
- * @param {Array} list  fields description lists
- * @return {Array<string|Object>}
+ * @param {string} destName  field name
+ * @param {Array} normalizedFieldsList  fields description lists
+ * @return {Object}
  */
-function getMutationForField(name, list) {
-    for (let item of list) {
-        if (Array.isArray(item) && item[0] === name) {
-            return item;
+function getMutationForField(destName, normalizedFieldsList) {
+    for (let mutationFieldDescription of normalizedFieldsList) {
+        const { destName: mutationDest } = mutationFieldDescription;
+        if (mutationDest === destName) {
+            return mutationFieldDescription;
         }
     }
-    return [];
+    return null;
 }
 module.exports.getMutationForField = getMutationForField;
 

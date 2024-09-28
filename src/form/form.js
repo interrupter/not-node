@@ -4,7 +4,7 @@ const notPath = require("not-path");
 const notConfig = require("not-config");
 const FormFabric = require("./fabric");
 const Auth = require("../auth");
-const { createSchemaFromFields } = require("../fields");
+const { createSchemaFromFields, normalizeFieldsDescriptionsList } = require("../fields");
 const notFieldsFilter = require("../fields/filter.js");
 const getApp = require("../getApp.js");
 const {
@@ -474,7 +474,7 @@ class Form {
     #createModelSchema(app) {
         return createSchemaFromFields(
             app,
-            this.#PROTO_FIELDS,
+            normalizeFieldsDescriptionsList(this.#PROTO_FIELDS),
             "model",
             this.#FORM_NAME
         );
