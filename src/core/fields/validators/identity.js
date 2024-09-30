@@ -50,8 +50,12 @@ module.exports = [
         message: "not-node:identity_field_sid_is_undefined",
     },
     {
-        validator(val) {
-            return objHas(val, "ip") && typeof val.ip === "string";
+        validator(val, { validator }) {
+            return (
+                objHas(val, "ip") &&
+                typeof val.ip === "string" &&
+                validator.isIP(val.ip)
+            );
         },
         message: "not-node:identity_field_ip_is_not_valid",
     },

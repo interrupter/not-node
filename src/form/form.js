@@ -3,8 +3,12 @@ const validator = require("validator");
 const notPath = require("not-path");
 const notConfig = require("not-config");
 const FormFabric = require("./fabric");
+const notEnv = require("../env.js");
 const Auth = require("../auth");
-const { createSchemaFromFields, normalizeFieldsDescriptionsList } = require("../fields");
+const {
+    createSchemaFromFields,
+    normalizeFieldsDescriptionsList,
+} = require("../fields");
 const notFieldsFilter = require("../fields/filter.js");
 const getApp = require("../getApp.js");
 const {
@@ -35,6 +39,11 @@ const DEFAULT_TRANSFORMERS = require("./transformers");
 const DEFAULT_AFTER_EXTRACT_TRANSFORMERS = [];
 const notAppIdentity = require("../identity/index.js");
 const { ACTION_DATA_TYPES } = require("../const.js");
+
+const DEFAULT_VALIDATOR_ENVS = {
+    validator,
+    env: true, //some env variables for validators
+};
 
 /**
  * Generic form validation class
@@ -427,15 +436,27 @@ class Form {
      * Returns function that works as a getter for additional environment variables for
      * validators.
      * validationFunction(value, additionalEnvVars = {}){}
+     * @return {function}   getter of validator envs
      **/
     getValidatorEnvGetter() {
-        return () => {
+        //app wide validation envs
+        const appLevelValidationEnvsGetter = notEnv.get("validationEnv");
+        if (typeof appLevelValidationEnvsGetter === "function") {
             //should be sync function
-            return {
-                validator,
-                env: true, //some env variables for validators
+            return () => {
+                return Object.freeze({
+                    ...DEFAULT_VALIDATOR_ENVS,
+                    ...appLevelValidationEnvsGetter(),
+                });
             };
-        };
+        } else {
+            return () => {
+                //should be sync function
+                return Object.freeze({
+                    ...DEFAULT_VALIDATOR_ENVS,
+                });
+            };
+        }
     }
 
     /**
@@ -743,6 +764,8 @@ class Form {
             case String:
             case Schema.Types.String:
                 return ["xss"];
+            case Schema.Types.Number:
+                return ["parseNumber"];
             default:
                 return [];
         }
