@@ -1,4 +1,6 @@
-module.exports = {   
+const Validators = require("../validators");
+
+module.exports = {
     ui: {
         component: "UIHidden",
     },
@@ -6,6 +8,7 @@ module.exports = {
         type: Boolean,
         default: false,
         required: true,
-        safe: require("not-node/src/core/safety.protocols").systemManageable,
+        safe: require("../safety.protocols").systemManageable,
+        validate: Validators.Boolean.type,
     },
 };

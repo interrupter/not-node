@@ -1,3 +1,5 @@
+const Validators = require("../validators");
+
 module.exports = {
     ui: {
         component: "UISwitch",
@@ -9,5 +11,6 @@ module.exports = {
         default: false,
         required: true,
         safe: require("../safety.protocols").ownerRootAdmin,
+        validate: Validators.Boolean.type,
     },
 };

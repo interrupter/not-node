@@ -1,4 +1,5 @@
 const Schema = require("mongoose").Schema;
+const Validators = require("../validators");
 
 module.exports = {
     model: {
@@ -6,6 +7,7 @@ module.exports = {
         required: true,
         default: {},
         safe: require("../safety.protocols").ownerRootAdmin,
+        validate: Validators.Object.type,
     },
     ui: {
         default: {},

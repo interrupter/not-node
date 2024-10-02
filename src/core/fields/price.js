@@ -1,3 +1,5 @@
+const Validators = require("../validators");
+
 module.exports = {
     ui: {
         component: "UITextfield",
@@ -11,6 +13,9 @@ module.exports = {
         searchable: true,
         sortable: true,
         safe: require("../safety.protocols").ownerRootAdmin,
-        validate: require('./validators/positive.or.zero.number')
+        validate: [
+            ...Validators.Number.type,
+            ...Validators.Number.positiveOrZero,
+        ],
     },
 };

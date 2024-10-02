@@ -1,3 +1,5 @@
+const Validators = require("../validators");
+
 module.exports = {
     ui: {
         component: "UIEmail",
@@ -10,5 +12,6 @@ module.exports = {
         required: true,
         transformers: ["xss"],
         safe: require("../safety.protocols").ownerRootAdmin,
+        validate: [...Validators.String.type, ...Validators.String.email],
     },
 };

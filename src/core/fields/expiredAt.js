@@ -1,3 +1,5 @@
+const Validators = require("../validators");
+
 module.exports = {
     ui: {
         component: "UITextfield",
@@ -11,6 +13,6 @@ module.exports = {
         searchable: true,
         sortable: true,
         safe: require("../safety.protocols").ownerRootAdmin,
-        validate: require('./validators/date')
+        validate: Validators.Date.type,
     },
 };

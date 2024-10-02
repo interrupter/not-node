@@ -1,3 +1,5 @@
+const Validators = require("../validators");
+
 module.exports = {
     ui: {
         component: "UIHidden",
@@ -7,6 +9,10 @@ module.exports = {
         type: Number,
         default: 0,
         required: true,
-        validate: require('./validators/ID')
+        validate: [
+            ...Validators.Number.type,
+            ...Validators.Number.int,
+            ...Validators.Number.positiveOrZero,
+        ],
     },
 };

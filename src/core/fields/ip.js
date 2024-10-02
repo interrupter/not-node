@@ -1,3 +1,5 @@
+const Validators = require("../validators");
+
 module.exports = {
     ui: {
         component: "UITextfield",
@@ -11,5 +13,6 @@ module.exports = {
         required: true,
         safe: require("../safety.protocols").ownerRootAdmin,
         transformers: ["xss"],
+        validate: [...Validators.String.type, ...Validators.String.ip],
     },
 };

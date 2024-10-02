@@ -1,3 +1,5 @@
+const Validators = require("../validators");
+
 module.exports = {
     ui: {
         component: "UIDate",
@@ -12,6 +14,6 @@ module.exports = {
         searchable: true,
         sortable: true,
         safe: require("../safety.protocols").systemManageable,
-        validate: require('./validators/date')
+        validate: [...Validators.Date.type],
     },
 };

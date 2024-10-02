@@ -1,4 +1,5 @@
-const ObjectId = require('mongoose').SchemaTypes.ObjectId;
+const Validators = require("../validators");
+const ObjectId = require("mongoose").SchemaTypes.ObjectId;
 
 module.exports = {
     ui: {
@@ -10,6 +11,6 @@ module.exports = {
     model: {
         type: ObjectId,
         safe: require("../safety.protocols").systemManageable,
-        validate: require('./validators/objectId')
+        validate: Validators.ObjectId.type,
     },
 };

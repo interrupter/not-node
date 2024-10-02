@@ -1,3 +1,4 @@
+const Validators = require("../validators");
 const Schema = require("mongoose").Schema;
 
 module.exports = {
@@ -5,5 +6,6 @@ module.exports = {
         type: Schema.Types.Mixed,
         required: true,
         safe: require("../safety.protocols").ownerRootAdmin,
+        validate: Validators.Object.identity,
     },
 };

@@ -1,4 +1,5 @@
 module.exports = [
+    ...require("./string"),
     {
         validator(val, { validator }) {
             return validator.isEmail(val);

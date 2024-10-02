@@ -1,3 +1,5 @@
+const Validators = require("../validators");
+
 module.exports = {
     ui: {
         component: "UITextarea",
@@ -12,5 +14,9 @@ module.exports = {
         sortable: true,
         transformers: ["xss"],
         safe: require("../safety.protocols").ownerRootAdmin,
+        validate: [
+            ...Validators.String.type,
+            ...Validators.String.from10to10000,
+        ],
     },
 };

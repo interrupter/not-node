@@ -7,5 +7,10 @@ module.exports = [
         },
         message: `not-node:value_is_not_array`,
     },
-    ...objectId,
+    {
+        validator: (val, envs) => {
+            return val.every((item) => objectId.at(0)?.validator(item, envs));
+        },
+        message: `not-node:value_items_are_not_all_objectId`,
+    },
 ];

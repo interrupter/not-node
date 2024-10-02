@@ -13,7 +13,7 @@ module.exports = class notAppIdentity {
     }
 
     static identityToAuthData(identity, req) {
-        return {
+        const data = {
             root: identity.isRoot(),
             admin: identity.isAdmin(),
             auth: identity.isUser(),
@@ -21,9 +21,16 @@ module.exports = class notAppIdentity {
             primaryRole: identity.getPrimaryRole(),
             uid: identity.getUserId(),
             sid: identity.getSessionId(),
-            ip: req ? getIP(req) : undefined,
             provider: identity.constructor.name,
         };
+
+        if (req) {
+            let ip = getIP(req);
+            if (ip) {
+                data.ip = ip;
+            }
+        }
+        return data;
     }
 
     /**

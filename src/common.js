@@ -496,3 +496,43 @@ module.exports.isAction = isAction;
 const isArrayOfActions = (list) => list.every(isAction);
 
 module.exports.isArrayOfActions = isArrayOfActions;
+
+/**
+ * Creates functions that executes validator function from array of objects
+ * {validator:function, message:string}
+ * If validator returns false - it throws message from object, if all validator returns true -
+ * function returns true
+ * @param {Array<Object>} validators
+ * @param {any} val
+ * @param {Object} envs
+ * @return {function}
+ */
+const createValidatorsRunner = (validators, val, envs) => {
+    return () => {
+        for (let { message, validator } of validators) {
+            if (!validator(val, envs)) {
+                throw new Error(message);
+            }
+        }
+        return true;
+    };
+};
+module.exports.createValidatorsRunner = createValidatorsRunner;
+
+/**
+ * Changes default message if custom set to true, by replacing part of it with another string
+ *
+ * @param {string} message
+ * @param {boolean} custom
+ * @param {string} find
+ * @param {string} replace
+ * @return {string}
+ */
+const createCustomMessage = (message, custom, find, replace) => {
+    if (custom) {
+        return message.replace(find, replace);
+    } else {
+        return message;
+    }
+};
+module.exports.createCustomMessage = createCustomMessage;

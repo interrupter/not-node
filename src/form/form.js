@@ -1,5 +1,8 @@
 const Schema = require("mongoose").Schema;
+
 const validator = require("validator");
+const Ajv = require("ajv");
+
 const notPath = require("not-path");
 const notConfig = require("not-config");
 const FormFabric = require("./fabric");
@@ -42,6 +45,7 @@ const { ACTION_DATA_TYPES } = require("../const.js");
 
 const DEFAULT_VALIDATOR_ENVS = {
     validator,
+    ajv: new Ajv(),
     env: true, //some env variables for validators
 };
 
