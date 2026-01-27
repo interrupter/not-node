@@ -35,7 +35,7 @@ module.exports = class InitSessionsMongo {
         master.getServer().use(
             expressSession({
                 secret: config.get("session:secret"),
-                key: config.get("session:key"),
+                name: config.get("session:key"),
                 cookie: config.get("session:cookie"),
                 resave: true,
                 saveUninitialized: true,

@@ -28,7 +28,7 @@ export default (program, { CWD }) => {
                 infoFromManifest.serverModulesDir
             );
             const allFields = await findAllFields(siteDir, modulesDir);
-            console.log("creating server module in", modulesDir);
+            console.log("creating server module in", modulesDir, allFields);
             const ProjectConfig = {
                 path: opts.dir,
                 ...infoFromManifest,

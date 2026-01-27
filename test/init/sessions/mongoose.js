@@ -10,7 +10,7 @@ module.exports = ({ expect }) => {
                 mock("express-session", (cnf) => {
                     expect(cnf).have.keys([
                         "secret",
-                        "key",
+                        "name",
                         "cookie",
                         "resave",
                         "saveUninitialized",

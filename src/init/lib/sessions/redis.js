@@ -9,19 +9,17 @@ module.exports = class InitSessionsRedis {
         const expressSession = require("express-session");
         const storeClient = config.get("session.client", DEFAULT_CLIENT);
         const redisClient = master.getEnv(`db.${storeClient}`);
-        const redisStore = require("connect-redis").default;
+        const { RedisStore } = require("connect-redis");
         master.getServer().use(
             expressSession({
                 secret: config.get("session.secret"),
-                key: config.get("session.key"),
+                name: config.get("session.key"),
                 cookie: config.get("session.cookie"),
                 resave: false,
                 saveUninitialized: true,
-                store: new redisStore({
-                    host: "localhost",
-                    port: 6379,
+                store: new RedisStore({
                     client: redisClient,
-                    ttl: 86400,
+                    ttl: options?.ttl || 86400,
                 }),
             })
         );

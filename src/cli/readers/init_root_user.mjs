@@ -20,18 +20,10 @@ function collectInitRootUser(inquirer, config) {
             default: `admin@${config.hostname.development}`,
         },
         {
-            type: "input",
+            type: "password",
             name: "password",
             message: "Root user password",
             default: DEFAULT_PASSWORD,
-        },
-        {
-            type: "input",
-            name: "passwordConfirmation",
-            message: "Re-type root password",
-            validate(inpt, answer) {
-                return inpt === answer.password;
-            },
         },
     ]);
 }

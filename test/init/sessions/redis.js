@@ -21,7 +21,7 @@ module.exports = ({ expect }) => {
                 mock("express-session", (cnf) => {
                     expect(cnf).have.keys([
                         "secret",
-                        "key",
+                        "name",
                         "cookie",
                         "resave",
                         "saveUninitialized",
@@ -29,7 +29,7 @@ module.exports = ({ expect }) => {
                     ]);
                     return () => {};
                 });
-                mock("connect-redis", { default: class FakeRedis {} });
+                mock("connect-redis", { RedisStore: class FakeRedisStore {} });
 
                 const config = {
                     get(str) {

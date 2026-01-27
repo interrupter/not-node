@@ -1,6 +1,6 @@
 /** @module Model/Versioning */
 
-const diff = require("deep-diff").diff;
+const diff = require("@bluelovers/deep-diff").diff;
 
 const TECH_FIELDS = [
     "_id",
