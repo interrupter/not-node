@@ -690,23 +690,34 @@ async function build_Server(pathToRoot, roles, targetName, targetManifest) {
 console.log("config path", configName);
 config = lib.getConfReader(configName);
 
-//searchig for targets
-if (config.get("targets") && Object.keys(config.get("targets")).length > 0) {
-    //cycling through targets
-    for (let target in config.get("targets")) {
-        let targetConfig = config.get("targets")[target];
-        if (targetConfig && targetConfig.builder) {
-            //if target type is server
-            switch (targetConfig.builder) {
-                case "server":
-                    build_Server(
-                        path.dirname(configName),
-                        targetConfig.roles,
-                        target,
-                        targetConfig
-                    );
-                    break;
+async function render() {
+    //searchig for targets
+    if (
+        config.get("targets") &&
+        Object.keys(config.get("targets")).length > 0
+    ) {
+        //cycling through targets
+        for (let target in config.get("targets")) {
+            let targetConfig = config.get("targets")[target];
+            if (targetConfig && targetConfig.builder) {
+                //if target type is server
+                switch (targetConfig.builder) {
+                    case "server":
+                        await build_Server(
+                            path.dirname(configName),
+                            targetConfig.roles,
+                            target,
+                            targetConfig
+                        );
+                        break;
+                }
             }
         }
     }
 }
+
+render()
+    .then(() => {
+        process.exit(0);
+    })
+    .catch(console.error);

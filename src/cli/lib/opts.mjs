@@ -16,18 +16,12 @@ class Options {
 
     #DEFAULT_SERVER_MODULES_SUB_PATH = "./app/server/modules";
     get DEFAULT_SERVER_MODULES_SUB_PATH() {
-        return resolve(
-            this.DEFAULT_SITE_PATH,
-            this.#DEFAULT_SERVER_MODULES_SUB_PATH
-        );
+        return this.#DEFAULT_SERVER_MODULES_SUB_PATH;
     }
 
     #DEFAULT_FRONT_MODULES_SUB_PATH = "./app/front/src";
     get DEFAULT_FRONT_MODULES_SUB_PATH() {
-        return resolve(
-            this.DEFAULT_SITE_PATH,
-            this.#DEFAULT_FRONT_MODULES_SUB_PATH
-        );
+        return this.#DEFAULT_FRONT_MODULES_SUB_PATH;
     }
 
     #PATH_TMPL = resolve(__dirname, "../../../tmpl/files");

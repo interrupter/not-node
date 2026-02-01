@@ -1,4 +1,4 @@
-import { isAbsolute, resolve } from "node:path";
+import { isAbsolute, resolve, join } from "node:path";
 
 import { Option } from "commander";
 import inquirer from "inquirer";
@@ -10,6 +10,7 @@ import {
     makeScriptExecutable,
     installPackages,
     buildClientSideScripts,
+    findAllFields,
 } from "../lib/fs.mjs";
 
 import { postStartupInstructions } from "../lib/messages.mjs";
@@ -77,6 +78,7 @@ export default (program, { CWD }) => {
             console.log("creating site in", siteDir);
             const ProjectConfig = {
                 path: dir,
+                sitePath: siteDir,
             };
             //
             ProjectConfig.AppName = await Readers.AppName(
@@ -122,16 +124,25 @@ export default (program, { CWD }) => {
             await createDir(dir);
             await createDirContent(dir, ProjectStructure, ProjectConfig);
             await createProjectToolsAndConfigs(dir, ProjectConfig);
-            const PATH_MODULES_SERVER = resolve(
-                dir,
+            const PATH_MODULES_SERVER = join(
+                ProjectConfig.sitePath,
                 Options.DEFAULT_SERVER_MODULES_SUB_PATH
             );
-            const PATH_MODULES_FRONT = resolve(
-                dir,
+            const PATH_MODULES_FRONT = join(
+                ProjectConfig.sitePath,
                 Options.DEFAULT_FRONT_MODULES_SUB_PATH
             );
+            const modulesDir = join(
+                siteDir,
+                Options.DEFAULT_SERVER_MODULES_SUB_PATH
+            );
+            const allFields = await findAllFields(dir, modulesDir);
             while (await Readers.isUserNeedCreateServerModule(inquirer)) {
-                await createServerModule(PATH_MODULES_SERVER, ProjectConfig);
+                await createServerModule(
+                    PATH_MODULES_SERVER,
+                    ProjectConfig,
+                    allFields
+                );
             }
             if (await Readers.isUserNeedFrontModuleBootstrap(inquirer)) {
                 await createBootstrapFrontModule(

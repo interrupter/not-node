@@ -89,7 +89,7 @@ async function createServerModule(modules_dir, config, availableFields = []) {
         availableFields,
     };
     await createDir(moduleDir);
-    //console.log(JSON.stringify(moduleConfig, null, 4));
+    console.log(JSON.stringify(moduleConfig, null, 4));
     await createDirContent(
         moduleDir,
         ProjectSubStructures["module.server"],

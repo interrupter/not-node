@@ -136,7 +136,7 @@ function makeScriptExecutable(pathToTargetScript) {
         });
         npmInstall.on("exit", (code) => {
             if (code == 0) {
-                resolve();
+                resolve(true);
             } else {
                 reject(`chmod +x ${pathToTargetScript}  ${code}`);
             }
@@ -156,7 +156,7 @@ function installPackages(siteDir) {
         });
         npmInstall.on("exit", (code) => {
             if (code == 0) {
-                resolve();
+                resolve(true);
             } else {
                 reject(`NPM install exited with code ${code}`);
             }
@@ -171,12 +171,16 @@ function buildClientSideScripts(siteDir) {
             cwd: siteDir,
         });
 
+        npmInstall.stdout.on("data", (data) => {
+            Logger.log(data.toString());
+        });
+
         npmInstall.stderr.on("data", (data) => {
             Logger.error(data.toString());
         });
         npmInstall.on("exit", (code) => {
             if (code == 0) {
-                resolve();
+                resolve(true);
             } else {
                 reject(`npm run build job exited with code ${code}`);
             }
@@ -269,7 +273,11 @@ async function findAllFieldsInGlobalNodeModules() {
     const result = [];
     for (let globalLib of Options.DEFAULT_GLOBAL_NPM_LIB) {
         const dirname = join(globalLib, "node_modules");
-        result.push(...(await findAllFieldsInModules(dirname)));
+        try {
+            result.push(...(await findAllFieldsInModules(dirname)));
+        } catch {
+            Logger.log("No fields in ", dirname);
+        }
     }
     return result;
 }

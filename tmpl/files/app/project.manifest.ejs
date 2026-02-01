@@ -5,17 +5,17 @@
 			"name": "<%- AppName %>",
 			"roles": [<% roles.forEach(function(role, index){ %>"<%- role %>"<%- (roles.length - 1 > index)?',':'' %><% }); %>],
 			"builder": "server",
-			"root": "app/front/",
-			"src": "app/front/",
+			"root": "app/front/tmpl",
+			"src": "app/front/tmpl",
 			"build": "app/front/build/",
-			"index": "app/front/index.!.js",
-			"rollup": "app/front/rollup.!.js",
+			"index": "app/front/tmpl/index.!.mjs",
+			"rollup": "app/front/tmpl/rollup.!.mjs",
 			"modules": {
 				"serverModulesDir": "app/server/modules",
 				"frontModulesDir": "app/front/src",
 				"npm": {
                     <% modules.forEach(function(module, index){ %>"<%- module %>": {}<%- (modules.length - 1 > index)?',':'' %>
-                    <% }); %>					
+                    <% }); %>
 				}
 			}
 		}
