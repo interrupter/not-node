@@ -12,10 +12,10 @@ function postStartupInstructions(siteDir, config) {
                 `For '${env}' environment exec while in project directory:`
             );
             console.log(
-                `$ sudo cp nginx/${env}.conf to /var/nginx/sites-available/${config.hostname[env]}.conf`
+                `$ sudo cp nginx/${env}.conf /etc/nginx/sites-available/${config.hostname[env]}.conf`
             );
             console.log(
-                `$ sudo ln -s /var/nginx/sites-available/${config.hostname[env]}.conf /var/nginx/sites-enabled/${config.hostname[env]}.conf`
+                `$ sudo ln -s /etc/nginx/sites-available/${config.hostname[env]}.conf /etc/nginx/sites-enabled/${config.hostname[env]}.conf`
             );
         }
         console.log("2. Restart NGINX server");
