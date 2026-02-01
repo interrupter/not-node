@@ -8,7 +8,7 @@ import sizes from "rollup-plugin-sizes";
 import postcss from "rollup-plugin-postcss";
 import json from "@rollup/plugin-json";
 
-import { babelOn } from "./build.env.js";
+import { babelOn } from "../build.env.js";
 
 export default {
     input: "<%%= inputPath %%>",
@@ -16,8 +16,7 @@ export default {
         file: "<%%= outputPath %%>",
         name: "<%%= appName %%>",
         format: "iife",
-        sourcemap:
-            false && (process.env.NODE_ENV === "production" ? false : "inline"),
+        sourcemap:(process.env.NODE_ENV === "production" ? false : "inline"),
     },
     plugins: [
         json(),

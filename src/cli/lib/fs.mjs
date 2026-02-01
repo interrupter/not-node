@@ -103,7 +103,7 @@ async function createDirContent(dest, structure = {}, config = {}) {
             entry = config[getVariableName(entry)];
         }
         if (isFilename(entry, subStructure)) {
-            //  console.log(dest, entry);
+            console.log(dest, entry);
             const filePath = join(dest, entry);
             await createFileContent(filePath, subStructure, config);
         } else {

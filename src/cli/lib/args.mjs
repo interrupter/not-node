@@ -29,6 +29,8 @@ async function readArgs(structure, config) {
 function isFilename(name, descr) {
     if (descr.type === "file") {
         return true;
+    } else if (descr.type === "dir") {
+        return false;
     }
     if (name.startsWith(VAR_PREFIX) && name.endsWith(VAR_PREFIX)) {
         return false;

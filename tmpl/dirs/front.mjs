@@ -3,11 +3,11 @@ export default {
     src: {},
     tmpl: {
         content: {
-            "index.!.js": {
+            "index.!.mjs": {
                 tmpl: "app/front/index.!.ejs",
                 args: ["not_node_reporter"],
             },
-            "rollup.!.js": {
+            "rollup.!.mjs": {
                 tmpl: "app/front/rollup.!.ejs",
                 args: [],
             },

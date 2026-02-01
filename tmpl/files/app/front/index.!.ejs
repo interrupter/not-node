@@ -1,66 +1,63 @@
 <% if (not_node_reporter) { %>
-    window.NOT_NODE_ERROR_URL_BROWSER = '<%- not_node_reporter.url_browser %>';
-    <% } %>
+window.NOT_NODE_ERROR_URL_BROWSER = '<%- not_node_reporter.url_browser %>';
+<% } %>
     
-    import {
-      Frame
-    } from 'not-bulma';
+import { Frame } from 'not-bulma';
     
-    const {notCommon, notApp, COMPONENTS} = Frame;
+const {notCommon, notApp, COMPONENTS} = Frame;
     
-    notCommon.register('backlog', true);
-    window.dumpBacklog = notCommon.dumpBacklog.bind(notCommon);
+notCommon.register('backlog', true);
+window.dumpBacklog = notCommon.dumpBacklog.bind(notCommon);
     
-    let appDefaultOptions = {
-      manifestURL: '/api/manifest',
-      router: {
-        root: '/',
-        manifest: [],
-        index: ''
+let appDefaultOptions = {
+  manifestURL: '/api/manifest',
+  router: {
+    root: '/',
+    manifest: [],
+    index: ''
+  },
+  language: 'ru',
+  crud: {
+    navigateBackAfter: ['create', 'update', 'delete']
+  },
+  modules: {
+    user: {
+      redirectTimout: 1000,
+      afterLoginURL: '/dashboard',
+      loginForm: {
+        modes: [
+          'login',
+          'requestLoginCodeOnEmail',
+          'loginByCode'
+        ]
       },
-      language: 'ru',
-      crud: {
-        navigateBackAfter: ['create', 'update', 'delete']
-      },
-      modules: {
-        user: {
-          redirectTimout: 1000,
-          afterLoginURL: '/dashboard',
-          loginForm: {
-            modes: [
-              'login',
-              'requestLoginCodeOnEmail',
-              'loginByCode'
-            ]
-          },
-          loginFormContainerSelector: '.main-container',
-          restoreFormContainerSelector: '.main-container',
-          registerFormContainerSelector: '.main-container'
-        }
-      }
-    };
+      loginFormContainerSelector: '.main-container',
+      restoreFormContainerSelector: '.main-container',
+      registerFormContainerSelector: '.main-container'
+    }
+  }
+};
     
-    let services = {}, uis = {}, wsc = {}, fields = {};
-    
-    <%% for(var i = 0; i < mods.length; i++) { %%>
-    import * as mod_<%%= i %%>
-    from '<%%= mods[i] %%>';
-    appDefaultOptions = notCommon.absorbModule({
+let services = {}, uis = {}, wsc = {}, fields = {};
+
+<%% for(var i = 0; i < mods.length; i++) { %%>
+import * as mod_<%%= i %%> from '<%%= mods[i] %%>';
+appDefaultOptions = notCommon.absorbModule({
       defaultConf: appDefaultOptions,
       mod: mod_<%%= i %%>,
       services, uis, wsc, fields
-    });
-    <%% } %%>    
+  });
+<%% } %%>    
     
-    COMPONENTS.import(uis);
+COMPONENTS.import(uis);
     
-    import 'bulma';
+import 'bulma';
     
-    <%% for(var i = 0; i < scss.length; i++) { %%>
-    import '<%%= scss[i] %%>';
-    <%% } %%>    
+<%% for(var i = 0; i < scss.length; i++) { %%>
+import '<%%= scss[i] %%>';
+<%% } %%>    
     
-    appDefaultOptions.services = services;
-    appDefaultOptions.wsc = wsc;
+appDefaultOptions.services = services;
+appDefaultOptions.wsc = wsc;
     
-    notCommon.startApp(() => new notApp(appDefaultOptions));
+notCommon.startApp(() => new notApp(appDefaultOptions));
