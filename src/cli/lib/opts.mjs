@@ -4,6 +4,11 @@ import * as url from "url";
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
 class Options {
+    #DEFAULT_GLOBAL_NPM_LIB = ["/usr/local/lib", "/usr/lib"];
+    get DEFAULT_GLOBAL_NPM_LIB() {
+        return this.#DEFAULT_GLOBAL_NPM_LIB;
+    }
+
     #DEFAULT_SITE_PATH = "./site";
     get DEFAULT_SITE_PATH() {
         return this.#DEFAULT_SITE_PATH;

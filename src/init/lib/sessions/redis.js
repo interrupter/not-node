@@ -4,7 +4,7 @@ const DEFAULT_CLIENT = "ioredis";
 
 module.exports = class InitSessionsRedis {
     async run({ config, options, master, emit }) {
-        log.info("Setting up user sessions handler(redis)...");
+        log?.info("Setting up user sessions handler(redis)...");
         await emit("sessions.pre", { config, options, master });
         const expressSession = require("express-session");
         const storeClient = config.get("session.client", DEFAULT_CLIENT);

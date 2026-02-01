@@ -28,19 +28,19 @@ import Options from "./opts.mjs";
 const PATH_TMPL = Options.PATH_TMPL;
 
 async function renderFile(input, dest, data) {
-    try{
+    try {
         Logger.log("render", dest);
         const renderedFileContent = await ejs.renderFile(input, data, {
             async: true,
         });
         await writeFile(dest, renderedFileContent);
-    }catch(e){
+    } catch (e) {
         console.error(e);
     }
 }
 
 async function createFileContent(filePath, structure, config) {
-    try{
+    try {
         if (typeof structure == "string") {
             await copyTmplFile(resolve(PATH_TMPL, structure), filePath);
             return;
@@ -50,7 +50,7 @@ async function createFileContent(filePath, structure, config) {
             const data = await readArgs(structure, config);
             await renderFile(tmplFilePath, filePath, data);
         }
-    }catch(e){
+    } catch (e) {
         console.error(e);
     }
 }
@@ -240,7 +240,7 @@ async function findAllFieldsInModules(modulesDirPath) {
         const modulesNames = await readdir(modulesDirPath);
         const result = [];
         for (const moduleName of modulesNames) {
-            if (moduleName && moduleName.indexOf("not-") === 0) {                
+            if (moduleName && moduleName.indexOf("not-") === 0) {
                 const listOfFieldsInModule = await findFieldsInModule(
                     join(modulesDirPath, moduleName)
                 );
@@ -253,7 +253,7 @@ async function findAllFieldsInModules(modulesDirPath) {
                                 fullName: `${moduleName}//${fieldName}`,
                             };
                         }
-                    );                    
+                    );
                     result.push(...listOfFieldsDescriptions);
                 }
             }
@@ -265,18 +265,32 @@ async function findAllFieldsInModules(modulesDirPath) {
     }
 }
 
-async function findAllFieldsInNodeModules(siteDirPath) {
+async function findAllFieldsInGlobalNodeModules() {
+    const result = [];
+    for (let globalLib of Options.DEFAULT_GLOBAL_NPM_LIB) {
+        const dirname = join(globalLib, "node_modules");
+        result.push(...(await findAllFieldsInModules(dirname)));
+    }
+    return result;
+}
+
+async function findAllFieldsInLocalNodeModules(siteDirPath) {
     const dirname = join(siteDirPath, "node_modules");
     return await findAllFieldsInModules(dirname);
 }
 
 async function findAllFields(siteDirPath, modulesDir) {
     try {
-        const fieldsInNodeModules = await findAllFieldsInNodeModules(
+        const fieldsInGlobalNodeModules =
+            await findAllFieldsInGlobalNodeModules();
+        const fieldsInLocalNodeModules = await findAllFieldsInLocalNodeModules(
             siteDirPath
         );
         const fieldsInProjectModules = await findAllFieldsInModules(modulesDir);
-        return [...fieldsInNodeModules, ...fieldsInProjectModules];
+        const fromNPM = fieldsInLocalNodeModules.length
+            ? fieldsInLocalNodeModules
+            : fieldsInGlobalNodeModules;
+        return [...fromNPM, ...fieldsInProjectModules];
     } catch (err) {
         console.error(err);
         return [];

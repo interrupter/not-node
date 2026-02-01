@@ -75,7 +75,7 @@ async function renderServerContollersIndexes(
     }
 }
 
-async function createServerModule(modules_dir, config, availableFields) {
+async function createServerModule(modules_dir, config, availableFields = []) {
     //read module name
     const ModuleName = await Readers.ModuleName(inquirer);
     const ModuleNameHumanReadable = moduleNameTransformer(ModuleName);
