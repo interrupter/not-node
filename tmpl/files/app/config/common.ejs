@@ -17,9 +17,7 @@
           "useNewUrlParser": true,
           "useUnifiedTopology": true,
           "db": "<%- db.mongoose.db %>",
-          "host": "<%- db.mongoose.hostname %>",
-          "user": "<%- db.mongoose.user %>",
-          "pass": "<%- db.mongoose.pass %>",
+          "host": "<%- db.mongoose.hostname %>",          
           "autoIndex": false
         }
       },
@@ -37,7 +35,6 @@
     <% if (session){ %>
     "session": {
       "driver": "<%- session.driver %>",
-      "secret": "<%- session.secret %>",
       "cookie": {
         "maxAge": <%- session.ttl %>
       },
@@ -69,8 +66,7 @@
           "main": {
             "connection": {
               "port": <%- ws.port %>,
-              "secure": <%= ws.secure %>,
-              "secret": "<%- secret %>"
+              "secure": <%= ws.secure %>
             }
           }
         }
@@ -85,8 +81,7 @@
         "debug":{
           "loaded": false
         },
-        "tokenTTL": <%= user.tokenTTL %>,
-        "secret": "<%- secret %>",
+        "tokenTTL": <%= user.tokenTTL %>,        
         "roles": {
           "primary": [<%- roles.map(entry => `"${entry}"`).join(",") %>],
           "secondary": [<%- rolesSecondary.map(entry => `"${entry}"`).join(",") %>]
