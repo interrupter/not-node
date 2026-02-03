@@ -14,8 +14,6 @@
       "mongoose": {
         "uri": "mongodb://<%- db.mongoose.hostname %>/<%- db.mongoose.db %>?authSource=<%- db.mongoose.authSource %>",
         "options": {
-          "useNewUrlParser": true,
-          "useUnifiedTopology": true,
           "db": "<%- db.mongoose.db %>",
           "host": "<%- db.mongoose.hostname %>",          
           "autoIndex": false

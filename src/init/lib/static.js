@@ -30,7 +30,7 @@ module.exports = class InitStatic {
         return (req, res, next) => {
             try {
                 const frontApp = InitStatic.selectVersion(config, req, ext);
-                let pathTo = path.resolve(options.pathToApp, frontApp);
+                const pathTo = path.resolve(options.pathToApp, frontApp);
                 return InitStatic.serveStatic(pathTo)(req, res, next);
             } catch (e) {
                 next(e);
@@ -41,7 +41,7 @@ module.exports = class InitStatic {
     async run({ config, options, master, emit }) {
         await emit("static.pre", { config, options, master });
         master.getServer().use(
-            "/front/(:role).js",
+            '/front/:"role".js',
             InitStatic.createStaticFrontServer("js", {
                 config,
                 options,
@@ -49,7 +49,7 @@ module.exports = class InitStatic {
             })
         );
         master.getServer().use(
-            "/front/(:role).css",
+            '/front/:"role".css',
             InitStatic.createStaticFrontServer("css", {
                 config,
                 options,

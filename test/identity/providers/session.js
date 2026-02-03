@@ -110,7 +110,7 @@ module.exports = ({ expect }) => {
                 };
                 const id = new mongoose.Types.ObjectId();
                 new Provider(t).setUserId(id);
-                expect(t.session.user).to.eql(id);
+                expect(t.session.user).to.eql(id.toString());
             });
 
             it("session not exist, set _id", function () {

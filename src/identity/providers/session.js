@@ -1,11 +1,12 @@
 const CONST = require("../../auth/const");
 const ROLES = require("../../auth/roles");
+const EXCEPTIONS = require("../../auth/exceptions");
 
 module.exports = class IdentityProviderSession {
     static #options = {};
 
     static setOptions(options = {}) {
-        this.#options = {...this.#options, ...options};
+        this.#options = { ...this.#options, ...options };
     }
 
     static #getOptions() {
@@ -18,6 +19,15 @@ module.exports = class IdentityProviderSession {
 
     static setSecondaryRoles(list = []) {
         IdentityProviderSession.#getOptions().secondaryRoles = [...list];
+    }
+
+    _idToString(_id) {
+        if (typeof _id === "string") {
+            return _id;
+        } else if (_id.toString && typeof _id.toString === "function") {
+            return _id.toString();
+        }
+        throw new EXCEPTIONS.UserIdentityExceptionUserIdIsNotString(typeof _id);
     }
 
     constructor(req) {
@@ -93,7 +103,8 @@ module.exports = class IdentityProviderSession {
     setUserId(_id) {
         const req = this.req;
         if (req && req.session) {
-            req.session.user = _id;
+            const stringId = this._idToString(_id);
+            req.session.user = stringId;
             req.session.save();
         }
     }
