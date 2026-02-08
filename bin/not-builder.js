@@ -9,7 +9,7 @@
 
 */
 
-let argv = require("yargs"),
+let { argv } = require("yargs"),
     fs = require("fs"),
     path = require("path"),
     child_process = require("child_process"),
