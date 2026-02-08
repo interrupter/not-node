@@ -5,11 +5,16 @@ const ModelRoutine = require("../../model/routine.js");
 module.exports = class StandartQueriesBeforeAction {
     static modifyQueries(args, modificationFilter) {
         const { query } = args;
-        let { filter, search } = query;
-        if (filter) {
-            filter = notFilter.filter.modifyRules(filter, modificationFilter);
-            if (search) {
-                search = notFilter.filter.modifyRules(search, filter);
+        if (query.filter) {
+            query.filter = notFilter.filter.modifyRules(
+                query.filter,
+                modificationFilter
+            );
+            if (query.search) {
+                query.search = notFilter.filter.modifyRules(
+                    query.search,
+                    query.filter
+                );
             }
         }
         if (args.defaultQueryById) {

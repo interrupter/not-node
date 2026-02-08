@@ -43,7 +43,7 @@ module.exports = class InitENV {
     }
 
     static getFullServerName(config) {
-        let name = "";
+        let name;
         if (config.get("proxy:secure") === true) {
             name = "https://";
         } else {

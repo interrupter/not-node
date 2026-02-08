@@ -167,7 +167,7 @@ function makeQuery(method, filter) {
             __latest: true,
             __closed: false,
         },
-        finalFilter = {};
+        finalFilter;
     switch (notQuery.filter.getFilterType(filter)) {
         case notQuery.filter.OPT_OR:
             if (this.schema.statics.__versioning) {

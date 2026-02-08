@@ -152,7 +152,7 @@ module.exports.init = function (mongoose) {
     schema = new mongooseLocal.Schema(thisSchema);
     schema.statics.getNext = newGetNext();
     schema.statics.rebase = newRebase();
-    let model = null;
+    let model;
     try {
         model = mongooseLocal.model("Increment", schema);
     } catch {

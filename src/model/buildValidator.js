@@ -70,7 +70,5 @@ function extendValidation(rule, options) {
  **/
 
 module.exports = function (validators, options) {
-    let result = null;
-    result = validators.map((rule) => extendValidation(rule, options));
-    return result;
+    return validators.map((rule) => extendValidation(rule, options));
 };

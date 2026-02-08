@@ -174,7 +174,7 @@ module.exports = class IdentityProviderToken {
         const context = { ip };
         const secret = this.#getOptions().secret;
         this.#validateSecretForToken({ secret, context });
-        let payload = {};
+        let payload;
         if (user) {
             payload = this.#composeUserTokenPayload({ user, additionalFields });
         } else {

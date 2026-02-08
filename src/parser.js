@@ -43,7 +43,7 @@ module.exports.getRouteLine = function (
     actionData
 ) {
     let part1 = this.parseLine(url, modelName, actionName),
-        part2 = "";
+        part2;
     if (objHas(actionData, "postFix")) {
         part2 = this.parseLine(actionData.postFix, modelName, actionName);
     } else {
