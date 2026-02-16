@@ -231,7 +231,7 @@ class notRoute {
         try {
             let prepared = undefined;
             //waiting preparation
-            if (modRoute[CONST_AFTER_ACTION]) {
+            if (modRoute[CONST_BEFORE_ACTION]) {
                 prepared = await this.executeFunction(
                     modRoute,
                     CONST_BEFORE_ACTION,
@@ -252,6 +252,11 @@ class notRoute {
                 }
                 if (Array.isArray(result)) {
                     result = result.map((itm) =>
+                        itm && itm.toObject ? itm.toObject() : itm
+                    );
+                }
+                if (Object.hasOwn(result, 'list') && Array.isArray(result.list)) {
+                    result.list = result.list.map((itm) =>
                         itm && itm.toObject ? itm.toObject() : itm
                     );
                 }
