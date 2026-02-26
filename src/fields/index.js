@@ -138,7 +138,7 @@ const filterOutPrivateFieldsFromNormalizedFieldDescription = (
     };
 };
 
-const normalizeFieldsDescriptionsList = (list) => {
+const normalizeFieldsDescriptionsList = (list = []) => {
     return list.map(parseFieldDescription);
 };
 module.exports.normalizeFieldsDescriptionsList =

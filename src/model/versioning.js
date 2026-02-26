@@ -103,7 +103,7 @@ class ModelVersioning {
             await versionDoc.save();
             //updating history
             let originalDoc = await ModelConstructor.findOne({ _id: id });
-            originalDoc.__version = preservedVersionNumber + 1;
+            originalDoc.__version = preservedVersionNumber + 1;            
             ModelVersioning.addVersionToHistory(originalDoc, versionDoc);
             return await originalDoc.save();
         }
@@ -128,7 +128,7 @@ class ModelVersioning {
         //const findById = getFunc(thisModel,'findById');
         let originalDoc = await ModelConstructor.findOne({ _id: id });
         //first version
-        originalDoc.__version = 1;
+        originalDoc.__version = 1;        
         //adding to history
         ModelVersioning.addVersionToHistory(originalDoc, versionDoc);
         return await originalDoc.save();

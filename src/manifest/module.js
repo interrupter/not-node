@@ -8,6 +8,8 @@ const fs = require("fs"),
     notModuleInitializator = require("./initializator"),
     { objHas, mapBind, executeObjectFunction } = require("../common");
 
+const {RESOURCES_PATH_SPLITTER} = require('./const.js');
+
 /**
  * Standart splitter of module resources paths
  * @constant
@@ -144,6 +146,16 @@ class notModule {
 
     getModels() {
         return this.models;
+    }
+
+    getModelsNames(full = false){
+        const list = Object.keys(this.models);
+        if(full){
+            const moduleName = this.getName();
+            return list.map(name=> `${moduleName}${RESOURCES_PATH_SPLITTER}${name}`);
+        }else{
+            return list;
+        }
     }
 
     getLogicFile(logicName) {

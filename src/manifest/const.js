@@ -5,6 +5,7 @@ const ACTION_DATA_TYPE_FILTER = "filter";
 const ACTION_DATA_TYPE_SEARCH = "search";
 const ACTION_DATA_TYPE_RETURN = "return";
 
+
 const ACTION_DATA_TYPES = Object.freeze({
     DATA: ACTION_DATA_TYPE_DATA,
     PAGER: ACTION_DATA_TYPE_PAGER,
@@ -16,3 +17,7 @@ const ACTION_DATA_TYPES = Object.freeze({
 
 module.exports.ACTION_DATA_TYPES = ACTION_DATA_TYPES;
 module.exports.ACTION_DATA_TYPES_VALUES = Object.values(ACTION_DATA_TYPES);
+
+
+const RESOURCES_PATH_SPLITTER = "//";
+module.exports.RESOURCES_PATH_SPLITTER = RESOURCES_PATH_SPLITTER;

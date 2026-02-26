@@ -273,11 +273,15 @@ function listAll(filter = null) {
  *	By default sorts by _id in DESC
  *	@static
  *	@param	{object|array} 	populate	populate rules
+ *	@param	{object|array} 	filter		filter rules
  *	@return {Promise}					Promise
  */
-function listAllAndPopulate(populate) {
-    let by = defaultFilter(this),
-        query = this.find(by);
+function listAllAndPopulate(populate, filter = null) {
+    let by = defaultFilter(this);
+    if (filter) {
+        by = notQuery.filter.modifyRules(by, filter);
+    }
+    let query = this.find(by);
     query.sort(defaultSorter());
     populateQuery(query, populate, this.schema.statics.__versioning);
     return query.exec();

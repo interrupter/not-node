@@ -81,7 +81,6 @@ class ModelRoutine {
             {
                 returnOriginal: false,
                 returnDocument: "after",
-                new: true,
             }
         )
             .exec()
@@ -104,10 +103,8 @@ class ModelRoutine {
                 const updateResult = await ModelConstructor.findOneAndUpdate(
                     filter,
                     { $set: data },
-                    {
-                        returnOriginal: false,
-                        returnDocument: "after",
-                        new: true,
+                    {                        
+                        returnDocument: "after"
                     }
                 );
                 if (updateResult) {

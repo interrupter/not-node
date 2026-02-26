@@ -9,6 +9,8 @@ const {
     objHas,
     firstLetterToUpper,
 } = require("./common");
+
+const { RESOURCES_PATH_SPLITTER } = require("./manifest/const");
 const { error } = require("not-log")(module, "domain");
 const Env = require("./env");
 const notModule = require("./manifest/module"),
@@ -142,7 +144,9 @@ class notDomain extends EventEmitter {
      **/
     getRoute(name) {
         if (name.indexOf("//") > 0) {
-            let [moduleName, routeName, routeFunctionName] = name.split("//");
+            let [moduleName, routeName, routeFunctionName] = name.split(
+                RESOURCES_PATH_SPLITTER
+            );
             if (this.modules && objHas(this.modules, moduleName)) {
                 let route = this.getModule(moduleName).getRoute(routeName);
                 if (objHas(route, routeFunctionName)) {
@@ -186,8 +190,20 @@ class notDomain extends EventEmitter {
         return this.getByPath(name, type);
     }
 
+    getModelsNames(full = false) {
+        const list = [];
+        Object.values(this.modules).forEach((mod) => {
+            list.push(...mod.getModelsNames(full));
+        });
+        return list;
+    }
+
+    getFullModelsNames() {
+        return this.getModelsNames(true);
+    }
+
     getByFullPath(name, type) {
-        let [moduleName, resourceName] = name.split("//");
+        let [moduleName, resourceName] = name.split(RESOURCES_PATH_SPLITTER);
         if (this.modules && objHas(this.modules, moduleName)) {
             return this.getModule(moduleName)[`get${firstLetterToUpper(type)}`](
                 resourceName
@@ -255,7 +271,7 @@ class notDomain extends EventEmitter {
     }
 
     getByPath(name, type) {
-        if (name.indexOf("//") > 0) {
+        if (name.indexOf(RESOURCES_PATH_SPLITTER) > 0) {
             return this.getByFullPath(name, type);
         } else {
             return this.getByShortPath(name, type);
@@ -471,7 +487,8 @@ class notDomain extends EventEmitter {
             for (let t of ["routes", "models", "actions", "forms"]) {
                 stats[t].list.push(
                     ...modStatus[t].list.map(
-                        (itmName) => `${modName}//${itmName}`
+                        (itmName) =>
+                            `${modName}${RESOURCES_PATH_SPLITTER}${itmName}`
                     )
                 );
             }
