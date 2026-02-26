@@ -22,7 +22,7 @@ const SCHEMA = () => {
             type: String,
             safe: {
                 update: ["@system", "@owner", "root", "admin"],
-                read: ["*"],
+                read: ["@*"],
             },
         },
         salt: {
@@ -66,10 +66,13 @@ const SCHEMA = () => {
             required: false,
             searchable: true,
             default: "ru",
-            safe: {
-                update: ["@system", "@owner", "root", "admin"],
-                read: ["*"],
-            },
+            safe: notFieldsFilter.mergeSafetyProtocols(
+                {
+                    update: ["@system", "@owner", "root", "admin"],
+                    read: "*",
+                },
+                safetyProtocols.publicReadable
+            ),
         },
         email: {
             type: String,

@@ -98,7 +98,7 @@ const rawRoutesManifest = {
 describe("notManifestFilter", function () {
     describe("clearActionFromRules", function () {
         const spGuestC = Object.freeze({
-            [ACTION_SIGNATURES.CREATE]: ["root", "admin", "@*"],
+            [ACTION_SIGNATURES.CREATE]: ["root", "admin", "*"],
             [ACTION_SIGNATURES.READ]: ["root", "admin"],
             [ACTION_SIGNATURES.UPDATE]: ["root", "admin"],
             [ACTION_SIGNATURES.DELETE]: ["root", "admin"],

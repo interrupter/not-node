@@ -281,7 +281,7 @@ function listAllAndPopulate(populate, filter = null) {
     if (filter) {
         by = notQuery.filter.modifyRules(by, filter);
     }
-    let query = this.find(by);
+    const query = this.find(by);
     query.sort(defaultSorter());
     populateQuery(query, populate, this.schema.statics.__versioning);
     return query.exec();

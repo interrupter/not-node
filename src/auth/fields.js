@@ -43,16 +43,16 @@ function isOwner(
 }
 
 /**
- * Checks if safe field rule is some sort variant of wild card
+ * Checks if safe field rule is some sort variant of wild card "@*" or "*"
  * @param {string|Array<string>}   safeFor safe field rule
  * @return {boolean}               if it's wildcard
  *
  */
 function ruleIsWildcard(safeFor) {
     if (Array.isArray(safeFor)) {
-        return safeFor.includes("*");
+        return safeFor.includes("@*") || safeFor.includes("*");
     } else {
-        return safeFor === "*";
+        return safeFor === "@*" || safeFor === "*";
     }
 }
 
