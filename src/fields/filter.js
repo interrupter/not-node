@@ -123,7 +123,9 @@ class notFieldsFilter {
             ...this.#USER_DEFINED_SETS,
             [SPECIAL_SET_ALL]: (schema) => {
                 const moreFields =
-                    typeof schema === "object" ? Object.keys(schema) : [];
+                    typeof schema === "object" && schema !== null
+                        ? Object.keys(schema)
+                        : [];
                 return [
                     `${SPECIAL_SET_PREFIX}${SPECIAL_SET_ID_UUID}`,
                     `${SPECIAL_SET_PREFIX}${SPECIAL_SET_ID_NUMERIC}`,
