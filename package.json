@@ -1,6 +1,6 @@
 {
 	"name": "not-node",
-	"version": "6.5.53",
+	"version": "6.5.54",
 	"description": "node complimentary part for client side notFramework.",
 	"main": "index.js",
 	"scripts": {
@@ -60,13 +60,6 @@
 		"method-override": "^3.0.0",
 		"mongoose-validator": "*",
 		"nconf": "*",
-		"not-config": "*",
-		"not-filter": "^0.3.17",
-		"not-inform": "*",
-		"not-locale": "^0.0.25",
-		"not-log": "*",
-		"not-monitor": "*",
-		"not-path": "*",
 		"rate-limiter-flexible": "^9.1.1",
 		"redis": "^5.10.0",
 		"redlock": "^5.0.0-beta.2",
@@ -79,6 +72,13 @@
 		"yargs": "*"
 	},
 	"devDependencies": {
+		"not-config": "*",
+		"not-filter": "*",
+		"not-inform": "*",
+		"not-locale": "*",
+		"not-log": "*",
+		"not-monitor": "*",
+		"not-path": "*",
 		"babel-eslint": "^10.1.0",
 		"chai": "*",
 		"chai-as-promised": "*",
@@ -93,8 +93,8 @@
 		"mock-require": "^3.0.3",
 		"mongodb-memory-server": "^11.0.1",
 		"mongoose": "^9.1.6",
-		"not-error": "^0.3.2",
-		"not-validation": "^0.0.11",
+		"not-error": "*",
+		"not-validation": "*",
 		"npm-run-all": "^4.1.5",
 		"nyc": "^17.1.0",
 		"retire": "^5.4.2"
