@@ -431,7 +431,7 @@ function getID() {
  *	@param {object}     [data=undefined] if we want update some fields
  *	@return {number}	ID
  */
-function close(data = undefined) {
+function close(data = undefined, saveOptions = {validateBeforeSave: true}) {
     if (this?.schema?.statics?.__versioning) {
         if (data && Object.keys(data)) {
             Object.keys(data).forEach((fieldName) => {
@@ -440,7 +440,7 @@ function close(data = undefined) {
             });
         }
         this.__closed = true;
-        return this.save();
+        return this.save(saveOptions);
     } else {
         return this.deleteOne({ _id: this._id });
     }

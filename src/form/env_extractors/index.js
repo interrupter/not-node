@@ -7,6 +7,7 @@ module.exports = {
     targetID: require("./ID.js"),
     _id: require("./targetId.js"),
     targetId: require("./targetId.js"),
+    targetIds: require("./targetIds.js"),
     activeUser: require("./activeUser.js"),
     activeUserId: require("./activeUserId.js"),
     ip: require("./ip.js"),
