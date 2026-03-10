@@ -675,7 +675,12 @@ describe("Core Validators", () => {
                 });
             });
 
-            const listOfValidValues = ["127.0.1.1", "10.8.1.10", "0.0.0.0"];
+            const listOfValidValues = [
+                "127.0.1.1",
+                "10.8.1.10",
+                "0.0.0.0",
+                "123.1.1.4, 192.123.4.1",
+            ];
             listOfValidValues.forEach((val) => {
                 it(
                     "valid: " + val,

@@ -342,17 +342,14 @@ module.exports.generatePaths = (content = [], relative = "src") => {
  **/
 module.exports.getIP = (req) => {
     if (req) {
-        const ip =
+        return (
             (req.headers && req.headers["x-forwarded-for"]) ||
             (req.connection && req.connection.remoteAddress) ||
             (req.socket && req.socket.remoteAddress) ||
             (req.connection &&
                 req.connection.socket &&
-                req.connection.socket.remoteAddress);
-        if (ip && ip.indexOf(",") > -1) {
-            return ip.split(",")[0];
-        }
-        return ip;
+                req.connection.socket.remoteAddress)
+        );
     } else {
         return undefined;
     }
