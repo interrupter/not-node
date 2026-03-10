@@ -13,7 +13,12 @@ module.exports = class StandartQueriesBeforeAction {
             if (query.search) {
                 query.search = notFilter.filter.modifyRules(
                     query.search,
-                    query.filter
+                    query.filter,
+                    (filter, property, rule)=>{
+                        if(!Object.hasOwn(filter, property)){
+                            filter[property] = rule;
+                        }
+                    }
                 );
             }
         }
