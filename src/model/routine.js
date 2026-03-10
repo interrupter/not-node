@@ -100,9 +100,17 @@ class ModelRoutine {
             filter.__latest = true;
             filter.__closed = false;
             if (ModelConstructor.findOneAndUpdate) {
+                const setData = {}, unsetData = {};
+                Object.keys(data).forEach((key)=>{
+                    if(typeof data[key] === 'undefined'){
+                        unsetData[key] = 1;
+                    }else{
+                        setData[key] = data[key];
+                    }
+                });
                 const updateResult = await ModelConstructor.findOneAndUpdate(
                     filter,
-                    { $set: data },
+                    { $set: setData, $unset: unsetData },
                     {                        
                         returnDocument: "after"
                     }
