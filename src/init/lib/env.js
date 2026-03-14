@@ -95,8 +95,13 @@ module.exports = class InitENV {
         );
     }
 
-    static initFromTemplate({ config, master }) {
-        InitENV.CONFIG_SET.forEach((item) => {
+    static initFromTemplate({ options, config, master }) {
+        const CUSTOM_SET =
+            options?.customPaths && Array.isArray(options?.customPaths)
+                ? options?.customPaths
+                : [];
+        const ALL_CONFIGS_SET = [...InitENV.CONFIG_SET, ...CUSTOM_SET];
+        ALL_CONFIGS_SET.forEach((item) => {
             InitENV.setObsoleteAndNew({
                 config,
                 master,
@@ -113,7 +118,7 @@ module.exports = class InitENV {
         master.setEnv("hostname", config.get("hostname"));
         master.setEnv("server", `https://` + config.get("host"));
 
-        InitENV.initFromTemplate({ config, master });
+        InitENV.initFromTemplate({ config, master, options });
 
         config.set(
             "appPath",

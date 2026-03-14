@@ -9,7 +9,9 @@
 
 */
 
-let { argv } = require("yargs"),
+const yargs = require("yargs"),
+    { hideBin } = require("yargs/helpers"),
+    argv = yargs(hideBin(process.argv)).parse(),
     fs = require("fs"),
     path = require("path"),
     child_process = require("child_process"),
